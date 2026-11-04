@@ -48,7 +48,12 @@ export default function App() {
       </header>
 
       <div className="absolute inset-x-0 bottom-0 sm:bottom-6 sm:left-6 sm:right-auto sm:w-[380px] p-4 sm:p-0 flex flex-col gap-3 max-h-[70vh] sm:max-h-[80vh]">
-        {facilities.length > 0 && (
+        {/* Only shown in Chat view -- with the guided form's own fields also
+            competing for space in this same bottom-anchored column, showing
+            both at once left old results clipped to a sliver while editing
+            a new query. The form resets to Chat on submit, so results still
+            appear right where you'd expect them. */}
+        {mode === "chat" && facilities.length > 0 && (
           <div className="overflow-y-auto space-y-2 pr-1">
             {facilities.slice(0, 5).map((f, i) => (
               <ResultCard
@@ -79,7 +84,7 @@ export default function App() {
         </div>
 
         {mode === "guided" ? (
-          <GlassPanel className="p-4">
+          <GlassPanel className="p-4 overflow-y-auto">
             <GuidedForm onSubmit={handleGuidedSubmit} zipCentroids={zipCentroids} />
           </GlassPanel>
         ) : (
