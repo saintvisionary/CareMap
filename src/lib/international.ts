@@ -34,6 +34,15 @@ export interface InternationalResult {
 }
 
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
+// Photon (komoot's OSM-based geocoder, built for as-you-type search) only
+// for the suggestion dropdown: real-world testing found Nominatim's search
+// has no fuzzy/typo tolerance at all -- a single missing letter ("Cancn,
+// Mexico") returns zero results -- while Photon correctly surfaces "Cancún"
+// for the same typo. The final submit still geocodes through Nominatim
+// (geocodePlace below, unchanged): once a suggestion is picked it's
+// correctly spelled, which Nominatim resolves fine -- Nominatim's weakness
+// is specifically fuzzy matching, not exact/near-exact lookups.
+const PHOTON_URL = "https://photon.komoot.io/api/";
 // The public Overpass instance is free but frequently overloaded (502s
 // under load); those are usually momentary, so retry a couple of times
 // with a short per-attempt timeout rather than hang indefinitely.
@@ -161,6 +170,44 @@ export function parseOverpassElements(elements: OverpassElement[], originLat: nu
     });
   }
   return facilities.sort((a, b) => a.distanceKm - b.distanceKm);
+}
+
+interface PhotonFeature {
+  properties: {
+    name?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+  };
+}
+
+// Feeds the guided form's destination autocomplete (AutocompleteInput) --
+// addresses the "user may misspell the city/country" concern directly:
+// picking a suggestion guarantees a correctly-spelled name that will
+// actually geocode, instead of hoping free-typed text does. Best-effort: a
+// network failure here just means no dropdown shows up, not an error --
+// free text still works exactly as it did before this existed.
+export async function suggestPlaces(query: string, limit = 5): Promise<{ value: string; label: string }[]> {
+  if (query.trim().length < 2) return [];
+  const qs = new URLSearchParams({ q: query, limit: String(limit) });
+  try {
+    const res = await fetch(`${PHOTON_URL}?${qs}`, { headers: { Accept: "application/json" } });
+    if (!res.ok) return [];
+    const data = (await res.json()) as { features: PhotonFeature[] };
+    const seen = new Set<string>();
+    const out: { value: string; label: string }[] = [];
+    for (const f of data.features ?? []) {
+      const p = f.properties;
+      if (!p.name) continue;
+      const label = [p.name, p.state && p.state !== p.name ? p.state : null, p.country].filter(Boolean).join(", ");
+      if (seen.has(label)) continue;
+      seen.add(label);
+      out.push({ value: label, label });
+    }
+    return out;
+  } catch {
+    return [];
+  }
 }
 
 export async function findInternationalFacilities(place: string, radiusKm = 25): Promise<InternationalResult | null> {

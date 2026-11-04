@@ -86,7 +86,7 @@ export default function App() {
 
         {mode === "guided" ? (
           <GlassPanel className="p-4 overflow-y-auto">
-            <GuidedForm onSubmit={handleGuidedSubmit} zipCentroids={zipCentroids} />
+            <GuidedForm onSubmit={handleGuidedSubmit} zipCentroids={zipCentroids} facilities={allFacilities} />
           </GlassPanel>
         ) : (
           <div className="h-64 sm:h-80">

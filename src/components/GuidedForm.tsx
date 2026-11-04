@@ -1,13 +1,17 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { AutocompleteInput } from "./AutocompleteInput";
 import { NEED_CATEGORIES } from "../lib/drg";
 import { nearestZip } from "../lib/geo";
 import { INSURANCE_LABELS } from "../lib/insurance";
 import type { InsuranceType } from "../lib/intake";
-import type { ZipCentroid } from "../lib/types";
+import { suggestPlaces } from "../lib/international";
+import type { Facility, ZipCentroid } from "../lib/types";
+import { suggestZips } from "../lib/zipSuggest";
 
 interface GuidedFormProps {
   onSubmit: (message: string) => void;
   zipCentroids: Record<string, ZipCentroid>;
+  facilities: Facility[];
 }
 
 // Phrases chosen to match src/lib/intake.ts's parser exactly (and its
@@ -26,7 +30,7 @@ const fieldClass =
   "w-full rounded-xl bg-white/10 border border-white/10 px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-white/30";
 const labelClass = "text-[11px] uppercase tracking-wide text-white/40 mb-1 block";
 
-export function GuidedForm({ onSubmit, zipCentroids }: GuidedFormProps) {
+export function GuidedForm({ onSubmit, zipCentroids, facilities }: GuidedFormProps) {
   const [abroad, setAbroad] = useState(false);
   const [destination, setDestination] = useState("");
   const [zip, setZip] = useState("");
@@ -42,6 +46,9 @@ export function GuidedForm({ onSubmit, zipCentroids }: GuidedFormProps) {
 
   const categoryDef = NEED_CATEGORIES.find((c) => c.category === category)!;
   const valid = abroad ? destination.trim().length > 1 : /^\d{5}$/.test(zip) && Number(household) > 0 && Number(income) >= 0;
+
+  const fetchZipSuggestions = useCallback((q: string) => suggestZips(q, zipCentroids, facilities), [zipCentroids, facilities]);
+  const fetchPlaceSuggestions = useCallback((q: string) => suggestPlaces(q), []);
 
   const useMyLocation = () => {
     if (!navigator.geolocation) {
@@ -100,9 +107,10 @@ export function GuidedForm({ onSubmit, zipCentroids }: GuidedFormProps) {
         <>
           <div>
             <label className={labelClass}>City, country</label>
-            <input
+            <AutocompleteInput
               value={destination}
-              onChange={(e) => setDestination(e.target.value)}
+              onChange={setDestination}
+              fetchSuggestions={fetchPlaceSuggestions}
               placeholder="Cancun, Mexico"
               className={fieldClass}
             />
@@ -117,13 +125,16 @@ export function GuidedForm({ onSubmit, zipCentroids }: GuidedFormProps) {
         <div>
           <label className={labelClass}>Zip code</label>
           <div className="flex gap-1.5">
-            <input
-              value={zip}
-              onChange={(e) => setZip(e.target.value.replace(/\D/g, "").slice(0, 5))}
-              placeholder="07018"
-              inputMode="numeric"
-              className={fieldClass}
-            />
+            <div className="flex-1">
+              <AutocompleteInput
+                value={zip}
+                onChange={(v) => setZip(v.replace(/\D/g, "").slice(0, 5))}
+                fetchSuggestions={fetchZipSuggestions}
+                placeholder="07018"
+                inputMode="numeric"
+                className={fieldClass}
+              />
+            </div>
             <button
               type="button"
               onClick={useMyLocation}
