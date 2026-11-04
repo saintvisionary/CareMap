@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { facilityTier, TIER_COLORS, type FacilityWithDistance } from "../lib/geo";
 import type { InsuranceType } from "../lib/intake";
 import type { InternationalFacility } from "../lib/international";
+import type { Facility } from "../lib/types";
 import type { MapFlyTo } from "../hooks/useCareMap";
 
 // "dark" is nearly monochrome -- water, parks and residential land are all
@@ -19,14 +20,26 @@ const INTERNATIONAL_MARKER_COLOR = "#94a3b8";
 interface MapViewProps {
   facilities: FacilityWithDistance[];
   internationalFacilities: InternationalFacility[];
+  previewFacilities: Facility[];
   tierPct: number | null;
   insuranceType: InsuranceType | null;
   flyTo: MapFlyTo | null;
   activeCcn: string | null;
   onSelectFacility: (ccn: string) => void;
+  onSelectPreviewFacility: (facility: Facility) => void;
 }
 
-export function MapView({ facilities, internationalFacilities, tierPct, insuranceType, flyTo, activeCcn, onSelectFacility }: MapViewProps) {
+export function MapView({
+  facilities,
+  internationalFacilities,
+  previewFacilities,
+  tierPct,
+  insuranceType,
+  flyTo,
+  activeCcn,
+  onSelectFacility,
+  onSelectPreviewFacility,
+}: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map());
@@ -143,7 +156,26 @@ export function MapView({ facilities, internationalFacilities, tierPct, insuranc
         .addTo(map);
       markersRef.current.set(`intl-${i}`, marker);
     });
-  }, [facilities, internationalFacilities, tierPct, insuranceType, onSelectFacility]);
+
+    previewFacilities.forEach((f, i) => {
+      if (f.lat == null || f.lon == null) return;
+      const el = document.createElement("div");
+      el.className = "caremap-marker-wrap";
+      el.title = `${f.name} -- click to see real nearby options`;
+      const dot = document.createElement("div");
+      dot.className = "caremap-marker caremap-marker-preview";
+      // Capped, unlike the other two loops -- up to 130 of these at once,
+      // and nobody should wait 9 seconds for the last one to stagger in.
+      dot.style.animationDelay = `${Math.min(i, 24) * 15}ms`;
+      el.appendChild(dot);
+      el.addEventListener("click", () => onSelectPreviewFacility(f));
+
+      const marker = new maplibregl.Marker({ element: el, anchor: "center" })
+        .setLngLat([f.lon, f.lat])
+        .addTo(map);
+      markersRef.current.set(`preview-${f.ccn}`, marker);
+    });
+  }, [facilities, internationalFacilities, previewFacilities, tierPct, insuranceType, onSelectFacility, onSelectPreviewFacility]);
 
   useEffect(() => {
     for (const [ccn, marker] of markersRef.current.entries()) {

@@ -58,6 +58,25 @@ body,
   box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.35);
 }
 
+/* Preview markers (shown before any real search -- see the national-sample
+   fallback in useCareMap): deliberately read as lighter/exploratory, not a
+   real result. Smaller, hollow (no fill, no tier color -- there is no tier
+   yet), so they're never confused with an actual query's colored dots. */
+.caremap-marker-preview {
+  width: 10px;
+  height: 10px;
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: none;
+  transition: transform 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .caremap-marker-preview:hover {
+    transform: scale(1.4);
+    border-color: rgba(255, 255, 255, 0.9);
+  }
+}
+
 @keyframes caremap-marker-pop {
   to {
     opacity: 1;

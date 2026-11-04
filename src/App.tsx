@@ -1,5 +1,6 @@
 import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
+import type { Facility } from "./lib/types";
 import { ChatPanel } from "./components/ChatPanel";
 import { GlassPanel } from "./components/GlassPanel";
 import { GuidedForm } from "./components/GuidedForm";
@@ -13,7 +14,18 @@ type Mode = "guided" | "chat";
 
 export default function App() {
   const { facilities: allFacilities, zipCentroids, loading: dataLoading, error } = useCareMapData();
-  const { messages, facilities, internationalFacilities, tierPct, insuranceType, flyTo, loading, sendMessage } = useCareMap(allFacilities, zipCentroids);
+  const {
+    messages,
+    facilities,
+    internationalFacilities,
+    previewFacilities,
+    tierPct,
+    insuranceType,
+    flyTo,
+    loading,
+    sendMessage,
+    selectPreviewFacility,
+  } = useCareMap(allFacilities, zipCentroids);
   const [activeCcn, setActiveCcn] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("guided");
   // Mobile only -- the panel is full-width there and can cover most of the
@@ -46,6 +58,19 @@ export default function App() {
     setPanelCollapsed(false);
   }, []);
 
+  // A preview marker (the national-sample fallback shown before any real
+  // search -- see useCareMap) has no result card of its own; clicking one
+  // runs a real search centered on it instead, so give that the same
+  // "always surface something" treatment as a real marker click.
+  const handleSelectPreviewFacility = useCallback(
+    (facility: Facility) => {
+      selectPreviewFacility(facility);
+      setMode("chat");
+      setPanelCollapsed(false);
+    },
+    [selectPreviewFacility],
+  );
+
   const lastUserMessage =
     messages
       .slice()
@@ -69,11 +94,13 @@ export default function App() {
       <MapView
         facilities={facilities}
         internationalFacilities={internationalFacilities}
+        previewFacilities={previewFacilities}
         tierPct={tierPct}
         insuranceType={insuranceType}
         flyTo={flyTo}
         activeCcn={activeCcn}
         onSelectFacility={handleSelectFacility}
+        onSelectPreviewFacility={handleSelectPreviewFacility}
       />
 
       <header className="absolute top-0 left-0 right-0 p-4 sm:p-6 flex items-center justify-between pointer-events-none">

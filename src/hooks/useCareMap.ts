@@ -22,16 +22,33 @@ export interface CareMapState {
   messages: ChatMessage[];
   facilities: FacilityWithDistance[];
   internationalFacilities: InternationalFacility[];
+  previewFacilities: Facility[];
   tierPct: number | null;
   insuranceType: InsuranceType | null;
   veteran: boolean;
   flyTo: MapFlyTo | null;
   loading: boolean;
   sendMessage: (text: string) => void;
+  selectPreviewFacility: (facility: Facility) => void;
 }
 
 let nextId = 0;
 const id = () => String(nextId++);
+
+// Evenly spread across the whole national list (not just the first N, which
+// would cluster wherever the data happens to start) rather than truly
+// random, so re-renders are stable and the spread is reproducible. Facility
+// data loads one state file at a time in alphabetical order, so a fixed
+// stride naturally samples across states instead of bunching in one.
+function sampleFacilities(all: Facility[], limit: number): Facility[] {
+  if (all.length <= limit) return all;
+  const stride = all.length / limit;
+  const out: Facility[] = [];
+  for (let i = 0; i < limit; i++) {
+    out.push(all[Math.floor(i * stride)]);
+  }
+  return out;
+}
 
 export function useCareMap(allFacilities: Facility[], zipCentroids: Record<string, ZipCentroid>): CareMapState {
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -43,6 +60,7 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
   ]);
   const [facilities, setFacilities] = useState<FacilityWithDistance[]>([]);
   const [internationalFacilities, setInternationalFacilities] = useState<InternationalFacility[]>([]);
+  const [previewFacilities, setPreviewFacilities] = useState<Facility[]>([]);
   const [tierPct, setTierPct] = useState<number | null>(null);
   const [insuranceType, setInsuranceType] = useState<InsuranceType | null>(null);
   const [veteran, setVeteran] = useState(false);
@@ -60,27 +78,36 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
   // works with zero typing when the browser already has or will grant
   // permission. Income/insurance aren't known yet, so tierPct/insuranceType
   // stay null -- the existing "unknown" (grey) tier already means exactly
-  // that, no fake numbers involved. Denied/unsupported/no-fix: fails
-  // silently, same as the explicit location button already does on error,
-  // since this is a background enhancement the user never asked for, not
-  // a submitted action that deserves an error message.
+  // that, no fake numbers involved. Denied/unsupported/no-fix: falls back
+  // to a national sample instead of leaving the map empty -- real
+  // facilities, not placeholders, just with no single "near you" center to
+  // judge distance from, so they render as small hollow preview markers
+  // (see MapView) rather than claiming to be "nearby" anything.
   useEffect(() => {
     if (hasSearchedRef.current) return;
     if (Object.keys(zipCentroids).length === 0 || allFacilities.length === 0) return;
-    if (!navigator.geolocation) return;
+    const showNationalPreview = () => {
+      if (hasSearchedRef.current) return;
+      setPreviewFacilities(sampleFacilities(allFacilities, 130));
+    };
+    if (!navigator.geolocation) {
+      showNationalPreview();
+      return;
+    }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         if (hasSearchedRef.current) return;
         const zip = nearestZip(pos.coords.latitude, pos.coords.longitude, zipCentroids);
-        if (!zip) return;
+        if (!zip) {
+          showNationalPreview();
+          return;
+        }
         const nearby = facilitiesNear(allFacilities, zipCentroids, zip, 25);
         setFacilities(nearby);
         const c = zipCentroids[zip];
         setFlyTo({ center: [c.lon, c.lat], zoom: 10.5, pitch: 55 });
       },
-      () => {
-        /* denied or unavailable -- leave the map in its idle/ambient state */
-      },
+      showNationalPreview, // denied or unavailable
       { timeout: 8000, maximumAge: 300000 },
     );
     // Only ever worth trying once, right after the facility data needed to
@@ -92,6 +119,7 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
     (text: string) => {
       if (!text.trim()) return;
       hasSearchedRef.current = true;
+      setPreviewFacilities([]); // a real search replaces the ambient preview, never layers with it
       setMessages((m) => [...m, { id: id(), role: "user", text }]);
 
       const hint = redact(text);
@@ -166,5 +194,24 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
     [allFacilities, zipCentroids],
   );
 
-  return { messages, facilities, internationalFacilities, tierPct, insuranceType, veteran, flyTo, loading, sendMessage };
+  // Clicking a preview marker is the one interaction it supports: run a
+  // real search centered on that facility's own zip, exactly as if the
+  // user had typed it. Turns "browse the ambient map" into a real entry
+  // point instead of a dead end -- sendMessage clears previewFacilities,
+  // so the search's own tier-colored markers replace the preview ones.
+  const selectPreviewFacility = useCallback((facility: Facility) => sendMessage(facility.zip), [sendMessage]);
+
+  return {
+    messages,
+    facilities,
+    internationalFacilities,
+    previewFacilities,
+    tierPct,
+    insuranceType,
+    veteran,
+    flyTo,
+    loading,
+    sendMessage,
+    selectPreviewFacility,
+  };
 }
