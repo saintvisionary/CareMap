@@ -158,3 +158,30 @@ def test_draft_application_ny_facility():
     assert "NY residency" in r["checklist"][0]
     assert "help_phone" not in r
     assert not any("Submit within" in item for item in r["checklist"])
+
+
+def test_charity_tier_or_requires_ownership():
+    # MID-COLUMBIA MEDICAL CENTER's real ownership string.
+    assert charity_tier(state="OR", fpl_pct=250, ownership="Voluntary non-profit - Private")["patient_pays_pct"] == 25
+    r = charity_tier(state="OR", fpl_pct=150, ownership="Government - Local")
+    assert "error" in r
+    assert "nonprofit" in r["error"]
+    # Omitting ownership entirely must not silently assume nonprofit.
+    assert "error" in charity_tier(state="OR", fpl_pct=150)
+
+
+def test_draft_application_or_nonprofit_facility():
+    # MID-COLUMBIA MEDICAL CENTER, a real OR nonprofit acute care hospital.
+    r = draft_application(ccn="380001", patient_pays_pct=0)
+    assert "MID-COLUMBIA MEDICAL CENTER" in r["letter"]
+    assert "Oregon hospital financial assistance law" in r["letter"]
+    assert "OR residency" in r["checklist"][0]
+
+
+def test_draft_application_or_non_nonprofit_facility_errors():
+    # BAY AREA HOSPITAL is government-owned (Hospital District or
+    # Authority) -- ORS 442.610 doesn't cover it, so draft_application must
+    # refuse rather than draft a letter citing a law that doesn't apply.
+    r = draft_application(ccn="380090", patient_pays_pct=0)
+    assert "error" in r
+    assert "nonprofit" in r["error"]

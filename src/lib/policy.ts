@@ -108,15 +108,41 @@ export function nyCharityTier(fplPct: number): CharityTier | null {
   return null;
 }
 
+// ORS 442.610-442.618 -- verified directly against the current codified
+// text. Unlike IL/NY, the dollar base here is real billed charges, so the
+// full sliding scale is computable. These are statutory MINIMUM discounts
+// (a hospital may be more generous, never less), the same floor-schedule
+// pattern as waCharityTier -- so the returned patientPaysPct is the
+// maximum a patient is guaranteed not to exceed, not an exact guess.
+// Scope: ORS 442.612(8) only covers NONPROFIT hospitals -- a for-profit or
+// government-owned OR hospital gets no tier at all, never a guessed one.
+// ownership is CMS's own Hospital General Information field; anything
+// other than a confirmed "Voluntary non-profit - ..." string (including
+// undefined/unknown) is treated as NOT confirmed nonprofit, the safe
+// default.
+const OR_CHARITY_TIERS: TierTable = [
+  { maxFplPct: 200, patientPaysPct: 0 },
+  { maxFplPct: 300, patientPaysPct: 25 },
+  { maxFplPct: 350, patientPaysPct: 50 },
+  { maxFplPct: 400, patientPaysPct: 75 },
+  { maxFplPct: null, patientPaysPct: 100 },
+];
+
+export function orCharityTier(fplPct: number, ownership?: string): CharityTier | null {
+  if (!ownership?.startsWith("Voluntary non-profit")) return null;
+  return lookupTier(OR_CHARITY_TIERS, fplPct);
+}
+
 // Keyed by a facility's own state. Only states with a real, codified,
 // state-wide formula belong here -- most states have no such law (just
 // federal 501(r): each nonprofit hospital must have *a* policy, with no
 // public structured dataset of what it says), so this stays short.
-const STATE_CHARITY_TIER_FNS: Record<string, (fplPct: number, facilityType?: string) => CharityTier | null> = {
+const STATE_CHARITY_TIER_FNS: Record<string, (fplPct: number, facilityType?: string, ownership?: string) => CharityTier | null> = {
   NJ: (fplPct) => njCharityTier(fplPct),
   WA: (fplPct) => waCharityTier(fplPct),
   IL: (fplPct, facilityType) => ilCharityTier(fplPct, facilityType === "critical_access_hospital"),
   NY: (fplPct) => nyCharityTier(fplPct),
+  OR: (fplPct, _facilityType, ownership) => orCharityTier(fplPct, ownership),
 };
 
 export const MODELED_CHARITY_STATES = Object.keys(STATE_CHARITY_TIER_FNS);
@@ -130,16 +156,17 @@ export const CHARITY_PROGRAM_NAMES: Record<string, string> = {
   WA: "Washington's charity care law (the minimum every hospital must offer -- some larger hospital systems must offer better terms)",
   IL: "the Illinois Hospital Uninsured Patient Discount Act (uninsured patients only)",
   NY: "the New York Hospital Financial Assistance Law",
+  OR: "Oregon's hospital financial assistance law (nonprofit hospitals only)",
 };
 
 /** Charity-care tier for whichever state a facility is in, or null if that
  * state has no modeled formula -- caller should say so, never guess a tier.
  * facilityType matters for IL (standard vs Critical Access Hospital picks a
- * different free-care threshold) -- ignored by states whose formula doesn't
- * depend on it. */
-export function charityTier(state: string, fplPct: number, facilityType?: string): CharityTier | null {
+ * different free-care threshold); ownership matters for OR (nonprofit-only
+ * scope) -- each is ignored by states whose formula doesn't depend on it. */
+export function charityTier(state: string, fplPct: number, facilityType?: string, ownership?: string): CharityTier | null {
   const fn = STATE_CHARITY_TIER_FNS[state];
-  return fn ? fn(fplPct, facilityType) : null;
+  return fn ? fn(fplPct, facilityType, ownership) : null;
 }
 
 export function applyTier(typicalCharge: number, patientPaysPct: number): number {

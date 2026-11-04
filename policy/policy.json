@@ -85,6 +85,23 @@
     "eligibility_ceiling_fpl_pct": 400,
     "decision_window_calendar_days": 30
   },
+  "or_charity_care": {
+    "source": "https://oregon.public.law/statutes/ors_442.614 (ORS 442.610-442.618, Oregon hospital financial assistance law)",
+    "applies_to": "Oregon NONPROFIT hospitals only (ORS 442.612(8): organized under ORS chapter 65 or IRC 501(c)) -- excludes for-profit and government-owned hospitals. CareMap gates this via CMS's own 'ownership' field (Voluntary non-profit - *): see charity_care_participant in build_data.py.",
+    "note": "Verified directly against the current codified text (ORS 442.610-442.618). Unlike IL/NY/CO, Oregon's dollar base is real billed charges (ORS 442.612(9): 'patient's cost' = charges billed net of insurance/public-program reimbursement) -- the exact CMS billed-charge figure CareMap already has, so the full sliding scale is computable, not just a free floor. These are statutory MINIMUM discounts (a hospital's own policy may be more generous, never less) -- same floor-schedule pattern as WA's RCW 70.170.060(5)(b), so patient_pays_pct here is the maximum a patient is guaranteed NOT to exceed, not a guessed exact figure. No uninsured/underinsured restriction found in the statute -- broader than every other state modeled (covers insured, underinsured, uninsured alike), but CareMap still only shows a charity-care price to the uninsured per the conservative gate applied everywhere else, since insured patients have a separate relevant number (their own cost-sharing) this app doesn't model.",
+    "eligibility": {
+      "must_be_un_or_underinsured": "not required by the statute itself (income-only test) -- applied conservatively here anyway, consistent with every other modeled state",
+      "asset_limit_individual": null,
+      "asset_limit_family": null
+    },
+    "tiers": [
+      {"max_fpl_pct": 200, "patient_pays_pct": 0},
+      {"max_fpl_pct": 300, "patient_pays_pct": 25},
+      {"max_fpl_pct": 350, "patient_pays_pct": 50},
+      {"max_fpl_pct": 400, "patient_pays_pct": 75},
+      {"max_fpl_pct": null, "patient_pays_pct": 100}
+    ]
+  },
   "good_faith_estimate": {
     "source": "https://www.cms.gov/medical-bill-rights/help/guides/good-faith-estimate",
     "applies_to": "uninsured or self-pay patients scheduling care at least 3 business days ahead",

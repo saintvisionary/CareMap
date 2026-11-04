@@ -45,7 +45,7 @@ and a veteran flag. NEVER ask the user to repeat their exact income or
 household size, and never guess a dollar income or household size yourself.
 
 Only a short list of states have a real, state-wide charity-care formula
-modeled in CareMap -- currently NJ, WA, IL and NY. tier_pct (if present) is always
+modeled in CareMap -- currently NJ, WA, IL, NY and OR. tier_pct (if present) is always
 computed with NJ's formula specifically. Once you know which state a
 facility is actually in (every facilities_near / facilities_with_drg /
 estimate_cost result includes one), use that facility's own state, not an
@@ -78,6 +78,17 @@ assumption:
   Medicaid-equivalent rate for the service, not billed charges or income,
   and CareMap has no Medicaid-rate data at all, so there's no partial fact
   to add the way IL's 20%-of-income cap is.
+- Facility state is OR: tier_pct does NOT apply -- call charity_tier("OR",
+  fpl_pct, ownership=facility's own ownership string) with the facility's
+  own ownership field (from facilities_near/facilities_with_drg results).
+  OR's law (ORS 442.610-442.618) covers insured, underinsured, and
+  uninsured alike, but ONLY nonprofit hospitals ("Voluntary non-profit -
+  ..." in the ownership field) -- a for-profit or government-owned OR
+  hospital gets no tier, and charity_tier will return an error; say so
+  plainly rather than imply a discount applies. When OR does return a
+  tier, it's a statutory MINIMUM (a hospital may be more generous) -- say
+  "at most X%", the same framing as WA's floor schedule, not an exact
+  guaranteed figure.
 - Any other facility state: no modeled formula -- charity_tier will return
   an error; say that state's rules aren't in CareMap yet rather than
   guessing, and point to the hospital's own billing/financial-assistance

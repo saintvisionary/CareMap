@@ -28,14 +28,19 @@ interface ResultCardProps {
 export function ResultCard({ facility, fplPct, insuranceType, need, index, active, onSelect }: ResultCardProps) {
   const tier = facilityTier(facility, fplPct, insuranceType);
   const programName = CHARITY_PROGRAM_NAMES[facility.state] ?? "charity care";
-  const patientPaysPct = fplPct != null ? charityTier(facility.state, fplPct, facility.type)?.patientPaysPct : undefined;
+  const patientPaysPct = fplPct != null ? charityTier(facility.state, fplPct, facility.type, facility.ownership)?.patientPaysPct : undefined;
   const drg = need ? NEED_TO_DRG[need] : null;
   const charge = drg ? facility.drg_charges[drg.code]?.avg_charge : undefined;
 
   let hero = "Tier unknown";
   let heroLabel = facility.charity_care_participant
     ? "Tell us your income for an estimate."
-    : `${facility.state} rules coming soon -- ask this hospital's billing office about financial assistance.`;
+    : CHARITY_PROGRAM_NAMES[facility.state]
+      // A modeled state's formula can still exclude a specific facility
+      // (e.g. OR's law only covers nonprofit hospitals) -- not the same as
+      // the state having no rules in CareMap at all.
+      ? `Not confirmed as a ${programName} participant -- ask this hospital's billing office about financial assistance.`
+      : `${facility.state} rules coming soon -- ask this hospital's billing office about financial assistance.`;
   if (tier === "insured") {
     // Charity care only applies to the uninsured -- never claim a
     // charity-care price here, even if we happen to know a typical charge.

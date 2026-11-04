@@ -1,4 +1,4 @@
-from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, il_charity_tier, nj_charity_tier, ny_charity_tier, wa_charity_tier
+from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, il_charity_tier, nj_charity_tier, ny_charity_tier, or_charity_tier, wa_charity_tier
 
 
 def test_demo_case_family_of_4():
@@ -117,3 +117,35 @@ def test_ny_tier_above_free_threshold_returns_none_not_a_guess():
 def test_charity_tier_dispatches_ny():
     assert charity_tier("NY", 150)["patient_pays_pct"] == 0
     assert charity_tier("NY", 300) is None
+
+
+NONPROFIT = "Voluntary non-profit - Private"
+
+
+def test_or_tier_full_sliding_scale():
+    # ORS 442.614(1)(a) -- verified directly against the current codified
+    # text. Statutory MINIMUM discounts, so these are the floor (maximum
+    # a patient is guaranteed not to exceed), the same framing as WA.
+    assert or_charity_tier(200, ownership=NONPROFIT)["patient_pays_pct"] == 0
+    assert or_charity_tier(201, ownership=NONPROFIT)["patient_pays_pct"] == 25
+    assert or_charity_tier(300, ownership=NONPROFIT)["patient_pays_pct"] == 25
+    assert or_charity_tier(301, ownership=NONPROFIT)["patient_pays_pct"] == 50
+    assert or_charity_tier(350, ownership=NONPROFIT)["patient_pays_pct"] == 50
+    assert or_charity_tier(351, ownership=NONPROFIT)["patient_pays_pct"] == 75
+    assert or_charity_tier(400, ownership=NONPROFIT)["patient_pays_pct"] == 75
+    assert or_charity_tier(401, ownership=NONPROFIT)["patient_pays_pct"] == 100
+    assert or_charity_tier(1000, ownership=NONPROFIT)["patient_pays_pct"] == 100
+
+
+def test_or_tier_requires_confirmed_nonprofit_ownership():
+    # ORS 442.612(8) only covers nonprofit hospitals -- a for-profit or
+    # government-owned OR hospital gets no tier, never a guessed one, and
+    # neither does an unknown ownership (the safe default).
+    assert or_charity_tier(150, ownership="Proprietary") is None
+    assert or_charity_tier(150, ownership="Government - Local") is None
+    assert or_charity_tier(150, ownership=None) is None
+
+
+def test_charity_tier_dispatches_or():
+    assert charity_tier("OR", 250, ownership=NONPROFIT)["patient_pays_pct"] == 25
+    assert charity_tier("OR", 250, ownership="Proprietary") is None

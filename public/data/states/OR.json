@@ -53,7 +53,7 @@
           "avg_charge": 20847
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380002",
@@ -211,7 +211,7 @@
           "avg_charge": 48722
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380004",
@@ -737,7 +737,7 @@
           "avg_charge": 139530
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380005",
@@ -973,7 +973,7 @@
           "avg_charge": 114947
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380009",
@@ -1551,7 +1551,7 @@
           "avg_charge": 145352
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380014",
@@ -1737,7 +1737,7 @@
           "avg_charge": 31348
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380017",
@@ -1887,7 +1887,7 @@
           "avg_charge": 41179
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380018",
@@ -2353,7 +2353,7 @@
           "avg_charge": 166115
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380020",
@@ -2491,7 +2491,7 @@
           "avg_charge": 43173
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380021",
@@ -2589,7 +2589,7 @@
           "avg_charge": 44558
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380022",
@@ -2619,7 +2619,7 @@
           "avg_charge": 49093
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380025",
@@ -2673,7 +2673,7 @@
           "avg_charge": 47884
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380027",
@@ -2828,7 +2828,7 @@
       "lat": 45.004134383604,
       "lon": -122.790662287044,
       "drg_charges": {},
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380037",
@@ -2898,7 +2898,7 @@
           "avg_charge": 21692
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380038",
@@ -2993,7 +2993,7 @@
           "avg_charge": 26362
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "38003F",
@@ -3548,7 +3548,7 @@
           "avg_charge": 54756
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "38004F",
@@ -3727,7 +3727,7 @@
           "avg_charge": 39663
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380051",
@@ -4109,7 +4109,7 @@
           "avg_charge": 130071
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380052",
@@ -4139,7 +4139,7 @@
           "avg_charge": 44733
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380056",
@@ -4161,7 +4161,7 @@
           "avg_charge": 59262
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380060",
@@ -4295,7 +4295,7 @@
           "avg_charge": 34240
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380061",
@@ -4649,7 +4649,7 @@
           "avg_charge": 75530
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380071",
@@ -4708,7 +4708,7 @@
           "avg_charge": 40451
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380075",
@@ -4898,7 +4898,7 @@
           "avg_charge": 50762
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380082",
@@ -4956,7 +4956,7 @@
           "avg_charge": 26644
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380089",
@@ -5119,7 +5119,7 @@
           "avg_charge": 30643
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380090",
@@ -5431,7 +5431,7 @@
           "avg_charge": 23626
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380102",
@@ -5885,7 +5885,7 @@
           "avg_charge": 108731
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "380103",
@@ -5907,7 +5907,433 @@
           "avg_charge": 34197
         }
       },
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "381301",
+      "name": "PEACEHEALTH COTTAGE GROVE COMMUNITY MEDICAL CENTER",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Church",
+      "has_er": true,
+      "star_rating": null,
+      "address": "1515 VILLAGE DRIVE",
+      "city": "COTTAGE GROVE",
+      "state": "OR",
+      "zip": "97424",
+      "county": "LANE",
+      "lat": 43.809800084937,
+      "lon": -123.037654383584,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "381302",
+      "name": "SAMARITAN NORTH LINCOLN HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "3043 NE 28TH STREET",
+      "city": "LINCOLN CITY",
+      "state": "OR",
+      "zip": "97367",
+      "county": "LINCOLN",
+      "lat": 44.985273432651,
+      "lon": -123.994099631596,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "381303",
+      "name": "PROVIDENCE SEASIDE HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Church",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "725 S WAHANNA ROAD",
+      "city": "SEASIDE",
+      "state": "OR",
+      "zip": "97138",
+      "county": "CLATSOP",
+      "lat": 45.990565567427,
+      "lon": -123.91327543745,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "381304",
+      "name": "SOUTHERN COOS HOSPITAL & HEALTH CENTER",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "900 11TH STREET SE",
+      "city": "BANDON",
+      "state": "OR",
+      "zip": "97411",
+      "county": "COOS",
+      "lat": 43.113167200089,
+      "lon": -124.402247604737,
+      "drg_charges": {},
       "charity_care_participant": false
+    },
+    {
+      "ccn": "381305",
+      "name": "BLUE MOUNTAIN HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": null,
+      "address": "170 FORD ROAD",
+      "city": "JOHN DAY",
+      "state": "OR",
+      "zip": "97845",
+      "county": "GRANT",
+      "lat": 44.417623832186,
+      "lon": -118.958975069098,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "381306",
+      "name": "WALLOWA MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "601 MEDICAL PARKWAY",
+      "city": "ENTERPRISE",
+      "state": "OR",
+      "zip": "97828",
+      "county": "WALLOWA",
+      "lat": 45.431839656662,
+      "lon": -117.282939553659,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "381307",
+      "name": "HARNEY DISTRICT HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": null,
+      "address": "557 W WASHINGTON STREET",
+      "city": "BURNS",
+      "state": "OR",
+      "zip": "97720",
+      "county": "HARNEY",
+      "lat": 43.588670357789,
+      "lon": -119.060904020553,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "381308",
+      "name": "SALEM HEALTH WEST VALLEY",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "525 SE WASHINGTON STREET",
+      "city": "DALLAS",
+      "state": "OR",
+      "zip": "97338",
+      "county": "POLK",
+      "lat": 44.919336702932,
+      "lon": -123.310604585605,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "381309",
+      "name": "LAKE DISTRICT HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": null,
+      "address": "700 SOUTH J STREET",
+      "city": "LAKEVIEW",
+      "state": "OR",
+      "zip": "97630",
+      "county": "LAKE",
+      "lat": 42.181788499122,
+      "lon": -120.351491457087,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "381310",
+      "name": "PIONEER MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": null,
+      "address": "564 E PIONEER DRIVE",
+      "city": "HEPPNER",
+      "state": "OR",
+      "zip": "97836",
+      "county": "MORROW",
+      "lat": 45.356399506297,
+      "lon": -119.548615502257,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "381311",
+      "name": "LOWER UMPQUA HOSPITAL DISTRICT",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": null,
+      "address": "600 RANCH ROAD",
+      "city": "REEDSPORT",
+      "state": "OR",
+      "zip": "97467",
+      "county": "DOUGLAS",
+      "lat": 43.695308225263,
+      "lon": -124.135676477433,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "381312",
+      "name": "COQUILLE VALLEY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": null,
+      "address": "940 EAST 5TH STREET",
+      "city": "COQUILLE",
+      "state": "OR",
+      "zip": "97423",
+      "county": "COOS",
+      "lat": 43.179148376162,
+      "lon": -124.179017170065,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "381313",
+      "name": "ST CHARLES MEDICAL CENTER PRINEVILLE",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "384 SE COMBS FLAT ROAD",
+      "city": "PRINEVILLE",
+      "state": "OR",
+      "zip": "97754",
+      "county": "CROOK",
+      "lat": 44.299130296047,
+      "lon": -120.826883617154,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "381314",
+      "name": "SAMARITAN PACIFIC COMMUNITY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 1,
+      "address": "930 SW ABBEY STREET",
+      "city": "NEWPORT",
+      "state": "OR",
+      "zip": "97365",
+      "county": "LINCOLN",
+      "lat": 44.629601224006,
+      "lon": -124.058636905718,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "381315",
+      "name": "ST. ALPHONSUS MEDICAL CENTER - BAKER CITY",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Church",
+      "has_er": true,
+      "star_rating": 1,
+      "address": "3325 POCAHONTAS ROAD",
+      "city": "BAKER CITY",
+      "state": "OR",
+      "zip": "97814",
+      "county": "BAKER",
+      "lat": 44.79610197115,
+      "lon": -117.84758705605,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "381316",
+      "name": "PEACE HARBOR MEDICAL CENTER",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Church",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "400 9TH STREET",
+      "city": "FLORENCE",
+      "state": "OR",
+      "zip": "97439",
+      "county": "LANE",
+      "lat": 43.974513450144,
+      "lon": -124.117254155053,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "381317",
+      "name": "ADVENTIST HEALTH TILLAMOOK",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Church",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "1000 THIRD STREET",
+      "city": "TILLAMOOK",
+      "state": "OR",
+      "zip": "97141",
+      "county": "TILLAMOOK",
+      "lat": 45.456379704175,
+      "lon": -123.855029239161,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "381318",
+      "name": "PROVIDENCE HOOD RIVER MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Church",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "810 12TH STREET",
+      "city": "HOOD RIVER",
+      "state": "OR",
+      "zip": "97031",
+      "county": "HOOD RIVER",
+      "lat": 45.704693658404,
+      "lon": -121.523238907733,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "381319",
+      "name": "ST ANTHONY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Church",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "2801 ST ANTHONY WAY",
+      "city": "PENDLETON",
+      "state": "OR",
+      "zip": "97801",
+      "county": "UMATILLA",
+      "lat": 45.670827,
+      "lon": -118.823832,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "381320",
+      "name": "COLUMBIA MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Proprietary",
+      "has_er": true,
+      "star_rating": null,
+      "address": "2111 EXCHANGE STREET",
+      "city": "ASTORIA",
+      "state": "OR",
+      "zip": "97103",
+      "county": "CLATSOP",
+      "lat": 46.188492728436,
+      "lon": -123.817823041462,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "381321",
+      "name": "GRANDE RONDE HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "900 SUNSET DRIVE",
+      "city": "LA GRANDE",
+      "state": "OR",
+      "zip": "97850",
+      "county": "UNION",
+      "lat": 45.319917351513,
+      "lon": -118.105102303291,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "381322",
+      "name": "CURRY GENERAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "94220 FOURTH STREET",
+      "city": "GOLD BEACH",
+      "state": "OR",
+      "zip": "97444",
+      "county": "CURRY",
+      "lat": 42.411588965529,
+      "lon": -124.417647340252,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "381323",
+      "name": "SAMARITAN LEBANON COMMUNITY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Church",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "525 N SANTIAM HIGHWAY",
+      "city": "LEBANON",
+      "state": "OR",
+      "zip": "97355",
+      "county": "LINN",
+      "lat": 44.549923746618,
+      "lon": -122.908133911824,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "381324",
+      "name": "ST CHARLES MADRAS",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "470 NE A STREET",
+      "city": "MADRAS",
+      "state": "OR",
+      "zip": "97741",
+      "county": "JEFFERSON",
+      "lat": 44.637441777655,
+      "lon": -121.120371564627,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "381325",
+      "name": "GOOD SHEPHERD MEDICAL CENTER",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "610 NW 11TH STREET",
+      "city": "HERMISTON",
+      "state": "OR",
+      "zip": "97838",
+      "county": "UMATILLA",
+      "lat": 45.846371355337,
+      "lon": -119.310840823406,
+      "drg_charges": {},
+      "charity_care_participant": true
     }
   ]
 }

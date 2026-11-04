@@ -98,6 +98,30 @@ def il_charity_tier(fpl_pct: float, is_critical_access: bool = False) -> dict | 
     return None
 
 
+def or_charity_tier(fpl_pct: float, ownership: str | None = None) -> dict | None:
+    """OR hospital financial assistance tier (ORS 442.610-442.618) for a percent of FPL.
+
+    Verified directly against the current codified statute text. Unlike
+    IL/NY, the dollar base here is real billed charges, so the full sliding
+    scale is computable -- this is CareMap's first state with more than
+    just a free floor plus a disclosed/undisclosed gap. These are
+    statutory MINIMUM discounts (a hospital may be more generous, never
+    less), the same floor-schedule pattern as wa_charity_tier -- so the
+    returned patient_pays_pct is the maximum a patient is guaranteed not to
+    exceed, not an exact guess.
+
+    Scope: ORS 442.612(8) only covers NONPROFIT hospitals -- a for-profit
+    or government-owned OR hospital gets no tier at all here, never a
+    guessed one. ownership is CMS's own Hospital General Information
+    field (e.g. "Voluntary non-profit - Private", "Proprietary",
+    "Government - Local"); None (ownership unknown/not passed) is treated
+    as NOT confirmed nonprofit, the safe default.
+    """
+    if ownership is None or not ownership.startswith("Voluntary non-profit"):
+        return None
+    return _tier_lookup("or_charity_care", fpl_pct)
+
+
 def ny_charity_tier(fpl_pct: float) -> dict | None:
     """NY Hospital Financial Assistance Law (PBH 2807-k(9), (9-a)) for a percent of FPL.
 
@@ -132,25 +156,30 @@ def ny_charity_tier(fpl_pct: float) -> dict | None:
 # so this registry is deliberately short and should stay that way unless a
 # new state is actually verified against its own statute.
 STATE_CHARITY_TIER_FNS = {
-    "NJ": lambda fpl_pct, facility_type=None: nj_charity_tier(fpl_pct),
-    "WA": lambda fpl_pct, facility_type=None: wa_charity_tier(fpl_pct),
-    "IL": lambda fpl_pct, facility_type=None: il_charity_tier(fpl_pct, is_critical_access=facility_type == "critical_access_hospital"),
-    "NY": lambda fpl_pct, facility_type=None: ny_charity_tier(fpl_pct),
+    "NJ": lambda fpl_pct, facility_type=None, ownership=None: nj_charity_tier(fpl_pct),
+    "WA": lambda fpl_pct, facility_type=None, ownership=None: wa_charity_tier(fpl_pct),
+    "IL": lambda fpl_pct, facility_type=None, ownership=None: il_charity_tier(fpl_pct, is_critical_access=facility_type == "critical_access_hospital"),
+    "NY": lambda fpl_pct, facility_type=None, ownership=None: ny_charity_tier(fpl_pct),
+    "OR": lambda fpl_pct, facility_type=None, ownership=None: or_charity_tier(fpl_pct, ownership=ownership),
 }
 
 
-def charity_tier(state: str, fpl_pct: float, facility_type: str | None = None) -> dict | None:
+def charity_tier(state: str, fpl_pct: float, facility_type: str | None = None, ownership: str | None = None) -> dict | None:
     """Look up the charity-care tier for whichever state a facility is in.
 
     facility_type matters for IL (standard vs Critical Access Hospital picks
     a different free-care threshold) -- ignored by states whose formula
-    doesn't depend on it. Returns None for a state with no modeled formula,
-    or for IL above its free-care threshold (the real sliding-scale discount
-    needs cost-to-charge-ratio data CareMap doesn't have) -- caller should
-    say so rather than claim a tier that doesn't exist or isn't computable.
+    doesn't depend on it. ownership matters for OR (nonprofit-only scope)
+    -- ignored elsewhere. Returns None for a state with no modeled formula,
+    for IL above its free-care threshold (the real sliding-scale discount
+    needs cost-to-charge-ratio data CareMap doesn't have), for NY above its
+    free-care threshold (needs Medicaid-rate data CareMap doesn't have), or
+    for an OR facility not confirmed nonprofit -- caller should say so
+    rather than claim a tier that doesn't exist, isn't computable, or
+    doesn't apply to this facility.
     """
     fn = STATE_CHARITY_TIER_FNS.get(state)
-    return fn(fpl_pct, facility_type) if fn else None
+    return fn(fpl_pct, facility_type, ownership) if fn else None
 
 
 def apply_tier(typical_charge: float, patient_pays_pct: float) -> float:

@@ -290,27 +290,29 @@ def build_states(states: set[str], zip_centroids: dict[str, dict]) -> dict[str, 
         f["drg_charges"] = drg_by_ccn.get(f["ccn"], {})
         # True when this facility's state has a real, codified, state-wide
         # charity-care formula modeled in CareMap (see caremap/policy.py's
-        # STATE_CHARITY_TIER_FNS -- currently NJ, WA, IL, NY) and the
-        # facility is a type the formula actually applies to. VA hospitals
-        # are federal and run their own separate means-tested eligibility
-        # system entirely outside state charity-care programs, so they're
-        # excluded even in a modeled state. IL's law (210 ILCS 89) covers
-        # Critical Access Hospitals too, unlike NJ/WA/NY which only cover
-        # acute care hospitals (NY has no Critical Access Hospitals at all,
-        # so this doesn't currently matter for NY, but keep the per-state
-        # type set explicit rather than assuming it never will).
+        # STATE_CHARITY_TIER_FNS -- currently NJ, WA, IL, NY, OR) and the
+        # facility is a type/ownership the formula actually applies to. VA
+        # hospitals are federal and run their own separate means-tested
+        # eligibility system entirely outside state charity-care programs,
+        # so they're excluded even in a modeled state. IL's law (210 ILCS
+        # 89) covers Critical Access Hospitals too, unlike NJ/WA which only
+        # cover acute care hospitals; NY's law covers them too (no
+        # type-based carve-out at all -- a Critical Access Hospital is a
+        # CMS Medicare payment classification, not a separate NY licensure
+        # category exempt from the state law).
         state_facility_types = {
             "NJ": {"acute_care_hospital"},
             "WA": {"acute_care_hospital"},
-            # NY's law applies uniformly to every general hospital with no
-            # type-based carve-out (unlike IL's CAH split or WA's
-            # large-system split) -- a Critical Access Hospital is a CMS
-            # Medicare payment classification, not a separate NY licensure
-            # category exempt from the state law, so it's covered too.
             "NY": {"acute_care_hospital", "critical_access_hospital"},
             "IL": {"acute_care_hospital", "critical_access_hospital"},
+            "OR": {"acute_care_hospital", "critical_access_hospital"},
         }
         f["charity_care_participant"] = f["type"] in state_facility_types.get(f["state"], set())
+        # OR's law (ORS 442.610-442.618) ONLY covers nonprofit hospitals
+        # (ORS 442.612(8)) -- unlike every other modeled state, ownership
+        # is an additional gate here, not just facility type.
+        if f["state"] == "OR" and not f["ownership"].startswith("Voluntary non-profit"):
+            f["charity_care_participant"] = False
         by_state.setdefault(f["state"], []).append(f)
 
     return {state: {"state": state, "facilities": fs} for state, fs in by_state.items()}

@@ -31,7 +31,7 @@ export function summarize(result: QueryResult): string {
   }
 
   const nearest = facilities[0];
-  const nearestTier = fplPct != null ? charityTier(nearest.state, fplPct, nearest.type) : null;
+  const nearestTier = fplPct != null ? charityTier(nearest.state, fplPct, nearest.type, nearest.ownership) : null;
   const programName = CHARITY_PROGRAM_NAMES[nearest.state] ?? "charity care";
   const lines: string[] = [];
   lines.push(
@@ -42,7 +42,14 @@ export function summarize(result: QueryResult): string {
   if (insuranceType != null && insuranceType !== "uninsured") {
     lines.push(insuranceGuidance(insuranceType));
   } else if (!nearest.charity_care_participant) {
-    lines.push(`${nearest.state} financial assistance rules aren't in CareMap yet -- ask this hospital's billing office about charity care.`);
+    // A modeled state's formula can still exclude a specific facility (e.g.
+    // OR's law only covers nonprofit hospitals) -- distinct from the state
+    // having no rules in CareMap at all.
+    lines.push(
+      CHARITY_PROGRAM_NAMES[nearest.state]
+        ? `Not confirmed as a ${programName} participant -- ask this hospital's billing office about financial assistance.`
+        : `${nearest.state} financial assistance rules aren't in CareMap yet -- ask this hospital's billing office about charity care.`,
+    );
   } else if (fplPct == null) {
     lines.push(`Tell me your household income and size for a personal ${programName} estimate.`);
   } else if (nearestTier == null) {
@@ -82,7 +89,7 @@ export function summarize(result: QueryResult): string {
       // This facility's own state/tier, not nearest's -- the cheapest DRG
       // match isn't always the closest hospital, so it isn't always in the
       // same (or any modeled) state either.
-      const chargeTier = fplPct != null ? charityTier(withCharge.state, fplPct, withCharge.type) : null;
+      const chargeTier = fplPct != null ? charityTier(withCharge.state, fplPct, withCharge.type, withCharge.ownership) : null;
       lines.push(
         `${drg.label} at ${withCharge.name}: typical billed charge is ${money(charge)}.` +
           (chargeTier != null && insuranceType === "uninsured"

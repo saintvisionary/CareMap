@@ -52,13 +52,13 @@ def nj_charity_tier(fpl_pct: float) -> dict:
 
 
 @tool
-def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_hospital") -> dict:
+def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_hospital", ownership: str = "") -> dict:
     """Look up the charity-care tier for a hospital's state, for a percent of the federal poverty line.
 
     Only a short list of states have a real, codified, state-wide formula --
-    currently NJ, WA, IL, NY. For every other state, returns an error; say
-    the state's rules aren't modeled in CareMap yet rather than guessing a
-    tier.
+    currently NJ, WA, IL, NY, OR. For every other state, returns an error;
+    say the state's rules aren't modeled in CareMap yet rather than
+    guessing a tier.
     For WA specifically, this is the legal MINIMUM floor every hospital must
     offer (RCW 70.170.060(5)(b)) -- larger hospital systems are required to
     offer better terms up to 400% FPL that this can't apply per-hospital
@@ -80,15 +80,33 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
     CareMap doesn't have at all (not just a missing ratio on an otherwise-
     known base). Say that plainly if the state is NY and this returns an
     error -- don't imply any specific cap percentage applies.
+    For OR specifically, ownership matters: ORS 442.610-442.618 only
+    covers NONPROFIT hospitals (ownership starting with "Voluntary
+    non-profit", from the facility's own CMS ownership field). Pass the
+    facility's ownership string when the state is OR. Without a confirmed
+    nonprofit ownership, this returns an error rather than a tier -- for-
+    profit and government-owned OR hospitals aren't covered by the law at
+    all, so never imply a discount applies to one of those. If OR does
+    return a tier, remember it's a statutory MINIMUM discount (the floor,
+    like WA) -- the patient's actual share may be lower.
 
     Args:
-        state: Two-letter state code of the facility (e.g. "NJ", "WA", "IL", "NY"), not the user's own state.
+        state: Two-letter state code of the facility (e.g. "NJ", "WA", "IL", "NY", "OR"), not the user's own state.
         fpl_pct: Household income as a percent of the federal poverty line (e.g. 158 for 158%).
         facility_type: The facility's own type (e.g. "acute_care_hospital", "critical_access_hospital") -- only matters for IL.
+        ownership: The facility's own CMS ownership string (e.g. "Voluntary non-profit - Private") -- only matters for OR.
     """
-    tier = policy_mod.charity_tier(state, fpl_pct, facility_type)
+    tier = policy_mod.charity_tier(state, fpl_pct, facility_type, ownership or None)
     if tier is not None:
         return tier
+    if state == "OR":
+        return {
+            "error": (
+                "This facility isn't confirmed as a nonprofit hospital -- OR's charity-care law (ORS 442.610) "
+                "only covers nonprofit hospitals, not for-profit or government-owned ones. Say that, and direct "
+                "the user to that hospital's own billing/financial-assistance office."
+            )
+        }
     if state == "IL":
         return {
             "error": (
@@ -127,6 +145,9 @@ def estimate_cost(ccn: str, drg: str) -> dict:
     return {
         "ccn": ccn,
         "facility_name": facility["name"],
+        "state": facility["state"],
+        "facility_type": facility["type"],
+        "ownership": facility["ownership"],
         "drg": drg,
         "drg_description": charge_info["description"],
         "typical_billed_charge": charge_info["avg_charge"],
@@ -155,6 +176,7 @@ def facilities_with_drg(zip_code: str, drg: str, radius_miles: float = 25) -> di
         "drg": drg,
         "facilities": [
             {"ccn": f["ccn"], "name": f["name"], "distance_miles": f["distance_miles"],
+             "state": f["state"], "facility_type": f["type"], "ownership": f["ownership"],
              "typical_billed_charge": f["drg_charges"][drg]["avg_charge"],
              "typical_billed_charge_formatted": _money(f["drg_charges"][drg]["avg_charge"])}
             for f in matches
@@ -212,8 +234,12 @@ _STATE_PROGRAM_NAMES = {
     "WA": "the Washington hospital charity care program (RCW 70.170.060)",
     "IL": "the Illinois Hospital Uninsured Patient Discount Act (210 ILCS 89)",
     "NY": "the New York Hospital Financial Assistance Law (PBH 2807-k)",
+    "OR": "the Oregon hospital financial assistance law (ORS 442.610)",
 }
-_STATE_POLICY_KEYS = {"NJ": "nj_charity_care", "WA": "wa_charity_care", "IL": "il_charity_care", "NY": "ny_charity_care"}
+_STATE_POLICY_KEYS = {
+    "NJ": "nj_charity_care", "WA": "wa_charity_care", "IL": "il_charity_care",
+    "NY": "ny_charity_care", "OR": "or_charity_care",
+}
 
 
 @tool
@@ -221,10 +247,13 @@ def draft_application(ccn: str, patient_pays_pct: float) -> dict:
     """Draft a charity-care application checklist and cover letter for a facility and tier.
 
     Works for any facility in a state CareMap has a modeled formula for
-    (currently NJ or WA) -- looks up the facility's own state, not a fixed
-    program. Fields the matching policy.json entry doesn't have (e.g. WA has
-    no confirmed apply-window or help-phone, unlike NJ) are left out of the
-    checklist/letter rather than guessed.
+    (currently NJ, WA, IL, NY, OR) -- looks up the facility's own state, not
+    a fixed program. Fields the matching policy.json entry doesn't have
+    (e.g. WA has no confirmed apply-window or help-phone, unlike NJ) are
+    left out of the checklist/letter rather than guessed. For OR
+    specifically, this refuses to draft anything for a facility not
+    confirmed as nonprofit-owned, since ORS 442.610-442.618 doesn't cover
+    for-profit or government-owned hospitals at all.
 
     Args:
         ccn: CMS Certification Number of the facility.
@@ -237,6 +266,14 @@ def draft_application(ccn: str, patient_pays_pct: float) -> dict:
     policy_key = _STATE_POLICY_KEYS.get(state)
     if policy_key is None:
         return {"error": f"No charity-care formula modeled for '{state}' -- direct the user to {facility['name']}'s billing/financial-assistance office instead."}
+    if state == "OR" and not facility.get("ownership", "").startswith("Voluntary non-profit"):
+        return {
+            "error": (
+                f"{facility['name']} isn't confirmed as a nonprofit hospital -- OR's charity-care law only "
+                "covers nonprofit hospitals. Direct the user to this hospital's own billing/financial-"
+                "assistance office instead."
+            )
+        }
     program = policy_mod.POLICY[policy_key]
     program_name = _STATE_PROGRAM_NAMES[state]
 
