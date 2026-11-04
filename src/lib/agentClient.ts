@@ -15,10 +15,12 @@ export interface AgentResponse {
 }
 
 const AGENT_URL = import.meta.env.VITE_AGENT_URL as string | undefined;
-// Gemini free-tier latency plus Strands' own tool-calling loop can
-// legitimately take 10-20s; this is an enhancement with a "thinking"
-// indicator already shown, not a blocking call, so it can afford to wait.
-const TIMEOUT_MS = 25000;
+// Measured against the live Lambda: a multi-tool query (facility search +
+// cost lookup + tier math) legitimately takes 20-45s end to end. This is an
+// enhancement with a "thinking" indicator already shown, not a blocking
+// call, so it can afford to wait rather than discard a good answer that
+// was about to arrive.
+const TIMEOUT_MS = 50000;
 
 export async function askAgent(
   redactedMessage: string,
