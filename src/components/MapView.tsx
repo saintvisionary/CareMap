@@ -51,10 +51,16 @@ export function MapView({ facilities, tierPct, flyTo, activeCcn, onSelectFacilit
     facilities.forEach((f, i) => {
       if (f.lat == null || f.lon == null) return;
       const tier = facilityTier(f, tierPct);
+      // MapLibre sets a positioning `transform` directly on this outer element;
+      // the pop-in animation must live on a child instead, or it clobbers that
+      // transform and every marker collapses to (0,0).
       const el = document.createElement("div");
-      el.className = "caremap-marker";
-      el.style.backgroundColor = TIER_COLORS[tier];
-      el.style.animationDelay = `${i * 70}ms`;
+      el.className = "caremap-marker-wrap";
+      const dot = document.createElement("div");
+      dot.className = "caremap-marker";
+      dot.style.backgroundColor = TIER_COLORS[tier];
+      dot.style.animationDelay = `${i * 70}ms`;
+      el.appendChild(dot);
       el.addEventListener("click", () => onSelectFacility(f.ccn));
 
       const marker = new maplibregl.Marker({ element: el, anchor: "center" })
