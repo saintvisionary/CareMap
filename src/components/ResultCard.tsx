@@ -11,6 +11,7 @@ const money = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
 const FACILITY_TYPE_LABELS: Record<string, string> = {
   acute_care_hospital: "Acute care hospital",
   va_hospital: "VA hospital",
+  critical_access_hospital: "Critical Access Hospital",
   fqhc: "Federally Qualified Health Center (sliding-fee clinic)",
 };
 
@@ -27,7 +28,7 @@ interface ResultCardProps {
 export function ResultCard({ facility, fplPct, insuranceType, need, index, active, onSelect }: ResultCardProps) {
   const tier = facilityTier(facility, fplPct, insuranceType);
   const programName = CHARITY_PROGRAM_NAMES[facility.state] ?? "charity care";
-  const patientPaysPct = fplPct != null ? charityTier(facility.state, fplPct)?.patientPaysPct : undefined;
+  const patientPaysPct = fplPct != null ? charityTier(facility.state, fplPct, facility.type)?.patientPaysPct : undefined;
   const drg = need ? NEED_TO_DRG[need] : null;
   const charge = drg ? facility.drg_charges[drg.code]?.avg_charge : undefined;
 

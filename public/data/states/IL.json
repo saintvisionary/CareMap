@@ -57,7 +57,7 @@
           "avg_charge": 24584
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140002",
@@ -251,7 +251,7 @@
           "avg_charge": 39315
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140007",
@@ -617,7 +617,7 @@
           "avg_charge": 43825
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140008",
@@ -763,7 +763,7 @@
           "avg_charge": 40508
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140010",
@@ -1705,7 +1705,7 @@
           "avg_charge": 62299
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140011",
@@ -1939,7 +1939,7 @@
           "avg_charge": 22268
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140012",
@@ -2017,7 +2017,7 @@
           "avg_charge": 25365
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140013",
@@ -2111,7 +2111,7 @@
           "avg_charge": 24845
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140015",
@@ -2505,7 +2505,7 @@
           "avg_charge": 173156
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140018",
@@ -2567,7 +2567,7 @@
           "avg_charge": 70759
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140029",
@@ -2873,7 +2873,7 @@
           "avg_charge": 165608
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140030",
@@ -3235,7 +3235,7 @@
           "avg_charge": 134101
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140032",
@@ -3373,7 +3373,7 @@
           "avg_charge": 28705
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140034",
@@ -3475,7 +3475,7 @@
           "avg_charge": 30139
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "14003F",
@@ -3646,7 +3646,7 @@
           "avg_charge": 25963
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140046",
@@ -3876,7 +3876,7 @@
           "avg_charge": 27331
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140048",
@@ -4170,7 +4170,7 @@
           "avg_charge": 135026
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140049",
@@ -4252,7 +4252,7 @@
           "avg_charge": 87244
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "14004F",
@@ -4348,7 +4348,7 @@
           "avg_charge": 31678
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140053",
@@ -4806,7 +4806,7 @@
           "avg_charge": 202501
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140054",
@@ -4988,7 +4988,7 @@
           "avg_charge": 25833
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140059",
@@ -5034,7 +5034,7 @@
           "avg_charge": 30117
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140062",
@@ -5653,7 +5653,7 @@
           "avg_charge": 142295
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140063",
@@ -5799,7 +5799,7 @@
           "avg_charge": 28545
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140064",
@@ -5925,7 +5925,7 @@
           "avg_charge": 32973
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140065",
@@ -6196,7 +6196,7 @@
           "avg_charge": 22202
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140067",
@@ -6986,7 +6986,7 @@
           "avg_charge": 130741
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140068",
@@ -7020,7 +7020,7 @@
           "avg_charge": 19324
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140077",
@@ -7042,7 +7042,7 @@
           "avg_charge": 13461
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "14007F",
@@ -7222,7 +7222,7 @@
           "avg_charge": 52070
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140082",
@@ -7320,7 +7320,7 @@
           "avg_charge": 38871
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140083",
@@ -7342,7 +7342,7 @@
           "avg_charge": 17267
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140084",
@@ -7432,7 +7432,7 @@
           "avg_charge": 60481
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140088",
@@ -8126,7 +8126,7 @@
           "avg_charge": 240854
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140089",
@@ -8172,7 +8172,7 @@
           "avg_charge": 22630
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "14008F",
@@ -8711,7 +8711,7 @@
           "avg_charge": 133585
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140093",
@@ -8793,7 +8793,7 @@
           "avg_charge": 33467
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140095",
@@ -8823,7 +8823,7 @@
           "avg_charge": 62129
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140100",
@@ -8845,7 +8845,7 @@
           "avg_charge": 105276
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140101",
@@ -8983,7 +8983,7 @@
           "avg_charge": 45832
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140103",
@@ -9017,7 +9017,7 @@
           "avg_charge": 46644
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140110",
@@ -9187,7 +9187,7 @@
           "avg_charge": 26594
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140113",
@@ -9253,7 +9253,7 @@
           "avg_charge": 29424
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140114",
@@ -9436,7 +9436,7 @@
           "avg_charge": 35048
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140115",
@@ -9474,7 +9474,7 @@
           "avg_charge": 17802
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140116",
@@ -10080,7 +10080,7 @@
           "avg_charge": 150065
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140117",
@@ -10458,7 +10458,7 @@
           "avg_charge": 209119
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140119",
@@ -11189,7 +11189,7 @@
           "avg_charge": 137966
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140120",
@@ -11259,7 +11259,7 @@
           "avg_charge": 38151
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140122",
@@ -11529,7 +11529,7 @@
           "avg_charge": 17879
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140124",
@@ -11611,7 +11611,7 @@
           "avg_charge": 28932
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140125",
@@ -11661,7 +11661,7 @@
           "avg_charge": 52868
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140127",
@@ -11875,7 +11875,7 @@
           "avg_charge": 20276
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140130",
@@ -12285,7 +12285,7 @@
           "avg_charge": 86692
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140133",
@@ -12371,7 +12371,7 @@
           "avg_charge": 20943
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140135",
@@ -12657,7 +12657,7 @@
           "avg_charge": 22847
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140137",
@@ -12687,7 +12687,7 @@
           "avg_charge": 26973
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140145",
@@ -12721,7 +12721,7 @@
           "avg_charge": 31914
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140148",
@@ -13327,7 +13327,7 @@
           "avg_charge": 193680
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140150",
@@ -13569,7 +13569,7 @@
           "avg_charge": 235652
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140155",
@@ -13683,7 +13683,7 @@
           "avg_charge": 34983
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140158",
@@ -13737,7 +13737,7 @@
           "avg_charge": 41388
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140160",
@@ -13823,7 +13823,7 @@
           "avg_charge": 34253
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140161",
@@ -13886,7 +13886,7 @@
           "avg_charge": 34015
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140162",
@@ -14124,7 +14124,7 @@
           "avg_charge": 40312
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140164",
@@ -14378,7 +14378,7 @@
           "avg_charge": 136579
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140166",
@@ -14464,7 +14464,7 @@
           "avg_charge": 39603
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140172",
@@ -14702,7 +14702,7 @@
           "avg_charge": 48021
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140174",
@@ -14840,7 +14840,7 @@
           "avg_charge": 52820
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140177",
@@ -14870,7 +14870,7 @@
           "avg_charge": 34408
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140179",
@@ -15116,7 +15116,7 @@
           "avg_charge": 116871
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140180",
@@ -15226,7 +15226,7 @@
           "avg_charge": 41173
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140181",
@@ -15268,7 +15268,7 @@
           "avg_charge": 43317
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140182",
@@ -15466,7 +15466,7 @@
           "avg_charge": 32331
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140184",
@@ -15584,7 +15584,7 @@
           "avg_charge": 52677
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140185",
@@ -15930,7 +15930,7 @@
           "avg_charge": 39927
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140186",
@@ -16156,7 +16156,7 @@
           "avg_charge": 117049
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140187",
@@ -16438,7 +16438,7 @@
           "avg_charge": 134926
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140189",
@@ -16692,7 +16692,7 @@
           "avg_charge": 29549
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140191",
@@ -16890,7 +16890,7 @@
           "avg_charge": 161416
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140197",
@@ -16916,7 +16916,7 @@
           "avg_charge": 7120
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140200",
@@ -17382,7 +17382,7 @@
           "avg_charge": 169334
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140202",
@@ -17892,7 +17892,7 @@
           "avg_charge": 130208
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140206",
@@ -17958,7 +17958,7 @@
           "avg_charge": 15381
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140208",
@@ -18648,7 +18648,7 @@
           "avg_charge": 90522
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140209",
@@ -18906,7 +18906,7 @@
           "avg_charge": 207267
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140210",
@@ -18949,7 +18949,7 @@
           "avg_charge": 26902
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140211",
@@ -19315,7 +19315,7 @@
           "avg_charge": 42315
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140213",
@@ -19957,7 +19957,7 @@
           "avg_charge": 40612
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140217",
@@ -20043,7 +20043,7 @@
           "avg_charge": 70661
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140223",
@@ -20682,7 +20682,7 @@
           "avg_charge": 138765
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140224",
@@ -20816,7 +20816,7 @@
           "avg_charge": 29387
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140228",
@@ -21098,7 +21098,7 @@
           "avg_charge": 237975
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140231",
@@ -21684,7 +21684,7 @@
           "avg_charge": 200004
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140233",
@@ -22046,7 +22046,7 @@
           "avg_charge": 46292
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140239",
@@ -22236,7 +22236,7 @@
           "avg_charge": 52725
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140242",
@@ -22891,7 +22891,7 @@
           "avg_charge": 178006
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140251",
@@ -22993,7 +22993,7 @@
           "avg_charge": 67964
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140252",
@@ -23667,7 +23667,7 @@
           "avg_charge": 74776
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140258",
@@ -24105,7 +24105,7 @@
           "avg_charge": 168711
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140275",
@@ -24160,7 +24160,7 @@
           "avg_charge": 23072
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140276",
@@ -24734,7 +24734,7 @@
           "avg_charge": 93104
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140280",
@@ -24960,7 +24960,7 @@
           "avg_charge": 13437
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140281",
@@ -25882,7 +25882,7 @@
           "avg_charge": 183328
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140286",
@@ -26089,7 +26089,7 @@
           "avg_charge": 51427
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140288",
@@ -26563,7 +26563,7 @@
           "avg_charge": 100576
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140289",
@@ -26717,7 +26717,7 @@
           "avg_charge": 35034
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140290",
@@ -27007,7 +27007,7 @@
           "avg_charge": 37686
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140291",
@@ -27381,7 +27381,7 @@
           "avg_charge": 31584
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140292",
@@ -27455,7 +27455,7 @@
           "avg_charge": 28063
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140294",
@@ -27489,7 +27489,7 @@
           "avg_charge": 46233
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140300",
@@ -27511,7 +27511,7 @@
           "avg_charge": 26237
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140304",
@@ -27625,7 +27625,7 @@
           "avg_charge": 25880
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "140308",
@@ -27643,7 +27643,7 @@
       "lon": -88.329654,
       "lat_lon_approximate": true,
       "drg_charges": {},
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "14034F",
@@ -27661,6 +27661,946 @@
       "lon": -87.862450099636,
       "drg_charges": {},
       "charity_care_participant": false
+    },
+    {
+      "ccn": "141300",
+      "name": "THOMAS H BOYD MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Local",
+      "has_er": true,
+      "star_rating": null,
+      "address": "800 SCHOOL ST",
+      "city": "CARROLLTON",
+      "state": "IL",
+      "zip": "62016",
+      "county": "GREENE",
+      "lat": 39.296254306725,
+      "lon": -90.412406026597,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141301",
+      "name": "KIRBY MEDICAL CENTER",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "1000 MEDICAL CENTER DRIVE",
+      "city": "MONTICELLO",
+      "state": "IL",
+      "zip": "61856",
+      "county": "PIATT",
+      "lat": 40.059607043638,
+      "lon": -88.561813312846,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141302",
+      "name": "MIDWEST MEDICAL CENTER",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "1 MEDICAL CENTER DRIVE",
+      "city": "GALENA",
+      "state": "IL",
+      "zip": "61036",
+      "county": "JO DAVIESS",
+      "lat": 42.413689,
+      "lon": -90.375811,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141303",
+      "name": "WARNER HOSPITAL AND HEALTH SERVICES",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Local",
+      "has_er": true,
+      "star_rating": null,
+      "address": "422 W WHITE ST",
+      "city": "CLINTON",
+      "state": "IL",
+      "zip": "61727",
+      "county": "DE WITT",
+      "lat": 40.148906277964,
+      "lon": -88.964425907871,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141304",
+      "name": "GENESIS MEDICAL CENTER, ALEDO",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "409 NW 9TH AVENUE",
+      "city": "ALEDO",
+      "state": "IL",
+      "zip": "61231",
+      "county": "MERCER",
+      "lat": 41.205393740547,
+      "lon": -90.758574590071,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141305",
+      "name": "MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "1454 N COUNTY ROAD 2050 E",
+      "city": "CARTHAGE",
+      "state": "IL",
+      "zip": "62321",
+      "county": "HANCOCK",
+      "lat": 40.408988101609,
+      "lon": -91.111396324544,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141306",
+      "name": "COMMUNITY HOSPITAL OF STAUNTON",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "400 N CALDWELL ST",
+      "city": "STAUNTON",
+      "state": "IL",
+      "zip": "62088",
+      "county": "MACOUPIN",
+      "lat": 39.015136555028,
+      "lon": -89.789833873704,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141307",
+      "name": "PINCKNEYVILLE COMMUNITY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": null,
+      "address": "5383 STATE ROUTE 154",
+      "city": "PINCKNEYVILLE",
+      "state": "IL",
+      "zip": "62274",
+      "county": "PERRY",
+      "lat": 38.091163,
+      "lon": -89.40027,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141308",
+      "name": "WASHINGTON COUNTY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": null,
+      "address": "705 S GRAND AVE",
+      "city": "NASHVILLE",
+      "state": "IL",
+      "zip": "62263",
+      "county": "WASHINGTON",
+      "lat": 38.339112827481,
+      "lon": -89.390109933232,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141309",
+      "name": "CARLE EUREKA  HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "101 S MAJOR ST",
+      "city": "EUREKA",
+      "state": "IL",
+      "zip": "61530",
+      "county": "WOODFORD",
+      "lat": 40.721354126592,
+      "lon": -89.271589825366,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141310",
+      "name": "OSF SAINT PAUL MEDICAL CENTER",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Church",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "1401 E 12TH STREET",
+      "city": "MENDOTA",
+      "state": "IL",
+      "zip": "61342",
+      "county": "LA SALLE",
+      "lat": 41.543677,
+      "lon": -89.084088,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141311",
+      "name": "FAIRFIELD MEMORIAL HOSPITAL 1",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "303 N W 11TH STREET",
+      "city": "FAIRFIELD",
+      "state": "IL",
+      "zip": "62837",
+      "county": "WAYNE",
+      "lat": 38.381031813641,
+      "lon": -88.374510714793,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141312",
+      "name": "ROCHELLE COMMUNITY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "900 N 2ND ST",
+      "city": "ROCHELLE",
+      "state": "IL",
+      "zip": "61068",
+      "county": "OGLE",
+      "lat": 41.928258462913,
+      "lon": -89.062885298704,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141313",
+      "name": "MASON DISTRICT HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": null,
+      "address": "615 NORTH PROMENADE STREET,P O BOX 530",
+      "city": "HAVANA",
+      "state": "IL",
+      "zip": "62644",
+      "county": "MASON",
+      "lat": 40.305774849552,
+      "lon": -90.056031561416,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141315",
+      "name": "ILLINI COMMUNITY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "640 W WASHINGTON",
+      "city": "PITTSFIELD",
+      "state": "IL",
+      "zip": "62363",
+      "county": "PIKE",
+      "lat": 39.606847288523,
+      "lon": -90.815214275495,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141316",
+      "name": "CARLE HOOPESTON REGIONAL HEALTH CENTER",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "701 EAST ORANGE STREET",
+      "city": "HOOPESTON",
+      "state": "IL",
+      "zip": "60942",
+      "county": "VERMILION",
+      "lat": 40.459143922465,
+      "lon": -87.65913313719,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141317",
+      "name": "GIBSON COMMUNITY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "1120 N MELVIN STREET",
+      "city": "GIBSON CITY",
+      "state": "IL",
+      "zip": "60936",
+      "county": "FORD",
+      "lat": 40.477964967757,
+      "lon": -88.370609871178,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141318",
+      "name": "OSF HOLY FAMILY MEDICAL CENTER",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Church",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "1000 W HARLEM AVENUE",
+      "city": "MONMOUTH",
+      "state": "IL",
+      "zip": "61462",
+      "county": "WARREN",
+      "lat": 40.921341266066,
+      "lon": -90.658318136603,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141319",
+      "name": "HAMMOND HENRY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": null,
+      "address": "600 N COLLEGE AVENUE",
+      "city": "GENESEO",
+      "state": "IL",
+      "zip": "61254",
+      "county": "HENRY",
+      "lat": 41.460775972643,
+      "lon": -90.158326118438,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141320",
+      "name": "PARIS COMMUNITY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "721 E COURT STREET",
+      "city": "PARIS",
+      "state": "IL",
+      "zip": "61944",
+      "county": "EDGAR",
+      "lat": 39.606384086381,
+      "lon": -87.677482963874,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141321",
+      "name": "FRANKLIN HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": null,
+      "address": "201 BAILEY LANE",
+      "city": "BENTON",
+      "state": "IL",
+      "zip": "62812",
+      "county": "FRANKLIN",
+      "lat": 38.009220636479,
+      "lon": -88.916789230483,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141322",
+      "name": "ABRAHAM LINCOLN MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "200 STAHLHUT DRIVE",
+      "city": "LINCOLN",
+      "state": "IL",
+      "zip": "62656",
+      "county": "LOGAN",
+      "lat": 40.153990027135,
+      "lon": -89.391309581715,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141323",
+      "name": "MASSAC MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "28 CHICK STREET, PO BOX 850",
+      "city": "METROPOLIS",
+      "state": "IL",
+      "zip": "62960",
+      "county": "MASSAC",
+      "lat": 37.166728670957,
+      "lon": -88.73906586645,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141324",
+      "name": "FERRELL HOSPITAL COMMUNITY FOUNDATIONS",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 1,
+      "address": "1201 PINE STREET",
+      "city": "ELDORADO",
+      "state": "IL",
+      "zip": "62930",
+      "county": "SALINE",
+      "lat": 37.815267267658,
+      "lon": -88.441512822658,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141325",
+      "name": "OSF SAINT LUKE MEDICAL CENTER",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "1051 WEST SOUTH STREET",
+      "city": "KEWANEE",
+      "state": "IL",
+      "zip": "61443",
+      "county": "HENRY",
+      "lat": 41.222116254744,
+      "lon": -89.948903391487,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141326",
+      "name": "HAMILTON MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "611 S MARSHALL AVENUE",
+      "city": "MCLEANSBORO",
+      "state": "IL",
+      "zip": "62859",
+      "county": "HAMILTON",
+      "lat": 38.088131441556,
+      "lon": -88.541130919491,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141327",
+      "name": "WABASH GENERAL HOSPITAL 1",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": null,
+      "address": "1418 COLLEGE DRIVE",
+      "city": "MOUNT CARMEL",
+      "state": "IL",
+      "zip": "62863",
+      "county": "WABASH",
+      "lat": 38.421905565006,
+      "lon": -87.769242373354,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141328",
+      "name": "HARDIN COUNTY GENERAL HOSPITAL & CLINIC",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 1,
+      "address": "FERRELL ROAD",
+      "city": "ROSICLARE",
+      "state": "IL",
+      "zip": "62982",
+      "county": "HARDIN",
+      "lat": 37.424825,
+      "lon": -88.365319,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141329",
+      "name": "MORRISON COMMUNITY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": null,
+      "address": "303 N JACKSON STREET",
+      "city": "MORRISON",
+      "state": "IL",
+      "zip": "61270",
+      "county": "WHITESIDE",
+      "lat": 41.808154639789,
+      "lon": -89.957233044736,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141330",
+      "name": "HOPEDALE HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "107 TREMONT STREET",
+      "city": "HOPEDALE",
+      "state": "IL",
+      "zip": "61747",
+      "county": "TAZEWELL",
+      "lat": 40.418727618546,
+      "lon": -89.417670767248,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141331",
+      "name": "MARSHALL BROWNING HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "900 NORTH WASHINGTON STREET",
+      "city": "DU QUOIN",
+      "state": "IL",
+      "zip": "62832",
+      "county": "PERRY",
+      "lat": 38.024779426193,
+      "lon": -89.23643182822,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141332",
+      "name": "HILLSBORO AREA HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "1200 E TREMONT STREET",
+      "city": "HILLSBORO",
+      "state": "IL",
+      "zip": "62049",
+      "county": "MONTGOMERY",
+      "lat": 39.153552332941,
+      "lon": -89.481435818462,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141333",
+      "name": "SARAH D CULBERTSON MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": null,
+      "address": "238 SOUTH CONGRESS STREET",
+      "city": "RUSHVILLE",
+      "state": "IL",
+      "zip": "62681",
+      "county": "SCHUYLER",
+      "lat": 40.118794672912,
+      "lon": -90.563647473513,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141334",
+      "name": "ST JOSEPH MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "2 SOUTH HOSPITAL DRIVE",
+      "city": "MURPHYSBORO",
+      "state": "IL",
+      "zip": "62966",
+      "county": "JACKSON",
+      "lat": 37.77320653328,
+      "lon": -89.326237851704,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141335",
+      "name": "MERCY HARVARD HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "901 S GRANT STREET",
+      "city": "HARVARD",
+      "state": "IL",
+      "zip": "60033",
+      "county": "MC HENRY",
+      "lat": 42.425751447011,
+      "lon": -88.607624971643,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141336",
+      "name": "ST JOSEPH'S HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Church",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "12866 TROXLER AVENUE",
+      "city": "HIGHLAND",
+      "state": "IL",
+      "zip": "62249",
+      "county": "MADISON",
+      "lat": 38.757056369649,
+      "lon": -89.669825087236,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141337",
+      "name": "OSF SAINT CLARE MEDICAL CENTER",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Church",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "530 PARK AVENUE EAST",
+      "city": "PRINCETON",
+      "state": "IL",
+      "zip": "61356",
+      "county": "BUREAU",
+      "lat": 41.367940703588,
+      "lon": -89.456713645456,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141338",
+      "name": "MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": null,
+      "address": "1900 STATE ST",
+      "city": "CHESTER",
+      "state": "IL",
+      "zip": "62233",
+      "county": "RANDOLPH",
+      "lat": 37.91891291114,
+      "lon": -89.812059385757,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141339",
+      "name": "TAYLORVILLE MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "201 EAST PLEASANT STREET",
+      "city": "TAYLORVILLE",
+      "state": "IL",
+      "zip": "62568",
+      "county": "CHRISTIAN",
+      "lat": 39.553800313983,
+      "lon": -89.294390926315,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141340",
+      "name": "VALLEY WEST COMMUNITY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "1301 NORTH MAIN STREET",
+      "city": "SANDWICH",
+      "state": "IL",
+      "zip": "60548",
+      "county": "DE KALB",
+      "lat": 41.634951921148,
+      "lon": -88.621666233782,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141341",
+      "name": "PANA COMMUNITY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "101 E NINTH STREET",
+      "city": "PANA",
+      "state": "IL",
+      "zip": "62557",
+      "county": "CHRISTIAN",
+      "lat": 39.380367081336,
+      "lon": -89.085033867062,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141342",
+      "name": "DEACONESS ILLINOIS UNION COUNTY",
+      "type": "critical_access_hospital",
+      "ownership": "Proprietary",
+      "has_er": true,
+      "star_rating": null,
+      "address": "517 NORTH MAIN STREET",
+      "city": "ANNA",
+      "state": "IL",
+      "zip": "62906",
+      "county": "UNION",
+      "lat": 37.457835117808,
+      "lon": -89.252404228637,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141343",
+      "name": "CRAWFORD MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "1000 NORTH ALLEN STREET",
+      "city": "ROBINSON",
+      "state": "IL",
+      "zip": "62454",
+      "county": "CRAWFORD",
+      "lat": 39.013726613034,
+      "lon": -87.748904689069,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141344",
+      "name": "LAWRENCE COUNTY MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "2200 STATE ST",
+      "city": "LAWRENCEVILLE",
+      "state": "IL",
+      "zip": "62439",
+      "county": "LAWRENCE",
+      "lat": 38.730059886714,
+      "lon": -87.695547197618,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141345",
+      "name": "SALEM TOWNSHIP HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Local",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "1201 RICKER DRIVE",
+      "city": "SALEM",
+      "state": "IL",
+      "zip": "62881",
+      "county": "MARION",
+      "lat": 38.64150818397,
+      "lon": -88.947545818371,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141346",
+      "name": "FAYETTE COUNTY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Other",
+      "has_er": true,
+      "star_rating": null,
+      "address": "650 W TAYLOR ST",
+      "city": "VANDALIA",
+      "state": "IL",
+      "zip": "62471",
+      "county": "FAYETTE",
+      "lat": 38.970580613751,
+      "lon": -89.098507393173,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141347",
+      "name": "CARLINVILLE AREA HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "20733 N BROAD STREET",
+      "city": "CARLINVILLE",
+      "state": "IL",
+      "zip": "62626",
+      "county": "MACOUPIN",
+      "lat": 39.28461,
+      "lon": -89.883614,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141348",
+      "name": "RED BUD REGIONAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Proprietary",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "325 SPRING STREET",
+      "city": "RED BUD",
+      "state": "IL",
+      "zip": "62278",
+      "county": "RANDOLPH",
+      "lat": 38.20963027168,
+      "lon": -89.996475033504,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141349",
+      "name": "SPARTA COMMUNITY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Hospital District or Authority",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "818 E BROADWAY",
+      "city": "SPARTA",
+      "state": "IL",
+      "zip": "62286",
+      "county": "RANDOLPH",
+      "lat": 38.124545460609,
+      "lon": -89.691231724103,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141350",
+      "name": "ST FRANCIS HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Church",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "1215 FRANCISCAN DR",
+      "city": "LITCHFIELD",
+      "state": "IL",
+      "zip": "62056",
+      "county": "MONTGOMERY",
+      "lat": 39.180861171536,
+      "lon": -89.639273299066,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141351",
+      "name": "CLAY COUNTY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Local",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "911 STACY BURK DR",
+      "city": "FLORA",
+      "state": "IL",
+      "zip": "62839",
+      "county": "CLAY",
+      "lat": 38.68094916844,
+      "lon": -88.472893831415,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141352",
+      "name": "JACKSONVILLE MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "1600 W WALNUT ST",
+      "city": "JACKSONVILLE",
+      "state": "IL",
+      "zip": "62650",
+      "county": "MORGAN",
+      "lat": 39.745330524737,
+      "lon": -90.257843269413,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141353",
+      "name": "IROQUOIS MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "200 FAIRMAN STREET",
+      "city": "WATSEKA",
+      "state": "IL",
+      "zip": "60970",
+      "county": "IROQUOIS",
+      "lat": 40.765596850554,
+      "lon": -87.732583664122,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141354",
+      "name": "HSHS GOOD SHEPHERD HOSPITAL INC",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "200 S CEDAR ST",
+      "city": "SHELBYVILLE",
+      "state": "IL",
+      "zip": "62565",
+      "county": "SHELBY",
+      "lat": 39.405373675709,
+      "lon": -88.807173418943,
+      "drg_charges": {},
+      "charity_care_participant": true
+    },
+    {
+      "ccn": "141355",
+      "name": "CARLE RICHLAND MEMORIAL HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "800 EAST LOCUST STREET",
+      "city": "OLNEY",
+      "state": "IL",
+      "zip": "62450",
+      "county": "RICHLAND",
+      "lat": 38.735094615072,
+      "lon": -88.077017253663,
+      "drg_charges": {},
+      "charity_care_participant": true
     }
   ]
 }

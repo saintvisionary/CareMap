@@ -70,6 +70,34 @@ def wa_charity_tier(fpl_pct: float) -> dict:
     return _tier_lookup("wa_charity_care", fpl_pct)
 
 
+def il_charity_tier(fpl_pct: float, is_critical_access: bool = False) -> dict | None:
+    """IL hospital charity-care tier (210 ILCS 89/5, 89/10) for a percent of FPL.
+
+    Verified directly against the current codified statute text. Below the
+    free-care threshold this is a real, exact 0% -- no gap. Returns None
+    above it: the statute's actual sliding-scale discount is charges x
+    (1 - cost_to_charge_ratio x 1.35), which needs each hospital's own
+    Medicare cost-to-charge ratio -- a different CMS dataset (cost reports)
+    CareMap doesn't have loaded, so a percentage there would be a guess, not
+    a grounded number. A 20%-of-family-income-per-12-months collection cap
+    still applies in that range regardless -- see policy.json's "note" for
+    the caller to disclose, since it's real even though the exact percentage
+    isn't computable here. is_critical_access picks the correct one of the
+    two free-care thresholds the statute sets (125% vs 200% FPL) -- pass
+    True for a Critical Access Hospital, False for a standard one.
+    """
+    band = POLICY["il_charity_care"]["rural_critical_access" if is_critical_access else "standard"]
+    threshold = band["free_care_max_fpl_pct"]
+    if fpl_pct <= threshold:
+        return {
+            "patient_pays_pct": 0,
+            "fpl_pct": fpl_pct,
+            "max_fpl_pct": threshold,
+            "source": POLICY["il_charity_care"]["source"],
+        }
+    return None
+
+
 # Keyed by the two-letter state code on a facility record. Add an entry here
 # (plus the matching policy.json block and a state-specific function above)
 # for each additional state with a real, codified, state-wide formula --
@@ -78,19 +106,24 @@ def wa_charity_tier(fpl_pct: float) -> dict:
 # so this registry is deliberately short and should stay that way unless a
 # new state is actually verified against its own statute.
 STATE_CHARITY_TIER_FNS = {
-    "NJ": nj_charity_tier,
-    "WA": wa_charity_tier,
+    "NJ": lambda fpl_pct, facility_type=None: nj_charity_tier(fpl_pct),
+    "WA": lambda fpl_pct, facility_type=None: wa_charity_tier(fpl_pct),
+    "IL": lambda fpl_pct, facility_type=None: il_charity_tier(fpl_pct, is_critical_access=facility_type == "critical_access_hospital"),
 }
 
 
-def charity_tier(state: str, fpl_pct: float) -> dict | None:
+def charity_tier(state: str, fpl_pct: float, facility_type: str | None = None) -> dict | None:
     """Look up the charity-care tier for whichever state a facility is in.
 
-    Returns None for a state with no modeled formula -- caller should say so
-    rather than claim a tier that doesn't exist.
+    facility_type matters for IL (standard vs Critical Access Hospital picks
+    a different free-care threshold) -- ignored by states whose formula
+    doesn't depend on it. Returns None for a state with no modeled formula,
+    or for IL above its free-care threshold (the real sliding-scale discount
+    needs cost-to-charge-ratio data CareMap doesn't have) -- caller should
+    say so rather than claim a tier that doesn't exist or isn't computable.
     """
     fn = STATE_CHARITY_TIER_FNS.get(state)
-    return fn(fpl_pct) if fn else None
+    return fn(fpl_pct, facility_type) if fn else None
 
 
 def apply_tier(typical_charge: float, patient_pays_pct: float) -> float:

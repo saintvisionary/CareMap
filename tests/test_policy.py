@@ -1,4 +1,4 @@
-from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, nj_charity_tier, wa_charity_tier
+from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, il_charity_tier, nj_charity_tier, wa_charity_tier
 
 
 def test_demo_case_family_of_4():
@@ -60,3 +60,35 @@ def test_charity_tier_unmodeled_state_returns_none():
     # the whole point.
     assert charity_tier("TX", 150) is None
     assert charity_tier("CA", 150) is None
+
+
+def test_il_tier_free_care_thresholds():
+    # 210 ILCS 89/10 -- verified directly against the current codified text.
+    # Standard hospitals: free up to 200% FPL. Critical Access: up to 125%.
+    assert il_charity_tier(200, is_critical_access=False)["patient_pays_pct"] == 0
+    assert il_charity_tier(201, is_critical_access=False) is None
+    assert il_charity_tier(125, is_critical_access=True)["patient_pays_pct"] == 0
+    assert il_charity_tier(126, is_critical_access=True) is None
+    # Same income, different threshold depending on hospital type -- the
+    # whole reason this needs an is_critical_access parameter at all.
+    assert il_charity_tier(150, is_critical_access=False)["patient_pays_pct"] == 0
+    assert il_charity_tier(150, is_critical_access=True) is None
+
+
+def test_il_tier_above_free_threshold_returns_none_not_a_guess():
+    # The real statutory discount above the free-care line is charges x
+    # (1 - cost_to_charge_ratio x 1.35) -- needs a per-hospital CMS cost
+    # report value CareMap doesn't have loaded. Must never approximate a
+    # percentage here; None is the honest answer until that data exists.
+    assert il_charity_tier(400, is_critical_access=False) is None
+    assert il_charity_tier(250, is_critical_access=True) is None
+
+
+def test_charity_tier_dispatch_passes_facility_type_for_il():
+    assert charity_tier("IL", 150, "acute_care_hospital")["patient_pays_pct"] == 0
+    assert charity_tier("IL", 150, "critical_access_hospital") is None
+    # Other states' formulas don't depend on facility_type -- must not break
+    # when it's passed anyway (IL's own dispatch entry ignores it) or
+    # omitted (existing NJ/WA callers predate this parameter).
+    assert charity_tier("NJ", 150, "critical_access_hospital")["patient_pays_pct"] == 0
+    assert charity_tier("WA", 150)["patient_pays_pct"] == 0

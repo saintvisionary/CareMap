@@ -31,7 +31,7 @@ export function summarize(result: QueryResult): string {
   }
 
   const nearest = facilities[0];
-  const nearestTier = fplPct != null ? charityTier(nearest.state, fplPct) : null;
+  const nearestTier = fplPct != null ? charityTier(nearest.state, fplPct, nearest.type) : null;
   const programName = CHARITY_PROGRAM_NAMES[nearest.state] ?? "charity care";
   const lines: string[] = [];
   lines.push(
@@ -43,8 +43,18 @@ export function summarize(result: QueryResult): string {
     lines.push(insuranceGuidance(insuranceType));
   } else if (!nearest.charity_care_participant) {
     lines.push(`${nearest.state} financial assistance rules aren't in CareMap yet -- ask this hospital's billing office about charity care.`);
-  } else if (nearestTier == null) {
+  } else if (fplPct == null) {
     lines.push(`Tell me your household income and size for a personal ${programName} estimate.`);
+  } else if (nearestTier == null) {
+    // fplPct is known but the facility's own formula still returned no
+    // percentage -- currently only IL above its free-care line, where the
+    // real discount needs a hospital cost-to-charge ratio this app doesn't
+    // have. Must not be confused with "we don't know your income yet".
+    lines.push(
+      nearest.state === "IL"
+        ? `Your income is above ${programName}'s free-care line, so there's no exact percentage to show (Illinois law bases it on each hospital's own cost-to-charge ratio, which CareMap doesn't have). State law still caps total collection at 20% of your family income in any 12-month period -- ask this hospital's billing office for your exact discount.`
+        : `${programName} doesn't have a modeled percentage at your income -- ask this hospital's billing office directly.`,
+    );
   } else {
     lines.push(
       nearestTier.patientPaysPct <= 0
@@ -70,7 +80,7 @@ export function summarize(result: QueryResult): string {
       // This facility's own state/tier, not nearest's -- the cheapest DRG
       // match isn't always the closest hospital, so it isn't always in the
       // same (or any modeled) state either.
-      const chargeTier = fplPct != null ? charityTier(withCharge.state, fplPct) : null;
+      const chargeTier = fplPct != null ? charityTier(withCharge.state, fplPct, withCharge.type) : null;
       lines.push(
         `${drg.label} at ${withCharge.name}: typical billed charge is ${money(charge)}.` +
           (chargeTier != null && insuranceType === "uninsured"

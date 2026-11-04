@@ -148,9 +148,35 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
             </div>
 
+            <div className={section}>
+              <h2 className={h2}>Illinois hospital charity care</h2>
+              <p className={p}>
+                Illinois's Hospital Uninsured Patient Discount Act (210 ILCS 89). Applies to all IL hospitals, for patients who are{" "}
+                <strong className="text-white/90">uninsured only</strong> -- unlike NJ/WA, the statute doesn't extend to the underinsured. The free-care
+                threshold depends on the hospital type:
+              </p>
+              <div className="rounded-xl bg-white/5 p-3 text-xs">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
+                  <span className="text-white/40">Hospital type</span>
+                  <span className="text-white/40">Free up to</span>
+                  <span>Standard hospital</span>
+                  <span className="text-white/90">200% of poverty line</span>
+                  <span>Critical Access Hospital</span>
+                  <span className="text-white/90">125% of poverty line</span>
+                </div>
+              </div>
+              <p className={p}>
+                <strong className="text-white/90">Above that line, CareMap shows no percentage.</strong> The real statutory discount is based on each
+                hospital's own Medicare cost-to-charge ratio -- a different CMS dataset CareMap doesn't have loaded -- so showing a number there would be
+                a guess, not a grounded figure. The law does still guarantee one real protection in that range: a hospital can never collect more than{" "}
+                <strong className="text-white/90">20% of your family income in any 12-month period</strong>, regardless of the missing percentage. Ask
+                the hospital's billing office for your exact discount.
+              </p>
+            </div>
+
             <p className={p}>
-              <strong className="text-white/90">Right now, NJ and WA are the only states with a modeled tier.</strong> Every other state still shows
-              real hospital locations and typical billed charges, but says "[state] rules coming soon" instead of a personal estimate.
+              <strong className="text-white/90">Right now, NJ, WA, and IL are the only states with a modeled tier.</strong> Every other state still
+              shows real hospital locations and typical billed charges, but says "[state] rules coming soon" instead of a personal estimate.
             </p>
 
             <div className={section}>
@@ -201,6 +227,7 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                 <li>Typical billed charges -- CMS Medicare Inpatient by Provider and Service</li>
                 <li>NJ Charity Care rules -- New Jersey Department of Health</li>
                 <li>WA charity care rules -- RCW 70.170.060, Washington State Legislature</li>
+                <li>IL charity care rules -- 210 ILCS 89, Illinois Hospital Uninsured Patient Discount Act</li>
                 <li>International locations -- OpenStreetMap (Nominatim, Overpass, Photon)</li>
               </ul>
               <p className={p}>All public, official sources -- CareMap never adds or guesses a number that isn't already in that data.</p>

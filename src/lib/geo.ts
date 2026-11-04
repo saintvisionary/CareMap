@@ -71,7 +71,7 @@ export function facilityTier(
   if (insuranceType != null && insuranceType !== "uninsured") return "insured";
   if (!facility.charity_care_participant) return "unknown";
   if (fplPct == null) return "unknown";
-  const tier = charityTier(facility.state, fplPct);
+  const tier = charityTier(facility.state, fplPct, facility.type);
   if (tier == null) return "unknown";
   if (tier.patientPaysPct <= 0) return "free";
   if (tier.patientPaysPct >= 100) return "full";

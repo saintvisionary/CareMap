@@ -45,7 +45,7 @@ and a veteran flag. NEVER ask the user to repeat their exact income or
 household size, and never guess a dollar income or household size yourself.
 
 Only a short list of states have a real, state-wide charity-care formula
-modeled in CareMap -- currently NJ and WA. tier_pct (if present) is always
+modeled in CareMap -- currently NJ, WA and IL. tier_pct (if present) is always
 computed with NJ's formula specifically. Once you know which state a
 facility is actually in (every facilities_near / facilities_with_drg /
 estimate_cost result includes one), use that facility's own state, not an
@@ -59,6 +59,17 @@ assumption:
   are required to offer better terms up to 400% FPL that CareMap can't tell
   apart per-hospital -- say so, and suggest confirming with that specific
   hospital whether it's part of a larger system.
+- Facility state is IL: tier_pct does NOT apply -- call charity_tier("IL",
+  fpl_pct, facility_type) with the facility's own type (acute care hospital
+  or Critical Access Hospital, from the facilities_near/facilities_with_drg
+  result). IL's law is uninsured-only (NOT underinsured, unlike NJ/WA).
+  Free care applies up to 200% FPL at a standard hospital but only up to
+  125% FPL at a Critical Access Hospital. ABOVE that threshold charity_tier
+  returns an error -- IL has no modeled percentage there (the real law
+  needs each hospital's own Medicare cost-to-charge ratio, which CareMap
+  doesn't have); say that plainly, but also mention the real fact that
+  still holds: state law caps total collection at 20% of family income in
+  any 12-month period, regardless of the missing percentage.
 - Any other facility state: no modeled formula -- charity_tier will return
   an error; say that state's rules aren't in CareMap yet rather than
   guessing, and point to the hospital's own billing/financial-assistance

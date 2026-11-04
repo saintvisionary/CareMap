@@ -52,26 +52,44 @@ def nj_charity_tier(fpl_pct: float) -> dict:
 
 
 @tool
-def charity_tier(state: str, fpl_pct: float) -> dict:
+def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_hospital") -> dict:
     """Look up the charity-care tier for a hospital's state, for a percent of the federal poverty line.
 
     Only a short list of states have a real, codified, state-wide formula --
-    currently NJ and WA. For every other state, returns an error; say the
+    currently NJ, WA, IL. For every other state, returns an error; say the
     state's rules aren't modeled in CareMap yet rather than guessing a tier.
     For WA specifically, this is the legal MINIMUM floor every hospital must
     offer (RCW 70.170.060(5)(b)) -- larger hospital systems are required to
     offer better terms up to 400% FPL that this can't apply per-hospital
     without bed-count/ownership data CareMap doesn't have; say so if the
     state is WA.
+    For IL specifically, facility_type matters: free care applies up to 200%
+    FPL at a standard hospital but only up to 125% FPL at a Critical Access
+    Hospital (facility_type "critical_access_hospital"). Above that
+    threshold IL has NO modeled percentage -- the real statutory discount
+    needs each hospital's own Medicare cost-to-charge ratio, which CareMap
+    doesn't have (a different CMS dataset than what's loaded). Say so if the
+    state is IL and this returns an error -- but still mention IL's real cap:
+    a hospital can never collect more than 20% of the patient's family
+    income in any 12-month period, regardless of the missing percentage.
 
     Args:
-        state: Two-letter state code of the facility (e.g. "NJ", "WA"), not the user's own state.
+        state: Two-letter state code of the facility (e.g. "NJ", "WA", "IL"), not the user's own state.
         fpl_pct: Household income as a percent of the federal poverty line (e.g. 158 for 158%).
+        facility_type: The facility's own type (e.g. "acute_care_hospital", "critical_access_hospital") -- only matters for IL.
     """
-    tier = policy_mod.charity_tier(state, fpl_pct)
-    if tier is None:
-        return {"error": f"No state-wide charity-care formula modeled for '{state}' -- direct the user to that hospital's billing/financial-assistance office."}
-    return tier
+    tier = policy_mod.charity_tier(state, fpl_pct, facility_type)
+    if tier is not None:
+        return tier
+    if state == "IL":
+        return {
+            "error": (
+                "IL has no modeled percentage above its free-care threshold (needs a cost-to-charge ratio "
+                "CareMap doesn't have) -- say that, and that state law still caps total collection at 20% of "
+                "family income per 12 months regardless, per policy.json's il_charity_care."
+            )
+        }
+    return {"error": f"No state-wide charity-care formula modeled for '{state}' -- direct the user to that hospital's billing/financial-assistance office."}
 
 
 @tool
@@ -175,8 +193,9 @@ def nearest_fqhc(zip_code: str, radius_miles: float = 25) -> dict:
 _STATE_PROGRAM_NAMES = {
     "NJ": "NJ Documented Charity Care",
     "WA": "the Washington hospital charity care program (RCW 70.170.060)",
+    "IL": "the Illinois Hospital Uninsured Patient Discount Act (210 ILCS 89)",
 }
-_STATE_POLICY_KEYS = {"NJ": "nj_charity_care", "WA": "wa_charity_care"}
+_STATE_POLICY_KEYS = {"NJ": "nj_charity_care", "WA": "wa_charity_care", "IL": "il_charity_care"}
 
 
 @tool

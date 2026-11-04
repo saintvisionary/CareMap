@@ -49,6 +49,28 @@
       {"max_fpl_pct": null, "patient_pays_pct": 100}
     ]
   },
+  "il_charity_care": {
+    "source": "https://codes.findlaw.com/il/chapter-210-health-facilities-and-regulation/il-st-sect-210-89-10/ (210 ILCS 89/10 and 89/5, Hospital Uninsured Patient Discount Act)",
+    "applies_to": "all IL hospitals -- uninsured patients only (the statute does not mention underinsured patients at all, unlike NJ/WA)",
+    "note": "Verified directly against the current codified text (210 ILCS 89/5 and /10). Below the free-care threshold, patient_pays_pct is a real, exact 0% -- no gap there. ABOVE it, the law does NOT set a clean percentage: the discount is charges x (1 - cost_to_charge_ratio x 1.35), a real statutory formula, but it needs each hospital's own Medicare cost-to-charge ratio, which CareMap doesn't have loaded (it's a different CMS dataset -- cost reports -- not the Hospital General Information / DRG charge data already in use). A hard cap also applies there: a hospital can never collect more than 20% of the patient's family income in any 12-month period, regardless of the formula result. CareMap deliberately shows NO percentage above the free-care threshold rather than guess one -- only the free-care floor and the 20%-income-cap fact are real without that missing data.",
+    "eligibility": {
+      "must_be_uninsured_only": true,
+      "underinsured_not_covered": true,
+      "asset_exclusion_fpl_metro": 600,
+      "asset_exclusion_fpl_other": 300
+    },
+    "free_care_min_charge_standard": 150,
+    "free_care_min_charge_rural": 300,
+    "max_collection_pct_of_family_income_per_12mo": 20,
+    "standard": {
+      "free_care_max_fpl_pct": 200,
+      "eligibility_ceiling_fpl_pct": 600
+    },
+    "rural_critical_access": {
+      "free_care_max_fpl_pct": 125,
+      "eligibility_ceiling_fpl_pct": 300
+    }
+  },
   "good_faith_estimate": {
     "source": "https://www.cms.gov/medical-bill-rights/help/guides/good-faith-estimate",
     "applies_to": "uninsured or self-pay patients scheduling care at least 3 business days ahead",

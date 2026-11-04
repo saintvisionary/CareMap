@@ -105,3 +105,32 @@ def test_draft_application_unmodeled_state_errors_not_guesses():
         return  # CA data not loaded in this environment -- nothing to assert
     result = draft_application(ccn=ca_ccn, patient_pays_pct=0)
     assert "error" in result
+
+
+def test_charity_tier_il_free_care():
+    assert charity_tier(state="IL", fpl_pct=150, facility_type="acute_care_hospital")["patient_pays_pct"] == 0
+    # Same income, different threshold at a Critical Access Hospital (125%
+    # FPL, not 200%) -- above its threshold, so no tier.
+    r = charity_tier(state="IL", fpl_pct=150, facility_type="critical_access_hospital")
+    assert "error" in r
+
+
+def test_charity_tier_il_above_threshold_discloses_ccr_gap_and_income_cap():
+    # Above IL's free-care line the real law has no clean percentage (needs
+    # a cost-to-charge ratio CareMap doesn't have) -- must say that AND the
+    # real 20%-of-income cap, not just a generic "not modeled" message.
+    r = charity_tier(state="IL", fpl_pct=400, facility_type="acute_care_hospital")
+    assert "error" in r
+    assert "cost-to-charge ratio" in r["error"]
+    assert "20%" in r["error"]
+
+
+def test_draft_application_il_facility():
+    # GRAHAM HOSPITAL ASSOCIATION, a real IL acute care hospital (CCN 140001).
+    r = draft_application(ccn="140001", patient_pays_pct=0)
+    assert "GRAHAM HOSPITAL ASSOCIATION" in r["letter"]
+    assert "Illinois Hospital Uninsured Patient Discount Act" in r["letter"]
+    assert "IL residency" in r["checklist"][0]
+    # IL's policy.json entry has no confirmed apply-window/help-phone either.
+    assert "help_phone" not in r
+    assert not any("Submit within" in item for item in r["checklist"])
