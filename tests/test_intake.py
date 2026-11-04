@@ -13,6 +13,15 @@ def test_demo_sentence_redacts_income_and_household():
     assert "52" not in hint.redacted_message
 
 
+def test_plain_digit_dollar_amount_no_commas():
+    # The guided-form UI builds messages like "$52000" (no thousands comma) --
+    # regression test for a regex that originally only matched "$52,000".
+    hint = redact("07018, family of 4, $52000, uninsured, need gallbladder surgery")
+    assert hint.tier_pct == 0
+    assert "$52000" not in hint.redacted_message
+    assert "[income redacted]" in hint.redacted_message
+
+
 def test_zip_extracted():
     hint = redact("I'm in 07019, insured, need a checkup")
     assert hint.zip_code == "07019"

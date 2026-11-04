@@ -1,15 +1,25 @@
 import { useState } from "react";
 import { ChatPanel } from "./components/ChatPanel";
+import { GlassPanel } from "./components/GlassPanel";
+import { GuidedForm } from "./components/GuidedForm";
 import { MapView } from "./components/MapView";
 import { ResultCard } from "./components/ResultCard";
 import { useCareMap } from "./hooks/useCareMap";
 import { useCareMapData } from "./hooks/useCareMapData";
 import { parseNeed } from "./lib/intake";
 
+type Mode = "guided" | "chat";
+
 export default function App() {
   const { facilities: allFacilities, zipCentroids, loading: dataLoading, error } = useCareMapData();
   const { messages, facilities, tierPct, flyTo, loading, sendMessage } = useCareMap(allFacilities, zipCentroids);
   const [activeCcn, setActiveCcn] = useState<string | null>(null);
+  const [mode, setMode] = useState<Mode>("guided");
+
+  const handleGuidedSubmit = (message: string) => {
+    sendMessage(message);
+    setMode("chat");
+  };
 
   const lastUserMessage =
     messages
@@ -52,9 +62,29 @@ export default function App() {
             ))}
           </div>
         )}
-        <div className="h-64 sm:h-80">
-          <ChatPanel messages={messages} loading={loading || dataLoading} onSend={sendMessage} />
+        <div className="flex gap-1.5">
+          {(["guided", "chat"] as const).map((m) => (
+            <button
+              key={m}
+              onClick={() => setMode(m)}
+              className={`rounded-full px-3 py-1 text-xs font-medium capitalize transition-colors ${
+                mode === m ? "bg-white/90 text-ink-950" : "bg-white/10 text-white/50"
+              }`}
+            >
+              {m === "guided" ? "Fill in details" : "Chat"}
+            </button>
+          ))}
         </div>
+
+        {mode === "guided" ? (
+          <GlassPanel className="p-4">
+            <GuidedForm onSubmit={handleGuidedSubmit} />
+          </GlassPanel>
+        ) : (
+          <div className="h-64 sm:h-80">
+            <ChatPanel messages={messages} loading={loading || dataLoading} onSend={sendMessage} />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -15,7 +15,8 @@ export interface IntakeHint {
 
 const ZIP_RE = /\b(\d{5})\b/;
 const DOLLAR_K_RE = /\$\s?(\d+(?:\.\d+)?)\s*k\b/i;
-const DOLLAR_RE = /\$\s?(\d{1,3}(?:,\d{3})*(?:\.\d+)?)\b/;
+// Matches both "$52,000" (comma-grouped) and "$52000" (plain digits).
+const DOLLAR_RE = /\$\s?(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)\b/;
 const HOUSEHOLD_RE = /family of (\d+)|household of (\d+)|(\d+)[\s-]*person household/i;
 const UNINSURED_RE = /\buninsured\b/i;
 const INSURED_RE = /\binsured\b/i;

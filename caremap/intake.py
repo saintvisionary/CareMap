@@ -20,7 +20,8 @@ from . import policy
 
 _ZIP = re.compile(r"\b(\d{5})\b")
 _DOLLAR_K = re.compile(r"\$\s?(\d+(?:\.\d+)?)\s*k\b", re.IGNORECASE)
-_DOLLAR = re.compile(r"\$\s?(\d{1,3}(?:,\d{3})*(?:\.\d+)?)\b")
+# Matches both "$52,000" (comma-grouped) and "$52000" (plain digits).
+_DOLLAR = re.compile(r"\$\s?(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)\b")
 _HOUSEHOLD = re.compile(
     r"family of (\d+)|household of (\d+)|(\d+)[\s-]*person household", re.IGNORECASE
 )
