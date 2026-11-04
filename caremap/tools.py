@@ -65,6 +65,32 @@ def estimate_cost(ccn: str, drg: str) -> dict:
 
 
 @tool
+def facilities_with_drg(zip_code: str, drg: str, radius_miles: float = 25) -> dict:
+    """Find facilities near a zip code that have billed-charge data for a specific
+    procedure (DRG code), nearest first. Prefer this over guessing facility-by-facility
+    with estimate_cost: most facilities only report a handful of DRGs, so a blind guess
+    usually misses. Call this first, then estimate_cost on one of the CCNs it returns.
+
+    Args:
+        zip_code: 5-digit US zip code.
+        drg: Medicare Diagnosis-Related Group code, e.g. "419" for laparoscopic cholecystectomy.
+        radius_miles: Search radius in miles (default 25).
+    """
+    matches = facility_data.facilities_with_drg(zip_code, drg, radius_miles=radius_miles)
+    if not matches:
+        return {"error": f"No facility within {radius_miles} miles of '{zip_code}' has billed-charge data for DRG '{drg}'."}
+    return {
+        "zip_code": zip_code,
+        "drg": drg,
+        "facilities": [
+            {"ccn": f["ccn"], "name": f["name"], "distance_miles": f["distance_miles"],
+             "typical_billed_charge": f["drg_charges"][drg]["avg_charge"]}
+            for f in matches
+        ],
+    }
+
+
+@tool
 def apply_tier_to_charge(typical_billed_charge: float, patient_pays_pct: float) -> dict:
     """Apply a charity-care tier's patient_pays_pct to a typical billed charge to get the
     estimated patient-owed amount.
@@ -148,7 +174,7 @@ def draft_application(ccn: str, patient_pays_pct: float) -> dict:
 
 
 ELIGIBILITY_TOOLS = [fpl_percent, nj_charity_tier]
-COST_TOOLS = [estimate_cost, apply_tier_to_charge]
+COST_TOOLS = [facilities_with_drg, estimate_cost, apply_tier_to_charge]
 QUALITY_TOOLS = [facilities_near, nearest_fqhc]
 ADVOCATE_TOOLS = [draft_application]
 

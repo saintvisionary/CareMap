@@ -71,3 +71,13 @@ def facilities_near(zip_code: str, radius_miles: float = 15, types: list[str] | 
 def nearest_fqhc(zip_code: str, radius_miles: float = 25) -> dict | None:
     matches = facilities_near(zip_code, radius_miles=radius_miles, types=["fqhc"])
     return matches[0] if matches else None
+
+
+def facilities_with_drg(zip_code: str, drg: str, radius_miles: float = 25) -> list[dict]:
+    """Facilities within radius_miles that have billed-charge data for a given
+    DRG, nearest first. Most facilities only report a handful of DRGs (CMS
+    only publishes ones with enough Medicare discharge volume), so this
+    exists specifically to avoid an agent guessing facility-by-facility with
+    estimate_cost -- one deterministic lookup instead of N blind tries.
+    """
+    return [f for f in facilities_near(zip_code, radius_miles=radius_miles) if drg in f.get("drg_charges", {})]

@@ -3,6 +3,7 @@ from caremap.tools import (
     draft_application,
     estimate_cost,
     facilities_near,
+    facilities_with_drg,
     fpl_percent,
     nearest_fqhc,
     nj_charity_tier,
@@ -26,6 +27,21 @@ def test_estimate_cost_known_facility():
 
 def test_estimate_cost_unknown_facility():
     r = estimate_cost(ccn="nope", drg="419")
+    assert "error" in r
+
+
+def test_facilities_with_drg_finds_morristown():
+    # Replaces the blind facility-by-facility guessing an agent would
+    # otherwise do with estimate_cost: one deterministic call.
+    r = facilities_with_drg(zip_code="07960", drg="419", radius_miles=10)
+    ccns = {f["ccn"] for f in r["facilities"]}
+    assert "310015" in ccns
+    match = next(f for f in r["facilities"] if f["ccn"] == "310015")
+    assert match["typical_billed_charge"] == 70_584
+
+
+def test_facilities_with_drg_no_match():
+    r = facilities_with_drg(zip_code="07018", drg="419", radius_miles=1)
     assert "error" in r
 
 

@@ -46,9 +46,17 @@ Use your tools as needed:
 - fpl_percent, nj_charity_tier: only if you have income/household info the
   user volunteered as a band, or need to turn an fpl_pct into a tier; prefer
   the given tier_pct when it is already present.
-- estimate_cost, apply_tier_to_charge: to price a procedure at a facility,
-  once you know a CCN, DRG and tier_pct.
-- facilities_near, nearest_fqhc: to find nearby facilities for a zip code.
+- To price a procedure near a zip code: call facilities_with_drg(zip_code,
+  drg) FIRST -- it only returns facilities that actually have billed-charge
+  data for that DRG, nearest first. Then call estimate_cost on one of the
+  CCNs it returns. Do NOT call estimate_cost on facility after facility
+  hoping one has the data; most facilities only report a handful of DRGs,
+  so guessing wastes many calls. If facilities_with_drg returns no matches,
+  say so instead of guessing.
+- apply_tier_to_charge: to turn a typical billed charge into an estimated
+  patient-owed amount, once you know a tier_pct.
+- facilities_near, nearest_fqhc: to find nearby facilities for a zip code
+  when cost isn't the question.
 - draft_application: to draft a charity-care application once you know a
   facility and tier_pct.
 
