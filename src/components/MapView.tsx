@@ -21,7 +21,7 @@ interface MapViewProps {
   facilities: FacilityWithDistance[];
   internationalFacilities: InternationalFacility[];
   previewFacilities: Facility[];
-  tierPct: number | null;
+  fplPct: number | null;
   insuranceType: InsuranceType | null;
   flyTo: MapFlyTo | null;
   activeCcn: string | null;
@@ -33,7 +33,7 @@ export function MapView({
   facilities,
   internationalFacilities,
   previewFacilities,
-  tierPct,
+  fplPct,
   insuranceType,
   flyTo,
   activeCcn,
@@ -118,7 +118,7 @@ export function MapView({
 
     facilities.forEach((f, i) => {
       if (f.lat == null || f.lon == null) return;
-      const tier = facilityTier(f, tierPct, insuranceType);
+      const tier = facilityTier(f, fplPct, insuranceType);
       // MapLibre sets a positioning `transform` directly on this outer element;
       // the pop-in animation must live on a child instead, or it clobbers that
       // transform and every marker collapses to (0,0).
@@ -175,7 +175,7 @@ export function MapView({
         .addTo(map);
       markersRef.current.set(`preview-${f.ccn}`, marker);
     });
-  }, [facilities, internationalFacilities, previewFacilities, tierPct, insuranceType, onSelectFacility, onSelectPreviewFacility]);
+  }, [facilities, internationalFacilities, previewFacilities, fplPct, insuranceType, onSelectFacility, onSelectPreviewFacility]);
 
   useEffect(() => {
     for (const [ccn, marker] of markersRef.current.entries()) {

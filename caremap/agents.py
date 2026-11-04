@@ -40,23 +40,45 @@ affordable care near them in the US.
 You receive a redacted version of the user's message: any exact dollar
 income or household size has already been removed and replaced with
 "[income redacted]" / "[household redacted]". You may also receive a
-pre-computed tier_pct, a zip code, an insurance_type category, and a
-veteran flag. NEVER ask the user to repeat their exact income or household
-size, and never guess a dollar income or household size yourself.
+pre-computed tier_pct, an fpl_pct, a zip code, an insurance_type category,
+and a veteran flag. NEVER ask the user to repeat their exact income or
+household size, and never guess a dollar income or household size yourself.
+
+Only a short list of states have a real, state-wide charity-care formula
+modeled in CareMap -- currently NJ and WA. tier_pct (if present) is always
+computed with NJ's formula specifically. Once you know which state a
+facility is actually in (every facilities_near / facilities_with_drg /
+estimate_cost result includes one), use that facility's own state, not an
+assumption:
+- Facility state is NJ: tier_pct already matches it -- use that, or call
+  charity_tier("NJ", fpl_pct) if you only have fpl_pct.
+- Facility state is WA: tier_pct does NOT apply (it's NJ's formula) --
+  call charity_tier("WA", fpl_pct) instead. This is the legal MINIMUM every
+  WA hospital must offer; larger hospital systems (chains of 3+ hospitals,
+  or specific large hospitals in King County or a southern-border county)
+  are required to offer better terms up to 400% FPL that CareMap can't tell
+  apart per-hospital -- say so, and suggest confirming with that specific
+  hospital whether it's part of a larger system.
+- Any other facility state: no modeled formula -- charity_tier will return
+  an error; say that state's rules aren't in CareMap yet rather than
+  guessing, and point to the hospital's own billing/financial-assistance
+  office.
 
 insurance_type is a public coverage category, never PII -- one of
 "uninsured", "medicaid", "medicare", "private", "va_tricare", "unsure".
-NJ Charity Care applies ONLY when insurance_type is "uninsured" (per its
-own rule: uninsured/underinsured AND not Medicaid-eligible). For any other
-value, never claim a tier, a "$0", or any charity-care price, even if a
-tier_pct happens to be present:
+Every modeled state's formula applies ONLY when insurance_type is
+"uninsured" (NJ's own rule is explicit: uninsured/underinsured AND not
+Medicaid-eligible; WA's statute doesn't spell this out as clearly, so it's
+applied the same conservative way). For any other insurance_type value,
+never claim a tier, a "$0", or any charity-care price, even if tier_pct or
+fpl_pct happen to be present:
 - medicaid: Medicaid generally covers hospital care at little to no direct
   cost; point them to their Medicaid plan for billing questions.
 - medicare: point them to Medicare or their Medicare Advantage plan.
 - private: point them to their insurer for their specific copay/deductible.
 - va_tricare: mention care through the VA system is an option; point them
   to Tricare for costs outside it.
-- unsure / not given: say Charity Care applies only if uninsured/underinsured,
+- unsure / not given: say charity care applies only if uninsured/underinsured,
   and ask them to confirm their coverage status for a personal estimate.
 You may still share a typical billed charge as a neutral reference point
 regardless of insurance_type if they ask about cost.
@@ -67,9 +89,11 @@ regardless of their insurance_type -- not every veteran is VA-enrolled, so
 this is independent of whether insurance_type is "va_tricare".
 
 Use your tools as needed:
-- fpl_percent, nj_charity_tier: only if you have income/household info the
-  user volunteered as a band, or need to turn an fpl_pct into a tier; prefer
-  the given tier_pct when it is already present.
+- fpl_percent: only if you have income/household info the user volunteered
+  as a band and weren't already given fpl_pct.
+- charity_tier(state, fpl_pct): the general lookup -- prefer this over
+  nj_charity_tier once you know the facility's actual state. nj_charity_tier
+  still exists and is equivalent to charity_tier("NJ", fpl_pct).
 - To price a procedure near a zip code: call facilities_with_drg(zip_code,
   drg) FIRST -- it only returns facilities that actually have billed-charge
   data for that DRG, nearest first. Then call estimate_cost on one of the
@@ -78,11 +102,12 @@ Use your tools as needed:
   so guessing wastes many calls. If facilities_with_drg returns no matches,
   say so instead of guessing.
 - apply_tier_to_charge: to turn a typical billed charge into an estimated
-  patient-owed amount, once you know a tier_pct.
+  patient-owed amount, once you know a patient_pays_pct.
 - facilities_near, nearest_fqhc: to find nearby facilities for a zip code
   when cost isn't the question.
 - draft_application: to draft a charity-care application once you know a
-  facility and tier_pct.
+  facility and patient_pays_pct -- it looks up the right program/state
+  itself from the facility's CCN.
 
 Every dollar figure or percent tier in your reply MUST come from one of
 these tools. Never compute a new number yourself (e.g. never multiply a
@@ -142,7 +167,9 @@ def _prompt_for(hint: IntakeHint) -> str:
         context.append(f"insurance_type: {hint.insurance_type}")
     context.append(f"veteran: {hint.veteran}")
     if hint.tier_pct is not None:
-        context.append(f"tier_pct (already computed, NJ Charity Care): {hint.tier_pct}")
+        context.append(f"tier_pct (already computed, NJ Charity Care formula specifically): {hint.tier_pct}")
+    if hint.fpl_pct is not None:
+        context.append(f"fpl_pct (income as % of federal poverty line, state-agnostic -- use with charity_tier for a non-NJ facility): {hint.fpl_pct}")
     return "\n".join(context)
 
 
@@ -154,12 +181,13 @@ def handle_message(
     insurance_type: str | None = None,
     veteran: bool | None = None,
     tier_pct: float | None = None,
+    fpl_pct: float | None = None,
 ) -> dict:
     """Entry point for the Lambda handler. Redacts, then runs the Orchestrator.
 
-    zip_code/insurance_type/veteran/tier_pct are hints the caller already
-    computed client-side (the browser's own redact() pass) and sent as
-    separate fields alongside the redacted message text -- they take
+    zip_code/insurance_type/veteran/tier_pct/fpl_pct are hints the caller
+    already computed client-side (the browser's own redact() pass) and sent
+    as separate fields alongside the redacted message text -- they take
     precedence over anything redact() re-derives from the message text
     here, since the message text alone may not restate them (e.g. a
     guided-form submission where the frontend sends the zip as structured
@@ -178,6 +206,8 @@ def handle_message(
         hint.veteran = veteran
     if tier_pct is not None:
         hint.tier_pct = tier_pct
+    if fpl_pct is not None:
+        hint.fpl_pct = fpl_pct
     prompt = _prompt_for(hint)
     result = orchestrator.agent(prompt, structured_output_model=OrchestratorOutput)
     output: OrchestratorOutput = result.structured_output

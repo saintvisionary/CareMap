@@ -19,12 +19,17 @@ def test_prompt_includes_hints_not_present_in_message_text():
     hint.insurance_type = "uninsured"
     hint.veteran = True
     hint.tier_pct = 0
+    hint.fpl_pct = 158
 
     prompt = _prompt_for(hint)
     assert "zip_code: 07018" in prompt
     assert "insurance_type: uninsured" in prompt
     assert "veteran: True" in prompt
-    assert "tier_pct (already computed, NJ Charity Care): 0" in prompt
+    assert "tier_pct (already computed, NJ Charity Care formula specifically): 0" in prompt
+    # fpl_pct is the state-agnostic value -- lets the model look up a
+    # non-NJ facility's own tier (e.g. WA) via charity_tier instead.
+    assert "fpl_pct (income as % of federal poverty line" in prompt
+    assert "158" in prompt
 
 
 def test_prompt_omits_unset_hints_but_always_states_veteran():
@@ -33,6 +38,7 @@ def test_prompt_omits_unset_hints_but_always_states_veteran():
     assert "zip_code" not in prompt
     assert "insurance_type" not in prompt
     assert "tier_pct" not in prompt
+    assert "fpl_pct" not in prompt
     # veteran always appears (defaults False) -- unlike the others, there's
     # no "we don't know yet" state worth representing for it.
     assert "veteran: False" in prompt

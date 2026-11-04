@@ -33,6 +33,22 @@
     "decision_window_business_days": 10,
     "help_phone": "1-866-588-5696"
   },
+  "wa_charity_care": {
+    "source": "https://app.leg.wa.gov/RCW/default.aspx?cite=70.170.060",
+    "applies_to": "all WA acute care hospitals -- patient responsibility portion of hospital charges",
+    "note": "RCW 70.170.060(5) sets TWO schedules: a more generous one for larger hospital systems/hospitals (defined by owning 3+ acute hospitals, or specific large hospitals in King County or a southern-border county), and this floor schedule required of every other hospital. CareMap doesn't have hospital bed-count/ownership-network data loaded to tell which hospitals qualify for the larger-system schedule, so this is the legal MINIMUM every WA hospital must offer -- some hospitals are required to offer better terms (up to 400% FPL). Confirm with the specific hospital.",
+    "eligibility": {
+      "must_be_un_or_underinsured": "unconfirmed -- the statute's income-based eligibility doesn't explicitly require uninsured status the way NJ's does; applied conservatively here (same uninsured-only gate as NJ) pending fuller verification",
+      "not_medicaid_eligible": "unconfirmed -- hospitals must help Medicaid-eligible patients apply for Medicaid first, but the statute doesn't flatly exclude them from charity care the way NJ's does",
+      "assets_can_reduce_but_not_deny": true
+    },
+    "tiers": [
+      {"max_fpl_pct": 200, "patient_pays_pct": 0},
+      {"max_fpl_pct": 250, "patient_pays_pct": 25},
+      {"max_fpl_pct": 300, "patient_pays_pct": 50},
+      {"max_fpl_pct": null, "patient_pays_pct": 100}
+    ]
+  },
   "good_faith_estimate": {
     "source": "https://www.cms.gov/medical-bill-rights/help/guides/good-faith-estimate",
     "applies_to": "uninsured or self-pay patients scheduling care at least 3 business days ahead",

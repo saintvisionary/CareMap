@@ -20,7 +20,7 @@ export default function App() {
     facilities,
     internationalFacilities,
     previewFacilities,
-    tierPct,
+    fplPct,
     insuranceType,
     flyTo,
     loading,
@@ -97,7 +97,7 @@ export default function App() {
         facilities={facilities}
         internationalFacilities={internationalFacilities}
         previewFacilities={previewFacilities}
-        tierPct={tierPct}
+        fplPct={fplPct}
         insuranceType={insuranceType}
         flyTo={flyTo}
         activeCcn={activeCcn}
@@ -158,7 +158,7 @@ export default function App() {
                     <ResultCard
                       key={f.ccn}
                       facility={f}
-                      tierPct={tierPct}
+                      fplPct={fplPct}
                       insuranceType={insuranceType}
                       need={need}
                       index={i}

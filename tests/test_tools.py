@@ -1,5 +1,6 @@
 from caremap.tools import (
     apply_tier_to_charge,
+    charity_tier,
     draft_application,
     estimate_cost,
     facilities_near,
@@ -71,3 +72,36 @@ def test_draft_application():
     r = draft_application(ccn="310015", patient_pays_pct=0)
     assert "MORRISTOWN MEDICAL CENTER" in r["letter"]
     assert len(r["checklist"]) >= 4
+
+
+def test_charity_tier_dispatches_by_facility_state():
+    assert charity_tier(state="NJ", fpl_pct=150)["patient_pays_pct"] == 0
+    assert charity_tier(state="WA", fpl_pct=220)["patient_pays_pct"] == 25
+
+
+def test_charity_tier_unmodeled_state_errors_not_guesses():
+    r = charity_tier(state="TX", fpl_pct=150)
+    assert "error" in r
+
+
+def test_draft_application_wa_facility():
+    # PROVIDENCE ST MARY MEDICAL CENTER, a real WA acute care hospital.
+    r = draft_application(ccn="500002", patient_pays_pct=25)
+    assert "PROVIDENCE ST MARY MEDICAL CENTER" in r["letter"]
+    assert "Washington hospital charity care" in r["letter"]
+    assert "WA residency" in r["checklist"][0]
+    # WA's policy.json entry has no confirmed apply-window/help-phone (unlike
+    # NJ) -- must not be fabricated into the output.
+    assert "help_phone" not in r
+    assert not any("Submit within" in item for item in r["checklist"])
+
+
+def test_draft_application_unmodeled_state_errors_not_guesses():
+    # Any non-NJ/WA facility -- draft_application must say so, not invent a
+    # charity-care program that doesn't exist for that state.
+    r = facilities_near(zip_code="90001", radius_miles=50, types=["acute_care_hospital"])
+    ca_ccn = next((f["ccn"] for f in r.get("facilities", []) if f.get("state") == "CA"), None)
+    if ca_ccn is None:
+        return  # CA data not loaded in this environment -- nothing to assert
+    result = draft_application(ccn=ca_ccn, patient_pays_pct=0)
+    assert "error" in result

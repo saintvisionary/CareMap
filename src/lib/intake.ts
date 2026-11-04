@@ -17,7 +17,14 @@ export interface IntakeHint {
   zipCode: string | null;
   insuranceType: InsuranceType | null;
   veteran: boolean;
+  /** NJ-formula-specific, kept for callers that only ever dealt with NJ
+   * facilities. New code should prefer fplPct + charityTier(facility.state,
+   * fplPct) from src/lib/policy.ts, which works for any modeled state. */
   tierPct: number | null;
+  /** Income as a percent of the federal poverty line -- state-agnostic.
+   * Pass this and a specific facility's own state to charityTier() rather
+   * than assuming tierPct's NJ formula applies. */
+  fplPct: number | null;
   need: string | null;
   /** Set only for "traveling to X" messages (the guided form's traveler
    * mode, or free chat text). When present, callers should use the
@@ -195,18 +202,22 @@ export function redact(message: string): IntakeHint {
 
   let redacted = message;
   let tierPct: number | null = null;
+  let fplPct: number | null = null;
   const dollar = parseDollarAmount(message);
   const household = parseHouseholdSize(message);
   if (dollar && household) {
     const [income, dollarSpan] = dollar;
     const [size, householdSpan] = household;
-    // NJ Charity Care applies only to the uninsured/underinsured -- any
-    // other category (including Medicaid, per policy.json's own "not
-    // Medicaid-eligible" rule) gets no tier at all, not a $0 one. Raw
-    // numbers are still redacted either way; only whether a tier is
-    // exposed changes.
+    // Every modeled state's formula (currently NJ, WA) applies only to the
+    // uninsured/underinsured -- any other category (including Medicaid, per
+    // NJ's own "not Medicaid-eligible" rule) gets no tier at all, not a $0
+    // one. Raw numbers are still redacted either way; only whether a tier
+    // is exposed changes.
     if (insuranceType === "uninsured") {
-      const fplPct = fplPercent(income, size);
+      fplPct = fplPercent(income, size);
+      // tierPct keeps assuming NJ's formula specifically, unchanged from
+      // before. fplPct is the new, state-agnostic value -- pass it with a
+      // specific facility's own state to charityTier() instead.
       tierPct = njCharityTier(fplPct).patientPaysPct;
     }
     redacted = redacted.replace(dollarSpan, "[income redacted]").replace(householdSpan, "[household redacted]");
@@ -217,6 +228,7 @@ export function redact(message: string): IntakeHint {
     insuranceType,
     veteran,
     tierPct,
+    fplPct,
     need: parseNeed(message),
     destination: parseDestination(message),
     redactedMessage: redacted,

@@ -287,10 +287,14 @@ def build_states(states: set[str], zip_centroids: dict[str, dict]) -> dict[str, 
     by_state: dict[str, list[dict]] = {}
     for f in facilities:
         f["drg_charges"] = drg_by_ccn.get(f["ccn"], {})
-        # NJ Charity Care applies to NJ acute-care hospitals; VA hospitals are
-        # federal and run their own separate means-tested eligibility system
-        # entirely outside state charity-care programs.
-        f["charity_care_participant"] = f["state"] == "NJ" and f["type"] == "acute_care_hospital"
+        # True when this facility's state has a real, codified, state-wide
+        # charity-care formula modeled in CareMap (see caremap/policy.py's
+        # STATE_CHARITY_TIER_FNS -- currently NJ, WA) and the facility is an
+        # acute-care hospital the formula actually applies to. VA hospitals
+        # are federal and run their own separate means-tested eligibility
+        # system entirely outside state charity-care programs, so they're
+        # excluded even in a modeled state.
+        f["charity_care_participant"] = f["state"] in {"NJ", "WA"} and f["type"] == "acute_care_hospital"
         by_state.setdefault(f["state"], []).append(f)
 
     return {state: {"state": state, "facilities": fs} for state, fs in by_state.items()}

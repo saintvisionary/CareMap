@@ -35,6 +35,19 @@ def fpl_percent(annual_income: float, household_size: int) -> int:
     return round(pct)
 
 
+def _tier_lookup(policy_key: str, fpl_pct: float) -> dict:
+    tiers = POLICY[policy_key]["tiers"]
+    for tier in tiers:
+        if tier["max_fpl_pct"] is None or fpl_pct <= tier["max_fpl_pct"]:
+            return {
+                "patient_pays_pct": tier["patient_pays_pct"],
+                "fpl_pct": fpl_pct,
+                "max_fpl_pct": tier["max_fpl_pct"],
+                "source": POLICY[policy_key]["source"],
+            }
+    raise AssertionError(f"unreachable: last tier in {policy_key} has max_fpl_pct = null")
+
+
 def nj_charity_tier(fpl_pct: float) -> dict:
     """NJ Documented Charity Care tier for a given percent of FPL.
 
@@ -42,16 +55,42 @@ def nj_charity_tier(fpl_pct: float) -> dict:
     the non-numeric eligibility conditions (insurance status, assets,
     Medicaid eligibility) -- caller must confirm those separately.
     """
-    tiers = POLICY["nj_charity_care"]["tiers"]
-    for tier in tiers:
-        if tier["max_fpl_pct"] is None or fpl_pct <= tier["max_fpl_pct"]:
-            return {
-                "patient_pays_pct": tier["patient_pays_pct"],
-                "fpl_pct": fpl_pct,
-                "max_fpl_pct": tier["max_fpl_pct"],
-                "source": POLICY["nj_charity_care"]["source"],
-            }
-    raise AssertionError("unreachable: last tier has max_fpl_pct = null")
+    return _tier_lookup("nj_charity_care", fpl_pct)
+
+
+def wa_charity_tier(fpl_pct: float) -> dict:
+    """WA hospital charity care tier (RCW 70.170.060(5)(b) floor schedule) for a percent of FPL.
+
+    This is the legal MINIMUM every WA hospital must offer -- larger hospital
+    systems/hospitals are required to offer better terms up to 400% FPL under
+    a separate schedule (5)(a) that CareMap can't apply per-hospital without
+    bed-count/ownership data it doesn't have. See policy.json's "note" field.
+    Does not check eligibility conditions -- caller must confirm those too.
+    """
+    return _tier_lookup("wa_charity_care", fpl_pct)
+
+
+# Keyed by the two-letter state code on a facility record. Add an entry here
+# (plus the matching policy.json block and a state-specific function above)
+# for each additional state with a real, codified, state-wide formula --
+# most states have no such law (just federal 501(r): each nonprofit hospital
+# must have *a* policy, with no public structured dataset of what it says),
+# so this registry is deliberately short and should stay that way unless a
+# new state is actually verified against its own statute.
+STATE_CHARITY_TIER_FNS = {
+    "NJ": nj_charity_tier,
+    "WA": wa_charity_tier,
+}
+
+
+def charity_tier(state: str, fpl_pct: float) -> dict | None:
+    """Look up the charity-care tier for whichever state a facility is in.
+
+    Returns None for a state with no modeled formula -- caller should say so
+    rather than claim a tier that doesn't exist.
+    """
+    fn = STATE_CHARITY_TIER_FNS.get(state)
+    return fn(fpl_pct) if fn else None
 
 
 def apply_tier(typical_charge: float, patient_pays_pct: float) -> float:

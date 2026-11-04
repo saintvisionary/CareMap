@@ -54,6 +54,7 @@ class IntakeHint:
     insurance_type: InsuranceType | None
     veteran: bool
     tier_pct: float | None
+    fpl_pct: float | None
     redacted_message: str
 
 
@@ -91,18 +92,26 @@ def redact(message: str) -> IntakeHint:
 
     redacted = message
     tier_pct = None
+    fpl_pct = None
     dollar = _parse_dollar_amount(message)
     household = _parse_household_size(message)
     if dollar and household:
         income, dollar_span = dollar
         size, household_span = household
-        # NJ Charity Care applies only to the uninsured/underinsured -- any
-        # other category (including Medicaid, per policy.json's own "not
-        # Medicaid-eligible" rule) gets no tier at all, not a $0 one. Raw
-        # numbers are still redacted either way; only whether a tier is
-        # exposed changes.
+        # NJ/WA charity care both apply only to the uninsured/underinsured
+        # (applied conservatively for WA too -- see policy.json's wa_charity_care
+        # "eligibility" note) -- any other category (including Medicaid, per
+        # NJ's own "not Medicaid-eligible" rule) gets no tier at all, not a $0
+        # one. Raw numbers are still redacted either way; only whether a tier
+        # is exposed changes.
         if insurance_type == "uninsured":
             fpl_pct = policy.fpl_percent(income, size)
+            # tier_pct keeps assuming NJ's formula -- unchanged from before,
+            # since most callers (today, only NJ facilities ever display a
+            # tier from it) still expect that shape. fpl_pct is the new,
+            # state-agnostic value: a facility in a different modeled state
+            # (currently just WA) gets its own tier via policy.charity_tier(
+            # facility_state, fpl_pct) instead of this one.
             tier = policy.nj_charity_tier(fpl_pct)
             tier_pct = tier["patient_pays_pct"]
         redacted = redacted.replace(dollar_span, "[income redacted]")
@@ -113,5 +122,6 @@ def redact(message: str) -> IntakeHint:
         insurance_type=insurance_type,
         veteran=veteran,
         tier_pct=tier_pct,
+        fpl_pct=fpl_pct,
         redacted_message=redacted,
     )

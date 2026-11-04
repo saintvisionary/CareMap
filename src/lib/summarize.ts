@@ -3,11 +3,11 @@ import type { FacilityWithDistance } from "./geo";
 import { insuranceGuidance } from "./insurance";
 import type { InsuranceType } from "./intake";
 import type { InternationalResult } from "./international";
-import { applyTier } from "./policy";
+import { applyTier, charityTier, CHARITY_PROGRAM_NAMES } from "./policy";
 
 export interface QueryResult {
   zipCode: string | null;
-  tierPct: number | null;
+  fplPct: number | null;
   insuranceType: InsuranceType | null;
   veteran: boolean;
   need: string | null;
@@ -21,7 +21,7 @@ const money = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
  * always "estimate, confirm with billing office" -- kept here too so the
  * instant local path and the AI-enhanced path never contradict each other. */
 export function summarize(result: QueryResult): string {
-  const { zipCode, tierPct, insuranceType, veteran, need, facilities } = result;
+  const { zipCode, fplPct, insuranceType, veteran, need, facilities } = result;
 
   if (!zipCode) {
     return "Tell me your zip code and I can find hospitals near you.";
@@ -31,6 +31,8 @@ export function summarize(result: QueryResult): string {
   }
 
   const nearest = facilities[0];
+  const nearestTier = fplPct != null ? charityTier(nearest.state, fplPct) : null;
+  const programName = CHARITY_PROGRAM_NAMES[nearest.state] ?? "charity care";
   const lines: string[] = [];
   lines.push(
     `Found ${facilities.length} hospital${facilities.length === 1 ? "" : "s"} near ${zipCode}. ` +
@@ -41,13 +43,13 @@ export function summarize(result: QueryResult): string {
     lines.push(insuranceGuidance(insuranceType));
   } else if (!nearest.charity_care_participant) {
     lines.push(`${nearest.state} financial assistance rules aren't in CareMap yet -- ask this hospital's billing office about charity care.`);
-  } else if (tierPct == null) {
-    lines.push("Tell me your household income and size for a personal NJ Charity Care estimate.");
+  } else if (nearestTier == null) {
+    lines.push(`Tell me your household income and size for a personal ${programName} estimate.`);
   } else {
     lines.push(
-      tierPct <= 0
-        ? "At your income, NJ Charity Care covers hospital care in full at participating hospitals: you'd pay an estimated $0."
-        : `At your income, NJ Charity Care sets your share at ${tierPct}% of the typical billed charge at participating hospitals.`,
+      nearestTier.patientPaysPct <= 0
+        ? `At your income, ${programName} covers hospital care in full at participating hospitals: you'd pay an estimated $0.`
+        : `At your income, ${programName} sets your share at ${nearestTier.patientPaysPct}% of the typical billed charge at participating hospitals.`,
     );
   }
 
@@ -65,10 +67,14 @@ export function summarize(result: QueryResult): string {
     const withCharge = facilities.find((f) => drg.code in f.drg_charges);
     if (withCharge) {
       const charge = withCharge.drg_charges[drg.code].avg_charge;
+      // This facility's own state/tier, not nearest's -- the cheapest DRG
+      // match isn't always the closest hospital, so it isn't always in the
+      // same (or any modeled) state either.
+      const chargeTier = fplPct != null ? charityTier(withCharge.state, fplPct) : null;
       lines.push(
         `${drg.label} at ${withCharge.name}: typical billed charge is ${money(charge)}.` +
-          (tierPct != null && insuranceType === "uninsured"
-            ? ` At your tier, estimated amount owed is ${money(applyTier(charge, tierPct))}.`
+          (chargeTier != null && insuranceType === "uninsured"
+            ? ` At your tier, estimated amount owed is ${money(applyTier(charge, chargeTier.patientPaysPct))}.`
             : ""),
       );
       lines.push("This is an estimate, confirm with billing office.");

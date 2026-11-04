@@ -27,7 +27,7 @@ const TIMEOUT_MS = 50000;
 
 export async function askAgent(
   redactedMessage: string,
-  hints: { zipCode: string | null; insuranceType: InsuranceType | null; veteran: boolean; tierPct: number | null },
+  hints: { zipCode: string | null; insuranceType: InsuranceType | null; veteran: boolean; tierPct: number | null; fplPct: number | null },
 ): Promise<AgentResponse | null> {
   if (!AGENT_URL) return null;
   const controller = new AbortController();

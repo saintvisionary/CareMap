@@ -52,6 +52,29 @@ def nj_charity_tier(fpl_pct: float) -> dict:
 
 
 @tool
+def charity_tier(state: str, fpl_pct: float) -> dict:
+    """Look up the charity-care tier for a hospital's state, for a percent of the federal poverty line.
+
+    Only a short list of states have a real, codified, state-wide formula --
+    currently NJ and WA. For every other state, returns an error; say the
+    state's rules aren't modeled in CareMap yet rather than guessing a tier.
+    For WA specifically, this is the legal MINIMUM floor every hospital must
+    offer (RCW 70.170.060(5)(b)) -- larger hospital systems are required to
+    offer better terms up to 400% FPL that this can't apply per-hospital
+    without bed-count/ownership data CareMap doesn't have; say so if the
+    state is WA.
+
+    Args:
+        state: Two-letter state code of the facility (e.g. "NJ", "WA"), not the user's own state.
+        fpl_pct: Household income as a percent of the federal poverty line (e.g. 158 for 158%).
+    """
+    tier = policy_mod.charity_tier(state, fpl_pct)
+    if tier is None:
+        return {"error": f"No state-wide charity-care formula modeled for '{state}' -- direct the user to that hospital's billing/financial-assistance office."}
+    return tier
+
+
+@tool
 def estimate_cost(ccn: str, drg: str) -> dict:
     """Estimate the typical billed charge for a procedure at a facility, and what a patient
     in a given NJ Charity Care tier would owe.
@@ -149,46 +172,72 @@ def nearest_fqhc(zip_code: str, radius_miles: float = 25) -> dict:
     return match
 
 
+_STATE_PROGRAM_NAMES = {
+    "NJ": "NJ Documented Charity Care",
+    "WA": "the Washington hospital charity care program (RCW 70.170.060)",
+}
+_STATE_POLICY_KEYS = {"NJ": "nj_charity_care", "WA": "wa_charity_care"}
+
+
 @tool
 def draft_application(ccn: str, patient_pays_pct: float) -> dict:
-    """Draft an NJ Charity Care application checklist and cover letter for a facility and tier.
+    """Draft a charity-care application checklist and cover letter for a facility and tier.
+
+    Works for any facility in a state CareMap has a modeled formula for
+    (currently NJ or WA) -- looks up the facility's own state, not a fixed
+    program. Fields the matching policy.json entry doesn't have (e.g. WA has
+    no confirmed apply-window or help-phone, unlike NJ) are left out of the
+    checklist/letter rather than guessed.
 
     Args:
         ccn: CMS Certification Number of the facility.
-        patient_pays_pct: Dollar-share percent from nj_charity_tier (0-100).
+        patient_pays_pct: Dollar-share percent from charity_tier (0-100).
     """
     facility = facility_data.facility_by_ccn(ccn)
     if facility is None:
         return {"error": f"No facility found for CCN '{ccn}'."}
-    nj = policy_mod.POLICY["nj_charity_care"]
+    state = facility["state"]
+    policy_key = _STATE_POLICY_KEYS.get(state)
+    if policy_key is None:
+        return {"error": f"No charity-care formula modeled for '{state}' -- direct the user to {facility['name']}'s billing/financial-assistance office instead."}
+    program = policy_mod.POLICY[policy_key]
+    program_name = _STATE_PROGRAM_NAMES[state]
+
     checklist = [
-        "Proof of NJ residency (lease, utility bill, or ID).",
+        f"Proof of {state} residency (lease, utility bill, or ID).",
         "Proof of household income (pay stubs, tax return, or benefits letter).",
         "Proof of insurance status (denial letter or statement of no insurance).",
         "Hospital bill or account number for the service in question.",
-        f"Submit within {nj['apply_window_days_after_service']} days of the date of service.",
     ]
+    if "apply_window_days_after_service" in program:
+        checklist.append(f"Submit within {program['apply_window_days_after_service']} days of the date of service.")
+
     letter = (
         f"To the Business Office of {facility['name']}:\n\n"
-        "I am requesting consideration for NJ Documented Charity Care for the hospital "
+        f"I am requesting consideration for {program_name} for the hospital "
         "charges referenced above. Based on my household income and size, I believe I "
         f"qualify for a reduced-charge tier (patient responsibility: {patient_pays_pct}% of billed charges). "
         "I have enclosed proof of income, residency and insurance status. "
-        f"Per NJ Charity Care policy, I understand a decision is due within "
-        f"{nj['decision_window_business_days']} business days. "
+    )
+    if "decision_window_business_days" in program:
+        letter += f"I understand a decision is due within {program['decision_window_business_days']} business days. "
+    letter += (
         "I am also requesting a Good Faith Estimate for any scheduled services under the No Surprises Act.\n\n"
         "Thank you for your consideration."
     )
-    return {
+
+    result = {
         "facility_name": facility["name"],
         "checklist": checklist,
         "letter": letter,
-        "help_phone": nj["help_phone"],
-        "source": nj["source"],
+        "source": program["source"],
     }
+    if "help_phone" in program:
+        result["help_phone"] = program["help_phone"]
+    return result
 
 
-ELIGIBILITY_TOOLS = [fpl_percent, nj_charity_tier]
+ELIGIBILITY_TOOLS = [fpl_percent, nj_charity_tier, charity_tier]
 COST_TOOLS = [facilities_with_drg, estimate_cost, apply_tier_to_charge]
 QUALITY_TOOLS = [facilities_near, nearest_fqhc]
 ADVOCATE_TOOLS = [draft_application]

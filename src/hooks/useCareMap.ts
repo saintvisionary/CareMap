@@ -24,6 +24,7 @@ export interface CareMapState {
   internationalFacilities: InternationalFacility[];
   previewFacilities: Facility[];
   tierPct: number | null;
+  fplPct: number | null;
   insuranceType: InsuranceType | null;
   veteran: boolean;
   flyTo: MapFlyTo | null;
@@ -62,6 +63,7 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
   const [internationalFacilities, setInternationalFacilities] = useState<InternationalFacility[]>([]);
   const [previewFacilities, setPreviewFacilities] = useState<Facility[]>([]);
   const [tierPct, setTierPct] = useState<number | null>(null);
+  const [fplPct, setFplPct] = useState<number | null>(null);
   const [insuranceType, setInsuranceType] = useState<InsuranceType | null>(null);
   const [veteran, setVeteran] = useState(false);
   const [flyTo, setFlyTo] = useState<MapFlyTo | null>(null);
@@ -133,6 +135,7 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
         setFacilities([]);
         setInternationalFacilities([]);
         setTierPct(null);
+        setFplPct(null);
         setInsuranceType(hint.insuranceType);
         setVeteran(hint.veteran);
         setLoading(true);
@@ -159,6 +162,7 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
       setFacilities(nearby);
       setInternationalFacilities([]);
       setTierPct(hint.tierPct);
+      setFplPct(hint.fplPct);
       setInsuranceType(hint.insuranceType);
       setVeteran(hint.veteran);
 
@@ -169,7 +173,7 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
 
       const instantReply = summarize({
         zipCode: hint.zipCode,
-        tierPct: hint.tierPct,
+        fplPct: hint.fplPct,
         insuranceType: hint.insuranceType,
         veteran: hint.veteran,
         need: hint.need,
@@ -183,6 +187,7 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
         insuranceType: hint.insuranceType,
         veteran: hint.veteran,
         tierPct: hint.tierPct,
+        fplPct: hint.fplPct,
       })
         .then((agentReply) => {
           if (agentReply?.reply) {
@@ -207,6 +212,7 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
     internationalFacilities,
     previewFacilities,
     tierPct,
+    fplPct,
     insuranceType,
     veteran,
     flyTo,

@@ -1,4 +1,5 @@
 import type { InsuranceType } from "./intake";
+import { charityTier } from "./policy";
 import type { Facility, Tier, ZipCentroid } from "./types";
 
 export function haversineMiles(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -51,24 +52,29 @@ export function facilitiesNear(
   return out.sort((a, b) => a.distanceMiles - b.distanceMiles);
 }
 
-/** Tier color for a facility given the user's own patient_pays_pct (NJ Charity
- * Care is a statewide formula, so it's the same percent at every participating
- * NJ hospital -- color reflects whether the program applies here at all).
- * Any insuranceType other than "uninsured" (or not yet given) always wins:
- * Charity Care applies only to the uninsured/underinsured, so anyone with
- * Medicaid, Medicare, private coverage, VA/Tricare, or "not sure" never gets
- * a charity-care price here, regardless of income -- that's a distinct
- * state from "we don't know your income yet". */
+/** Tier color for a facility given the user's income as a percent of the
+ * federal poverty line (state-agnostic -- the right formula is looked up by
+ * the FACILITY's own state via charityTier(), not assumed). A modeled
+ * state's formula is the same percent at every participating hospital in
+ * it, so color reflects whether the program applies here at all, not a
+ * per-hospital number. Any insuranceType other than "uninsured" (or not yet
+ * given) always wins: every modeled state's formula applies only to the
+ * uninsured/underinsured, so anyone with Medicaid, Medicare, private
+ * coverage, VA/Tricare, or "not sure" never gets a charity-care price here,
+ * regardless of income -- that's a distinct state from "we don't know your
+ * income yet". */
 export function facilityTier(
   facility: Facility,
-  patientPaysPct: number | null,
+  fplPct: number | null,
   insuranceType: InsuranceType | null,
 ): Tier {
   if (insuranceType != null && insuranceType !== "uninsured") return "insured";
-  if (facility.state !== "NJ" || !facility.charity_care_participant) return "unknown";
-  if (patientPaysPct == null) return "unknown";
-  if (patientPaysPct <= 0) return "free";
-  if (patientPaysPct >= 100) return "full";
+  if (!facility.charity_care_participant) return "unknown";
+  if (fplPct == null) return "unknown";
+  const tier = charityTier(facility.state, fplPct);
+  if (tier == null) return "unknown";
+  if (tier.patientPaysPct <= 0) return "free";
+  if (tier.patientPaysPct >= 100) return "full";
   return "reduced";
 }
 
