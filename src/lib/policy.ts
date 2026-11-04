@@ -90,6 +90,24 @@ export function ilCharityTier(fplPct: number, isCriticalAccess: boolean): Charit
   return null;
 }
 
+// NY Public Health Law 2807-k(9-a) -- verified directly against the
+// current codified text (post the 2024-04-20 amendment). Below the
+// free-care threshold this is a real, exact 0% -- the statute's own words
+// are "no nominal payment shall be collected". Returns null above it: NY's
+// real cap there is 10-20% of the MEDICAID-EQUIVALENT rate for the
+// service, a completely different dollar base than the typical billed
+// charge this app has, and this app has no Medicaid-rate data loaded at
+// all -- unlike IL (whose 20%-of-income cap needs no extra dataset),
+// there's no disclosable cap fact to show here either.
+const NY_FREE_CARE_MAX_FPL = 200;
+
+export function nyCharityTier(fplPct: number): CharityTier | null {
+  if (fplPct <= NY_FREE_CARE_MAX_FPL) {
+    return { patientPaysPct: 0, fplPct, maxFplPct: NY_FREE_CARE_MAX_FPL };
+  }
+  return null;
+}
+
 // Keyed by a facility's own state. Only states with a real, codified,
 // state-wide formula belong here -- most states have no such law (just
 // federal 501(r): each nonprofit hospital must have *a* policy, with no
@@ -98,6 +116,7 @@ const STATE_CHARITY_TIER_FNS: Record<string, (fplPct: number, facilityType?: str
   NJ: (fplPct) => njCharityTier(fplPct),
   WA: (fplPct) => waCharityTier(fplPct),
   IL: (fplPct, facilityType) => ilCharityTier(fplPct, facilityType === "critical_access_hospital"),
+  NY: (fplPct) => nyCharityTier(fplPct),
 };
 
 export const MODELED_CHARITY_STATES = Object.keys(STATE_CHARITY_TIER_FNS);
@@ -110,6 +129,7 @@ export const CHARITY_PROGRAM_NAMES: Record<string, string> = {
   NJ: "NJ Charity Care",
   WA: "Washington's charity care law (the minimum every hospital must offer -- some larger hospital systems must offer better terms)",
   IL: "the Illinois Hospital Uninsured Patient Discount Act (uninsured patients only)",
+  NY: "the New York Hospital Financial Assistance Law",
 };
 
 /** Charity-care tier for whichever state a facility is in, or null if that

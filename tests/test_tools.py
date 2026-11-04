@@ -134,3 +134,27 @@ def test_draft_application_il_facility():
     # IL's policy.json entry has no confirmed apply-window/help-phone either.
     assert "help_phone" not in r
     assert not any("Submit within" in item for item in r["checklist"])
+
+
+def test_charity_tier_ny_free_care():
+    assert charity_tier(state="NY", fpl_pct=150)["patient_pays_pct"] == 0
+
+
+def test_charity_tier_ny_above_threshold_discloses_no_cap_fact():
+    # Unlike IL, NY has no disclosable cap fact above its free-care line --
+    # the real cap is of a Medicaid-equivalent rate CareMap doesn't have at
+    # all. Must say that plainly and NOT state or imply a specific cap
+    # percentage like IL's 20%-of-income cap.
+    r = charity_tier(state="NY", fpl_pct=300)
+    assert "error" in r
+    assert "Medicaid-equivalent" in r["error"]
+
+
+def test_draft_application_ny_facility():
+    # KALEIDA HEALTH, a real NY acute care hospital (CCN 330005).
+    r = draft_application(ccn="330005", patient_pays_pct=0)
+    assert "KALEIDA HEALTH" in r["letter"]
+    assert "New York Hospital Financial Assistance Law" in r["letter"]
+    assert "NY residency" in r["checklist"][0]
+    assert "help_phone" not in r
+    assert not any("Submit within" in item for item in r["checklist"])

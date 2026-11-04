@@ -1,4 +1,4 @@
-from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, il_charity_tier, nj_charity_tier, wa_charity_tier
+from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, il_charity_tier, nj_charity_tier, ny_charity_tier, wa_charity_tier
 
 
 def test_demo_case_family_of_4():
@@ -92,3 +92,28 @@ def test_charity_tier_dispatch_passes_facility_type_for_il():
     # omitted (existing NJ/WA callers predate this parameter).
     assert charity_tier("NJ", 150, "critical_access_hospital")["patient_pays_pct"] == 0
     assert charity_tier("WA", 150)["patient_pays_pct"] == 0
+
+
+def test_ny_tier_free_care_threshold():
+    # PBH 2807-k(9-a), post 2024-04-20 amendment -- verified directly
+    # against the current codified text. Free up to 200% FPL.
+    assert ny_charity_tier(200)["patient_pays_pct"] == 0
+    assert ny_charity_tier(201) is None
+    assert ny_charity_tier(0)["patient_pays_pct"] == 0
+
+
+def test_ny_tier_above_free_threshold_returns_none_not_a_guess():
+    # Above 200% FPL, NY caps payment at 10-20% of the MEDICAID-EQUIVALENT
+    # rate for the service -- a different dollar base than the billed
+    # charges CareMap has, and CareMap has no Medicaid-rate data at all.
+    # Unlike IL (whose 20%-of-income cap needed no extra dataset), there
+    # isn't even a disclosable cap fact here. Must return None, never a
+    # guessed percentage.
+    assert ny_charity_tier(250) is None
+    assert ny_charity_tier(400) is None
+    assert ny_charity_tier(1000) is None
+
+
+def test_charity_tier_dispatches_ny():
+    assert charity_tier("NY", 150)["patient_pays_pct"] == 0
+    assert charity_tier("NY", 300) is None

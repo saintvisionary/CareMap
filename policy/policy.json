@@ -71,6 +71,20 @@
       "eligibility_ceiling_fpl_pct": 300
     }
   },
+  "ny_charity_care": {
+    "source": "https://www.nysenate.gov/legislation/laws/PBH/2807-K (NY Public Health Law 2807-k(9) and (9-a), Hospital Financial Assistance Law, amended 2024-04-20)",
+    "applies_to": "all NY general hospitals -- uninsured AND underinsured patients (unlike IL, which is uninsured-only)",
+    "note": "Verified directly against the current codified text (PBH 2807-k(9-a), post-2024-04-20 amendment -- an older DOH advisory letter citing a 300% FPL ceiling is stale; the current ceiling is 400%). Below the free-care threshold, patient_pays_pct is a real, exact 0% -- 'no nominal payment shall be collected' per the statute itself. ABOVE it, the law does NOT discount a percentage of billed charges the way NJ/WA/IL do: it caps payment at 10% (201-300% FPL) or 20% (301-400% FPL) of the MEDICAID-EQUIVALENT rate for the service, a completely different dollar base than the typical billed charge CareMap has from CMS Medicare Inpatient by Provider and Service. CareMap has no Medicaid-rate data loaded at all, so there isn't even a disclosable cap fact to surface above the threshold the way IL's 20%-of-income cap is (that one needs no extra dataset; NY's does). CareMap deliberately shows NO percentage and NO cap fact above the free-care threshold -- only the free-care floor is real without Medicaid-rate data. Above 400% FPL the statute is silent (hospital's own policy).",
+    "eligibility": {
+      "must_be_un_or_underinsured": true,
+      "not_medicaid_eligible": "unconfirmed -- immigration/documentation status is explicitly barred as a criterion (9-a(a)), but the statute doesn't flatly exclude Medicaid-eligible patients the way NJ's does",
+      "asset_limit_individual": null,
+      "asset_limit_family": null
+    },
+    "free_care_max_fpl_pct": 200,
+    "eligibility_ceiling_fpl_pct": 400,
+    "decision_window_calendar_days": 30
+  },
   "good_faith_estimate": {
     "source": "https://www.cms.gov/medical-bill-rights/help/guides/good-faith-estimate",
     "applies_to": "uninsured or self-pay patients scheduling care at least 3 business days ahead",

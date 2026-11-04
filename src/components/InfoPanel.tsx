@@ -174,8 +174,32 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
             </div>
 
+            <div className={section}>
+              <h2 className={h2}>New York hospital charity care</h2>
+              <p className={p}>
+                New York's Hospital Financial Assistance Law (NY Public Health Law 2807-k). Applies to every NY general hospital, for patients who are{" "}
+                <strong className="text-white/90">uninsured or underinsured</strong>, with no immigration-status requirement.
+              </p>
+              <div className="rounded-xl bg-white/5 p-3 text-xs">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
+                  <span className="text-white/40">Income, % of poverty line</span>
+                  <span className="text-white/40">You pay</span>
+                  <span>Up to 200%</span>
+                  <span className="text-white/90">$0 -- fully covered</span>
+                  <span>Over 200%</span>
+                  <span className="text-white/90">No percentage shown here</span>
+                </div>
+              </div>
+              <p className={p}>
+                <strong className="text-white/90">Above 200%, CareMap shows no percentage at all</strong> -- not even a disclosed cap, unlike Illinois.
+                New York's real law caps payment at 10-20% of the <strong className="text-white/90">Medicaid-equivalent rate</strong> for the service, not
+                a percentage of billed charges or income -- a completely different number CareMap doesn't have loaded. Ask the hospital's billing office
+                directly; by law they must decide a completed application within 30 days.
+              </p>
+            </div>
+
             <p className={p}>
-              <strong className="text-white/90">Right now, NJ, WA, and IL are the only states with a modeled tier.</strong> Every other state still
+              <strong className="text-white/90">Right now, NJ, WA, IL, and NY are the only states with a modeled tier.</strong> Every other state still
               shows real hospital locations and typical billed charges, but says "[state] rules coming soon" instead of a personal estimate.
             </p>
 
@@ -228,6 +252,7 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                 <li>NJ Charity Care rules -- New Jersey Department of Health</li>
                 <li>WA charity care rules -- RCW 70.170.060, Washington State Legislature</li>
                 <li>IL charity care rules -- 210 ILCS 89, Illinois Hospital Uninsured Patient Discount Act</li>
+                <li>NY charity care rules -- NY Public Health Law 2807-k, Hospital Financial Assistance Law</li>
                 <li>International locations -- OpenStreetMap (Nominatim, Overpass, Photon)</li>
               </ul>
               <p className={p}>All public, official sources -- CareMap never adds or guesses a number that isn't already in that data.</p>

@@ -98,6 +98,32 @@ def il_charity_tier(fpl_pct: float, is_critical_access: bool = False) -> dict | 
     return None
 
 
+def ny_charity_tier(fpl_pct: float) -> dict | None:
+    """NY Hospital Financial Assistance Law (PBH 2807-k(9), (9-a)) for a percent of FPL.
+
+    Verified directly against the current codified statute text (post the
+    2024-04-20 amendment). Below the free-care threshold this is a real,
+    exact 0% -- the statute's own words are "no nominal payment shall be
+    collected". Returns None above it: NY's real cap there is 10% (201-300%
+    FPL) or 20% (301-400% FPL) of the MEDICAID-EQUIVALENT rate for the
+    service -- a completely different dollar base than the typical billed
+    charge CareMap has (CMS Medicare Inpatient by Provider and Service).
+    CareMap has no Medicaid-rate data loaded at all, so unlike IL (whose
+    20%-of-income cap needs no extra dataset), there isn't even a
+    disclosable cap fact to surface here -- showing anything above the free
+    line would be a guess, not a grounded number.
+    """
+    threshold = POLICY["ny_charity_care"]["free_care_max_fpl_pct"]
+    if fpl_pct <= threshold:
+        return {
+            "patient_pays_pct": 0,
+            "fpl_pct": fpl_pct,
+            "max_fpl_pct": threshold,
+            "source": POLICY["ny_charity_care"]["source"],
+        }
+    return None
+
+
 # Keyed by the two-letter state code on a facility record. Add an entry here
 # (plus the matching policy.json block and a state-specific function above)
 # for each additional state with a real, codified, state-wide formula --
@@ -109,6 +135,7 @@ STATE_CHARITY_TIER_FNS = {
     "NJ": lambda fpl_pct, facility_type=None: nj_charity_tier(fpl_pct),
     "WA": lambda fpl_pct, facility_type=None: wa_charity_tier(fpl_pct),
     "IL": lambda fpl_pct, facility_type=None: il_charity_tier(fpl_pct, is_critical_access=facility_type == "critical_access_hospital"),
+    "NY": lambda fpl_pct, facility_type=None: ny_charity_tier(fpl_pct),
 }
 
 

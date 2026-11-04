@@ -56,8 +56,9 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
     """Look up the charity-care tier for a hospital's state, for a percent of the federal poverty line.
 
     Only a short list of states have a real, codified, state-wide formula --
-    currently NJ, WA, IL. For every other state, returns an error; say the
-    state's rules aren't modeled in CareMap yet rather than guessing a tier.
+    currently NJ, WA, IL, NY. For every other state, returns an error; say
+    the state's rules aren't modeled in CareMap yet rather than guessing a
+    tier.
     For WA specifically, this is the legal MINIMUM floor every hospital must
     offer (RCW 70.170.060(5)(b)) -- larger hospital systems are required to
     offer better terms up to 400% FPL that this can't apply per-hospital
@@ -72,9 +73,16 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
     state is IL and this returns an error -- but still mention IL's real cap:
     a hospital can never collect more than 20% of the patient's family
     income in any 12-month period, regardless of the missing percentage.
+    For NY specifically: free care applies up to 200% FPL (PBH
+    2807-k(9-a)). Above that threshold NY has NO modeled percentage either,
+    and unlike IL there's no disclosable cap fact to add -- NY's real cap
+    (10-20%) is of the Medicaid-equivalent rate for the service, a dataset
+    CareMap doesn't have at all (not just a missing ratio on an otherwise-
+    known base). Say that plainly if the state is NY and this returns an
+    error -- don't imply any specific cap percentage applies.
 
     Args:
-        state: Two-letter state code of the facility (e.g. "NJ", "WA", "IL"), not the user's own state.
+        state: Two-letter state code of the facility (e.g. "NJ", "WA", "IL", "NY"), not the user's own state.
         fpl_pct: Household income as a percent of the federal poverty line (e.g. 158 for 158%).
         facility_type: The facility's own type (e.g. "acute_care_hospital", "critical_access_hospital") -- only matters for IL.
     """
@@ -87,6 +95,15 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
                 "IL has no modeled percentage above its free-care threshold (needs a cost-to-charge ratio "
                 "CareMap doesn't have) -- say that, and that state law still caps total collection at 20% of "
                 "family income per 12 months regardless, per policy.json's il_charity_care."
+            )
+        }
+    if state == "NY":
+        return {
+            "error": (
+                "NY has no modeled percentage above its free-care threshold -- the real cap there is 10-20% "
+                "of the Medicaid-equivalent rate for the service, not of billed charges, and CareMap has no "
+                "Medicaid-rate data loaded at all. Say that plainly; don't state or imply a specific cap "
+                "percentage, per policy.json's ny_charity_care."
             )
         }
     return {"error": f"No state-wide charity-care formula modeled for '{state}' -- direct the user to that hospital's billing/financial-assistance office."}
@@ -194,8 +211,9 @@ _STATE_PROGRAM_NAMES = {
     "NJ": "NJ Documented Charity Care",
     "WA": "the Washington hospital charity care program (RCW 70.170.060)",
     "IL": "the Illinois Hospital Uninsured Patient Discount Act (210 ILCS 89)",
+    "NY": "the New York Hospital Financial Assistance Law (PBH 2807-k)",
 }
-_STATE_POLICY_KEYS = {"NJ": "nj_charity_care", "WA": "wa_charity_care", "IL": "il_charity_care"}
+_STATE_POLICY_KEYS = {"NJ": "nj_charity_care", "WA": "wa_charity_care", "IL": "il_charity_care", "NY": "ny_charity_care"}
 
 
 @tool

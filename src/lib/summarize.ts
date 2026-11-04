@@ -47,13 +47,15 @@ export function summarize(result: QueryResult): string {
     lines.push(`Tell me your household income and size for a personal ${programName} estimate.`);
   } else if (nearestTier == null) {
     // fplPct is known but the facility's own formula still returned no
-    // percentage -- currently only IL above its free-care line, where the
-    // real discount needs a hospital cost-to-charge ratio this app doesn't
-    // have. Must not be confused with "we don't know your income yet".
+    // percentage -- currently IL and NY above their free-care lines, where
+    // the real discount needs data this app doesn't have. Must not be
+    // confused with "we don't know your income yet".
     lines.push(
       nearest.state === "IL"
         ? `Your income is above ${programName}'s free-care line, so there's no exact percentage to show (Illinois law bases it on each hospital's own cost-to-charge ratio, which CareMap doesn't have). State law still caps total collection at 20% of your family income in any 12-month period -- ask this hospital's billing office for your exact discount.`
-        : `${programName} doesn't have a modeled percentage at your income -- ask this hospital's billing office directly.`,
+        : nearest.state === "NY"
+          ? `Your income is above ${programName}'s free-care line, so there's no exact percentage to show (New York's cap there is based on the Medicaid rate for the service, not billed charges, and CareMap doesn't have Medicaid-rate data). Ask this hospital's billing office for your exact discount.`
+          : `${programName} doesn't have a modeled percentage at your income -- ask this hospital's billing office directly.`,
     );
   } else {
     lines.push(
