@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 export interface Suggestion {
@@ -78,22 +79,31 @@ export function AutocompleteInput({
         className={className}
         autoComplete="off"
       />
-      {open && suggestions.length > 0 && (
-        <ul className="absolute z-10 mt-1 w-full max-h-48 overflow-y-auto rounded-xl border border-white/10 bg-ink-950/95 backdrop-blur-xl shadow-lg">
-          {suggestions.map((s) => (
-            <li key={s.value}>
-              <button
-                type="button"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => select(s)}
-                className="w-full text-left px-3 py-1.5 text-xs text-white/80 hover:bg-white/10 transition-colors"
-              >
-                {s.label}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+      <AnimatePresence>
+        {open && suggestions.length > 0 && (
+          <motion.ul
+            initial={{ opacity: 0, scale: 0.96, y: -4 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: -4 }}
+            transition={{ duration: 0.15, ease: [0.23, 1, 0.32, 1] }}
+            style={{ transformOrigin: "top" }}
+            className="absolute z-10 mt-1 w-full max-h-48 overflow-y-auto rounded-xl border border-white/10 bg-ink-950/95 backdrop-blur-xl shadow-lg"
+          >
+            {suggestions.map((s) => (
+              <li key={s.value}>
+                <button
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => select(s)}
+                  className="w-full text-left px-3 py-1.5 text-xs text-white/80 transition-colors hover:bg-white/10 active:bg-white/15"
+                >
+                  {s.label}
+                </button>
+              </li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

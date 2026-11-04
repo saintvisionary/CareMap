@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { NEED_TO_DRG } from "../lib/drg";
 import { facilityTier, TIER_COLORS, type FacilityWithDistance } from "../lib/geo";
 import { insuranceGuidance } from "../lib/insurance";
@@ -57,6 +57,7 @@ export function ResultCard({ facility, tierPct, insuranceType, need, index, acti
       onClick={onSelect}
       initial={{ opacity: 0, y: 16, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
+      whileTap={{ scale: 0.98 }}
       transition={{ type: "spring", stiffness: 260, damping: 22, delay: index * 0.06 }}
       className="text-left w-full"
     >
@@ -85,25 +86,35 @@ export function ResultCard({ facility, tierPct, insuranceType, need, index, acti
           <div className="text-2xl font-semibold text-white tabular-nums">{hero}</div>
           <div className="text-[11px] text-white/40">{heroLabel}</div>
         </div>
-        {active && (
-          <div className="mt-3 pt-3 border-t border-white/10 space-y-1.5 text-xs text-white/60">
-            <div>
-              {facility.address}, {facility.city}, {facility.state} {facility.zip}
-            </div>
-            <div className="flex flex-wrap gap-x-4 gap-y-1">
-              <span>{FACILITY_TYPE_LABELS[facility.type] ?? facility.type}</span>
-              <span>Emergency room: {facility.has_er ? "yes" : "no"}</span>
-              {facility.star_rating != null && <span>CMS quality rating: {facility.star_rating}/5</span>}
-            </div>
-            <div className="text-white/40">Ownership: {facility.ownership}</div>
-            {!facility.charity_care_participant && (
-              <div className="text-white/40">
-                Not confirmed as an NJ Charity Care participant -- ask this hospital's billing office about financial
-                assistance.
+        <AnimatePresence initial={false}>
+          {active && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+              className="overflow-hidden"
+            >
+              <div className="mt-3 pt-3 border-t border-white/10 space-y-1.5 text-xs text-white/60">
+                <div>
+                  {facility.address}, {facility.city}, {facility.state} {facility.zip}
+                </div>
+                <div className="flex flex-wrap gap-x-4 gap-y-1">
+                  <span>{FACILITY_TYPE_LABELS[facility.type] ?? facility.type}</span>
+                  <span>Emergency room: {facility.has_er ? "yes" : "no"}</span>
+                  {facility.star_rating != null && <span>CMS quality rating: {facility.star_rating}/5</span>}
+                </div>
+                <div className="text-white/40">Ownership: {facility.ownership}</div>
+                {!facility.charity_care_participant && (
+                  <div className="text-white/40">
+                    Not confirmed as an NJ Charity Care participant -- ask this hospital's billing office about
+                    financial assistance.
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </GlassPanel>
     </motion.button>
   );

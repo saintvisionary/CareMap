@@ -1,3 +1,4 @@
+import { MotionConfig } from "framer-motion";
 import { useState } from "react";
 import { ChatPanel } from "./components/ChatPanel";
 import { GlassPanel } from "./components/GlassPanel";
@@ -29,6 +30,7 @@ export default function App() {
   const need = lastUserMessage ? parseNeed(lastUserMessage) : null;
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="h-screen w-screen bg-ink-950 text-white font-sans overflow-hidden relative">
       <MapView
         facilities={facilities}
@@ -55,7 +57,7 @@ export default function App() {
             a new query. The form resets to Chat on submit, so results still
             appear right where you'd expect them. */}
         {mode === "chat" && facilities.length > 0 && (
-          <div className="overflow-y-auto space-y-2 pr-1">
+          <div className="overflow-y-auto space-y-3 pr-1">
             {facilities.slice(0, 5).map((f, i) => (
               <ResultCard
                 key={f.ccn}
@@ -75,7 +77,7 @@ export default function App() {
             <button
               key={m}
               onClick={() => setMode(m)}
-              className={`rounded-full px-3 py-1 text-xs font-medium capitalize transition-colors ${
+              className={`rounded-full px-3 py-1 text-xs font-medium capitalize transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
                 mode === m ? "bg-white/90 text-ink-950" : "bg-white/10 text-white/50"
               }`}
             >
@@ -95,5 +97,6 @@ export default function App() {
         )}
       </div>
     </div>
+    </MotionConfig>
   );
 }

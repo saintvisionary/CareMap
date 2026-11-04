@@ -84,7 +84,13 @@ export function ChatPanel({ messages, loading, onSend }: ChatPanelProps) {
             </motion.div>
           ))}
         </AnimatePresence>
-        {loading && <div className="text-xs text-white/40 px-1">thinking...</div>}
+        {loading && (
+          <div className="flex items-center gap-1 px-1 py-1 text-white/40">
+            <span className="caremap-typing-dot" />
+            <span className="caremap-typing-dot" />
+            <span className="caremap-typing-dot" />
+          </div>
+        )}
       </div>
       <div className="mt-2 flex gap-2">
         <input
@@ -96,7 +102,7 @@ export function ChatPanel({ messages, loading, onSend }: ChatPanelProps) {
         />
         <button
           onClick={submit}
-          className="rounded-full bg-white/90 text-ink-950 text-sm font-medium px-4 py-2 hover:bg-white transition-colors"
+          className="rounded-full bg-white/90 text-ink-950 text-sm font-medium px-4 py-2 hover:bg-white transition-[background-color,transform] duration-150 active:scale-[0.96]"
         >
           Send
         </button>

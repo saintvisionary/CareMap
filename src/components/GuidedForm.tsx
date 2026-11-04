@@ -139,7 +139,7 @@ export function GuidedForm({ onSubmit, zipCentroids, facilities }: GuidedFormPro
               onClick={useMyLocation}
               disabled={locating}
               title="Use my location"
-              className="shrink-0 rounded-xl border border-white/10 bg-white/5 px-2.5 text-sm text-white/70 hover:bg-white/10 transition-colors disabled:opacity-40"
+              className="shrink-0 rounded-xl border border-white/10 bg-white/5 px-2.5 text-sm text-white/70 hover:bg-white/10 transition-[background-color,transform] duration-150 active:scale-[0.94] disabled:opacity-40 disabled:active:scale-100"
             >
               {locating ? "..." : "📍"}
             </button>
@@ -234,7 +234,7 @@ export function GuidedForm({ onSubmit, zipCentroids, facilities }: GuidedFormPro
       <button
         onClick={submit}
         disabled={!valid}
-        className="w-full rounded-xl bg-white/90 text-ink-950 text-sm font-medium px-4 py-2.5 hover:bg-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+        className="w-full rounded-xl bg-white/90 text-ink-950 text-sm font-medium px-4 py-2.5 hover:bg-white transition-[background-color,transform] duration-150 active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed disabled:active:scale-100"
       >
         {abroad ? "Find hospitals & clinics" : "Find my options"}
       </button>
