@@ -1,5 +1,5 @@
-import { MotionConfig } from "framer-motion";
-import { useEffect, useState } from "react";
+import { AnimatePresence, MotionConfig, motion } from "framer-motion";
+import { useCallback, useEffect, useState } from "react";
 import { ChatPanel } from "./components/ChatPanel";
 import { GlassPanel } from "./components/GlassPanel";
 import { GuidedForm } from "./components/GuidedForm";
@@ -16,11 +16,35 @@ export default function App() {
   const { messages, facilities, internationalFacilities, tierPct, insuranceType, flyTo, loading, sendMessage } = useCareMap(allFacilities, zipCentroids);
   const [activeCcn, setActiveCcn] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("guided");
+  // Mobile only -- the panel is full-width there and can cover most of the
+  // map on a result-heavy search. Desktop's narrow sidebar never needs this.
+  const [panelCollapsed, setPanelCollapsed] = useState(false);
 
   const handleGuidedSubmit = (message: string) => {
     sendMessage(message);
     setMode("chat");
   };
+
+  // Selecting a facility is supposed to show what's known about it -- but
+  // the result-card list (the only place that detail renders) only shows
+  // up in Chat mode. Clicking a marker while still in "Fill in details"
+  // set the active id and rang the map's highlight, then visibly did
+  // nothing else. Always surface the pick, regardless of which mode or
+  // collapsed state the panel was already in.
+  //
+  // useCallback matters here, not just as tidiness: this function is a prop
+  // MapView's marker-rebuild effect depends on. Without a stable reference,
+  // every App re-render (a mode switch, the collapse toggle, anything)
+  // handed MapView a "new" onSelectFacility, which tore down and recreated
+  // every marker's DOM node -- and a click landing in that gap hit an
+  // already-removed element with its listener gone, silently doing
+  // nothing. Reproduced directly: a marker click right after switching to
+  // "Fill in details" never fired its listener at all.
+  const handleSelectFacility = useCallback((ccn: string) => {
+    setActiveCcn(ccn);
+    setMode("chat");
+    setPanelCollapsed(false);
+  }, []);
 
   const lastUserMessage =
     messages
@@ -49,7 +73,7 @@ export default function App() {
         insuranceType={insuranceType}
         flyTo={flyTo}
         activeCcn={activeCcn}
-        onSelectFacility={setActiveCcn}
+        onSelectFacility={handleSelectFacility}
       />
 
       <header className="absolute top-0 left-0 right-0 p-4 sm:p-6 flex items-center justify-between pointer-events-none">
@@ -60,51 +84,75 @@ export default function App() {
         {error && <span className="text-xs text-red-400">{error}</span>}
       </header>
 
-      <div className="absolute inset-x-0 bottom-0 sm:bottom-6 sm:left-6 sm:right-auto sm:w-[380px] p-4 sm:p-0 flex flex-col gap-3 max-h-[70vh] sm:max-h-[80vh]">
-        {/* Only shown in Chat view -- with the guided form's own fields also
-            competing for space in this same bottom-anchored column, showing
-            both at once left old results clipped to a sliver while editing
-            a new query. The form resets to Chat on submit, so results still
-            appear right where you'd expect them. */}
-        {mode === "chat" && facilities.length > 0 && (
-          <div className="min-h-0 overflow-y-auto space-y-3 pr-1">
-            {facilities.map((f, i) => (
-              <ResultCard
-                key={f.ccn}
-                facility={f}
-                tierPct={tierPct}
-                insuranceType={insuranceType}
-                need={need}
-                index={i}
-                active={f.ccn === activeCcn}
-                onSelect={() => setActiveCcn(f.ccn)}
-              />
-            ))}
-          </div>
-        )}
-        <div className="flex gap-1.5">
-          {(["guided", "chat"] as const).map((m) => (
-            <button
-              key={m}
-              onClick={() => setMode(m)}
-              className={`rounded-full px-3 py-1 text-xs font-medium capitalize transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
-                mode === m ? "bg-white/90 text-ink-950" : "bg-white/10 text-white/50"
-              }`}
-            >
-              {m === "guided" ? "Fill in details" : "Chat"}
-            </button>
-          ))}
-        </div>
+      <div className="absolute inset-x-0 bottom-0 sm:bottom-6 sm:left-6 sm:right-auto sm:w-[380px] p-4 sm:p-0 flex flex-col gap-3 max-h-[70vh] sm:max-h-[80vh] z-10">
+        {/* Mobile only -- the panel is full-width there and a result-heavy
+            search can cover most of the map. Desktop's narrow 380px sidebar
+            never needs this, so the handle itself is hidden there and
+            panelCollapsed has no other way to become true. */}
+        <button
+          onClick={() => setPanelCollapsed((c) => !c)}
+          className="sm:hidden mx-auto flex items-center gap-1.5 rounded-full bg-white/10 px-4 py-1.5 text-[11px] font-medium text-white/60 transition-transform active:scale-[0.96]"
+        >
+          <span className={`inline-block transition-transform duration-200 ${panelCollapsed ? "rotate-180" : ""}`}>▾</span>
+          {panelCollapsed ? "Show details" : "Show map"}
+        </button>
 
-        {mode === "guided" ? (
-          <GlassPanel className="min-h-0 p-4 overflow-y-auto">
-            <GuidedForm onSubmit={handleGuidedSubmit} zipCentroids={zipCentroids} facilities={allFacilities} />
-          </GlassPanel>
-        ) : (
-          <div className="h-64 sm:h-80">
-            <ChatPanel messages={messages} loading={loading || dataLoading} onSend={sendMessage} />
-          </div>
-        )}
+        <AnimatePresence initial={false}>
+          {!panelCollapsed && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+              className="min-h-0 flex flex-col gap-3 overflow-hidden"
+            >
+              {/* Only shown in Chat view -- with the guided form's own fields
+                  also competing for space in this same column, showing both
+                  at once left old results clipped to a sliver while editing
+                  a new query. The form resets to Chat on submit, so results
+                  still appear right where you'd expect them. */}
+              {mode === "chat" && facilities.length > 0 && (
+                <div className="min-h-0 overflow-y-auto space-y-3 pr-1">
+                  {facilities.map((f, i) => (
+                    <ResultCard
+                      key={f.ccn}
+                      facility={f}
+                      tierPct={tierPct}
+                      insuranceType={insuranceType}
+                      need={need}
+                      index={i}
+                      active={f.ccn === activeCcn}
+                      onSelect={() => setActiveCcn(f.ccn)}
+                    />
+                  ))}
+                </div>
+              )}
+              <div className="flex gap-1.5">
+                {(["guided", "chat"] as const).map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => setMode(m)}
+                    className={`rounded-full px-3 py-1 text-xs font-medium capitalize transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
+                      mode === m ? "bg-white/90 text-ink-950" : "bg-white/10 text-white/50"
+                    }`}
+                  >
+                    {m === "guided" ? "Fill in details" : "Chat"}
+                  </button>
+                ))}
+              </div>
+
+              {mode === "guided" ? (
+                <GlassPanel className="min-h-0 p-4 overflow-y-auto">
+                  <GuidedForm onSubmit={handleGuidedSubmit} zipCentroids={zipCentroids} facilities={allFacilities} />
+                </GlassPanel>
+              ) : (
+                <div className="h-64 sm:h-80">
+                  <ChatPanel messages={messages} loading={loading || dataLoading} onSend={sendMessage} />
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
     </MotionConfig>
