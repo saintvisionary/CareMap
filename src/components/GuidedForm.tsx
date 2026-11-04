@@ -128,10 +128,9 @@ export function GuidedForm({ onSubmit, zipCentroids, facilities }: GuidedFormPro
             <div className="flex-1">
               <AutocompleteInput
                 value={zip}
-                onChange={(v) => setZip(v.replace(/\D/g, "").slice(0, 5))}
+                onChange={(v) => setZip(/[a-zA-Z]/.test(v) ? v : v.replace(/\D/g, "").slice(0, 5))}
                 fetchSuggestions={fetchZipSuggestions}
-                placeholder="07018"
-                inputMode="numeric"
+                placeholder="07018 or city name"
                 className={fieldClass}
               />
             </div>
