@@ -13,8 +13,13 @@ FUNCTION_NAME="caremap-agent"
 ROLE_NAME="caremap-lambda-role"
 REGION="$(aws configure get region)"
 RUNTIME="python3.13"
-BUILD_DIR="$ROOT/.lambda-build"
-ZIP_PATH="$ROOT/.lambda-build.zip"
+# A fresh temp dir per run, outside the repo -- building in a reused
+# .lambda-build/ inside the project meant `rm -rf` had to clear out whatever
+# accumulated there (botocore alone ships tens of thousands of small files),
+# which got slow and once produced a stuck multi-minute delete.
+BUILD_DIR="$(mktemp -d /tmp/caremap-lambda-build.XXXXXX)"
+ZIP_PATH="$(mktemp /tmp/caremap-lambda-build.XXXXXX.zip)"
+trap 'rm -rf "$BUILD_DIR" "$ZIP_PATH"' EXIT
 ALLOWED_ORIGINS="${CAREMAP_ALLOWED_ORIGINS:-http://localhost:5173}"
 ACCOUNT_ID="$(aws sts get-caller-identity --query Account --output text)"
 DEPLOY_BUCKET="caremap-lambda-deploy-$ACCOUNT_ID"
@@ -27,8 +32,7 @@ if [ -z "${GEMINI_API_KEY:-}" ]; then
 fi
 
 echo "==> Building deployment package in $BUILD_DIR"
-rm -rf "$BUILD_DIR" "$ZIP_PATH"
-mkdir -p "$BUILD_DIR"
+rm -f "$ZIP_PATH"  # mktemp creates it empty; zip needs the path free
 
 pip install --quiet \
   --target "$BUILD_DIR" \
