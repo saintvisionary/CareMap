@@ -1,0 +1,61 @@
+import { useState } from "react";
+import { ChatPanel } from "./components/ChatPanel";
+import { MapView } from "./components/MapView";
+import { ResultCard } from "./components/ResultCard";
+import { useCareMap } from "./hooks/useCareMap";
+import { useCareMapData } from "./hooks/useCareMapData";
+import { parseNeed } from "./lib/intake";
+
+export default function App() {
+  const { facilities: allFacilities, zipCentroids, loading: dataLoading, error } = useCareMapData();
+  const { messages, facilities, tierPct, flyTo, loading, sendMessage } = useCareMap(allFacilities, zipCentroids);
+  const [activeCcn, setActiveCcn] = useState<string | null>(null);
+
+  const lastUserMessage =
+    messages
+      .slice()
+      .reverse()
+      .find((m) => m.role === "user")?.text ?? null;
+  const need = lastUserMessage ? parseNeed(lastUserMessage) : null;
+
+  return (
+    <div className="h-screen w-screen bg-ink-950 text-white font-sans overflow-hidden relative">
+      <MapView
+        facilities={facilities}
+        tierPct={tierPct}
+        flyTo={flyTo}
+        activeCcn={activeCcn}
+        onSelectFacility={setActiveCcn}
+      />
+
+      <header className="absolute top-0 left-0 right-0 p-4 sm:p-6 flex items-center justify-between pointer-events-none">
+        <div className="flex items-center gap-2 pointer-events-auto">
+          <span className="text-lg font-semibold tracking-tight">CareMap</span>
+          <span className="text-xs text-white/40">find affordable care near you</span>
+        </div>
+        {error && <span className="text-xs text-red-400">{error}</span>}
+      </header>
+
+      <div className="absolute inset-x-0 bottom-0 sm:bottom-6 sm:left-6 sm:right-auto sm:w-[380px] p-4 sm:p-0 flex flex-col gap-3 max-h-[70vh] sm:max-h-[80vh]">
+        {facilities.length > 0 && (
+          <div className="overflow-y-auto space-y-2 pr-1">
+            {facilities.slice(0, 5).map((f, i) => (
+              <ResultCard
+                key={f.ccn}
+                facility={f}
+                tierPct={tierPct}
+                need={need}
+                index={i}
+                active={f.ccn === activeCcn}
+                onSelect={() => setActiveCcn(f.ccn)}
+              />
+            ))}
+          </div>
+        )}
+        <div className="h-64 sm:h-80">
+          <ChatPanel messages={messages} loading={loading || dataLoading} onSend={sendMessage} />
+        </div>
+      </div>
+    </div>
+  );
+}

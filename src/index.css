@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  background: #0a0a0c;
+}
+
+.caremap-marker {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.4);
+  animation: caremap-marker-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.caremap-marker-active {
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.35);
+}
+
+@keyframes caremap-marker-pop {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* MapLibre's default attribution control, restyled to sit quietly in the corner. */
+.maplibregl-ctrl-attrib {
+  background: rgba(10, 10, 12, 0.5) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+.maplibregl-ctrl-attrib a {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
