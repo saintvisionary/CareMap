@@ -1,6 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { askAgent } from "../lib/agentClient";
-import { facilitiesNear, type FacilityWithDistance } from "../lib/geo";
+import { facilitiesNear, nearestZip, type FacilityWithDistance } from "../lib/geo";
 import { redact, type InsuranceType } from "../lib/intake";
 import { findInternationalFacilities, type InternationalFacility } from "../lib/international";
 import { summarize, summarizeInternational } from "../lib/summarize";
@@ -48,10 +48,50 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
   const [veteran, setVeteran] = useState(false);
   const [flyTo, setFlyTo] = useState<MapFlyTo | null>(null);
   const [loading, setLoading] = useState(false);
+  // Guards the auto-locate effect below from ever overwriting a real
+  // search -- set the instant a user-initiated query runs, checked before
+  // the (possibly slow) geolocation callback lands.
+  const hasSearchedRef = useRef(false);
+
+  // Nothing showed on the map until a search ran -- a first-time visitor
+  // saw an empty basemap and had to already know to type something before
+  // the app demonstrated any value. Try geolocation automatically (a
+  // silent attempt, not gated behind a button) so "hospitals near me"
+  // works with zero typing when the browser already has or will grant
+  // permission. Income/insurance aren't known yet, so tierPct/insuranceType
+  // stay null -- the existing "unknown" (grey) tier already means exactly
+  // that, no fake numbers involved. Denied/unsupported/no-fix: fails
+  // silently, same as the explicit location button already does on error,
+  // since this is a background enhancement the user never asked for, not
+  // a submitted action that deserves an error message.
+  useEffect(() => {
+    if (hasSearchedRef.current) return;
+    if (Object.keys(zipCentroids).length === 0 || allFacilities.length === 0) return;
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        if (hasSearchedRef.current) return;
+        const zip = nearestZip(pos.coords.latitude, pos.coords.longitude, zipCentroids);
+        if (!zip) return;
+        const nearby = facilitiesNear(allFacilities, zipCentroids, zip, 25);
+        setFacilities(nearby);
+        const c = zipCentroids[zip];
+        setFlyTo({ center: [c.lon, c.lat], zoom: 10.5, pitch: 55 });
+      },
+      () => {
+        /* denied or unavailable -- leave the map in its idle/ambient state */
+      },
+      { timeout: 8000, maximumAge: 300000 },
+    );
+    // Only ever worth trying once, right after the facility data needed to
+    // answer it finishes loading.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allFacilities.length, zipCentroids]);
 
   const sendMessage = useCallback(
     (text: string) => {
       if (!text.trim()) return;
+      hasSearchedRef.current = true;
       setMessages((m) => [...m, { id: id(), role: "user", text }]);
 
       const hint = redact(text);
