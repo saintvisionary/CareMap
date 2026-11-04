@@ -1,10 +1,16 @@
-"""Strands agents-as-tools graph.
+"""Strands agent: a single Orchestrator with the eligibility, cost, quality
+and advocate tools attached directly, returning {reply, map_commands} as
+structured output (caremap.schemas.OrchestratorOutput). An EvidenceLedger +
+GroundingGuard on the Orchestrator ground every $ figure / tier in the final
+reply against what those tools actually returned (the "grounding hook"
+design).
 
-Orchestrator calls four specialist agents as tools (eligibility, cost,
-quality, advocate) and returns {reply, map_commands} as structured output
-(caremap.schemas.OrchestratorOutput). An EvidenceLedger + GroundingGuard on
-the Orchestrator ground every $ figure / tier in the final reply against
-what those specialist tools actually returned (the "grounding hook" design).
+Earlier version wrapped each tool group in its own sub-agent, called via
+Strands' agents-as-tools pattern (Orchestrator -> 4 specialist Agents, each
+running its own tool-calling loop). That's a nice demonstration of the
+pattern, but it chains 5+ sequential Gemini calls per user message, which
+under free-tier latency/throttling pushed well past a reasonable Lambda
+timeout. Collapsing to one Agent with all tools cuts that to 1-2 calls.
 
 Privacy: caremap.intake.redact() runs BEFORE any of this, stripping raw
 income/household size out of the user's message and replacing them with a
@@ -22,35 +28,9 @@ from strands import Agent
 from .guards import EvidenceLedger, GroundingGuard
 from .intake import IntakeHint, redact
 from .schemas import OrchestratorOutput
-from .tools import ADVOCATE_TOOLS, COST_TOOLS, ELIGIBILITY_TOOLS, QUALITY_TOOLS
+from .tools import ALL_TOOLS, DATA_TOOL_NAMES
 
-DEFAULT_MODEL_ID = "gemini-2.5-flash"
-
-ELIGIBILITY_PROMPT = """You are the CareMap Eligibility specialist.
-You are given either a tier percent that is already known, or a percent of
-the federal poverty line (fpl_pct). If fpl_pct is given, call nj_charity_tier
-to get the patient_pays_pct. Never invent a tier. Report only the
-patient_pays_pct and fpl_pct that the tools returned, nothing else."""
-
-COST_PROMPT = """You are the CareMap Cost specialist.
-Call estimate_cost for the given facility CCN and DRG code to get the
-typical billed charge, then call apply_tier_to_charge with that charge and
-the given patient_pays_pct to get the estimated patient-owed amount. Report
-both numbers exactly as the tools returned them. Always call the typical
-billed charge a "typical billed charge", never "your price", and always
-say the patient-owed figure is an estimate to confirm with the billing
-office. Never compute or round numbers yourself."""
-
-QUALITY_PROMPT = """You are the CareMap Quality/Access specialist.
-Call facilities_near (and nearest_fqhc if relevant) for the given zip code
-and facility types. Report facility names, distances and star ratings
-exactly as the tools returned them. Never invent a facility or a distance."""
-
-ADVOCATE_PROMPT = """You are the CareMap Advocate specialist.
-Call draft_application for the given facility CCN and patient_pays_pct.
-Return its checklist and letter verbatim. Always mention the No Surprises
-Act good faith estimate right for uninsured/self-pay patients scheduling
-at least 3 business days ahead."""
+DEFAULT_MODEL_ID = "gemini-3.8-flash"
 
 ORCHESTRATOR_PROMPT = """You are the CareMap Orchestrator, helping someone find
 affordable care near them in the US.
@@ -62,16 +42,20 @@ pre-computed tier_pct, a zip code, and an insured flag. NEVER ask the user to
 repeat their exact income or household size, and never guess a dollar income
 or household size yourself.
 
-Use your specialist tools as needed:
-- eligibility: only if you have an fpl_pct but no tier_pct yet.
-- cost: to price a procedure at a facility, once you know a tier_pct.
-- quality: to find nearby facilities for a zip code.
-- advocate: to draft a charity-care application once you know a facility and tier_pct.
+Use your tools as needed:
+- fpl_percent, nj_charity_tier: only if you have income/household info the
+  user volunteered as a band, or need to turn an fpl_pct into a tier; prefer
+  the given tier_pct when it is already present.
+- estimate_cost, apply_tier_to_charge: to price a procedure at a facility,
+  once you know a CCN, DRG and tier_pct.
+- facilities_near, nearest_fqhc: to find nearby facilities for a zip code.
+- draft_application: to draft a charity-care application once you know a
+  facility and tier_pct.
 
 Every dollar figure or percent tier in your reply MUST come from one of
-these tools, copied exactly. Call any billed-charge number a "typical billed
-charge", never "your price", and always add that it is an estimate to
-confirm with the billing office.
+these tools, copied exactly. Never compute or round a number yourself. Call
+any billed-charge number a "typical billed charge", never "your price", and
+always add that it is an estimate to confirm with the billing office.
 
 Return your answer as the given structured schema: a short plain-language
 reply, plus zero or more map_commands (type one of "flyTo", "highlight",
@@ -99,27 +83,10 @@ class Orchestrator:
 
 def build_orchestrator(model=None) -> Orchestrator:
     model = model or make_model()
-
-    eligibility = Agent(name="eligibility", model=model, system_prompt=ELIGIBILITY_PROMPT,
-                         tools=ELIGIBILITY_TOOLS, callback_handler=None)
-    cost = Agent(name="cost", model=model, system_prompt=COST_PROMPT,
-                 tools=COST_TOOLS, callback_handler=None)
-    quality = Agent(name="quality", model=model, system_prompt=QUALITY_PROMPT,
-                     tools=QUALITY_TOOLS, callback_handler=None)
-    advocate = Agent(name="advocate", model=model, system_prompt=ADVOCATE_PROMPT,
-                      tools=ADVOCATE_TOOLS, callback_handler=None)
-
-    specialist_tools = [
-        eligibility.as_tool(name="eligibility", description="Compute an NJ Charity Care tier from an fpl_pct."),
-        cost.as_tool(name="cost", description="Price a procedure at a facility given a CCN, DRG and tier."),
-        quality.as_tool(name="quality", description="Find nearby hospitals/FQHCs for a zip code."),
-        advocate.as_tool(name="advocate", description="Draft a charity-care application for a facility and tier."),
-    ]
-    ledger = EvidenceLedger(data_tools={"eligibility", "cost", "quality", "advocate"})
+    ledger = EvidenceLedger(data_tools=DATA_TOOL_NAMES)
     guard = GroundingGuard(ledger=ledger)
-
     orchestrator = Agent(name="orchestrator", model=model, system_prompt=ORCHESTRATOR_PROMPT,
-                          tools=specialist_tools, hooks=[ledger, guard], callback_handler=None)
+                          tools=ALL_TOOLS, hooks=[ledger, guard], callback_handler=None)
     return Orchestrator(agent=orchestrator, ledger=ledger, guard=guard)
 
 

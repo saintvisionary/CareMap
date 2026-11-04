@@ -72,6 +72,7 @@ class EvidenceLedger(HookProvider):
 
     def on_tool(self, event: AfterToolCallEvent) -> None:
         name = event.tool_use.get("name")
+        print(f"[ledger] tool call: {name} duration={event.duration}", flush=True)
         self.audit.append({
             "ts": round(time.time(), 3),
             "agent": getattr(event.agent, "name", None),

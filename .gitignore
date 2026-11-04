@@ -10,3 +10,5 @@ dist/
 data/raw/
 /*.md
 !/README.md
+.lambda-build/
+.lambda-build.zip
