@@ -2,6 +2,7 @@ import { NEED_TO_DRG } from "./drg";
 import type { FacilityWithDistance } from "./geo";
 import { insuranceGuidance } from "./insurance";
 import type { InsuranceType } from "./intake";
+import type { InternationalResult } from "./international";
 import { applyTier } from "./policy";
 
 export interface QueryResult {
@@ -80,4 +81,27 @@ export function summarize(result: QueryResult): string {
     lines.push("Always ask for a Good Faith Estimate if you're uninsured and scheduling ahead.");
   }
   return lines.join(" ");
+}
+
+/** Traveler path: location only. There's no free, structured dataset of
+ * actual billed charges outside the US the way CMS provides domestically,
+ * so this never shows a dollar figure -- that's the whole point of keeping
+ * it a separate function from summarize() above rather than a branch of it. */
+export function summarizeInternational(result: InternationalResult | null, place: string): string {
+  if (!result) {
+    return `I couldn't find "${place}" or reach the international facility directory just now. Try a more specific city and country (e.g. "Cancun, Mexico"), or try again shortly.`;
+  }
+  const disclaimer =
+    "Location only -- no billed-charge data exists for facilities outside the US. Confirm pricing directly with the facility, a travel insurer, or your embassy before scheduling care.";
+  if (result.facilities.length === 0) {
+    return (
+      `No hospitals or clinics listed within 25 km of ${result.place} in OpenStreetMap's data. ` +
+      `It's a community-maintained map, so smaller clinics may be missing -- ask locally or check your travel insurer's provider network.\n\n${disclaimer}`
+    );
+  }
+  const lines = result.facilities.slice(0, 8).map((f) => {
+    const addr = f.address ? ` -- ${f.address}` : "";
+    return `- ${f.name} (${f.type}), ${f.distanceKm} km away${addr}`;
+  });
+  return `Hospitals & clinics near ${result.place} (source: OpenStreetMap):\n${lines.join("\n")}\n\n${disclaimer}`;
 }

@@ -3,12 +3,17 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef } from "react";
 import { facilityTier, TIER_COLORS, type FacilityWithDistance } from "../lib/geo";
 import type { InsuranceType } from "../lib/intake";
+import type { InternationalFacility } from "../lib/international";
 import type { MapFlyTo } from "../hooks/useCareMap";
 
 const STYLE_URL = "https://tiles.openfreemap.org/styles/dark";
+// Neutral/slate -- deliberately not one of TIER_COLORS, since international
+// facilities never have a cost tier (see src/lib/international.ts).
+const INTERNATIONAL_MARKER_COLOR = "#94a3b8";
 
 interface MapViewProps {
   facilities: FacilityWithDistance[];
+  internationalFacilities: InternationalFacility[];
   tierPct: number | null;
   insuranceType: InsuranceType | null;
   flyTo: MapFlyTo | null;
@@ -16,7 +21,7 @@ interface MapViewProps {
   onSelectFacility: (ccn: string) => void;
 }
 
-export function MapView({ facilities, tierPct, insuranceType, flyTo, activeCcn, onSelectFacility }: MapViewProps) {
+export function MapView({ facilities, internationalFacilities, tierPct, insuranceType, flyTo, activeCcn, onSelectFacility }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map());
@@ -73,7 +78,23 @@ export function MapView({ facilities, tierPct, insuranceType, flyTo, activeCcn, 
         .addTo(map);
       markersRef.current.set(f.ccn, marker);
     });
-  }, [facilities, tierPct, insuranceType, onSelectFacility]);
+
+    internationalFacilities.forEach((f, i) => {
+      const el = document.createElement("div");
+      el.className = "caremap-marker-wrap";
+      el.title = f.address ? `${f.name} -- ${f.address}` : f.name;
+      const dot = document.createElement("div");
+      dot.className = "caremap-marker";
+      dot.style.backgroundColor = INTERNATIONAL_MARKER_COLOR;
+      dot.style.animationDelay = `${i * 70}ms`;
+      el.appendChild(dot);
+
+      const marker = new maplibregl.Marker({ element: el, anchor: "center" })
+        .setLngLat([f.lon, f.lat])
+        .addTo(map);
+      markersRef.current.set(`intl-${i}`, marker);
+    });
+  }, [facilities, internationalFacilities, tierPct, insuranceType, onSelectFacility]);
 
   useEffect(() => {
     for (const [ccn, marker] of markersRef.current.entries()) {

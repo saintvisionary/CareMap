@@ -13,6 +13,18 @@ from . import data as facility_data
 from . import policy as policy_mod
 
 
+def _money(amount: float) -> str:
+    """Comma-formatted whole-dollar string, e.g. 349877 -> "$349,877".
+
+    A convenience field alongside the raw numeric one (never a replacement
+    for it) -- gives the model an exact, already-correct string to copy
+    instead of relying on it to reformat "349877.0" itself every time. The
+    raw number stays in the result too, so grounding (which matches on
+    numeric value, not formatting) is unaffected either way.
+    """
+    return f"${round(amount):,}"
+
+
 @tool
 def fpl_percent(annual_income: float, household_size: int) -> dict:
     """Compute household income as a percent of the 2026 federal poverty line.
@@ -60,6 +72,7 @@ def estimate_cost(ccn: str, drg: str) -> dict:
         "drg": drg,
         "drg_description": charge_info["description"],
         "typical_billed_charge": charge_info["avg_charge"],
+        "typical_billed_charge_formatted": _money(charge_info["avg_charge"]),
         "label": "typical billed charge, estimate, confirm with billing office",
     }
 
@@ -84,7 +97,8 @@ def facilities_with_drg(zip_code: str, drg: str, radius_miles: float = 25) -> di
         "drg": drg,
         "facilities": [
             {"ccn": f["ccn"], "name": f["name"], "distance_miles": f["distance_miles"],
-             "typical_billed_charge": f["drg_charges"][drg]["avg_charge"]}
+             "typical_billed_charge": f["drg_charges"][drg]["avg_charge"],
+             "typical_billed_charge_formatted": _money(f["drg_charges"][drg]["avg_charge"])}
             for f in matches
         ],
     }
@@ -102,6 +116,7 @@ def apply_tier_to_charge(typical_billed_charge: float, patient_pays_pct: float) 
     owed = policy_mod.apply_tier(typical_billed_charge, patient_pays_pct)
     return {
         "estimated_patient_owed": owed,
+        "estimated_patient_owed_formatted": _money(owed),
         "patient_pays_pct": patient_pays_pct,
         "label": "estimate, confirm with billing office",
     }

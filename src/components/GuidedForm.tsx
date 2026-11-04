@@ -27,6 +27,8 @@ const fieldClass =
 const labelClass = "text-[11px] uppercase tracking-wide text-white/40 mb-1 block";
 
 export function GuidedForm({ onSubmit, zipCentroids }: GuidedFormProps) {
+  const [abroad, setAbroad] = useState(false);
+  const [destination, setDestination] = useState("");
   const [zip, setZip] = useState("");
   const [household, setHousehold] = useState("4");
   const [income, setIncome] = useState("");
@@ -39,7 +41,7 @@ export function GuidedForm({ onSubmit, zipCentroids }: GuidedFormProps) {
   const [locationError, setLocationError] = useState<string | null>(null);
 
   const categoryDef = NEED_CATEGORIES.find((c) => c.category === category)!;
-  const valid = /^\d{5}$/.test(zip) && Number(household) > 0 && Number(income) >= 0;
+  const valid = abroad ? destination.trim().length > 1 : /^\d{5}$/.test(zip) && Number(household) > 0 && Number(income) >= 0;
 
   const useMyLocation = () => {
     if (!navigator.geolocation) {
@@ -65,6 +67,10 @@ export function GuidedForm({ onSubmit, zipCentroids }: GuidedFormProps) {
 
   const submit = () => {
     if (!valid) return;
+    if (abroad) {
+      onSubmit(`traveling to ${destination.trim()}`);
+      return;
+    }
     const needText = categoryDef.items.length > 0 ? item : otherNeed || "a procedure";
     const formattedIncome = Number(income).toLocaleString("en-US");
     const parts = [
@@ -80,6 +86,33 @@ export function GuidedForm({ onSubmit, zipCentroids }: GuidedFormProps) {
 
   return (
     <div className="space-y-2.5">
+      <label className="flex items-center gap-2 text-sm text-white/70 cursor-pointer select-none">
+        <input
+          type="checkbox"
+          checked={abroad}
+          onChange={(e) => setAbroad(e.target.checked)}
+          className="h-4 w-4 rounded border-white/20 bg-white/10 accent-sky-400"
+        />
+        I'm traveling outside the US
+      </label>
+
+      {abroad ? (
+        <>
+          <div>
+            <label className={labelClass}>City, country</label>
+            <input
+              value={destination}
+              onChange={(e) => setDestination(e.target.value)}
+              placeholder="Cancun, Mexico"
+              className={fieldClass}
+            />
+          </div>
+          <p className="text-[11px] text-white/40">
+            Shows nearby hospital & clinic locations (OpenStreetMap). No cost estimate is available outside the US.
+          </p>
+        </>
+      ) : (
+        <>
       <div className="grid grid-cols-2 gap-2.5">
         <div>
           <label className={labelClass}>Zip code</label>
@@ -185,13 +218,15 @@ export function GuidedForm({ onSubmit, zipCentroids }: GuidedFormProps) {
           />
         )}
       </div>
+        </>
+      )}
 
       <button
         onClick={submit}
         disabled={!valid}
         className="w-full rounded-xl bg-white/90 text-ink-950 text-sm font-medium px-4 py-2.5 hover:bg-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
       >
-        Find my options
+        {abroad ? "Find hospitals & clinics" : "Find my options"}
       </button>
     </div>
   );

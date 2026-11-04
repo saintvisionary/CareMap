@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { Fragment, useState, type ReactNode } from "react";
 import type { ChatMessage } from "../hooks/useCareMap";
 import { GlassPanel } from "./GlassPanel";
 
@@ -7,6 +7,52 @@ interface ChatPanelProps {
   messages: ChatMessage[];
   loading: boolean;
   onSend: (text: string) => void;
+}
+
+// Lightweight markdown: **bold** inline, "- " lines as bullet lists, blank
+// lines as paragraph breaks. Agent replies come back as markdown (bold
+// labels, bulleted facts -- see ORCHESTRATOR_PROMPT); rendering them as a
+// single plain-text blob left literal "**" asterisks and run-on sentences
+// on screen. Not a full markdown parser -- just the subset the prompt
+// actually asks the model to use.
+function renderInline(text: string, keyPrefix: string): ReactNode {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g).filter((p) => p.length > 0);
+  return parts.map((part, i) =>
+    part.startsWith("**") && part.endsWith("**") ? (
+      <strong key={`${keyPrefix}-${i}`} className="font-semibold text-white">
+        {part.slice(2, -2)}
+      </strong>
+    ) : (
+      <Fragment key={`${keyPrefix}-${i}`}>{part}</Fragment>
+    ),
+  );
+}
+
+function renderMessageText(text: string): ReactNode {
+  const blocks = text.split(/\n{2,}/);
+  return blocks.map((block, bi) => {
+    const lines = block.split("\n").filter((l) => l.trim().length > 0);
+    const isList = lines.length > 0 && lines.every((l) => /^[-*]\s/.test(l.trim()));
+    if (isList) {
+      return (
+        <ul key={bi} className={`list-disc pl-4 space-y-1 ${bi > 0 ? "mt-2" : ""}`}>
+          {lines.map((l, li) => (
+            <li key={li}>{renderInline(l.trim().replace(/^[-*]\s/, ""), `${bi}-${li}`)}</li>
+          ))}
+        </ul>
+      );
+    }
+    return (
+      <p key={bi} className={bi > 0 ? "mt-2" : ""}>
+        {lines.map((l, li) => (
+          <Fragment key={li}>
+            {renderInline(l, `${bi}-${li}`)}
+            {li < lines.length - 1 && <br />}
+          </Fragment>
+        ))}
+      </p>
+    );
+  });
 }
 
 export function ChatPanel({ messages, loading, onSend }: ChatPanelProps) {
@@ -34,7 +80,7 @@ export function ChatPanel({ messages, loading, onSend }: ChatPanelProps) {
                   : "bg-white/5 text-white/80 border border-white/10"
               }`}
             >
-              {m.text}
+              {renderMessageText(m.text)}
             </motion.div>
           ))}
         </AnimatePresence>

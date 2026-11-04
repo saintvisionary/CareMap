@@ -19,6 +19,11 @@ export interface IntakeHint {
   veteran: boolean;
   tierPct: number | null;
   need: string | null;
+  /** Set only for "traveling to X" messages (the guided form's traveler
+   * mode, or free chat text). When present, callers should use the
+   * international (OpenStreetMap, location-only) path instead of the
+   * domestic zip-based one -- see src/lib/international.ts. */
+  destination: string | null;
   redactedMessage: string;
 }
 
@@ -28,6 +33,12 @@ const DOLLAR_K_RE = /\$\s?(\d+(?:\.\d+)?)\s*k\b/i;
 const DOLLAR_RE = /\$\s?(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)\b/;
 const HOUSEHOLD_RE = /family of (\d+)|household of (\d+)|(\d+)[\s-]*person household/i;
 const VETERAN_RE = /\bveteran\b/i;
+// Stops the capture at the next recognized field rather than at a bare
+// comma, since a destination itself usually contains one ("Cancun,
+// Mexico"). Best-effort for free chat text; the guided form's traveler
+// mode always produces the comma-separated form this is tuned for.
+const DESTINATION_RE =
+  /\btraveling (?:to|abroad to)\s+(.+?)(?=,?\s*(?:family of \d|household of \d|\$|uninsured\b|medicaid\b|medicare\b|private insurance\b|VA insurance\b|not sure about insurance\b|veteran\b|need\s|for\s)|$)/i;
 
 // Order matters: checked top to bottom, first match wins. "uninsured" must
 // come before the bare "insured" match since "insured" is a substring of it.
@@ -163,6 +174,11 @@ function parseInsuranceType(text: string): InsuranceType | null {
   return null;
 }
 
+function parseDestination(text: string): string | null {
+  const m = DESTINATION_RE.exec(text);
+  return m ? m[1].trim() : null;
+}
+
 export function parseNeed(text: string): string | null {
   for (const { pattern, need } of NEED_KEYWORDS) {
     if (pattern.test(text)) return need;
@@ -196,5 +212,13 @@ export function redact(message: string): IntakeHint {
     redacted = redacted.replace(dollarSpan, "[income redacted]").replace(householdSpan, "[household redacted]");
   }
 
-  return { zipCode, insuranceType, veteran, tierPct, need: parseNeed(message), redactedMessage: redacted };
+  return {
+    zipCode,
+    insuranceType,
+    veteran,
+    tierPct,
+    need: parseNeed(message),
+    destination: parseDestination(message),
+    redactedMessage: redacted,
+  };
 }

@@ -2,7 +2,8 @@ import { useCallback, useState } from "react";
 import { askAgent } from "../lib/agentClient";
 import { facilitiesNear, type FacilityWithDistance } from "../lib/geo";
 import { redact, type InsuranceType } from "../lib/intake";
-import { summarize } from "../lib/summarize";
+import { findInternationalFacilities, type InternationalFacility } from "../lib/international";
+import { summarize, summarizeInternational } from "../lib/summarize";
 import type { Facility, ZipCentroid } from "../lib/types";
 
 export interface ChatMessage {
@@ -20,6 +21,7 @@ export interface MapFlyTo {
 export interface CareMapState {
   messages: ChatMessage[];
   facilities: FacilityWithDistance[];
+  internationalFacilities: InternationalFacility[];
   tierPct: number | null;
   insuranceType: InsuranceType | null;
   veteran: boolean;
@@ -40,6 +42,7 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
     },
   ]);
   const [facilities, setFacilities] = useState<FacilityWithDistance[]>([]);
+  const [internationalFacilities, setInternationalFacilities] = useState<InternationalFacility[]>([]);
   const [tierPct, setTierPct] = useState<number | null>(null);
   const [insuranceType, setInsuranceType] = useState<InsuranceType | null>(null);
   const [veteran, setVeteran] = useState(false);
@@ -52,8 +55,38 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
       setMessages((m) => [...m, { id: id(), role: "user", text }]);
 
       const hint = redact(text);
+
+      // Traveler path: no US zip/tier math applies abroad, and there's no
+      // real cost data to show -- see src/lib/international.ts. Skip the
+      // domestic flow and the Lambda agent entirely rather than let either
+      // one apply US-specific policy language to a destination it doesn't
+      // understand.
+      if (hint.destination) {
+        setFacilities([]);
+        setInternationalFacilities([]);
+        setTierPct(null);
+        setInsuranceType(hint.insuranceType);
+        setVeteran(hint.veteran);
+        setLoading(true);
+        findInternationalFacilities(hint.destination)
+          .then((result) => {
+            setInternationalFacilities(result?.facilities ?? []);
+            if (result) setFlyTo({ center: [result.lon, result.lat], zoom: 11, pitch: 40 });
+            setMessages((m) => [...m, { id: id(), role: "assistant", text: summarizeInternational(result, hint.destination!) }]);
+          })
+          .catch(() => {
+            setMessages((m) => [
+              ...m,
+              { id: id(), role: "assistant", text: `Couldn't reach the international facility directory for "${hint.destination}" right now. Try again shortly.` },
+            ]);
+          })
+          .finally(() => setLoading(false));
+        return;
+      }
+
       const nearby = hint.zipCode ? facilitiesNear(allFacilities, zipCentroids, hint.zipCode, 25) : [];
       setFacilities(nearby);
+      setInternationalFacilities([]);
       setTierPct(hint.tierPct);
       setInsuranceType(hint.insuranceType);
       setVeteran(hint.veteran);
@@ -90,5 +123,5 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
     [allFacilities, zipCentroids],
   );
 
-  return { messages, facilities, tierPct, insuranceType, veteran, flyTo, loading, sendMessage };
+  return { messages, facilities, internationalFacilities, tierPct, insuranceType, veteran, flyTo, loading, sendMessage };
 }
