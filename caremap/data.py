@@ -21,6 +21,8 @@ ZIPS_PATH = ROOT / "public" / "data" / "zip_centroids.json"
 def _load_facilities() -> list[dict]:
     out = []
     for path in sorted(STATES_DIR.glob("*.json")):
+        if path.stem == "index":  # build_data.py's state-list manifest, not facility data
+            continue
         out.extend(json.loads(path.read_text(encoding="utf-8"))["facilities"])
     return out
 

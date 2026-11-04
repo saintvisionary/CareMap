@@ -285,6 +285,14 @@ def main() -> None:
         out_path.write_text(json.dumps(data, indent=2))
         print(f"Wrote {out_path} ({len(data['facilities'])} facilities)", file=sys.stderr)
 
+    # Authoritative list of every state file currently on disk (not just the
+    # ones this run touched) -- the frontend fetches this first to know what
+    # to load, instead of hardcoding a second copy of the state list that
+    # could drift out of sync with what's actually been built.
+    available = sorted(p.stem for p in OUT_STATES.glob("*.json") if p.stem != "index")
+    (OUT_STATES / "index.json").write_text(json.dumps(available))
+    print(f"Wrote {OUT_STATES / 'index.json'} ({len(available)} states)", file=sys.stderr)
+
 
 if __name__ == "__main__":
     main()

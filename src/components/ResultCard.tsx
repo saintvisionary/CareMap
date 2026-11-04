@@ -22,7 +22,9 @@ export function ResultCard({ facility, tierPct, insured, need, index, active, on
   const charge = drg ? facility.drg_charges[drg.code]?.avg_charge : undefined;
 
   let hero = "Tier unknown";
-  let heroLabel = "Tell us your income for an estimate.";
+  let heroLabel = facility.charity_care_participant
+    ? "Tell us your income for an estimate."
+    : `${facility.state} rules coming soon -- ask this hospital's billing office about financial assistance.`;
   if (tier === "insured") {
     // NJ Charity Care doesn't apply to insured patients -- never claim a
     // charity-care price here, even if we happen to know a typical charge.

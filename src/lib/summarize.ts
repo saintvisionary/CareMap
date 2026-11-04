@@ -23,7 +23,7 @@ export function summarize(result: QueryResult): string {
     return "Tell me your zip code and I can find hospitals near you.";
   }
   if (facilities.length === 0) {
-    return `I don't have facility data for ${zipCode} yet. CareMap currently covers New Jersey.`;
+    return `I couldn't find a hospital within 25 miles of ${zipCode}. Try a nearby zip code.`;
   }
 
   const nearest = facilities[0];
@@ -37,9 +37,11 @@ export function summarize(result: QueryResult): string {
     lines.push(
       "Since you're insured, NJ Charity Care doesn't apply to you -- contact your insurer for your specific copay/deductible.",
     );
+  } else if (!nearest.charity_care_participant) {
+    lines.push(`${nearest.state} financial assistance rules aren't in CareMap yet -- ask this hospital's billing office about charity care.`);
   } else if (tierPct == null) {
     lines.push("Tell me your household income and size for a personal NJ Charity Care estimate.");
-  } else if (nearest.state === "NJ" && nearest.charity_care_participant) {
+  } else {
     lines.push(
       tierPct <= 0
         ? "At your income, NJ Charity Care covers hospital care in full at participating hospitals: you'd pay an estimated $0."

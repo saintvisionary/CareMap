@@ -8,8 +8,6 @@ interface CareMapData {
   error: string | null;
 }
 
-const STATES = ["NJ"];
-
 export function useCareMapData(): CareMapData {
   const [facilities, setFacilities] = useState<Facility[]>([]);
   const [zipCentroids, setZipCentroids] = useState<Record<string, ZipCentroid>>({});
@@ -20,13 +18,16 @@ export function useCareMapData(): CareMapData {
     let cancelled = false;
     (async () => {
       try {
-        const [zipRes, ...stateRes] = await Promise.all([
+        const [zipRes, indexRes] = await Promise.all([
           fetch("./data/zip_centroids.json"),
-          ...STATES.map((st) => fetch(`./data/states/${st}.json`)),
+          fetch("./data/states/index.json"),
         ]);
         if (!zipRes.ok) throw new Error(`zip_centroids.json: ${zipRes.status}`);
+        if (!indexRes.ok) throw new Error(`states/index.json: ${indexRes.status}`);
         const zips = (await zipRes.json()) as Record<string, ZipCentroid>;
+        const states = (await indexRes.json()) as string[];
 
+        const stateRes = await Promise.all(states.map((st) => fetch(`./data/states/${st}.json`)));
         const all: Facility[] = [];
         for (const res of stateRes) {
           if (!res.ok) continue;
