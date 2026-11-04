@@ -123,7 +123,7 @@ export function GuidedForm({ onSubmit, zipCentroids, facilities }: GuidedFormPro
         <>
       <div className="grid grid-cols-2 gap-2.5">
         <div>
-          <label className={labelClass}>Zip code</label>
+          <label className={labelClass}>City or zip code</label>
           <div className="flex gap-1.5">
             <div className="flex-1">
               <AutocompleteInput
