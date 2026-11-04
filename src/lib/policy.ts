@@ -175,6 +175,23 @@ export function riCharityTier(fplPct: number): CharityTier | null {
   return null;
 }
 
+// 101 CMR 613.00, Health Safety Net -- verified directly against the
+// current regulatory text. Below 150% FPL (note: lower than the 200%
+// line most other modeled states use) this is a real, exact 0%. Returns
+// null above it: the 150-300% FPL deductible is a flat annual dollar
+// amount (not a percentage of billed charges) equal to the greater of a
+// MA Health Connector premium this app doesn't have, or a computable
+// formula -- but since it's legally the GREATER of the two, the true
+// amount isn't knowable without the premium data.
+const MA_FREE_CARE_MAX_FPL = 150;
+
+export function maCharityTier(fplPct: number): CharityTier | null {
+  if (fplPct <= MA_FREE_CARE_MAX_FPL) {
+    return { patientPaysPct: 0, fplPct, maxFplPct: MA_FREE_CARE_MAX_FPL };
+  }
+  return null;
+}
+
 // Keyed by a facility's own state. Only states with a real, codified,
 // state-wide formula belong here -- most states have no such law (just
 // federal 501(r): each nonprofit hospital must have *a* policy, with no
@@ -187,6 +204,7 @@ const STATE_CHARITY_TIER_FNS: Record<string, (fplPct: number, facilityType?: str
   OR: (fplPct, _facilityType, ownership) => orCharityTier(fplPct, ownership),
   MD: (fplPct) => mdCharityTier(fplPct),
   RI: (fplPct) => riCharityTier(fplPct),
+  MA: (fplPct) => maCharityTier(fplPct),
 };
 
 export const MODELED_CHARITY_STATES = Object.keys(STATE_CHARITY_TIER_FNS);
@@ -203,6 +221,7 @@ export const CHARITY_PROGRAM_NAMES: Record<string, string> = {
   OR: "Oregon's hospital financial assistance law (nonprofit hospitals only)",
   MD: "Maryland's hospital financial assistance law",
   RI: "Rhode Island's hospital charity care regulation",
+  MA: "Massachusetts's Health Safety Net",
 };
 
 /** Charity-care tier for whichever state a facility is in, or null if that

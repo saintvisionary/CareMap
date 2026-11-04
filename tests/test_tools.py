@@ -215,3 +215,18 @@ def test_draft_application_ri_facility():
     assert "Rhode Island" in r["letter"]
     assert "RI residency" in r["checklist"][0]
     assert "help_phone" not in r
+
+
+def test_charity_tier_ma_free_care_and_gap():
+    assert charity_tier(state="MA", fpl_pct=100)["patient_pays_pct"] == 0
+    r = charity_tier(state="MA", fpl_pct=250)
+    assert "error" in r
+    assert "Health Connector" in r["error"]
+
+
+def test_draft_application_ma_facility():
+    # UMASS MEMORIAL HEALTHALLIANCE HOSPITALS, a real MA acute care hospital (CCN 220001).
+    r = draft_application(ccn="220001", patient_pays_pct=0)
+    assert "UMASS MEMORIAL HEALTHALLIANCE HOSPITALS" in r["letter"]
+    assert "Health Safety Net" in r["letter"]
+    assert "MA residency" in r["checklist"][0]

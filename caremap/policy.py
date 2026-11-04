@@ -121,6 +121,31 @@ def ri_charity_tier(fpl_pct: float) -> dict | None:
     return None
 
 
+def ma_charity_tier(fpl_pct: float) -> dict | None:
+    """MA Health Safety Net tier (101 CMR 613.00) for a percent of FPL.
+
+    Verified directly against the current regulatory text. Below 150%
+    FPL (note: lower than the 200% line most other modeled states use)
+    this is a real, exact 0% -- HSN's Primary/Secondary categories have no
+    deductible. Returns None above it: 150-300% FPL's deductible is a flat
+    annual dollar amount (not a percentage of billed charges) equal to the
+    greater of a MA Health Connector premium CareMap doesn't have, or a
+    computable formula -- but since it's legally the GREATER of the two,
+    the true amount isn't knowable without the premium data. Above 300%
+    FPL, HSN's general categories don't apply at all. No disclosable cap
+    fact here, same as RI.
+    """
+    threshold = POLICY["ma_charity_care"]["free_care_max_fpl_pct"]
+    if fpl_pct <= threshold:
+        return {
+            "patient_pays_pct": 0,
+            "fpl_pct": fpl_pct,
+            "max_fpl_pct": threshold,
+            "source": POLICY["ma_charity_care"]["source"],
+        }
+    return None
+
+
 def md_charity_tier(fpl_pct: float) -> dict:
     """MD hospital financial assistance tier (Md. Code, Health-General 19-214.1) for a percent of FPL.
 
@@ -208,6 +233,7 @@ STATE_CHARITY_TIER_FNS = {
     "OR": lambda fpl_pct, facility_type=None, ownership=None: or_charity_tier(fpl_pct, ownership=ownership),
     "MD": lambda fpl_pct, facility_type=None, ownership=None: md_charity_tier(fpl_pct),
     "RI": lambda fpl_pct, facility_type=None, ownership=None: ri_charity_tier(fpl_pct),
+    "MA": lambda fpl_pct, facility_type=None, ownership=None: ma_charity_tier(fpl_pct),
 }
 
 

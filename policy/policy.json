@@ -137,6 +137,18 @@
     },
     "free_care_max_fpl_pct": 200
   },
+  "ma_charity_care": {
+    "source": "101 CMR 613.00, Health Safety Net (Mass. Gen. Laws c.118E) -- https://www.law.cornell.edu/regulations/massachusetts/101-CMR-613-04",
+    "applies_to": "MA acute hospitals, reimbursed through the state Health Safety Net fund -- uninsured and underinsured patients alike",
+    "note": "Verified directly against the current regulatory text. Below 150% FPL (613.04(6)(b)(3)), HSN 'Primary'/'Secondary' eligibility applies with no deductible -- a real, exact $0 out-of-pocket for HSN-covered services, though note this threshold is 150% FPL, LOWER than the 200% free-care line most other modeled states use. From 150-300% FPL ('Health Safety Net - Partial', 613.04(8)(c)(1)), the annual deductible is the GREATER of (a) the lowest-cost MA Health Connector premium for that household size, or (b) 40% x (200% FPL - household income) -- (b) alone is computable from income, but the deductible is legally the max of (a) and (b), and (a) needs Health Connector premium data CareMap doesn't have, so the true dollar amount isn't knowable here. It's also a flat annual deductible, not a percentage of billed charges, structurally unlike every other state modeled so far. Above 300% FPL, HSN's general categories don't apply at all -- only a separate Medical Hardship path requiring the patient's actual medical-expense history, which CareMap can't verify. CareMap shows NO percentage and NO cap fact above 150% FPL -- only the free-care floor is real here, closer to RI's 'no fact to add' framing than IL's disclosed cap.",
+    "eligibility": {
+      "must_be_un_or_underinsured": true,
+      "residency_requirement": "unconfirmed -- secondary sources disagree on whether HSN requires MA residency; not independently confirmed against primary text, applied conservatively (same posture as WA's unconfirmed eligibility gate) pending fuller verification",
+      "asset_limit_individual": null,
+      "asset_limit_family": null
+    },
+    "free_care_max_fpl_pct": 150
+  },
   "good_faith_estimate": {
     "source": "https://www.cms.gov/medical-bill-rights/help/guides/good-faith-estimate",
     "applies_to": "uninsured or self-pay patients scheduling care at least 3 business days ahead",

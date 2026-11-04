@@ -286,9 +286,33 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
             </div>
 
+            <div className={section}>
+              <h2 className={h2}>Massachusetts Health Safety Net</h2>
+              <p className={p}>
+                Massachusetts's Health Safety Net (101 CMR 613.00), a state fund that reimburses hospitals for care given to eligible patients who are{" "}
+                <strong className="text-white/90">uninsured or underinsured</strong>.
+              </p>
+              <div className="rounded-xl bg-white/5 p-3 text-xs">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
+                  <span className="text-white/40">Income, % of poverty line</span>
+                  <span className="text-white/40">You pay</span>
+                  <span>Up to 150%</span>
+                  <span className="text-white/90">$0 -- fully covered</span>
+                  <span>Over 150%</span>
+                  <span className="text-white/90">No modeled amount</span>
+                </div>
+              </div>
+              <p className={p}>
+                <strong className="text-white/90">This free-care line is 150% of the poverty line, lower than every other state here.</strong> Above
+                it, the real amount you'd owe is a flat annual deductible tied to a Massachusetts Health Connector insurance premium, not a percentage
+                of billed charges -- CareMap doesn't have that premium data, so no amount is shown. Ask the hospital's billing office directly.
+              </p>
+            </div>
+
             <p className={p}>
-              <strong className="text-white/90">Right now, NJ, WA, IL, NY, OR, MD, and RI are the only states with a modeled tier.</strong> Every other
-              state still shows real hospital locations and typical billed charges, but says "[state] rules coming soon" instead of a personal estimate.
+              <strong className="text-white/90">Right now, NJ, WA, IL, NY, OR, MD, RI, and MA are the only states with a modeled tier.</strong> Every
+              other state still shows real hospital locations and typical billed charges, but says "[state] rules coming soon" instead of a personal
+              estimate.
             </p>
 
             <div className={section}>
@@ -344,6 +368,7 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                 <li>OR charity care rules -- ORS 442.610-442.618, Oregon hospital financial assistance law</li>
                 <li>MD charity care rules -- Md. Code, Health-General 19-214.1</li>
                 <li>RI charity care rules -- 216-RICR-40-10-23.14, Rhode Island hospital licensing regulation</li>
+                <li>MA charity care rules -- 101 CMR 613.00, Massachusetts Health Safety Net</li>
                 <li>International locations -- OpenStreetMap (Nominatim, Overpass, Photon)</li>
               </ul>
               <p className={p}>All public, official sources -- CareMap never adds or guesses a number that isn't already in that data.</p>

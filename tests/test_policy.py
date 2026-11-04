@@ -1,4 +1,4 @@
-from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, il_charity_tier, md_charity_tier, nj_charity_tier, ny_charity_tier, or_charity_tier, ri_charity_tier, wa_charity_tier
+from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, il_charity_tier, ma_charity_tier, md_charity_tier, nj_charity_tier, ny_charity_tier, or_charity_tier, ri_charity_tier, wa_charity_tier
 
 
 def test_demo_case_family_of_4():
@@ -195,3 +195,23 @@ def test_ri_tier_above_threshold_returns_none_not_a_guess():
 def test_charity_tier_dispatches_ri():
     assert charity_tier("RI", 150)["patient_pays_pct"] == 0
     assert charity_tier("RI", 250) is None
+
+
+def test_ma_tier_free_care_threshold():
+    # 101 CMR 613.04 -- verified directly against the current regulatory
+    # text. Free up to 150% FPL, LOWER than the 200% line most other
+    # modeled states use.
+    assert ma_charity_tier(150)["patient_pays_pct"] == 0
+    assert ma_charity_tier(151) is None
+
+
+def test_ma_tier_above_threshold_returns_none_not_a_guess():
+    # 150-300% FPL's deductible is a flat dollar amount needing MA Health
+    # Connector premium data CareMap doesn't have -- must return None.
+    assert ma_charity_tier(250) is None
+    assert ma_charity_tier(400) is None
+
+
+def test_charity_tier_dispatches_ma():
+    assert charity_tier("MA", 100)["patient_pays_pct"] == 0
+    assert charity_tier("MA", 200) is None
