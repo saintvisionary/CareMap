@@ -82,7 +82,8 @@ export function MapView({ facilities, internationalFacilities, tierPct, insuranc
     internationalFacilities.forEach((f, i) => {
       const el = document.createElement("div");
       el.className = "caremap-marker-wrap";
-      el.title = f.address ? `${f.name} -- ${f.address}` : f.name;
+      const label = f.localName ? `${f.name} (${f.localName})` : f.name;
+      el.title = f.address ? `${label} -- ${f.address}` : label;
       const dot = document.createElement("div");
       dot.className = "caremap-marker";
       dot.style.backgroundColor = INTERNATIONAL_MARKER_COLOR;

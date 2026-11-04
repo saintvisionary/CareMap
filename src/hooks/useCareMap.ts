@@ -71,7 +71,10 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
         findInternationalFacilities(hint.destination)
           .then((result) => {
             setInternationalFacilities(result?.facilities ?? []);
-            if (result) setFlyTo({ center: [result.lon, result.lat], zoom: 11, pitch: 40 });
+            // A too-broad match (a whole country) isn't a place worth
+            // flying the map to -- it's just wherever Nominatim's centroid
+            // happened to land, not anywhere the traveler described.
+            if (result && !result.tooBroad) setFlyTo({ center: [result.lon, result.lat], zoom: 11, pitch: 40 });
             setMessages((m) => [...m, { id: id(), role: "assistant", text: summarizeInternational(result, hint.destination!) }]);
           })
           .catch(() => {

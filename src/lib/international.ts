@@ -10,6 +10,10 @@
 // travel insurer, or an embassy before scheduling care.
 export interface InternationalFacility {
   name: string;
+  /** The name in its original script, when English differs from it (e.g.
+   * OSM's name:en vs name tag) -- kept rather than dropped, since a
+   * traveler may need to show/say the local name locally. */
+  localName: string | null;
   type: "hospital" | "clinic";
   lat: number;
   lon: number;
@@ -22,6 +26,11 @@ export interface InternationalResult {
   lat: number;
   lon: number;
   facilities: InternationalFacility[];
+  /** True when the matched place is too large an area (a whole country,
+   * a big region) for a fixed-radius search from one point to mean
+   * anything -- see geocodePlace. facilities is always empty in this case;
+   * the search was skipped rather than run against an arbitrary point. */
+  tooBroad: boolean;
 }
 
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
@@ -45,9 +54,24 @@ interface NominatimResult {
   lat: string;
   lon: string;
   display_name: string;
+  addresstype?: string;
+  place_rank?: number;
 }
 
-async function geocodePlace(place: string): Promise<{ lat: number; lon: number; displayName: string } | null> {
+// Bounding-box size looked like the obvious signal for "this match is too
+// broad to search a fixed 25km radius from" but it's unreliable: Tokyo's
+// administrative boundary includes remote outlying islands, so its bbox
+// spans a huge area even though its actual centroid point is correctly
+// right in central Tokyo -- a bbox check flagged "Tokyo, Japan" as too
+// broad right alongside "Japan" itself, which is wrong. Nominatim's own
+// addresstype is a cleaner, semantic signal: "country" genuinely has no
+// single meaningful point for a 25km search (that's the real bug this
+// guards against -- "Japan" landed in rural Gunma, ~170km from Tokyo),
+// while "province"/"state"/"city" etc. all come with a representative
+// point Nominatim itself considers the right center for that name.
+async function geocodePlace(
+  place: string,
+): Promise<{ lat: number; lon: number; displayName: string; tooBroad: boolean } | null> {
   const qs = new URLSearchParams({ q: place, format: "json", limit: "1" });
   const res = await fetch(`${NOMINATIM_URL}?${qs}`, { headers: { Accept: "application/json" } });
   // Distinct from "zero results" (a real, legitimate answer meaning the
@@ -57,7 +81,10 @@ async function geocodePlace(place: string): Promise<{ lat: number; lon: number; 
   const results = (await res.json()) as NominatimResult[];
   if (!results.length) return null;
   const r = results[0];
-  return { lat: parseFloat(r.lat), lon: parseFloat(r.lon), displayName: r.display_name };
+  // place_rank 4 is Nominatim's own rank for "country" -- kept as a
+  // fallback for the rare response missing addresstype.
+  const tooBroad = r.addresstype ? r.addresstype === "country" || r.addresstype === "continent" : r.place_rank === 4;
+  return { lat: parseFloat(r.lat), lon: parseFloat(r.lon), displayName: r.display_name, tooBroad };
 }
 
 export interface OverpassElement {
@@ -109,7 +136,12 @@ export function parseOverpassElements(elements: OverpassElement[], originLat: nu
   const facilities: InternationalFacility[] = [];
   for (const el of elements) {
     const tags = el.tags ?? {};
-    const name = tags.name;
+    // Prefer OSM's own English name tag when present, rather than showing
+    // an English-speaking traveler a name in a script they can't read back
+    // to a taxi driver or search for -- never machine-translate it
+    // ourselves, that's a real source of medical-context errors.
+    const localName = tags.name;
+    const name = tags["name:en"] || localName;
     const flat = el.lat ?? el.center?.lat;
     const flon = el.lon ?? el.center?.lon;
     if (!name || flat == null || flon == null) continue;
@@ -120,6 +152,7 @@ export function parseOverpassElements(elements: OverpassElement[], originLat: nu
     const addressParts = [tags["addr:housenumber"], tags["addr:street"], tags["addr:city"]].filter(Boolean);
     facilities.push({
       name,
+      localName: localName && localName !== name ? localName : null,
       type,
       lat: flat,
       lon: flon,
@@ -133,11 +166,19 @@ export function parseOverpassElements(elements: OverpassElement[], originLat: nu
 export async function findInternationalFacilities(place: string, radiusKm = 25): Promise<InternationalResult | null> {
   const geo = await geocodePlace(place);
   if (!geo) return null;
+  if (geo.tooBroad) {
+    // Skip the Overpass call entirely rather than run a 25km search
+    // against an arbitrary point inside a country/region -- the results
+    // would be real facilities, but not meaningfully "near" anything the
+    // traveler asked about.
+    return { place: geo.displayName, lat: geo.lat, lon: geo.lon, facilities: [], tooBroad: true };
+  }
   const elements = await overpassFacilities(geo.lat, geo.lon, radiusKm);
   return {
     place: geo.displayName,
     lat: geo.lat,
     lon: geo.lon,
     facilities: parseOverpassElements(elements, geo.lat, geo.lon).slice(0, 20),
+    tooBroad: false,
   };
 }

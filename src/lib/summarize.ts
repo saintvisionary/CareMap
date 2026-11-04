@@ -93,6 +93,9 @@ export function summarizeInternational(result: InternationalResult | null, place
   }
   const disclaimer =
     "Location only -- no billed-charge data exists for facilities outside the US. Confirm pricing directly with the facility, a travel insurer, or your embassy before scheduling care.";
+  if (result.tooBroad) {
+    return `"${result.place}" is a whole country/region, so a 25 km search from one point in it wouldn't mean much -- try a specific city instead, e.g. "Tokyo, Japan" or "Osaka, Japan".`;
+  }
   if (result.facilities.length === 0) {
     return (
       `No hospitals or clinics listed within 25 km of ${result.place} in OpenStreetMap's data. ` +
@@ -101,7 +104,8 @@ export function summarizeInternational(result: InternationalResult | null, place
   }
   const lines = result.facilities.slice(0, 8).map((f) => {
     const addr = f.address ? ` -- ${f.address}` : "";
-    return `- ${f.name} (${f.type}), ${f.distanceKm} km away${addr}`;
+    const local = f.localName ? ` (${f.localName})` : "";
+    return `- ${f.name}${local} (${f.type}), ${f.distanceKm} km away${addr}`;
   });
   return `Hospitals & clinics near ${result.place} (source: OpenStreetMap):\n${lines.join("\n")}\n\n${disclaimer}`;
 }
