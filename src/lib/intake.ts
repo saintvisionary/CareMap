@@ -40,12 +40,105 @@ const INSURANCE_PATTERNS: { type: InsuranceType; pattern: RegExp }[] = [
   { type: "private", pattern: /\b(private insurance|privately insured|insured)\b/i },
 ];
 
+// Order matters: checked top to bottom, first match wins. More specific
+// patterns (e.g. "kidney stones") must come before a broader one that would
+// otherwise also match their words (e.g. the old bare /kidney|urinary/ for
+// "kidney/urinary infection" used to swallow "kidney stones", "kidney
+// transplant" and "kidney failure" too -- tightened below now that those
+// have their own entries).
 const NEED_KEYWORDS: { pattern: RegExp; need: string }[] = [
-  { pattern: /gallbladder|cholecystectomy/i, need: "gallbladder surgery" },
-  { pattern: /pneumonia/i, need: "pneumonia" },
+  // Heart & circulation
+  { pattern: /heart attack|myocardial infarction/i, need: "heart attack" },
+  { pattern: /irregular heartbeat|arrhythmia|atrial fibrillation|\bafib\b/i, need: "irregular heartbeat" },
+  { pattern: /chest pain/i, need: "chest pain" },
   { pattern: /heart failure/i, need: "heart failure" },
-  { pattern: /kidney|urinary|uti\b/i, need: "kidney/urinary infection" },
+  { pattern: /\bstent\b|angioplasty/i, need: "stent or angioplasty" },
+  { pattern: /coronary bypass|heart bypass/i, need: "heart bypass surgery" },
+  { pattern: /pacemaker/i, need: "pacemaker implant" },
+  { pattern: /hypertensive crisis|high blood pressure/i, need: "high blood pressure crisis" },
+
+  // Lungs & breathing
+  { pattern: /pneumonia/i, need: "pneumonia" },
   { pattern: /copd|chronic obstructive/i, need: "COPD" },
+  { pattern: /asthma|bronchitis/i, need: "asthma or bronchitis flare" },
+  { pattern: /pulmonary embolism|blood clot in (my |the )?lung/i, need: "blood clot in the lung" },
+  { pattern: /collapsed lung|pneumothorax/i, need: "collapsed lung" },
+  { pattern: /respiratory infection/i, need: "serious respiratory infection" },
+
+  // Stomach & digestion
+  { pattern: /gallbladder|cholecystectomy/i, need: "gallbladder surgery" },
+  { pattern: /stomach bleeding|gi bleed|gastrointestinal hemorrhage/i, need: "stomach bleeding" },
+  { pattern: /bowel (blockage|obstruction)|intestinal blockage/i, need: "stomach or bowel blockage" },
+  { pattern: /acid reflux|gastritis|heartburn|\bgerd\b/i, need: "acid reflux or gastritis" },
+  { pattern: /pancreatitis/i, need: "pancreatitis" },
+  { pattern: /cirrhosis|liver disease|hepatitis/i, need: "liver disease" },
+  { pattern: /\bhernia\b/i, need: "hernia repair" },
+  { pattern: /appendix|appendicitis/i, need: "appendix removal" },
+
+  // Kidney & bladder
+  { pattern: /kidney stone/i, need: "kidney stones" },
+  { pattern: /kidney transplant/i, need: "kidney transplant" },
+  { pattern: /kidney failure|renal failure/i, need: "kidney failure" },
+  { pattern: /bladder (problem|issue)|urinary retention/i, need: "bladder problems" },
+  { pattern: /kidney infection|urinary tract infection|\buti\b/i, need: "kidney/urinary infection" },
+
+  // Bones, joints & muscles
+  { pattern: /hip fracture|femur fracture|broke(n)? (my |a )?(hip|femur)/i, need: "hip or femur fracture" },
+  { pattern: /hip replacement|knee replacement/i, need: "hip or knee replacement" },
+  { pattern: /spinal fusion/i, need: "spinal fusion surgery" },
+  { pattern: /back pain|spine problem|herniated disc/i, need: "back or spine problems" },
+  { pattern: /\bsprain(ed)?\b|dislocat(ed|ion)|broken (bone|arm|leg|wrist|ankle|toe|finger)/i, need: "broken bone, sprain or dislocation" },
+  { pattern: /arthritis|osteoporosis|bone disease/i, need: "bone or joint disease" },
+  { pattern: /arm (surgery|injury)|leg (surgery|injury)/i, need: "arm or leg procedure" },
+
+  // Brain & nervous system
+  { pattern: /\bstroke\b|cerebral infarction/i, need: "stroke" },
+  { pattern: /seizure/i, need: "seizures" },
+  { pattern: /head injury|concussion|hit (my |)?head/i, need: "head injury" },
+  { pattern: /dizz(y|iness)|balance problem|vertigo/i, need: "dizziness or balance problems" },
+  { pattern: /migraine|severe headache/i, need: "migraine or severe headaches" },
+  { pattern: /nerve (disorder|damage|pain)|neuropathy/i, need: "nerve disorder" },
+
+  // Mental health & substance use
+  { pattern: /severe depression/i, need: "severe depression" },
+  { pattern: /psychosis|psychotic episode/i, need: "psychosis or severe mental health crisis" },
+  { pattern: /alcohol withdrawal|drug withdrawal|detox/i, need: "alcohol or drug withdrawal" },
+  { pattern: /panic attack|mental health crisis|psychiatric emergency/i, need: "acute stress or crisis" },
+
+  // Ear, nose, mouth & throat
+  { pattern: /ear infection|throat infection|strep throat|tonsillitis/i, need: "ear or throat infection" },
+  { pattern: /dental infection|tooth infection|oral infection|abscess(ed)? tooth/i, need: "severe dental or oral infection" },
+
+  // Eyes
+  { pattern: /eye infection|eye disorder|pink eye|conjunctivitis/i, need: "eye disorder or infection" },
+
+  // Skin
+  { pattern: /cellulitis|skin infection/i, need: "skin infection (cellulitis)" },
+  { pattern: /\bburn(ed|s)?\b/i, need: "burn injury" },
+
+  // Blood, immune system & cancer care
+  { pattern: /\banemia\b|blood disorder/i, need: "anemia or blood disorder" },
+  { pattern: /clotting disorder|blood clot(?! in)/i, need: "blood clotting disorder" },
+  { pattern: /chemotherapy|\bchemo\b/i, need: "chemotherapy" },
+  { pattern: /leukemia|lymphoma/i, need: "leukemia or lymphoma" },
+
+  // Diabetes & hormones
+  { pattern: /diabet/i, need: "diabetes complications" },
+  { pattern: /thyroid|endocrine disorder/i, need: "thyroid or hormone disorder" },
+
+  // Women's reproductive health
+  { pattern: /ovarian cancer|uterine cancer|cervical cancer|gynecologic cancer/i, need: "gynecologic cancer care" },
+  { pattern: /ovarian cyst|uterine fibroid|ovarian condition/i, need: "uterine or ovarian condition" },
+
+  // Men's reproductive health
+  { pattern: /enlarged prostate|\bbph\b|prostate problem/i, need: "enlarged prostate" },
+
+  // Serious infection
+  { pattern: /\bsepsis\b|septic\b|bloodstream infection/i, need: "sepsis or bloodstream infection" },
+  { pattern: /surgical site infection|post-?op(erative)? infection|wound infection/i, need: "infection after surgery or injury" },
+
+  // Weight-loss surgery
+  { pattern: /bariatric|gastric bypass|gastric sleeve|weight.?loss surgery/i, need: "weight-loss (bariatric) surgery" },
 ];
 
 function parseDollarAmount(text: string): [number, string] | null {
