@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+.DS_Store
+node_modules/
+dist/
+data/raw/
+/*.md
+!/README.md

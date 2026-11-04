@@ -1,0 +1,41 @@
+{
+  "source": "https://www.federalregister.gov/documents/2026/01/15/2026-00755/annual-update-of-the-hhs-poverty-guidelines",
+  "fpl_2026_48_states": {
+    "base_household_size": 1,
+    "base_amount": 15960,
+    "additional_person_amount": 5680,
+    "household_amounts": {
+      "1": 15960,
+      "2": 21640,
+      "3": 27320,
+      "4": 33000
+    }
+  },
+  "nj_charity_care": {
+    "source": "https://www.nj.gov/health/hcf/documents/NJ-Charity-Care-Fact-Sheet-March-2026-English.pdf",
+    "applies_to": "all NJ acute care hospitals, hospital care only (not physician/anesthesia/radiology reading/outpatient Rx)",
+    "eligibility": {
+      "must_be_un_or_underinsured": true,
+      "not_medicaid_eligible": true,
+      "asset_limit_individual": 7500,
+      "asset_limit_family": 15000,
+      "spend_down_allowed": true
+    },
+    "tiers": [
+      {"max_fpl_pct": 200, "patient_pays_pct": 0},
+      {"max_fpl_pct": 225, "patient_pays_pct": 20},
+      {"max_fpl_pct": 250, "patient_pays_pct": 40},
+      {"max_fpl_pct": 275, "patient_pays_pct": 60},
+      {"max_fpl_pct": 300, "patient_pays_pct": 80},
+      {"max_fpl_pct": null, "patient_pays_pct": 100}
+    ],
+    "apply_window_days_after_service": 365,
+    "decision_window_business_days": 10,
+    "help_phone": "1-866-588-5696"
+  },
+  "good_faith_estimate": {
+    "source": "https://www.cms.gov/medical-bill-rights/help/guides/good-faith-estimate",
+    "applies_to": "uninsured or self-pay patients scheduling care at least 3 business days ahead",
+    "min_business_days_notice": 3
+  }
+}

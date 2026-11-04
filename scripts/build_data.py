@@ -1,0 +1,258 @@
+#!/usr/bin/env python3
+"""Build public/data/states/{ST}.json and public/data/zip_centroids.json from
+public CMS + Census sources.
+
+Usage:
+    python scripts/build_data.py --states NJ
+
+Pipeline: download -> filter -> join on CCN -> geocode -> write state JSON.
+Raw downloads are cached in data/raw/ (gitignored, not committed -- GitHub
+has a 100MB file limit and these are regeneratable).
+
+Not yet wired in (left for later):
+- NJ Documented Charity Care PDF (per-hospital $ amounts; the tier formula
+  itself does not need this, see caremap/policy.py)
+- HRSA FQHC sites, NPPES urgent care filter
+- tippecanoe/.pmtiles national point layer (only needed once >1 state ships)
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import io
+import json
+import sys
+import time
+import urllib.parse
+import urllib.request
+import zipfile
+from pathlib import Path
+from urllib.request import Request, urlopen
+
+ROOT = Path(__file__).resolve().parent.parent
+RAW = ROOT / "data" / "raw"
+OUT_STATES = ROOT / "public" / "data" / "states"
+OUT_ZIP_CENTROIDS = ROOT / "public" / "data" / "zip_centroids.json"
+
+HGI_METASTORE_URL = "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/xubh-q36u"
+DRG_DATA_API = "https://data.cms.gov/data-api/v1/dataset/690ddc6c-2767-4618-b277-420ffb2bf27c/data"
+ZCTA_GAZETTEER_URL = "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2024_Gazetteer/2024_Gaz_zcta_national.zip"
+CENSUS_BATCH_GEOCODER_URL = "https://geocoding.geo.census.gov/geocoder/locations/addressbatch"
+CENSUS_ONELINE_GEOCODER_URL = "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress"
+
+# A handful of CMS-listed zips are PO-box-only and have no ZCTA centroid
+# (e.g. Morristown Medical Center is listed under 07962, a PO box; its
+# physical zip is 07960). Used only as a last-resort fallback key.
+PO_BOX_ZIP_TO_PHYSICAL_ZIP = {"07962": "07960"}
+
+def _get(url: str) -> bytes:
+    # No custom User-Agent: data.cms.gov's bot protection blocks non-browser-looking
+    # UA strings, but is fine with urllib/curl's plain defaults (verified via curl).
+    req = Request(url)
+    with urlopen(req, timeout=60) as resp:
+        return resp.read()
+
+
+def _cached(path: Path, fetch) -> bytes:
+    if path.exists():
+        return path.read_bytes()
+    data = fetch()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(data)
+    return data
+
+
+def resolve_hgi_csv_url() -> str:
+    meta = json.loads(_get(HGI_METASTORE_URL))
+    return meta["distribution"][0]["downloadURL"]
+
+
+def load_hospital_general_info(states: set[str]) -> list[dict]:
+    csv_bytes = _cached(RAW / "hospital_general_information.csv", lambda: _get(resolve_hgi_csv_url()))
+    reader = csv.DictReader(io.StringIO(csv_bytes.decode("utf-8")))
+    out = []
+    for row in reader:
+        if row["State"] not in states:
+            continue
+        if row["Hospital Type"] != "Acute Care Hospitals":
+            continue
+        rating = row["Hospital overall rating"]
+        out.append({
+            "ccn": row["Facility ID"],
+            "name": row["Facility Name"].strip(),
+            "type": "acute_care_hospital",
+            "ownership": row["Hospital Ownership"],
+            "has_er": row["Emergency Services"] == "Yes",
+            "star_rating": int(rating) if rating.isdigit() else None,
+            "address": row["Address"].strip(),
+            "city": row["City/Town"].strip(),
+            "state": row["State"],
+            "zip": row["ZIP Code"],
+            "county": row["County/Parish"].strip(),
+        })
+    return out
+
+
+def load_drg_charges_for_ccns(ccns: set[str]) -> dict[str, dict[str, dict]]:
+    cache_path = RAW / "drg_charges_filtered.json"
+    if cache_path.exists():
+        return json.loads(cache_path.read_text())
+
+    by_ccn: dict[str, dict[str, dict]] = {}
+    offset = 0
+    page_size = 6500
+    while True:
+        url = f"{DRG_DATA_API}?size={page_size}&offset={offset}"
+        page = json.loads(_get(url))
+        if not page:
+            break
+        for row in page:
+            ccn = row["Rndrng_Prvdr_CCN"]
+            if ccn not in ccns:
+                continue
+            by_ccn.setdefault(ccn, {})[row["DRG_Cd"]] = {
+                "description": row["DRG_Desc"],
+                "avg_charge": round(float(row["Avg_Submtd_Cvrd_Chrg"])),
+            }
+        print(f"  drg page offset={offset} rows={len(page)} matched_so_far={sum(len(v) for v in by_ccn.values())}",
+              file=sys.stderr)
+        offset += page_size
+        time.sleep(0.2)
+
+    RAW.mkdir(parents=True, exist_ok=True)
+    cache_path.write_text(json.dumps(by_ccn))
+    return by_ccn
+
+
+def build_zip_centroids() -> dict[str, dict]:
+    if OUT_ZIP_CENTROIDS.exists():
+        return json.loads(OUT_ZIP_CENTROIDS.read_text())
+
+    zip_bytes = _cached(RAW / "zcta_gazetteer.zip", lambda: _get(ZCTA_GAZETTEER_URL))
+    with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
+        name = next(n for n in zf.namelist() if n.endswith(".txt"))
+        text = zf.read(name).decode("utf-8")
+
+    out = {}
+    lines = text.splitlines()
+    for line in lines[1:]:
+        cols = line.split("\t")
+        if len(cols) < 7:
+            continue
+        zip_code, lat, lon = cols[0].strip(), cols[5].strip(), cols[6].strip()
+        if not lat or not lon:
+            continue
+        out[zip_code] = {"lat": float(lat), "lon": float(lon)}
+
+    OUT_ZIP_CENTROIDS.parent.mkdir(parents=True, exist_ok=True)
+    OUT_ZIP_CENTROIDS.write_text(json.dumps(out))
+    return out
+
+
+def geocode_facilities(facilities: list[dict], zip_centroids: dict[str, dict]) -> None:
+    """Fills in lat/lon on each facility dict in place, via the free Census geocoder.
+
+    Falls back to the facility's zip centroid (approximate, but keeps every
+    facility on the map) if even the single-address geocoder has no match.
+    """
+    rows = "\n".join(
+        f'{f["ccn"]},"{f["address"]}","{f["city"]}","{f["state"]}","{f["zip"]}"' for f in facilities
+    )
+    boundary = "----caremapboundary"
+    body_parts = [
+        f"--{boundary}\r\n"
+        'Content-Disposition: form-data; name="addressFile"; filename="addresses.csv"\r\n'
+        "Content-Type: text/csv\r\n\r\n" + rows + "\r\n",
+        f"--{boundary}\r\n"
+        'Content-Disposition: form-data; name="benchmark"\r\n\r\n'
+        "Public_AR_Current\r\n",
+        f"--{boundary}--\r\n",
+    ]
+    body = "".join(body_parts).encode("utf-8")
+    req = urllib.request.Request(
+        CENSUS_BATCH_GEOCODER_URL, data=body,
+        headers={"Content-Type": f"multipart/form-data; boundary={boundary}"},
+    )
+    with urllib.request.urlopen(req, timeout=120) as resp:
+        result_csv = resp.read().decode("utf-8")
+
+    by_ccn = {f["ccn"]: f for f in facilities}
+    unmatched = []
+    for row in csv.reader(io.StringIO(result_csv)):
+        ccn = row[0]
+        matched = row[2] == "Match"
+        if matched:
+            lon, lat = row[5].split(",")
+            by_ccn[ccn]["lat"] = float(lat)
+            by_ccn[ccn]["lon"] = float(lon)
+        else:
+            unmatched.append(ccn)
+
+    for ccn in unmatched:
+        f = by_ccn[ccn]
+        query = f'{f["address"]}, {f["city"]}, {f["state"]} {f["zip"]}'
+        try:
+            url = f"{CENSUS_ONELINE_GEOCODER_URL}?address={urllib.parse.quote(query)}&benchmark=Public_AR_Current&format=json"
+            result = json.loads(_get(url))
+            matches = result["result"]["addressMatches"]
+            if matches:
+                coords = matches[0]["coordinates"]
+                f["lat"], f["lon"] = coords["y"], coords["x"]
+            else:
+                raise ValueError("no addressMatches")
+        except Exception as exc:  # noqa: BLE001
+            zip_for_centroid = PO_BOX_ZIP_TO_PHYSICAL_ZIP.get(f["zip"], f["zip"])
+            centroid = zip_centroids.get(zip_for_centroid)
+            if centroid:
+                print(f"  no street match for {ccn} ({exc}); using zip centroid for {zip_for_centroid}",
+                      file=sys.stderr)
+                f["lat"], f["lon"] = centroid["lat"], centroid["lon"]
+                f["lat_lon_approximate"] = True
+            else:
+                print(f"  WARNING: no geocode match at all for {ccn} {query}", file=sys.stderr)
+                f["lat"], f["lon"] = None, None
+        time.sleep(0.3)
+
+
+def build_state(state: str, zip_centroids: dict[str, dict]) -> dict:
+    print(f"Loading Hospital General Information for {state}...", file=sys.stderr)
+    facilities = load_hospital_general_info({state})
+    print(f"  {len(facilities)} acute care hospitals", file=sys.stderr)
+
+    print("Geocoding addresses (Census batch geocoder)...", file=sys.stderr)
+    geocode_facilities(facilities, zip_centroids)
+    matched = sum(1 for f in facilities if f.get("lat") is not None)
+    approximate = sum(1 for f in facilities if f.get("lat_lon_approximate"))
+    print(f"  geocoded {matched}/{len(facilities)} ({approximate} approximate via zip centroid)",
+          file=sys.stderr)
+
+    print("Loading DRG charges (this pages through the full national dataset)...", file=sys.stderr)
+    ccns = {f["ccn"] for f in facilities}
+    drg_by_ccn = load_drg_charges_for_ccns(ccns)
+
+    for f in facilities:
+        f["drg_charges"] = drg_by_ccn.get(f["ccn"], {})
+        f["charity_care_participant"] = state == "NJ"
+
+    return {"state": state, "facilities": facilities}
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--states", nargs="+", default=["NJ"])
+    args = parser.parse_args()
+
+    print("Loading national zip centroid lookup (Census ZCTA gazetteer)...", file=sys.stderr)
+    centroids = build_zip_centroids()
+    print(f"  {len(centroids)} zip centroids -> {OUT_ZIP_CENTROIDS}", file=sys.stderr)
+
+    OUT_STATES.mkdir(parents=True, exist_ok=True)
+    for state in args.states:
+        data = build_state(state, centroids)
+        out_path = OUT_STATES / f"{state}.json"
+        out_path.write_text(json.dumps(data, indent=2))
+        print(f"Wrote {out_path} ({len(data['facilities'])} facilities)", file=sys.stderr)
+
+
+if __name__ == "__main__":
+    main()

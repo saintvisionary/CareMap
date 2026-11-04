@@ -1,0 +1,10 @@
+{
+  "grounding": {
+    "always_allowed_numbers": [0, 1, 100],
+    "max_rewrites": 2
+  },
+  "labeling": {
+    "forbidden_phrases": ["your price", "you will pay", "guaranteed"],
+    "required_when_dollar_figure_present": ["estimate", "confirm with billing office"]
+  }
+}
