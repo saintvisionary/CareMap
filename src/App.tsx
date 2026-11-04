@@ -4,6 +4,7 @@ import type { Facility } from "./lib/types";
 import { ChatPanel } from "./components/ChatPanel";
 import { GlassPanel } from "./components/GlassPanel";
 import { GuidedForm } from "./components/GuidedForm";
+import { InfoPanel } from "./components/InfoPanel";
 import { MapView } from "./components/MapView";
 import { ResultCard } from "./components/ResultCard";
 import { useCareMap } from "./hooks/useCareMap";
@@ -31,6 +32,7 @@ export default function App() {
   // Mobile only -- the panel is full-width there and can cover most of the
   // map on a result-heavy search. Desktop's narrow sidebar never needs this.
   const [panelCollapsed, setPanelCollapsed] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
 
   const handleGuidedSubmit = (message: string) => {
     sendMessage(message);
@@ -106,10 +108,21 @@ export default function App() {
       <header className="absolute top-0 left-0 right-0 p-4 sm:p-6 flex items-center justify-between pointer-events-none">
         <div className="flex items-center gap-2 pointer-events-auto">
           <span className="text-lg font-semibold tracking-tight">CareMap</span>
-          <span className="text-xs text-white/40">find affordable care near you</span>
+          <span className="text-xs text-white/40 hidden sm:inline">find affordable care near you</span>
         </div>
-        {error && <span className="text-xs text-red-400">{error}</span>}
+        <div className="flex items-center gap-2 pointer-events-auto">
+          {error && <span className="text-xs text-red-400">{error}</span>}
+          <button
+            onClick={() => setInfoOpen(true)}
+            aria-label="How to read CareMap"
+            className="h-7 w-7 flex items-center justify-center rounded-full bg-white/10 text-xs font-semibold text-white/70 transition-[background-color,transform] duration-150 active:scale-90 hover:bg-white/20"
+          >
+            i
+          </button>
+        </div>
       </header>
+
+      <InfoPanel open={infoOpen} onClose={() => setInfoOpen(false)} />
 
       <div className="absolute inset-x-0 bottom-0 sm:bottom-6 sm:left-6 sm:right-auto sm:w-[380px] p-4 sm:p-0 flex flex-col gap-3 max-h-[70vh] sm:max-h-[80vh] z-10">
         {/* Mobile only -- the panel is full-width there and a result-heavy
