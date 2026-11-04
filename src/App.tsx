@@ -115,9 +115,10 @@ export default function App() {
           <button
             onClick={() => setInfoOpen(true)}
             aria-label="How to read CareMap"
-            className="h-7 w-7 flex items-center justify-center rounded-full bg-white/10 text-xs font-semibold text-white/70 transition-[background-color,transform] duration-150 active:scale-90 hover:bg-white/20"
+            className="flex items-center gap-1.5 rounded-full bg-white/15 border border-white/25 pl-2 pr-3 py-1.5 text-xs font-medium text-white shadow-lg shadow-black/30 transition-[background-color,transform] duration-150 active:scale-95 hover:bg-white/25"
           >
-            i
+            <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-white text-[10px] font-bold text-ink-950">i</span>
+            Info
           </button>
         </div>
       </header>
