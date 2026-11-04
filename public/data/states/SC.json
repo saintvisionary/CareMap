@@ -11976,6 +11976,58 @@
       "lon": -79.953888257447,
       "drg_charges": {},
       "charity_care_participant": false
+    },
+    {
+      "ccn": "421300",
+      "name": "ALLENDALE COUNTY HOSPITAL",
+      "type": "critical_access_hospital",
+      "ownership": "Government - Local",
+      "has_er": true,
+      "star_rating": null,
+      "address": "1787 ALLENDALE FAIRFAX RD",
+      "city": "FAIRFAX",
+      "state": "SC",
+      "zip": "29827",
+      "county": "ALLENDALE",
+      "lat": 32.966103482108,
+      "lon": -81.247721319369,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "421301",
+      "name": "ABBEVILLE AREA MEDICAL CENTER",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Other",
+      "has_er": true,
+      "star_rating": null,
+      "address": "420 THOMSON CIRCLE",
+      "city": "ABBEVILLE",
+      "state": "SC",
+      "zip": "29620",
+      "county": "ABBEVILLE",
+      "lat": 34.182407,
+      "lon": -82.425607,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "421304",
+      "name": "EDGEFIELD COUNTY HEALTHCARE AN AFFILIATE OF SELF R",
+      "type": "critical_access_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "300 RIDGE MEDICAL PLAZA",
+      "city": "EDGEFIELD",
+      "state": "SC",
+      "zip": "29384",
+      "county": "LAURENS",
+      "lat": 33.778688709385,
+      "lon": -81.93011515867,
+      "drg_charges": {},
+      "charity_care_participant": false
     }
   ]
 }

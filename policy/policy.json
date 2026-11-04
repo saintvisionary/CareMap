@@ -35,7 +35,7 @@
   },
   "wa_charity_care": {
     "source": "https://app.leg.wa.gov/RCW/default.aspx?cite=70.170.060",
-    "applies_to": "all WA acute care hospitals -- patient responsibility portion of hospital charges",
+    "applies_to": "every WA hospital licensed under RCW 70.41.020(9), per RCW 70.170.020's definition -- includes Critical Access Hospitals (no exclusion in the licensing definition); patient responsibility portion of hospital charges",
     "note": "RCW 70.170.060(5) sets TWO schedules: a more generous one for larger hospital systems/hospitals (defined by owning 3+ acute hospitals, or specific large hospitals in King County or a southern-border county), and this floor schedule required of every other hospital. CareMap doesn't have hospital bed-count/ownership-network data loaded to tell which hospitals qualify for the larger-system schedule, so this is the legal MINIMUM every WA hospital must offer -- some hospitals are required to offer better terms (up to 400% FPL). Confirm with the specific hospital.",
     "eligibility": {
       "must_be_un_or_underinsured": "unconfirmed -- the statute's income-based eligibility doesn't explicitly require uninsured status the way NJ's does; applied conservatively here (same uninsured-only gate as NJ) pending fuller verification",

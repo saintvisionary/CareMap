@@ -302,7 +302,10 @@ def build_states(states: set[str], zip_centroids: dict[str, dict]) -> dict[str, 
         # category exempt from the state law).
         state_facility_types = {
             "NJ": {"acute_care_hospital"},
-            "WA": {"acute_care_hospital"},
+            # RCW 70.170.020 covers anything licensed under RCW 70.41.020(9),
+            # which doesn't exclude Critical Access Hospitals (a federal
+            # Medicare payment status, not a separate WA license category).
+            "WA": {"acute_care_hospital", "critical_access_hospital"},
             "NY": {"acute_care_hospital", "critical_access_hospital"},
             "IL": {"acute_care_hospital", "critical_access_hospital"},
             "OR": {"acute_care_hospital", "critical_access_hospital"},

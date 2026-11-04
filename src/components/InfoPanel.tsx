@@ -122,7 +122,8 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
             <div className={section}>
               <h2 className={h2}>Washington hospital charity care</h2>
               <p className={p}>
-                WA's hospital charity-care law (RCW 70.170.060). Applies to WA acute care hospitals, for patients who are{" "}
+                WA's hospital charity-care law (RCW 70.170.060). Applies to every licensed WA hospital, including Critical Access Hospitals, for
+                patients who are{" "}
                 <strong className="text-white/90">uninsured</strong> (applied conservatively here -- the statute's income-based eligibility doesn't
                 spell this out as explicitly as NJ's does).
               </p>
