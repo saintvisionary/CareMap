@@ -54,11 +54,15 @@ export function ResultCard({ facility, tierPct, insuranceType, need, index, acti
 
   return (
     <motion.button
+      id={`result-card-${facility.ccn}`}
       onClick={onSelect}
       initial={{ opacity: 0, y: 16, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 260, damping: 22, delay: index * 0.06 }}
+      // Capped -- a long result list (the map can surface dozens of nearby
+      // facilities) would otherwise stagger for seconds; everything past
+      // the first handful enters together instead of queuing endlessly.
+      transition={{ type: "spring", stiffness: 260, damping: 22, delay: Math.min(index, 8) * 0.06 }}
       className="text-left w-full"
     >
       <GlassPanel className={`p-4 transition-colors ${active ? "border-white/30" : ""}`}>

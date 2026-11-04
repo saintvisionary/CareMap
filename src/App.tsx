@@ -1,5 +1,5 @@
 import { MotionConfig } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChatPanel } from "./components/ChatPanel";
 import { GlassPanel } from "./components/GlassPanel";
 import { GuidedForm } from "./components/GuidedForm";
@@ -28,6 +28,16 @@ export default function App() {
       .reverse()
       .find((m) => m.role === "user")?.text ?? null;
   const need = lastUserMessage ? parseNeed(lastUserMessage) : null;
+
+  // The map renders every facility it's given as a marker, with no cap --
+  // clicking any of them (not just the closest few) must be able to show
+  // that facility's card, or the click just silently highlights a marker
+  // with nothing to show for it. Scroll the list to reveal it instead of
+  // requiring the user to find it by hand.
+  useEffect(() => {
+    if (!activeCcn) return;
+    document.getElementById(`result-card-${activeCcn}`)?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [activeCcn]);
 
   return (
     <MotionConfig reducedMotion="user">
@@ -58,7 +68,7 @@ export default function App() {
             appear right where you'd expect them. */}
         {mode === "chat" && facilities.length > 0 && (
           <div className="overflow-y-auto space-y-3 pr-1">
-            {facilities.slice(0, 5).map((f, i) => (
+            {facilities.map((f, i) => (
               <ResultCard
                 key={f.ccn}
                 facility={f}
