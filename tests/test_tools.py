@@ -185,3 +185,17 @@ def test_draft_application_or_non_nonprofit_facility_errors():
     r = draft_application(ccn="380090", patient_pays_pct=0)
     assert "error" in r
     assert "nonprofit" in r["error"]
+
+
+def test_charity_tier_md_full_sliding_scale():
+    assert charity_tier(state="MD", fpl_pct=150)["patient_pays_pct"] == 0
+    assert charity_tier(state="MD", fpl_pct=480)["patient_pays_pct"] == 65
+
+
+def test_draft_application_md_facility():
+    # MERITUS MEDICAL CENTER, a real MD acute care hospital (CCN 210001).
+    r = draft_application(ccn="210001", patient_pays_pct=0)
+    assert "MERITUS MEDICAL CENTER" in r["letter"]
+    assert "Maryland hospital financial assistance law" in r["letter"]
+    assert "MD residency" in r["checklist"][0]
+    assert "Submit within 240 days" in r["checklist"][-1]

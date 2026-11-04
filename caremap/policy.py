@@ -98,6 +98,28 @@ def il_charity_tier(fpl_pct: float, is_critical_access: bool = False) -> dict | 
     return None
 
 
+def md_charity_tier(fpl_pct: float) -> dict:
+    """MD hospital financial assistance tier (Md. Code, Health-General 19-214.1) for a percent of FPL.
+
+    Verified directly against the current codified text -- a real 7-band
+    sliding scale (free up to 200% FPL, down to 35% discount at 451-500%
+    FPL). Applies to virtually every MD hospital under HSCRC jurisdiction,
+    regardless of ownership (Maryland's all-payer rate-setting system
+    makes this different from OR's nonprofit-only gate).
+
+    One honesty note worth carrying in code, not just prose: the statute
+    discounts the patient's "out-of-pocket expense", not "charges" by
+    name. For CareMap's uninsured-only use case there's no insurer
+    payment to net against, so this collapses to the same billed-charge
+    base already used for NJ/WA/OR -- but that's an inference from the
+    uninsured-only restriction, not a literal statutory statement. A
+    separate hardship tier (medical debt over 25% of family income, up to
+    500% FPL) exists in the statute but needs the patient's actual debt
+    history CareMap doesn't have, so it is NOT computed here.
+    """
+    return _tier_lookup("md_charity_care", fpl_pct)
+
+
 def or_charity_tier(fpl_pct: float, ownership: str | None = None) -> dict | None:
     """OR hospital financial assistance tier (ORS 442.610-442.618) for a percent of FPL.
 
@@ -161,6 +183,7 @@ STATE_CHARITY_TIER_FNS = {
     "IL": lambda fpl_pct, facility_type=None, ownership=None: il_charity_tier(fpl_pct, is_critical_access=facility_type == "critical_access_hospital"),
     "NY": lambda fpl_pct, facility_type=None, ownership=None: ny_charity_tier(fpl_pct),
     "OR": lambda fpl_pct, facility_type=None, ownership=None: or_charity_tier(fpl_pct, ownership=ownership),
+    "MD": lambda fpl_pct, facility_type=None, ownership=None: md_charity_tier(fpl_pct),
 }
 
 

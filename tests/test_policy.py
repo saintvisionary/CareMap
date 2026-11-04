@@ -1,4 +1,4 @@
-from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, il_charity_tier, nj_charity_tier, ny_charity_tier, or_charity_tier, wa_charity_tier
+from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, il_charity_tier, md_charity_tier, nj_charity_tier, ny_charity_tier, or_charity_tier, wa_charity_tier
 
 
 def test_demo_case_family_of_4():
@@ -149,3 +149,29 @@ def test_or_tier_requires_confirmed_nonprofit_ownership():
 def test_charity_tier_dispatches_or():
     assert charity_tier("OR", 250, ownership=NONPROFIT)["patient_pays_pct"] == 25
     assert charity_tier("OR", 250, ownership="Proprietary") is None
+
+
+def test_md_tier_full_sliding_scale():
+    # Md. Code, Health-General 19-214.1 -- verified directly against the
+    # current codified text. A real 7-band scale, applies regardless of
+    # ownership (unlike OR's nonprofit-only gate).
+    assert md_charity_tier(200)["patient_pays_pct"] == 0
+    assert md_charity_tier(201)["patient_pays_pct"] == 25
+    assert md_charity_tier(250)["patient_pays_pct"] == 25
+    assert md_charity_tier(251)["patient_pays_pct"] == 40
+    assert md_charity_tier(300)["patient_pays_pct"] == 40
+    assert md_charity_tier(301)["patient_pays_pct"] == 50
+    assert md_charity_tier(350)["patient_pays_pct"] == 50
+    assert md_charity_tier(351)["patient_pays_pct"] == 55
+    assert md_charity_tier(400)["patient_pays_pct"] == 55
+    assert md_charity_tier(401)["patient_pays_pct"] == 60
+    assert md_charity_tier(450)["patient_pays_pct"] == 60
+    assert md_charity_tier(451)["patient_pays_pct"] == 65
+    assert md_charity_tier(500)["patient_pays_pct"] == 65
+    assert md_charity_tier(501)["patient_pays_pct"] == 100
+
+
+def test_charity_tier_dispatches_md():
+    assert charity_tier("MD", 220)["patient_pays_pct"] == 25
+    # ownership/facility_type must be ignored, not required or error.
+    assert charity_tier("MD", 220, "critical_access_hospital", "Proprietary")["patient_pays_pct"] == 25

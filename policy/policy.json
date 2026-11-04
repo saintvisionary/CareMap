@@ -102,6 +102,29 @@
       {"max_fpl_pct": null, "patient_pays_pct": 100}
     ]
   },
+  "md_charity_care": {
+    "source": "https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=ghg&enactments=false&section=19-214.1 (Md. Code, Health-General 19-214.1)",
+    "applies_to": "every MD hospital under HSCRC (Health Services Cost Review Commission) jurisdiction -- virtually all MD acute care hospitals, regardless of ownership, under Maryland's unique all-payer rate-setting system",
+    "note": "Verified directly against the current codified text. One real wrinkle: the statute discounts the patient's 'out-of-pocket expense for the regulated hospital service', not 'charges' by name. For an INSURED patient that would mean something net of insurer payment -- but CareMap only ever shows a charity-care price to the UNINSURED (same conservative gate as every other state here), and for an uninsured patient there's no insurer payment to net against, so out-of-pocket expense collapses to the full regulated rate -- which, under Maryland's all-payer system, is the same rate CMS's own Medicare Inpatient by Provider and Service dataset reports for MD hospitals (unlike most states, Maryland's regulated rate and its Medicare-reported rate aren't materially different by design). This is an inference from the uninsured-only restriction, not a literal statutory statement that the base is 'billed charges' -- treated here the same honest way as WA's unconfirmed eligibility gate. Maryland also has a separate hardship tier (medical debt exceeding 25% of family income over 12 months, up to 500% FPL) that CareMap can't verify (needs the patient's actual debt history) and does not compute.",
+    "eligibility": {
+      "must_be_un_or_underinsured": true,
+      "asset_limit_individual": null,
+      "asset_limit_family": null,
+      "asset_limit_note": "may only count household monetary assets over $100,000 (19-214.1(b)(8)(i)), excluding certain retirement assets -- more generous than NJ's $7,500/$15,000"
+    },
+    "tiers": [
+      {"max_fpl_pct": 200, "patient_pays_pct": 0},
+      {"max_fpl_pct": 250, "patient_pays_pct": 25},
+      {"max_fpl_pct": 300, "patient_pays_pct": 40},
+      {"max_fpl_pct": 350, "patient_pays_pct": 50},
+      {"max_fpl_pct": 400, "patient_pays_pct": 55},
+      {"max_fpl_pct": 450, "patient_pays_pct": 60},
+      {"max_fpl_pct": 500, "patient_pays_pct": 65},
+      {"max_fpl_pct": null, "patient_pays_pct": 100}
+    ],
+    "apply_window_days_after_service": 240,
+    "decision_window_calendar_days": 14
+  },
   "good_faith_estimate": {
     "source": "https://www.cms.gov/medical-bill-rights/help/guides/good-faith-estimate",
     "applies_to": "uninsured or self-pay patients scheduling care at least 3 business days ahead",

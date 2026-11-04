@@ -227,9 +227,45 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
             </div>
 
+            <div className={section}>
+              <h2 className={h2}>Maryland hospital financial assistance</h2>
+              <p className={p}>
+                Maryland's hospital financial assistance law (Health-General 19-214.1). Applies to virtually every MD hospital, regardless of ownership,
+                under Maryland's unique all-payer rate-setting system. Covers patients who are <strong className="text-white/90">uninsured or
+                underinsured</strong>.
+              </p>
+              <div className="rounded-xl bg-white/5 p-3 text-xs">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
+                  <span className="text-white/40">Income, % of poverty line</span>
+                  <span className="text-white/40">You pay</span>
+                  <span>Up to 200%</span>
+                  <span className="text-white/90">$0 -- fully covered</span>
+                  <span>200% to 250%</span>
+                  <span className="text-white/90">25% of the bill</span>
+                  <span>250% to 300%</span>
+                  <span className="text-white/90">40%</span>
+                  <span>300% to 350%</span>
+                  <span className="text-white/90">50%</span>
+                  <span>350% to 400%</span>
+                  <span className="text-white/90">55%</span>
+                  <span>400% to 450%</span>
+                  <span className="text-white/90">60%</span>
+                  <span>450% to 500%</span>
+                  <span className="text-white/90">65%</span>
+                  <span>Over 500%</span>
+                  <span className="text-white/90">Full price (at this schedule)</span>
+                </div>
+              </div>
+              <p className={p}>
+                Maryland also has a separate hardship path for high medical debt relative to income, up to 500% of the poverty line -- CareMap can't
+                verify that without your actual billing history, so ask the hospital's billing office directly if you think it applies to you. Apply
+                within 240 days of the bill; the hospital must decide within 14 days.
+              </p>
+            </div>
+
             <p className={p}>
-              <strong className="text-white/90">Right now, NJ, WA, IL, NY, and OR are the only states with a modeled tier.</strong> Every other state
-              still shows real hospital locations and typical billed charges, but says "[state] rules coming soon" instead of a personal estimate.
+              <strong className="text-white/90">Right now, NJ, WA, IL, NY, OR, and MD are the only states with a modeled tier.</strong> Every other
+              state still shows real hospital locations and typical billed charges, but says "[state] rules coming soon" instead of a personal estimate.
             </p>
 
             <div className={section}>
@@ -283,6 +319,7 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                 <li>IL charity care rules -- 210 ILCS 89, Illinois Hospital Uninsured Patient Discount Act</li>
                 <li>NY charity care rules -- NY Public Health Law 2807-k, Hospital Financial Assistance Law</li>
                 <li>OR charity care rules -- ORS 442.610-442.618, Oregon hospital financial assistance law</li>
+                <li>MD charity care rules -- Md. Code, Health-General 19-214.1</li>
                 <li>International locations -- OpenStreetMap (Nominatim, Overpass, Photon)</li>
               </ul>
               <p className={p}>All public, official sources -- CareMap never adds or guesses a number that isn't already in that data.</p>

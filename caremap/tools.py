@@ -56,8 +56,8 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
     """Look up the charity-care tier for a hospital's state, for a percent of the federal poverty line.
 
     Only a short list of states have a real, codified, state-wide formula --
-    currently NJ, WA, IL, NY, OR. For every other state, returns an error;
-    say the state's rules aren't modeled in CareMap yet rather than
+    currently NJ, WA, IL, NY, OR, MD. For every other state, returns an
+    error; say the state's rules aren't modeled in CareMap yet rather than
     guessing a tier.
     For WA specifically, this is the legal MINIMUM floor every hospital must
     offer (RCW 70.170.060(5)(b)) -- larger hospital systems are required to
@@ -89,9 +89,16 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
     all, so never imply a discount applies to one of those. If OR does
     return a tier, remember it's a statutory MINIMUM discount (the floor,
     like WA) -- the patient's actual share may be lower.
+    For MD specifically: a real 7-band sliding scale (free up to 200%
+    FPL, down to a 65% share at 451-500% FPL), applying to virtually every
+    MD hospital regardless of ownership. Maryland also has a separate
+    hardship tier up to 500% FPL for patients with high medical debt
+    relative to income -- this is NOT computed here (it needs the
+    patient's actual debt history), so mention it only as a thing to ask
+    the hospital about, never as a number.
 
     Args:
-        state: Two-letter state code of the facility (e.g. "NJ", "WA", "IL", "NY", "OR"), not the user's own state.
+        state: Two-letter state code of the facility (e.g. "NJ", "WA", "IL", "NY", "OR", "MD"), not the user's own state.
         fpl_pct: Household income as a percent of the federal poverty line (e.g. 158 for 158%).
         facility_type: The facility's own type (e.g. "acute_care_hospital", "critical_access_hospital") -- only matters for IL.
         ownership: The facility's own CMS ownership string (e.g. "Voluntary non-profit - Private") -- only matters for OR.
@@ -235,10 +242,11 @@ _STATE_PROGRAM_NAMES = {
     "IL": "the Illinois Hospital Uninsured Patient Discount Act (210 ILCS 89)",
     "NY": "the New York Hospital Financial Assistance Law (PBH 2807-k)",
     "OR": "the Oregon hospital financial assistance law (ORS 442.610)",
+    "MD": "the Maryland hospital financial assistance law (Health-General 19-214.1)",
 }
 _STATE_POLICY_KEYS = {
     "NJ": "nj_charity_care", "WA": "wa_charity_care", "IL": "il_charity_care",
-    "NY": "ny_charity_care", "OR": "or_charity_care",
+    "NY": "ny_charity_care", "OR": "or_charity_care", "MD": "md_charity_care",
 }
 
 
@@ -247,7 +255,7 @@ def draft_application(ccn: str, patient_pays_pct: float) -> dict:
     """Draft a charity-care application checklist and cover letter for a facility and tier.
 
     Works for any facility in a state CareMap has a modeled formula for
-    (currently NJ, WA, IL, NY, OR) -- looks up the facility's own state, not
+    (currently NJ, WA, IL, NY, OR, MD) -- looks up the facility's own state, not
     a fixed program. Fields the matching policy.json entry doesn't have
     (e.g. WA has no confirmed apply-window or help-phone, unlike NJ) are
     left out of the checklist/letter rather than guessed. For OR

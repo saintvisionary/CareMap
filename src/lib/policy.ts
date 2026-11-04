@@ -133,6 +133,32 @@ export function orCharityTier(fplPct: number, ownership?: string): CharityTier |
   return lookupTier(OR_CHARITY_TIERS, fplPct);
 }
 
+// Md. Code, Health-General 19-214.1 -- verified directly against the
+// current codified text. A real 7-band sliding scale, applies to
+// virtually every MD hospital regardless of ownership (Maryland's
+// all-payer rate-setting system). One honesty note: the statute discounts
+// "out-of-pocket expense", not "charges" by name -- for this app's
+// uninsured-only use case that collapses to the same billed-charge base
+// already used for NJ/WA/OR, but that's an inference from the
+// uninsured-only restriction, not a literal statutory statement. A
+// separate hardship tier (up to 500% FPL, for high medical debt relative
+// to income) exists in the statute but needs data this app doesn't have,
+// so it is NOT computed here.
+const MD_CHARITY_TIERS: TierTable = [
+  { maxFplPct: 200, patientPaysPct: 0 },
+  { maxFplPct: 250, patientPaysPct: 25 },
+  { maxFplPct: 300, patientPaysPct: 40 },
+  { maxFplPct: 350, patientPaysPct: 50 },
+  { maxFplPct: 400, patientPaysPct: 55 },
+  { maxFplPct: 450, patientPaysPct: 60 },
+  { maxFplPct: 500, patientPaysPct: 65 },
+  { maxFplPct: null, patientPaysPct: 100 },
+];
+
+export function mdCharityTier(fplPct: number): CharityTier {
+  return lookupTier(MD_CHARITY_TIERS, fplPct);
+}
+
 // Keyed by a facility's own state. Only states with a real, codified,
 // state-wide formula belong here -- most states have no such law (just
 // federal 501(r): each nonprofit hospital must have *a* policy, with no
@@ -143,6 +169,7 @@ const STATE_CHARITY_TIER_FNS: Record<string, (fplPct: number, facilityType?: str
   IL: (fplPct, facilityType) => ilCharityTier(fplPct, facilityType === "critical_access_hospital"),
   NY: (fplPct) => nyCharityTier(fplPct),
   OR: (fplPct, _facilityType, ownership) => orCharityTier(fplPct, ownership),
+  MD: (fplPct) => mdCharityTier(fplPct),
 };
 
 export const MODELED_CHARITY_STATES = Object.keys(STATE_CHARITY_TIER_FNS);
@@ -157,6 +184,7 @@ export const CHARITY_PROGRAM_NAMES: Record<string, string> = {
   IL: "the Illinois Hospital Uninsured Patient Discount Act (uninsured patients only)",
   NY: "the New York Hospital Financial Assistance Law",
   OR: "Oregon's hospital financial assistance law (nonprofit hospitals only)",
+  MD: "Maryland's hospital financial assistance law",
 };
 
 /** Charity-care tier for whichever state a facility is in, or null if that
