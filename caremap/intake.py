@@ -72,9 +72,14 @@ def redact(message: str) -> IntakeHint:
     if dollar and household:
         income, dollar_span = dollar
         size, household_span = household
-        fpl_pct = policy.fpl_percent(income, size)
-        tier = policy.nj_charity_tier(fpl_pct)
-        tier_pct = tier["patient_pays_pct"]
+        # NJ Charity Care only applies to uninsured/underinsured patients --
+        # an insured person gets no tier at all, not a $0 one. Raw numbers
+        # are still redacted either way; only whether a tier is exposed
+        # changes.
+        if insured is not True:
+            fpl_pct = policy.fpl_percent(income, size)
+            tier = policy.nj_charity_tier(fpl_pct)
+            tier_pct = tier["patient_pays_pct"]
         redacted = redacted.replace(dollar_span, "[income redacted]")
         redacted = redacted.replace(household_span, "[household redacted]")
 

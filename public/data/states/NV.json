@@ -1,0 +1,5723 @@
+{
+  "state": "NV",
+  "facilities": [
+    {
+      "ccn": "290001",
+      "name": "RENOWN REGIONAL MEDICAL CENTER",
+      "type": "acute_care_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "1155 MILL STREET",
+      "city": "RENO",
+      "state": "NV",
+      "zip": "89502",
+      "county": "WASHOE",
+      "lat": 39.523946092683,
+      "lon": -119.794730090413,
+      "drg_charges": {
+        "003": {
+          "description": "ECMO OR TRACHEOSTOMY WITH MV >96 HOURS OR PRINCIPAL DIAGNOSIS EXCEPT FACE, MOUTH AND NEC",
+          "avg_charge": 634236
+        },
+        "004": {
+          "description": "TRACHEOSTOMY WITH MV >96 HOURS OR PRINCIPAL DIAGNOSIS EXCEPT FACE, MOUTH AND NECK WITHOU",
+          "avg_charge": 522502
+        },
+        "020": {
+          "description": "INTRACRANIAL VASCULAR PROCEDURES WITH PRINCIPAL DIAGNOSIS HEMORRHAGE WITH MCC",
+          "avg_charge": 294027
+        },
+        "023": {
+          "description": "CRANIOTOMY WITH MAJOR DEVICE IMPLANT OR ACUTE COMPLEX CNS PRINCIPAL DIAGNOSIS WITH MCC O",
+          "avg_charge": 148253
+        },
+        "024": {
+          "description": "CRANIOTOMY WITH MAJOR DEVICE IMPLANT OR ACUTE COMPLEX CNS PRINCIPAL DIAGNOSIS WITHOUT MC",
+          "avg_charge": 108296
+        },
+        "025": {
+          "description": "CRANIOTOMY AND ENDOVASCULAR INTRACRANIAL PROCEDURES WITH MCC",
+          "avg_charge": 160887
+        },
+        "026": {
+          "description": "CRANIOTOMY AND ENDOVASCULAR INTRACRANIAL PROCEDURES WITH CC",
+          "avg_charge": 119592
+        },
+        "027": {
+          "description": "CRANIOTOMY AND ENDOVASCULAR INTRACRANIAL PROCEDURES WITHOUT CC/MCC",
+          "avg_charge": 121563
+        },
+        "028": {
+          "description": "SPINAL PROCEDURES WITH MCC",
+          "avg_charge": 131867
+        },
+        "035": {
+          "description": "CAROTID ARTERY STENT PROCEDURES WITH CC",
+          "avg_charge": 88402
+        },
+        "036": {
+          "description": "CAROTID ARTERY STENT PROCEDURES WITHOUT CC/MCC",
+          "avg_charge": 70480
+        },
+        "038": {
+          "description": "EXTRACRANIAL PROCEDURES WITH CC",
+          "avg_charge": 60435
+        },
+        "039": {
+          "description": "EXTRACRANIAL PROCEDURES WITHOUT CC/MCC",
+          "avg_charge": 47492
+        },
+        "054": {
+          "description": "NERVOUS SYSTEM NEOPLASMS WITH MCC",
+          "avg_charge": 66292
+        },
+        "056": {
+          "description": "DEGENERATIVE NERVOUS SYSTEM DISORDERS WITH MCC",
+          "avg_charge": 92519
+        },
+        "057": {
+          "description": "DEGENERATIVE NERVOUS SYSTEM DISORDERS WITHOUT MCC",
+          "avg_charge": 40218
+        },
+        "062": {
+          "description": "ISCHEMIC STROKE, PRECEREBRAL OCCLUSION OR TRANSIENT ISCHEMIA WITH THROMBOLYTIC AGENT WIT",
+          "avg_charge": 60822
+        },
+        "064": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH MCC",
+          "avg_charge": 74556
+        },
+        "065": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH CC OR TPA IN 24 HOURS",
+          "avg_charge": 37549
+        },
+        "066": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITHOUT CC/MCC",
+          "avg_charge": 33375
+        },
+        "069": {
+          "description": "TRANSIENT ISCHEMIA WITHOUT THROMBOLYTIC",
+          "avg_charge": 31637
+        },
+        "070": {
+          "description": "OTHER CEREBROVASCULAR DISORDERS WITH MCC",
+          "avg_charge": 56922
+        },
+        "071": {
+          "description": "OTHER CEREBROVASCULAR DISORDERS WITH CC",
+          "avg_charge": 32071
+        },
+        "082": {
+          "description": "TRAUMATIC STUPOR AND COMA >1 HOUR WITH MCC",
+          "avg_charge": 93121
+        },
+        "083": {
+          "description": "TRAUMATIC STUPOR AND COMA >1 HOUR WITH CC",
+          "avg_charge": 49059
+        },
+        "084": {
+          "description": "TRAUMATIC STUPOR AND COMA >1 HOUR WITHOUT CC/MCC",
+          "avg_charge": 48962
+        },
+        "085": {
+          "description": "TRAUMATIC STUPOR AND COMA <1 HOUR WITH MCC",
+          "avg_charge": 105778
+        },
+        "086": {
+          "description": "TRAUMATIC STUPOR AND COMA <1 HOUR WITH CC",
+          "avg_charge": 54490
+        },
+        "087": {
+          "description": "TRAUMATIC STUPOR AND COMA <1 HOUR WITHOUT CC/MCC",
+          "avg_charge": 43265
+        },
+        "091": {
+          "description": "OTHER DISORDERS OF NERVOUS SYSTEM WITH MCC",
+          "avg_charge": 50813
+        },
+        "092": {
+          "description": "OTHER DISORDERS OF NERVOUS SYSTEM WITH CC",
+          "avg_charge": 33165
+        },
+        "100": {
+          "description": "SEIZURES WITH MCC",
+          "avg_charge": 75469
+        },
+        "101": {
+          "description": "SEIZURES WITHOUT MCC",
+          "avg_charge": 36187
+        },
+        "123": {
+          "description": "NEUROLOGICAL EYE DISORDERS",
+          "avg_charge": 34564
+        },
+        "125": {
+          "description": "OTHER DISORDERS OF THE EYE WITHOUT MCC",
+          "avg_charge": 25534
+        },
+        "163": {
+          "description": "MAJOR CHEST PROCEDURES WITH MCC",
+          "avg_charge": 197522
+        },
+        "164": {
+          "description": "MAJOR CHEST PROCEDURES WITH CC",
+          "avg_charge": 85504
+        },
+        "175": {
+          "description": "PULMONARY EMBOLISM WITH MCC OR ACUTE COR PULMONALE",
+          "avg_charge": 43520
+        },
+        "176": {
+          "description": "PULMONARY EMBOLISM WITHOUT MCC",
+          "avg_charge": 26583
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 49317
+        },
+        "180": {
+          "description": "RESPIRATORY NEOPLASMS WITH MCC",
+          "avg_charge": 67877
+        },
+        "183": {
+          "description": "MAJOR CHEST TRAUMA WITH MCC",
+          "avg_charge": 60112
+        },
+        "184": {
+          "description": "MAJOR CHEST TRAUMA WITH CC",
+          "avg_charge": 43727
+        },
+        "186": {
+          "description": "PLEURAL EFFUSION WITH MCC",
+          "avg_charge": 50903
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 49675
+        },
+        "190": {
+          "description": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH MCC",
+          "avg_charge": 59162
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 38580
+        },
+        "194": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH CC",
+          "avg_charge": 32513
+        },
+        "196": {
+          "description": "INTERSTITIAL LUNG DISEASE WITH MCC",
+          "avg_charge": 88700
+        },
+        "199": {
+          "description": "PNEUMOTHORAX WITH MCC",
+          "avg_charge": 93879
+        },
+        "200": {
+          "description": "PNEUMOTHORAX WITH CC",
+          "avg_charge": 53544
+        },
+        "202": {
+          "description": "BRONCHITIS AND ASTHMA WITH CC/MCC",
+          "avg_charge": 41120
+        },
+        "207": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT >96 HOURS",
+          "avg_charge": 303542
+        },
+        "208": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT <=96 HOURS",
+          "avg_charge": 148701
+        },
+        "219": {
+          "description": "CARDIAC VALVE AND OTHER MAJOR CARDIOTHORACIC PROCEDURES WITHOUT CARDIAC CATHETERIZATION",
+          "avg_charge": 332776
+        },
+        "220": {
+          "description": "CARDIAC VALVE AND OTHER MAJOR CARDIOTHORACIC PROCEDURES WITHOUT CARDIAC CATHETERIZATION",
+          "avg_charge": 209474
+        },
+        "228": {
+          "description": "OTHER CARDIOTHORACIC PROCEDURES WITH MCC",
+          "avg_charge": 294178
+        },
+        "233": {
+          "description": "CORONARY BYPASS WITH CARDIAC CATHETERIZATION OR OPEN ABLATION WITH MCC",
+          "avg_charge": 267604
+        },
+        "236": {
+          "description": "CORONARY BYPASS WITHOUT CARDIAC CATHETERIZATION WITHOUT MCC",
+          "avg_charge": 180102
+        },
+        "242": {
+          "description": "PERMANENT CARDIAC PACEMAKER IMPLANT WITH MCC",
+          "avg_charge": 177501
+        },
+        "243": {
+          "description": "PERMANENT CARDIAC PACEMAKER IMPLANT WITH CC",
+          "avg_charge": 145882
+        },
+        "244": {
+          "description": "PERMANENT CARDIAC PACEMAKER IMPLANT WITHOUT CC/MCC",
+          "avg_charge": 133800
+        },
+        "252": {
+          "description": "OTHER VASCULAR PROCEDURES WITH MCC",
+          "avg_charge": 98608
+        },
+        "253": {
+          "description": "OTHER VASCULAR PROCEDURES WITH CC",
+          "avg_charge": 82423
+        },
+        "254": {
+          "description": "OTHER VASCULAR PROCEDURES WITHOUT CC/MCC",
+          "avg_charge": 49988
+        },
+        "266": {
+          "description": "ENDOVASCULAR CARDIAC VALVE REPLACEMENT AND SUPPLEMENT PROCEDURES WITH MCC",
+          "avg_charge": 173555
+        },
+        "267": {
+          "description": "ENDOVASCULAR CARDIAC VALVE REPLACEMENT AND SUPPLEMENT PROCEDURES WITHOUT MCC",
+          "avg_charge": 165446
+        },
+        "269": {
+          "description": "AORTIC AND HEART ASSIST PROCEDURES EXCEPT PULSATION BALLOON WITHOUT MCC",
+          "avg_charge": 119923
+        },
+        "270": {
+          "description": "OTHER MAJOR CARDIOVASCULAR PROCEDURES WITH MCC",
+          "avg_charge": 278212
+        },
+        "274": {
+          "description": "PERCUTANEOUS AND OTHER INTRACARDIAC PROCEDURES WITHOUT MCC",
+          "avg_charge": 100300
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 62827
+        },
+        "281": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH CC",
+          "avg_charge": 39334
+        },
+        "282": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITHOUT CC/MCC",
+          "avg_charge": 28993
+        },
+        "283": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, EXPIRED WITH MCC",
+          "avg_charge": 87501
+        },
+        "286": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITH MCC",
+          "avg_charge": 91897
+        },
+        "287": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITHOUT MCC",
+          "avg_charge": 46950
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 43450
+        },
+        "299": {
+          "description": "PERIPHERAL VASCULAR DISORDERS WITH MCC",
+          "avg_charge": 37034
+        },
+        "300": {
+          "description": "PERIPHERAL VASCULAR DISORDERS WITH CC",
+          "avg_charge": 28417
+        },
+        "301": {
+          "description": "PERIPHERAL VASCULAR DISORDERS WITHOUT CC/MCC",
+          "avg_charge": 141565
+        },
+        "304": {
+          "description": "HYPERTENSION WITH MCC",
+          "avg_charge": 47393
+        },
+        "305": {
+          "description": "HYPERTENSION WITHOUT MCC",
+          "avg_charge": 24423
+        },
+        "308": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC",
+          "avg_charge": 51906
+        },
+        "309": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH CC",
+          "avg_charge": 27722
+        },
+        "310": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITHOUT CC/MCC",
+          "avg_charge": 22122
+        },
+        "312": {
+          "description": "SYNCOPE AND COLLAPSE",
+          "avg_charge": 32855
+        },
+        "314": {
+          "description": "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 77956
+        },
+        "315": {
+          "description": "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 27969
+        },
+        "321": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITH MCC OR 4+ ARTERIES/",
+          "avg_charge": 204969
+        },
+        "322": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITHOUT MCC",
+          "avg_charge": 143286
+        },
+        "323": {
+          "description": "CORONARY INTRAVASCULAR LITHOTRIPSY WITH INTRALUMINAL DEVICE WITH MCC",
+          "avg_charge": 214715
+        },
+        "324": {
+          "description": "CORONARY INTRAVASCULAR LITHOTRIPSY WITH INTRALUMINAL DEVICE WITHOUT MCC",
+          "avg_charge": 158890
+        },
+        "326": {
+          "description": "STOMACH, ESOPHAGEAL AND DUODENAL PROCEDURES WITH MCC",
+          "avg_charge": 108953
+        },
+        "329": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH MCC",
+          "avg_charge": 137215
+        },
+        "330": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH CC",
+          "avg_charge": 80211
+        },
+        "331": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITHOUT CC/MCC",
+          "avg_charge": 61375
+        },
+        "356": {
+          "description": "OTHER DIGESTIVE SYSTEM O.R. PROCEDURES WITH MCC",
+          "avg_charge": 193988
+        },
+        "371": {
+          "description": "MAJOR GASTROINTESTINAL DISORDERS AND PERITONEAL INFECTIONS WITH MCC",
+          "avg_charge": 59536
+        },
+        "372": {
+          "description": "MAJOR GASTROINTESTINAL DISORDERS AND PERITONEAL INFECTIONS WITH CC",
+          "avg_charge": 38281
+        },
+        "374": {
+          "description": "DIGESTIVE MALIGNANCY WITH MCC",
+          "avg_charge": 70149
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 72609
+        },
+        "378": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH CC",
+          "avg_charge": 49892
+        },
+        "380": {
+          "description": "COMPLICATED PEPTIC ULCER WITH MCC",
+          "avg_charge": 89798
+        },
+        "381": {
+          "description": "COMPLICATED PEPTIC ULCER WITH CC",
+          "avg_charge": 53034
+        },
+        "388": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH MCC",
+          "avg_charge": 40886
+        },
+        "389": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH CC",
+          "avg_charge": 24333
+        },
+        "390": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITHOUT CC/MCC",
+          "avg_charge": 17295
+        },
+        "391": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITH MCC",
+          "avg_charge": 71911
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 27763
+        },
+        "393": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 52981
+        },
+        "394": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 36696
+        },
+        "417": {
+          "description": "LAPAROSCOPIC CHOLECYSTECTOMY WITHOUT C.D.E. WITH MCC",
+          "avg_charge": 64738
+        },
+        "418": {
+          "description": "LAPAROSCOPIC CHOLECYSTECTOMY WITHOUT C.D.E. WITH CC",
+          "avg_charge": 60861
+        },
+        "432": {
+          "description": "CIRRHOSIS AND ALCOHOLIC HEPATITIS WITH MCC",
+          "avg_charge": 75040
+        },
+        "435": {
+          "description": "MALIGNANCY OF HEPATOBILIARY SYSTEM OR PANCREAS WITH MCC",
+          "avg_charge": 57224
+        },
+        "438": {
+          "description": "DISORDERS OF PANCREAS EXCEPT MALIGNANCY WITH MCC",
+          "avg_charge": 77419
+        },
+        "439": {
+          "description": "DISORDERS OF PANCREAS EXCEPT MALIGNANCY WITH CC",
+          "avg_charge": 27501
+        },
+        "441": {
+          "description": "DISORDERS OF LIVER EXCEPT MALIGNANCY, CIRRHOSIS OR ALCOHOLIC HEPATITIS WITH MCC",
+          "avg_charge": 52548
+        },
+        "442": {
+          "description": "DISORDERS OF LIVER EXCEPT MALIGNANCY, CIRRHOSIS OR ALCOHOLIC HEPATITIS WITH CC",
+          "avg_charge": 34078
+        },
+        "444": {
+          "description": "DISORDERS OF THE BILIARY TRACT WITH MCC",
+          "avg_charge": 54156
+        },
+        "445": {
+          "description": "DISORDERS OF THE BILIARY TRACT WITH CC",
+          "avg_charge": 45088
+        },
+        "446": {
+          "description": "DISORDERS OF THE BILIARY TRACT WITHOUT CC/MCC",
+          "avg_charge": 38745
+        },
+        "454": {
+          "description": "COMBINED ANTERIOR AND POSTERIOR SPINAL FUSION WITH CC",
+          "avg_charge": 214903
+        },
+        "455": {
+          "description": "COMBINED ANTERIOR AND POSTERIOR SPINAL FUSION WITHOUT CC/MCC",
+          "avg_charge": 168494
+        },
+        "460": {
+          "description": "SPINAL FUSION EXCEPT CERVICAL WITHOUT MCC",
+          "avg_charge": 125218
+        },
+        "472": {
+          "description": "CERVICAL SPINAL FUSION WITH CC",
+          "avg_charge": 108982
+        },
+        "473": {
+          "description": "CERVICAL SPINAL FUSION WITHOUT CC/MCC",
+          "avg_charge": 75442
+        },
+        "480": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH MCC",
+          "avg_charge": 101367
+        },
+        "481": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH CC",
+          "avg_charge": 66900
+        },
+        "482": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITHOUT CC/MCC",
+          "avg_charge": 48968
+        },
+        "492": {
+          "description": "LOWER EXTREMITY AND HUMERUS PROCEDURES EXCEPT HIP, FOOT AND FEMUR WITH MCC",
+          "avg_charge": 143477
+        },
+        "493": {
+          "description": "LOWER EXTREMITY AND HUMERUS PROCEDURES EXCEPT HIP, FOOT AND FEMUR WITH CC",
+          "avg_charge": 84145
+        },
+        "494": {
+          "description": "LOWER EXTREMITY AND HUMERUS PROCEDURES EXCEPT HIP, FOOT AND FEMUR WITHOUT CC/MCC",
+          "avg_charge": 78712
+        },
+        "516": {
+          "description": "OTHER MUSCULOSKELETAL SYSTEM AND CONNECTIVE TISSUE O.R. PROCEDURES WITH CC",
+          "avg_charge": 88775
+        },
+        "517": {
+          "description": "OTHER MUSCULOSKELETAL SYSTEM AND CONNECTIVE TISSUE O.R. PROCEDURES WITHOUT CC/MCC",
+          "avg_charge": 47205
+        },
+        "519": {
+          "description": "BACK AND NECK PROCEDURES EXCEPT SPINAL FUSION WITH CC",
+          "avg_charge": 86759
+        },
+        "521": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITH MCC",
+          "avg_charge": 86704
+        },
+        "522": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITHOUT MCC",
+          "avg_charge": 63048
+        },
+        "535": {
+          "description": "FRACTURES OF HIP AND PELVIS WITH MCC",
+          "avg_charge": 26162
+        },
+        "536": {
+          "description": "FRACTURES OF HIP AND PELVIS WITHOUT MCC",
+          "avg_charge": 30156
+        },
+        "542": {
+          "description": "PATHOLOGICAL FRACTURES AND MUSCULOSKELETAL AND CONNECTIVE TISSUE MALIGNANCY WITH MCC",
+          "avg_charge": 61842
+        },
+        "543": {
+          "description": "PATHOLOGICAL FRACTURES AND MUSCULOSKELETAL AND CONNECTIVE TISSUE MALIGNANCY WITH CC",
+          "avg_charge": 44735
+        },
+        "551": {
+          "description": "MEDICAL BACK PROBLEMS WITH MCC",
+          "avg_charge": 60435
+        },
+        "552": {
+          "description": "MEDICAL BACK PROBLEMS WITHOUT MCC",
+          "avg_charge": 35578
+        },
+        "558": {
+          "description": "TENDONITIS, MYOSITIS AND BURSITIS WITHOUT MCC",
+          "avg_charge": 26127
+        },
+        "565": {
+          "description": "OTHER MUSCULOSKELETAL SYSTEM AND CONNECTIVE TISSUE DIAGNOSES WITH CC",
+          "avg_charge": 26316
+        },
+        "602": {
+          "description": "CELLULITIS WITH MCC",
+          "avg_charge": 47341
+        },
+        "603": {
+          "description": "CELLULITIS WITHOUT MCC",
+          "avg_charge": 28295
+        },
+        "605": {
+          "description": "TRAUMA TO THE SKIN, SUBCUTANEOUS TISSUE AND BREAST WITHOUT MCC",
+          "avg_charge": 46300
+        },
+        "617": {
+          "description": "AMPUTATION OF LOWER LIMB FOR ENDOCRINE, NUTRITIONAL AND METABOLIC DISORDERS WITH CC",
+          "avg_charge": 61897
+        },
+        "621": {
+          "description": "O.R. PROCEDURES FOR OBESITY WITHOUT CC/MCC",
+          "avg_charge": 36415
+        },
+        "637": {
+          "description": "DIABETES WITH MCC",
+          "avg_charge": 46249
+        },
+        "638": {
+          "description": "DIABETES WITH CC",
+          "avg_charge": 36491
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 43216
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 28889
+        },
+        "659": {
+          "description": "KIDNEY AND URETER PROCEDURES FOR NON-NEOPLASM WITH MCC",
+          "avg_charge": 67134
+        },
+        "660": {
+          "description": "KIDNEY AND URETER PROCEDURES FOR NON-NEOPLASM WITH CC",
+          "avg_charge": 42379
+        },
+        "661": {
+          "description": "KIDNEY AND URETER PROCEDURES FOR NON-NEOPLASM WITHOUT CC/MCC",
+          "avg_charge": 40284
+        },
+        "673": {
+          "description": "OTHER KIDNEY AND URINARY TRACT PROCEDURES WITH MCC",
+          "avg_charge": 170583
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 49179
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 29301
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 34094
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 25067
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 50142
+        },
+        "699": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH CC",
+          "avg_charge": 38338
+        },
+        "808": {
+          "description": "MAJOR HEMATOLOGICAL AND IMMUNOLOGICAL DIAGNOSES EXCEPT SICKLE CELL CRISIS AND COAGULATIO",
+          "avg_charge": 62013
+        },
+        "809": {
+          "description": "MAJOR HEMATOLOGICAL AND IMMUNOLOGICAL DIAGNOSES EXCEPT SICKLE CELL CRISIS AND COAGULATIO",
+          "avg_charge": 46835
+        },
+        "811": {
+          "description": "RED BLOOD CELL DISORDERS WITH MCC",
+          "avg_charge": 51203
+        },
+        "812": {
+          "description": "RED BLOOD CELL DISORDERS WITHOUT MCC",
+          "avg_charge": 56091
+        },
+        "813": {
+          "description": "COAGULATION DISORDERS",
+          "avg_charge": 53206
+        },
+        "847": {
+          "description": "CHEMOTHERAPY WITHOUT ACUTE LEUKEMIA AS SECONDARY DIAGNOSIS WITH CC",
+          "avg_charge": 38021
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 183876
+        },
+        "854": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH CC",
+          "avg_charge": 77662
+        },
+        "856": {
+          "description": "POSTOPERATIVE OR POST-TRAUMATIC INFECTIONS WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 200708
+        },
+        "857": {
+          "description": "POSTOPERATIVE OR POST-TRAUMATIC INFECTIONS WITH O.R. PROCEDURES WITH CC",
+          "avg_charge": 67000
+        },
+        "862": {
+          "description": "POSTOPERATIVE AND POST-TRAUMATIC INFECTIONS WITH MCC",
+          "avg_charge": 67859
+        },
+        "863": {
+          "description": "POSTOPERATIVE AND POST-TRAUMATIC INFECTIONS WITHOUT MCC",
+          "avg_charge": 27148
+        },
+        "870": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITH MV >96 HOURS",
+          "avg_charge": 291479
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 73611
+        },
+        "872": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC",
+          "avg_charge": 30327
+        },
+        "896": {
+          "description": "ALCOHOL, DRUG ABUSE OR DEPENDENCE WITHOUT REHABILITATION THERAPY WITH MCC",
+          "avg_charge": 61220
+        },
+        "897": {
+          "description": "ALCOHOL, DRUG ABUSE OR DEPENDENCE WITHOUT REHABILITATION THERAPY WITHOUT MCC",
+          "avg_charge": 35325
+        },
+        "907": {
+          "description": "OTHER O.R. PROCEDURES FOR INJURIES WITH MCC",
+          "avg_charge": 143295
+        },
+        "908": {
+          "description": "OTHER O.R. PROCEDURES FOR INJURIES WITH CC",
+          "avg_charge": 83413
+        },
+        "917": {
+          "description": "POISONING AND TOXIC EFFECTS OF DRUGS WITH MCC",
+          "avg_charge": 52566
+        },
+        "919": {
+          "description": "COMPLICATIONS OF TREATMENT WITH MCC",
+          "avg_charge": 60569
+        },
+        "947": {
+          "description": "SIGNS AND SYMPTOMS WITH MCC",
+          "avg_charge": 22215
+        },
+        "948": {
+          "description": "SIGNS AND SYMPTOMS WITHOUT MCC",
+          "avg_charge": 30858
+        },
+        "956": {
+          "description": "LIMB REATTACHMENT, HIP AND FEMUR PROCEDURES FOR MULTIPLE SIGNIFICANT TRAUMA",
+          "avg_charge": 142792
+        },
+        "964": {
+          "description": "OTHER MULTIPLE SIGNIFICANT TRAUMA WITH CC",
+          "avg_charge": 71303
+        },
+        "981": {
+          "description": "EXTENSIVE O.R. PROCEDURES UNRELATED TO PRINCIPAL DIAGNOSIS WITH MCC",
+          "avg_charge": 184024
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290003",
+      "name": "SUNRISE HOSPITAL AND MEDICAL CENTER",
+      "type": "acute_care_hospital",
+      "ownership": "Proprietary",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "3186 S MARYLAND PKWY",
+      "city": "LAS VEGAS",
+      "state": "NV",
+      "zip": "89109",
+      "county": "CLARK",
+      "lat": 36.131946350291,
+      "lon": -115.13679604577,
+      "drg_charges": {
+        "003": {
+          "description": "ECMO OR TRACHEOSTOMY WITH MV >96 HOURS OR PRINCIPAL DIAGNOSIS EXCEPT FACE, MOUTH AND NEC",
+          "avg_charge": 2110034
+        },
+        "004": {
+          "description": "TRACHEOSTOMY WITH MV >96 HOURS OR PRINCIPAL DIAGNOSIS EXCEPT FACE, MOUTH AND NECK WITHOU",
+          "avg_charge": 1012066
+        },
+        "023": {
+          "description": "CRANIOTOMY WITH MAJOR DEVICE IMPLANT OR ACUTE COMPLEX CNS PRINCIPAL DIAGNOSIS WITH MCC O",
+          "avg_charge": 871578
+        },
+        "024": {
+          "description": "CRANIOTOMY WITH MAJOR DEVICE IMPLANT OR ACUTE COMPLEX CNS PRINCIPAL DIAGNOSIS WITHOUT MC",
+          "avg_charge": 493093
+        },
+        "025": {
+          "description": "CRANIOTOMY AND ENDOVASCULAR INTRACRANIAL PROCEDURES WITH MCC",
+          "avg_charge": 703290
+        },
+        "026": {
+          "description": "CRANIOTOMY AND ENDOVASCULAR INTRACRANIAL PROCEDURES WITH CC",
+          "avg_charge": 429935
+        },
+        "027": {
+          "description": "CRANIOTOMY AND ENDOVASCULAR INTRACRANIAL PROCEDURES WITHOUT CC/MCC",
+          "avg_charge": 326226
+        },
+        "033": {
+          "description": "VENTRICULAR SHUNT PROCEDURES WITHOUT CC/MCC",
+          "avg_charge": 256111
+        },
+        "040": {
+          "description": "PERIPHERAL, CRANIAL NERVE AND OTHER NERVOUS SYSTEM PROCEDURES WITH MCC",
+          "avg_charge": 557603
+        },
+        "054": {
+          "description": "NERVOUS SYSTEM NEOPLASMS WITH MCC",
+          "avg_charge": 205914
+        },
+        "057": {
+          "description": "DEGENERATIVE NERVOUS SYSTEM DISORDERS WITHOUT MCC",
+          "avg_charge": 106173
+        },
+        "064": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH MCC",
+          "avg_charge": 287701
+        },
+        "065": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH CC OR TPA IN 24 HOURS",
+          "avg_charge": 156007
+        },
+        "069": {
+          "description": "TRANSIENT ISCHEMIA WITHOUT THROMBOLYTIC",
+          "avg_charge": 108347
+        },
+        "070": {
+          "description": "OTHER CEREBROVASCULAR DISORDERS WITH MCC",
+          "avg_charge": 158685
+        },
+        "071": {
+          "description": "OTHER CEREBROVASCULAR DISORDERS WITH CC",
+          "avg_charge": 112195
+        },
+        "074": {
+          "description": "CRANIAL AND PERIPHERAL NERVE DISORDERS WITHOUT MCC",
+          "avg_charge": 129216
+        },
+        "082": {
+          "description": "TRAUMATIC STUPOR AND COMA >1 HOUR WITH MCC",
+          "avg_charge": 309120
+        },
+        "083": {
+          "description": "TRAUMATIC STUPOR AND COMA >1 HOUR WITH CC",
+          "avg_charge": 150450
+        },
+        "084": {
+          "description": "TRAUMATIC STUPOR AND COMA >1 HOUR WITHOUT CC/MCC",
+          "avg_charge": 118414
+        },
+        "085": {
+          "description": "TRAUMATIC STUPOR AND COMA <1 HOUR WITH MCC",
+          "avg_charge": 194731
+        },
+        "086": {
+          "description": "TRAUMATIC STUPOR AND COMA <1 HOUR WITH CC",
+          "avg_charge": 134073
+        },
+        "087": {
+          "description": "TRAUMATIC STUPOR AND COMA <1 HOUR WITHOUT CC/MCC",
+          "avg_charge": 104412
+        },
+        "091": {
+          "description": "OTHER DISORDERS OF NERVOUS SYSTEM WITH MCC",
+          "avg_charge": 135887
+        },
+        "092": {
+          "description": "OTHER DISORDERS OF NERVOUS SYSTEM WITH CC",
+          "avg_charge": 116192
+        },
+        "100": {
+          "description": "SEIZURES WITH MCC",
+          "avg_charge": 193833
+        },
+        "101": {
+          "description": "SEIZURES WITHOUT MCC",
+          "avg_charge": 90461
+        },
+        "103": {
+          "description": "HEADACHES WITHOUT MCC",
+          "avg_charge": 109982
+        },
+        "149": {
+          "description": "DYSEQUILIBRIUM",
+          "avg_charge": 111993
+        },
+        "163": {
+          "description": "MAJOR CHEST PROCEDURES WITH MCC",
+          "avg_charge": 613832
+        },
+        "175": {
+          "description": "PULMONARY EMBOLISM WITH MCC OR ACUTE COR PULMONALE",
+          "avg_charge": 190307
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 193926
+        },
+        "180": {
+          "description": "RESPIRATORY NEOPLASMS WITH MCC",
+          "avg_charge": 259555
+        },
+        "184": {
+          "description": "MAJOR CHEST TRAUMA WITH CC",
+          "avg_charge": 128039
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 134698
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 148723
+        },
+        "199": {
+          "description": "PNEUMOTHORAX WITH MCC",
+          "avg_charge": 158482
+        },
+        "200": {
+          "description": "PNEUMOTHORAX WITH CC",
+          "avg_charge": 134546
+        },
+        "207": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT >96 HOURS",
+          "avg_charge": 611884
+        },
+        "208": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT <=96 HOURS",
+          "avg_charge": 315761
+        },
+        "219": {
+          "description": "CARDIAC VALVE AND OTHER MAJOR CARDIOTHORACIC PROCEDURES WITHOUT CARDIAC CATHETERIZATION",
+          "avg_charge": 1405388
+        },
+        "233": {
+          "description": "CORONARY BYPASS WITH CARDIAC CATHETERIZATION OR OPEN ABLATION WITH MCC",
+          "avg_charge": 1391159
+        },
+        "242": {
+          "description": "PERMANENT CARDIAC PACEMAKER IMPLANT WITH MCC",
+          "avg_charge": 448555
+        },
+        "252": {
+          "description": "OTHER VASCULAR PROCEDURES WITH MCC",
+          "avg_charge": 328452
+        },
+        "253": {
+          "description": "OTHER VASCULAR PROCEDURES WITH CC",
+          "avg_charge": 344913
+        },
+        "264": {
+          "description": "OTHER CIRCULATORY SYSTEM O.R. PROCEDURES",
+          "avg_charge": 357652
+        },
+        "266": {
+          "description": "ENDOVASCULAR CARDIAC VALVE REPLACEMENT AND SUPPLEMENT PROCEDURES WITH MCC",
+          "avg_charge": 901555
+        },
+        "267": {
+          "description": "ENDOVASCULAR CARDIAC VALVE REPLACEMENT AND SUPPLEMENT PROCEDURES WITHOUT MCC",
+          "avg_charge": 574214
+        },
+        "270": {
+          "description": "OTHER MAJOR CARDIOVASCULAR PROCEDURES WITH MCC",
+          "avg_charge": 789699
+        },
+        "271": {
+          "description": "OTHER MAJOR CARDIOVASCULAR PROCEDURES WITH CC",
+          "avg_charge": 588405
+        },
+        "274": {
+          "description": "PERCUTANEOUS AND OTHER INTRACARDIAC PROCEDURES WITHOUT MCC",
+          "avg_charge": 464585
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 200240
+        },
+        "281": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH CC",
+          "avg_charge": 149912
+        },
+        "286": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITH MCC",
+          "avg_charge": 351415
+        },
+        "287": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITHOUT MCC",
+          "avg_charge": 194399
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 146699
+        },
+        "299": {
+          "description": "PERIPHERAL VASCULAR DISORDERS WITH MCC",
+          "avg_charge": 179270
+        },
+        "300": {
+          "description": "PERIPHERAL VASCULAR DISORDERS WITH CC",
+          "avg_charge": 115611
+        },
+        "304": {
+          "description": "HYPERTENSION WITH MCC",
+          "avg_charge": 96855
+        },
+        "305": {
+          "description": "HYPERTENSION WITHOUT MCC",
+          "avg_charge": 93871
+        },
+        "308": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC",
+          "avg_charge": 145868
+        },
+        "309": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH CC",
+          "avg_charge": 99659
+        },
+        "310": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITHOUT CC/MCC",
+          "avg_charge": 66824
+        },
+        "312": {
+          "description": "SYNCOPE AND COLLAPSE",
+          "avg_charge": 106105
+        },
+        "313": {
+          "description": "CHEST PAIN",
+          "avg_charge": 101992
+        },
+        "314": {
+          "description": "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 229758
+        },
+        "321": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITH MCC OR 4+ ARTERIES/",
+          "avg_charge": 446947
+        },
+        "322": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITHOUT MCC",
+          "avg_charge": 258386
+        },
+        "329": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH MCC",
+          "avg_charge": 565952
+        },
+        "330": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH CC",
+          "avg_charge": 326747
+        },
+        "374": {
+          "description": "DIGESTIVE MALIGNANCY WITH MCC",
+          "avg_charge": 260554
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 204868
+        },
+        "378": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH CC",
+          "avg_charge": 106270
+        },
+        "389": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH CC",
+          "avg_charge": 97861
+        },
+        "391": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITH MCC",
+          "avg_charge": 152356
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 96877
+        },
+        "393": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 222912
+        },
+        "394": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 114499
+        },
+        "395": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITHOUT CC/MCC",
+          "avg_charge": 59098
+        },
+        "417": {
+          "description": "LAPAROSCOPIC CHOLECYSTECTOMY WITHOUT C.D.E. WITH MCC",
+          "avg_charge": 328487
+        },
+        "432": {
+          "description": "CIRRHOSIS AND ALCOHOLIC HEPATITIS WITH MCC",
+          "avg_charge": 187016
+        },
+        "435": {
+          "description": "MALIGNANCY OF HEPATOBILIARY SYSTEM OR PANCREAS WITH MCC",
+          "avg_charge": 163728
+        },
+        "439": {
+          "description": "DISORDERS OF PANCREAS EXCEPT MALIGNANCY WITH CC",
+          "avg_charge": 111152
+        },
+        "444": {
+          "description": "DISORDERS OF THE BILIARY TRACT WITH MCC",
+          "avg_charge": 193376
+        },
+        "445": {
+          "description": "DISORDERS OF THE BILIARY TRACT WITH CC",
+          "avg_charge": 147639
+        },
+        "446": {
+          "description": "DISORDERS OF THE BILIARY TRACT WITHOUT CC/MCC",
+          "avg_charge": 93231
+        },
+        "454": {
+          "description": "COMBINED ANTERIOR AND POSTERIOR SPINAL FUSION WITH CC",
+          "avg_charge": 826266
+        },
+        "466": {
+          "description": "REVISION OF HIP OR KNEE REPLACEMENT WITH MCC",
+          "avg_charge": 480496
+        },
+        "467": {
+          "description": "REVISION OF HIP OR KNEE REPLACEMENT WITH CC",
+          "avg_charge": 460884
+        },
+        "469": {
+          "description": "MAJOR HIP AND KNEE JOINT REPLACEMENT OR REATTACHMENT OF LOWER EXTREMITY WITH MCC OR TOTA",
+          "avg_charge": 272253
+        },
+        "470": {
+          "description": "MAJOR HIP AND KNEE JOINT REPLACEMENT OR REATTACHMENT OF LOWER EXTREMITY WITHOUT MCC",
+          "avg_charge": 232799
+        },
+        "480": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH MCC",
+          "avg_charge": 276706
+        },
+        "481": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH CC",
+          "avg_charge": 200449
+        },
+        "482": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITHOUT CC/MCC",
+          "avg_charge": 150881
+        },
+        "483": {
+          "description": "MAJOR JOINT OR LIMB REATTACHMENT PROCEDURES OF UPPER EXTREMITIES",
+          "avg_charge": 306845
+        },
+        "492": {
+          "description": "LOWER EXTREMITY AND HUMERUS PROCEDURES EXCEPT HIP, FOOT AND FEMUR WITH MCC",
+          "avg_charge": 293061
+        },
+        "493": {
+          "description": "LOWER EXTREMITY AND HUMERUS PROCEDURES EXCEPT HIP, FOOT AND FEMUR WITH CC",
+          "avg_charge": 303900
+        },
+        "519": {
+          "description": "BACK AND NECK PROCEDURES EXCEPT SPINAL FUSION WITH CC",
+          "avg_charge": 278347
+        },
+        "521": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITH MCC",
+          "avg_charge": 265926
+        },
+        "522": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITHOUT MCC",
+          "avg_charge": 226724
+        },
+        "536": {
+          "description": "FRACTURES OF HIP AND PELVIS WITHOUT MCC",
+          "avg_charge": 99632
+        },
+        "542": {
+          "description": "PATHOLOGICAL FRACTURES AND MUSCULOSKELETAL AND CONNECTIVE TISSUE MALIGNANCY WITH MCC",
+          "avg_charge": 190634
+        },
+        "551": {
+          "description": "MEDICAL BACK PROBLEMS WITH MCC",
+          "avg_charge": 181848
+        },
+        "552": {
+          "description": "MEDICAL BACK PROBLEMS WITHOUT MCC",
+          "avg_charge": 117987
+        },
+        "556": {
+          "description": "SIGNS AND SYMPTOMS OF MUSCULOSKELETAL SYSTEM AND CONNECTIVE TISSUE WITHOUT MCC",
+          "avg_charge": 90321
+        },
+        "557": {
+          "description": "TENDONITIS, MYOSITIS AND BURSITIS WITH MCC",
+          "avg_charge": 116448
+        },
+        "563": {
+          "description": "FRACTURE, SPRAIN, STRAIN AND DISLOCATION EXCEPT FEMUR, HIP, PELVIS AND THIGH WITHOUT MCC",
+          "avg_charge": 127888
+        },
+        "580": {
+          "description": "OTHER SKIN, SUBCUTANEOUS TISSUE AND BREAST PROCEDURES WITH CC",
+          "avg_charge": 155167
+        },
+        "603": {
+          "description": "CELLULITIS WITHOUT MCC",
+          "avg_charge": 90637
+        },
+        "637": {
+          "description": "DIABETES WITH MCC",
+          "avg_charge": 202871
+        },
+        "638": {
+          "description": "DIABETES WITH CC",
+          "avg_charge": 109559
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 116295
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 100395
+        },
+        "660": {
+          "description": "KIDNEY AND URETER PROCEDURES FOR NON-NEOPLASM WITH CC",
+          "avg_charge": 184292
+        },
+        "673": {
+          "description": "OTHER KIDNEY AND URINARY TRACT PROCEDURES WITH MCC",
+          "avg_charge": 417959
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 175211
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 121682
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 196494
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 92122
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 173589
+        },
+        "699": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH CC",
+          "avg_charge": 106071
+        },
+        "742": {
+          "description": "UTERINE AND ADNEXA PROCEDURES FOR NON-MALIGNANCY WITH CC/MCC",
+          "avg_charge": 209482
+        },
+        "811": {
+          "description": "RED BLOOD CELL DISORDERS WITH MCC",
+          "avg_charge": 145091
+        },
+        "812": {
+          "description": "RED BLOOD CELL DISORDERS WITHOUT MCC",
+          "avg_charge": 73596
+        },
+        "813": {
+          "description": "COAGULATION DISORDERS",
+          "avg_charge": 110367
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 654975
+        },
+        "854": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH CC",
+          "avg_charge": 456584
+        },
+        "870": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITH MV >96 HOURS",
+          "avg_charge": 815078
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 235434
+        },
+        "872": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC",
+          "avg_charge": 136342
+        },
+        "884": {
+          "description": "ORGANIC DISTURBANCES AND INTELLECTUAL DISABILITY",
+          "avg_charge": 147348
+        },
+        "885": {
+          "description": "PSYCHOSES",
+          "avg_charge": 174018
+        },
+        "896": {
+          "description": "ALCOHOL, DRUG ABUSE OR DEPENDENCE WITHOUT REHABILITATION THERAPY WITH MCC",
+          "avg_charge": 200166
+        },
+        "897": {
+          "description": "ALCOHOL, DRUG ABUSE OR DEPENDENCE WITHOUT REHABILITATION THERAPY WITHOUT MCC",
+          "avg_charge": 101309
+        },
+        "907": {
+          "description": "OTHER O.R. PROCEDURES FOR INJURIES WITH MCC",
+          "avg_charge": 323385
+        },
+        "917": {
+          "description": "POISONING AND TOXIC EFFECTS OF DRUGS WITH MCC",
+          "avg_charge": 203450
+        },
+        "919": {
+          "description": "COMPLICATIONS OF TREATMENT WITH MCC",
+          "avg_charge": 166974
+        },
+        "928": {
+          "description": "FULL THICKNESS BURN WITH SKIN GRAFT OR INHALATION INJURY WITH CC/MCC",
+          "avg_charge": 894726
+        },
+        "935": {
+          "description": "NON-EXTENSIVE BURNS",
+          "avg_charge": 210708
+        },
+        "945": {
+          "description": "REHABILITATION WITH CC/MCC",
+          "avg_charge": 123167
+        },
+        "981": {
+          "description": "EXTENSIVE O.R. PROCEDURES UNRELATED TO PRINCIPAL DIAGNOSIS WITH MCC",
+          "avg_charge": 460059
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290005",
+      "name": "NORTH VISTA HOSPITAL",
+      "type": "acute_care_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "1409 EAST LAKE MEAD BLVD",
+      "city": "NORTH LAS VEGAS",
+      "state": "NV",
+      "zip": "89030",
+      "county": "CLARK",
+      "lat": 36.195750042802,
+      "lon": -115.123408875061,
+      "drg_charges": {
+        "070": {
+          "description": "OTHER CEREBROVASCULAR DISORDERS WITH MCC",
+          "avg_charge": 67534
+        },
+        "071": {
+          "description": "OTHER CEREBROVASCULAR DISORDERS WITH CC",
+          "avg_charge": 46062
+        },
+        "073": {
+          "description": "CRANIAL AND PERIPHERAL NERVE DISORDERS WITH MCC",
+          "avg_charge": 38872
+        },
+        "100": {
+          "description": "SEIZURES WITH MCC",
+          "avg_charge": 43593
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 55147
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 47192
+        },
+        "208": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT <=96 HOURS",
+          "avg_charge": 131118
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 41229
+        },
+        "304": {
+          "description": "HYPERTENSION WITH MCC",
+          "avg_charge": 38343
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 61460
+        },
+        "391": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITH MCC",
+          "avg_charge": 42659
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 38510
+        },
+        "393": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 55569
+        },
+        "637": {
+          "description": "DIABETES WITH MCC",
+          "avg_charge": 66463
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 42793
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 95101
+        },
+        "699": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH CC",
+          "avg_charge": 43243
+        },
+        "811": {
+          "description": "RED BLOOD CELL DISORDERS WITH MCC",
+          "avg_charge": 54367
+        },
+        "870": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITH MV >96 HOURS",
+          "avg_charge": 316282
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 84362
+        },
+        "885": {
+          "description": "PSYCHOSES",
+          "avg_charge": 18299
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290007",
+      "name": "UNIVERSITY MEDICAL CENTER",
+      "type": "acute_care_hospital",
+      "ownership": "Voluntary non-profit - Other",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "1800 W CHARLESTON BLVD",
+      "city": "LAS VEGAS",
+      "state": "NV",
+      "zip": "89102",
+      "county": "CLARK",
+      "lat": 36.158990018913,
+      "lon": -115.167462082855,
+      "drg_charges": {
+        "003": {
+          "description": "ECMO OR TRACHEOSTOMY WITH MV >96 HOURS OR PRINCIPAL DIAGNOSIS EXCEPT FACE, MOUTH AND NEC",
+          "avg_charge": 1267538
+        },
+        "004": {
+          "description": "TRACHEOSTOMY WITH MV >96 HOURS OR PRINCIPAL DIAGNOSIS EXCEPT FACE, MOUTH AND NECK WITHOU",
+          "avg_charge": 927529
+        },
+        "057": {
+          "description": "DEGENERATIVE NERVOUS SYSTEM DISORDERS WITHOUT MCC",
+          "avg_charge": 71830
+        },
+        "064": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH MCC",
+          "avg_charge": 192128
+        },
+        "065": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH CC OR TPA IN 24 HOURS",
+          "avg_charge": 85902
+        },
+        "069": {
+          "description": "TRANSIENT ISCHEMIA WITHOUT THROMBOLYTIC",
+          "avg_charge": 65609
+        },
+        "082": {
+          "description": "TRAUMATIC STUPOR AND COMA >1 HOUR WITH MCC",
+          "avg_charge": 207249
+        },
+        "083": {
+          "description": "TRAUMATIC STUPOR AND COMA >1 HOUR WITH CC",
+          "avg_charge": 95542
+        },
+        "086": {
+          "description": "TRAUMATIC STUPOR AND COMA <1 HOUR WITH CC",
+          "avg_charge": 73289
+        },
+        "101": {
+          "description": "SEIZURES WITHOUT MCC",
+          "avg_charge": 55951
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 94404
+        },
+        "178": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH CC",
+          "avg_charge": 41543
+        },
+        "184": {
+          "description": "MAJOR CHEST TRAUMA WITH CC",
+          "avg_charge": 89097
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 94480
+        },
+        "190": {
+          "description": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH MCC",
+          "avg_charge": 109349
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 78826
+        },
+        "194": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH CC",
+          "avg_charge": 54470
+        },
+        "207": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT >96 HOURS",
+          "avg_charge": 366367
+        },
+        "208": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT <=96 HOURS",
+          "avg_charge": 136014
+        },
+        "267": {
+          "description": "ENDOVASCULAR CARDIAC VALVE REPLACEMENT AND SUPPLEMENT PROCEDURES WITHOUT MCC",
+          "avg_charge": 196574
+        },
+        "270": {
+          "description": "OTHER MAJOR CARDIOVASCULAR PROCEDURES WITH MCC",
+          "avg_charge": 310220
+        },
+        "274": {
+          "description": "PERCUTANEOUS AND OTHER INTRACARDIAC PROCEDURES WITHOUT MCC",
+          "avg_charge": 151232
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 90131
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 77276
+        },
+        "300": {
+          "description": "PERIPHERAL VASCULAR DISORDERS WITH CC",
+          "avg_charge": 60899
+        },
+        "308": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC",
+          "avg_charge": 98558
+        },
+        "309": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH CC",
+          "avg_charge": 44861
+        },
+        "312": {
+          "description": "SYNCOPE AND COLLAPSE",
+          "avg_charge": 69241
+        },
+        "313": {
+          "description": "CHEST PAIN",
+          "avg_charge": 56401
+        },
+        "314": {
+          "description": "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 136352
+        },
+        "322": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITHOUT MCC",
+          "avg_charge": 106669
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 122505
+        },
+        "378": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH CC",
+          "avg_charge": 67424
+        },
+        "391": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITH MCC",
+          "avg_charge": 57696
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 60828
+        },
+        "394": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 50653
+        },
+        "480": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH MCC",
+          "avg_charge": 223774
+        },
+        "481": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH CC",
+          "avg_charge": 162441
+        },
+        "483": {
+          "description": "MAJOR JOINT OR LIMB REATTACHMENT PROCEDURES OF UPPER EXTREMITIES",
+          "avg_charge": 247450
+        },
+        "493": {
+          "description": "LOWER EXTREMITY AND HUMERUS PROCEDURES EXCEPT HIP, FOOT AND FEMUR WITH CC",
+          "avg_charge": 190958
+        },
+        "522": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITHOUT MCC",
+          "avg_charge": 164700
+        },
+        "536": {
+          "description": "FRACTURES OF HIP AND PELVIS WITHOUT MCC",
+          "avg_charge": 58667
+        },
+        "543": {
+          "description": "PATHOLOGICAL FRACTURES AND MUSCULOSKELETAL AND CONNECTIVE TISSUE MALIGNANCY WITH CC",
+          "avg_charge": 57444
+        },
+        "551": {
+          "description": "MEDICAL BACK PROBLEMS WITH MCC",
+          "avg_charge": 146687
+        },
+        "552": {
+          "description": "MEDICAL BACK PROBLEMS WITHOUT MCC",
+          "avg_charge": 65602
+        },
+        "563": {
+          "description": "FRACTURE, SPRAIN, STRAIN AND DISLOCATION EXCEPT FEMUR, HIP, PELVIS AND THIGH WITHOUT MCC",
+          "avg_charge": 58138
+        },
+        "603": {
+          "description": "CELLULITIS WITHOUT MCC",
+          "avg_charge": 41946
+        },
+        "605": {
+          "description": "TRAUMA TO THE SKIN, SUBCUTANEOUS TISSUE AND BREAST WITHOUT MCC",
+          "avg_charge": 63453
+        },
+        "638": {
+          "description": "DIABETES WITH CC",
+          "avg_charge": 60361
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 82423
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 63532
+        },
+        "650": {
+          "description": "KIDNEY TRANSPLANT WITH HEMODIALYSIS WITH MCC",
+          "avg_charge": 465996
+        },
+        "651": {
+          "description": "KIDNEY TRANSPLANT WITH HEMODIALYSIS WITHOUT MCC",
+          "avg_charge": 436704
+        },
+        "652": {
+          "description": "KIDNEY TRANSPLANT",
+          "avg_charge": 396875
+        },
+        "673": {
+          "description": "OTHER KIDNEY AND URINARY TRACT PROCEDURES WITH MCC",
+          "avg_charge": 222412
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 94067
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 59700
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 101663
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 48383
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 108405
+        },
+        "699": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH CC",
+          "avg_charge": 55177
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 533206
+        },
+        "870": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITH MV >96 HOURS",
+          "avg_charge": 474950
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 113900
+        },
+        "872": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC",
+          "avg_charge": 70115
+        },
+        "884": {
+          "description": "ORGANIC DISTURBANCES AND INTELLECTUAL DISABILITY",
+          "avg_charge": 60104
+        },
+        "885": {
+          "description": "PSYCHOSES",
+          "avg_charge": 41744
+        },
+        "897": {
+          "description": "ALCOHOL, DRUG ABUSE OR DEPENDENCE WITHOUT REHABILITATION THERAPY WITHOUT MCC",
+          "avg_charge": 49765
+        },
+        "907": {
+          "description": "OTHER O.R. PROCEDURES FOR INJURIES WITH MCC",
+          "avg_charge": 325994
+        },
+        "917": {
+          "description": "POISONING AND TOXIC EFFECTS OF DRUGS WITH MCC",
+          "avg_charge": 83277
+        },
+        "956": {
+          "description": "LIMB REATTACHMENT, HIP AND FEMUR PROCEDURES FOR MULTIPLE SIGNIFICANT TRAUMA",
+          "avg_charge": 550586
+        },
+        "981": {
+          "description": "EXTENSIVE O.R. PROCEDURES UNRELATED TO PRINCIPAL DIAGNOSIS WITH MCC",
+          "avg_charge": 279269
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290008",
+      "name": "NORTHEASTERN NEVADA REGIONAL HOSPITAL",
+      "type": "acute_care_hospital",
+      "ownership": "Proprietary",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "2001 ERRECART BLVD",
+      "city": "ELKO",
+      "state": "NV",
+      "zip": "89801",
+      "county": "ELKO",
+      "lat": 40.821458630125,
+      "lon": -115.729837521739,
+      "drg_charges": {
+        "175": {
+          "description": "PULMONARY EMBOLISM WITH MCC OR ACUTE COR PULMONALE",
+          "avg_charge": 45965
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 56812
+        },
+        "190": {
+          "description": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH MCC",
+          "avg_charge": 52225
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 48181
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 69121
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 48187
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 43263
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 43635
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 41729
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 43465
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 42908
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 68535
+        },
+        "872": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC",
+          "avg_charge": 41162
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290009",
+      "name": "SAINT MARY'S REGIONAL MEDICAL CENTER",
+      "type": "acute_care_hospital",
+      "ownership": "Proprietary",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "235 W 6TH ST",
+      "city": "RENO",
+      "state": "NV",
+      "zip": "89503",
+      "county": "WASHOE",
+      "lat": 39.531715749049,
+      "lon": -119.818080857191,
+      "drg_charges": {
+        "064": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH MCC",
+          "avg_charge": 43728
+        },
+        "069": {
+          "description": "TRANSIENT ISCHEMIA WITHOUT THROMBOLYTIC",
+          "avg_charge": 23450
+        },
+        "091": {
+          "description": "OTHER DISORDERS OF NERVOUS SYSTEM WITH MCC",
+          "avg_charge": 30327
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 33957
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 25229
+        },
+        "190": {
+          "description": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH MCC",
+          "avg_charge": 27464
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 31087
+        },
+        "242": {
+          "description": "PERMANENT CARDIAC PACEMAKER IMPLANT WITH MCC",
+          "avg_charge": 109234
+        },
+        "252": {
+          "description": "OTHER VASCULAR PROCEDURES WITH MCC",
+          "avg_charge": 96404
+        },
+        "266": {
+          "description": "ENDOVASCULAR CARDIAC VALVE REPLACEMENT AND SUPPLEMENT PROCEDURES WITH MCC",
+          "avg_charge": 216377
+        },
+        "274": {
+          "description": "PERCUTANEOUS AND OTHER INTRACARDIAC PROCEDURES WITHOUT MCC",
+          "avg_charge": 157629
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 31375
+        },
+        "281": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH CC",
+          "avg_charge": 23119
+        },
+        "282": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITHOUT CC/MCC",
+          "avg_charge": 19842
+        },
+        "286": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITH MCC",
+          "avg_charge": 52964
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 26008
+        },
+        "308": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC",
+          "avg_charge": 25828
+        },
+        "309": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH CC",
+          "avg_charge": 21812
+        },
+        "312": {
+          "description": "SYNCOPE AND COLLAPSE",
+          "avg_charge": 31099
+        },
+        "321": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITH MCC OR 4+ ARTERIES/",
+          "avg_charge": 148113
+        },
+        "322": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITHOUT MCC",
+          "avg_charge": 108129
+        },
+        "329": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH MCC",
+          "avg_charge": 133407
+        },
+        "371": {
+          "description": "MAJOR GASTROINTESTINAL DISORDERS AND PERITONEAL INFECTIONS WITH MCC",
+          "avg_charge": 26247
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 55985
+        },
+        "388": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH MCC",
+          "avg_charge": 25125
+        },
+        "391": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITH MCC",
+          "avg_charge": 26364
+        },
+        "432": {
+          "description": "CIRRHOSIS AND ALCOHOLIC HEPATITIS WITH MCC",
+          "avg_charge": 40105
+        },
+        "438": {
+          "description": "DISORDERS OF PANCREAS EXCEPT MALIGNANCY WITH MCC",
+          "avg_charge": 27086
+        },
+        "480": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH MCC",
+          "avg_charge": 90301
+        },
+        "551": {
+          "description": "MEDICAL BACK PROBLEMS WITH MCC",
+          "avg_charge": 28207
+        },
+        "552": {
+          "description": "MEDICAL BACK PROBLEMS WITHOUT MCC",
+          "avg_charge": 24769
+        },
+        "602": {
+          "description": "CELLULITIS WITH MCC",
+          "avg_charge": 33981
+        },
+        "637": {
+          "description": "DIABETES WITH MCC",
+          "avg_charge": 21171
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 27402
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 18997
+        },
+        "659": {
+          "description": "KIDNEY AND URETER PROCEDURES FOR NON-NEOPLASM WITH MCC",
+          "avg_charge": 80587
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 20656
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 25103
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 15493
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 36486
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 145149
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 47725
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290012",
+      "name": "SAINT ROSE DOMINICAN HOSPITALS - ROSE DE LIMA",
+      "type": "acute_care_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": null,
+      "address": "102 E LAKE MEAD DR",
+      "city": "HENDERSON",
+      "state": "NV",
+      "zip": "89015",
+      "county": "CLARK",
+      "lat": 36.038591853961,
+      "lon": -114.983615943599,
+      "drg_charges": {
+        "812": {
+          "description": "RED BLOOD CELL DISORDERS WITHOUT MCC",
+          "avg_charge": 45679
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290019",
+      "name": "CARSON TAHOE REGIONAL MEDICAL CENTER",
+      "type": "acute_care_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "1600 MEDICAL PARKWAY",
+      "city": "CARSON CITY",
+      "state": "NV",
+      "zip": "89703",
+      "county": "CARSON CITY",
+      "lat": 39.203493914543,
+      "lon": -119.78420274658,
+      "drg_charges": {
+        "039": {
+          "description": "EXTRACRANIAL PROCEDURES WITHOUT CC/MCC",
+          "avg_charge": 38048
+        },
+        "064": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH MCC",
+          "avg_charge": 82009
+        },
+        "065": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH CC OR TPA IN 24 HOURS",
+          "avg_charge": 41044
+        },
+        "066": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITHOUT CC/MCC",
+          "avg_charge": 24777
+        },
+        "175": {
+          "description": "PULMONARY EMBOLISM WITH MCC OR ACUTE COR PULMONALE",
+          "avg_charge": 45527
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 52215
+        },
+        "178": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH CC",
+          "avg_charge": 36517
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 44994
+        },
+        "190": {
+          "description": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH MCC",
+          "avg_charge": 58770
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 40110
+        },
+        "194": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH CC",
+          "avg_charge": 34345
+        },
+        "208": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT <=96 HOURS",
+          "avg_charge": 102833
+        },
+        "219": {
+          "description": "CARDIAC VALVE AND OTHER MAJOR CARDIOTHORACIC PROCEDURES WITHOUT CARDIAC CATHETERIZATION",
+          "avg_charge": 178797
+        },
+        "243": {
+          "description": "PERMANENT CARDIAC PACEMAKER IMPLANT WITH CC",
+          "avg_charge": 81701
+        },
+        "274": {
+          "description": "PERCUTANEOUS AND OTHER INTRACARDIAC PROCEDURES WITHOUT MCC",
+          "avg_charge": 91674
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 51146
+        },
+        "281": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH CC",
+          "avg_charge": 32189
+        },
+        "286": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITH MCC",
+          "avg_charge": 48203
+        },
+        "287": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITHOUT MCC",
+          "avg_charge": 33350
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 40938
+        },
+        "308": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC",
+          "avg_charge": 42102
+        },
+        "309": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH CC",
+          "avg_charge": 30206
+        },
+        "310": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITHOUT CC/MCC",
+          "avg_charge": 22964
+        },
+        "312": {
+          "description": "SYNCOPE AND COLLAPSE",
+          "avg_charge": 50907
+        },
+        "314": {
+          "description": "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 75251
+        },
+        "321": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITH MCC OR 4+ ARTERIES/",
+          "avg_charge": 121984
+        },
+        "322": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITHOUT MCC",
+          "avg_charge": 103059
+        },
+        "329": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH MCC",
+          "avg_charge": 118021
+        },
+        "330": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH CC",
+          "avg_charge": 84270
+        },
+        "331": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITHOUT CC/MCC",
+          "avg_charge": 44410
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 77644
+        },
+        "378": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH CC",
+          "avg_charge": 55396
+        },
+        "389": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH CC",
+          "avg_charge": 20715
+        },
+        "390": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITHOUT CC/MCC",
+          "avg_charge": 18500
+        },
+        "391": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITH MCC",
+          "avg_charge": 46674
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 31012
+        },
+        "394": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 54105
+        },
+        "441": {
+          "description": "DISORDERS OF LIVER EXCEPT MALIGNANCY, CIRRHOSIS OR ALCOHOLIC HEPATITIS WITH MCC",
+          "avg_charge": 71166
+        },
+        "442": {
+          "description": "DISORDERS OF LIVER EXCEPT MALIGNANCY, CIRRHOSIS OR ALCOHOLIC HEPATITIS WITH CC",
+          "avg_charge": 33141
+        },
+        "460": {
+          "description": "SPINAL FUSION EXCEPT CERVICAL WITHOUT MCC",
+          "avg_charge": 84199
+        },
+        "480": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH MCC",
+          "avg_charge": 78287
+        },
+        "481": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH CC",
+          "avg_charge": 59256
+        },
+        "482": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITHOUT CC/MCC",
+          "avg_charge": 45893
+        },
+        "521": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITH MCC",
+          "avg_charge": 70339
+        },
+        "522": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITHOUT MCC",
+          "avg_charge": 63696
+        },
+        "552": {
+          "description": "MEDICAL BACK PROBLEMS WITHOUT MCC",
+          "avg_charge": 37669
+        },
+        "603": {
+          "description": "CELLULITIS WITHOUT MCC",
+          "avg_charge": 31456
+        },
+        "637": {
+          "description": "DIABETES WITH MCC",
+          "avg_charge": 42027
+        },
+        "638": {
+          "description": "DIABETES WITH CC",
+          "avg_charge": 34548
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 47725
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 26002
+        },
+        "673": {
+          "description": "OTHER KIDNEY AND URINARY TRACT PROCEDURES WITH MCC",
+          "avg_charge": 142242
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 52415
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 33678
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 32595
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 29596
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 39998
+        },
+        "699": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH CC",
+          "avg_charge": 40033
+        },
+        "812": {
+          "description": "RED BLOOD CELL DISORDERS WITHOUT MCC",
+          "avg_charge": 56954
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 149942
+        },
+        "854": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH CC",
+          "avg_charge": 48048
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 61379
+        },
+        "872": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC",
+          "avg_charge": 31741
+        },
+        "895": {
+          "description": "ALCOHOL, DRUG ABUSE OR DEPENDENCE WITH REHABILITATION THERAPY",
+          "avg_charge": 35049
+        },
+        "896": {
+          "description": "ALCOHOL, DRUG ABUSE OR DEPENDENCE WITHOUT REHABILITATION THERAPY WITH MCC",
+          "avg_charge": 55020
+        },
+        "897": {
+          "description": "ALCOHOL, DRUG ABUSE OR DEPENDENCE WITHOUT REHABILITATION THERAPY WITHOUT MCC",
+          "avg_charge": 32663
+        },
+        "951": {
+          "description": "OTHER FACTORS INFLUENCING HEALTH STATUS",
+          "avg_charge": 19669
+        },
+        "981": {
+          "description": "EXTENSIVE O.R. PROCEDURES UNRELATED TO PRINCIPAL DIAGNOSIS WITH MCC",
+          "avg_charge": 143757
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290021",
+      "name": "VALLEY HOSPITAL MEDICAL CENTER",
+      "type": "acute_care_hospital",
+      "ownership": "Proprietary",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "620 SHADOW LANE",
+      "city": "LAS VEGAS",
+      "state": "NV",
+      "zip": "89106",
+      "county": "CLARK",
+      "lat": 36.163920724951,
+      "lon": -115.16551696899,
+      "drg_charges": {
+        "004": {
+          "description": "TRACHEOSTOMY WITH MV >96 HOURS OR PRINCIPAL DIAGNOSIS EXCEPT FACE, MOUTH AND NECK WITHOU",
+          "avg_charge": 2355622
+        },
+        "057": {
+          "description": "DEGENERATIVE NERVOUS SYSTEM DISORDERS WITHOUT MCC",
+          "avg_charge": 124595
+        },
+        "064": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH MCC",
+          "avg_charge": 230030
+        },
+        "065": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH CC OR TPA IN 24 HOURS",
+          "avg_charge": 124761
+        },
+        "069": {
+          "description": "TRANSIENT ISCHEMIA WITHOUT THROMBOLYTIC",
+          "avg_charge": 135415
+        },
+        "092": {
+          "description": "OTHER DISORDERS OF NERVOUS SYSTEM WITH CC",
+          "avg_charge": 128400
+        },
+        "100": {
+          "description": "SEIZURES WITH MCC",
+          "avg_charge": 337130
+        },
+        "101": {
+          "description": "SEIZURES WITHOUT MCC",
+          "avg_charge": 133267
+        },
+        "175": {
+          "description": "PULMONARY EMBOLISM WITH MCC OR ACUTE COR PULMONALE",
+          "avg_charge": 239180
+        },
+        "176": {
+          "description": "PULMONARY EMBOLISM WITHOUT MCC",
+          "avg_charge": 138233
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 292066
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 193948
+        },
+        "190": {
+          "description": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH MCC",
+          "avg_charge": 101228
+        },
+        "191": {
+          "description": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH CC",
+          "avg_charge": 122738
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 175753
+        },
+        "194": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH CC",
+          "avg_charge": 138382
+        },
+        "208": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT <=96 HOURS",
+          "avg_charge": 472884
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 233208
+        },
+        "281": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH CC",
+          "avg_charge": 137134
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 196532
+        },
+        "300": {
+          "description": "PERIPHERAL VASCULAR DISORDERS WITH CC",
+          "avg_charge": 179407
+        },
+        "304": {
+          "description": "HYPERTENSION WITH MCC",
+          "avg_charge": 220386
+        },
+        "305": {
+          "description": "HYPERTENSION WITHOUT MCC",
+          "avg_charge": 109816
+        },
+        "308": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC",
+          "avg_charge": 155230
+        },
+        "309": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH CC",
+          "avg_charge": 129229
+        },
+        "312": {
+          "description": "SYNCOPE AND COLLAPSE",
+          "avg_charge": 103890
+        },
+        "313": {
+          "description": "CHEST PAIN",
+          "avg_charge": 116514
+        },
+        "314": {
+          "description": "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 257137
+        },
+        "322": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITHOUT MCC",
+          "avg_charge": 305526
+        },
+        "329": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH MCC",
+          "avg_charge": 529999
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 296952
+        },
+        "378": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH CC",
+          "avg_charge": 143870
+        },
+        "389": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH CC",
+          "avg_charge": 111814
+        },
+        "391": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITH MCC",
+          "avg_charge": 171949
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 120195
+        },
+        "393": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 168893
+        },
+        "394": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 221930
+        },
+        "481": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH CC",
+          "avg_charge": 258569
+        },
+        "552": {
+          "description": "MEDICAL BACK PROBLEMS WITHOUT MCC",
+          "avg_charge": 135289
+        },
+        "603": {
+          "description": "CELLULITIS WITHOUT MCC",
+          "avg_charge": 122565
+        },
+        "637": {
+          "description": "DIABETES WITH MCC",
+          "avg_charge": 315375
+        },
+        "638": {
+          "description": "DIABETES WITH CC",
+          "avg_charge": 135560
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 174277
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 97521
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 254361
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 139728
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 148961
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 106840
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 239146
+        },
+        "699": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH CC",
+          "avg_charge": 116134
+        },
+        "812": {
+          "description": "RED BLOOD CELL DISORDERS WITHOUT MCC",
+          "avg_charge": 167119
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 753989
+        },
+        "862": {
+          "description": "POSTOPERATIVE AND POST-TRAUMATIC INFECTIONS WITH MCC",
+          "avg_charge": 170131
+        },
+        "870": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITH MV >96 HOURS",
+          "avg_charge": 861964
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 325909
+        },
+        "872": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC",
+          "avg_charge": 195854
+        },
+        "884": {
+          "description": "ORGANIC DISTURBANCES AND INTELLECTUAL DISABILITY",
+          "avg_charge": 138453
+        },
+        "896": {
+          "description": "ALCOHOL, DRUG ABUSE OR DEPENDENCE WITHOUT REHABILITATION THERAPY WITH MCC",
+          "avg_charge": 139082
+        },
+        "917": {
+          "description": "POISONING AND TOXIC EFFECTS OF DRUGS WITH MCC",
+          "avg_charge": 151716
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290032",
+      "name": "NORTHERN NEVADA MEDICAL CENTER",
+      "type": "acute_care_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "2375 E PRATER WAY",
+      "city": "SPARKS",
+      "state": "NV",
+      "zip": "89434",
+      "county": "WASHOE",
+      "lat": 39.542449984901,
+      "lon": -119.697495600968,
+      "drg_charges": {
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 115532
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 92069
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 82753
+        },
+        "266": {
+          "description": "ENDOVASCULAR CARDIAC VALVE REPLACEMENT AND SUPPLEMENT PROCEDURES WITH MCC",
+          "avg_charge": 355914
+        },
+        "274": {
+          "description": "PERCUTANEOUS AND OTHER INTRACARDIAC PROCEDURES WITHOUT MCC",
+          "avg_charge": 201826
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 146098
+        },
+        "281": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH CC",
+          "avg_charge": 93336
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 110863
+        },
+        "321": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITH MCC OR 4+ ARTERIES/",
+          "avg_charge": 345510
+        },
+        "322": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITHOUT MCC",
+          "avg_charge": 212707
+        },
+        "329": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH MCC",
+          "avg_charge": 314507
+        },
+        "330": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH CC",
+          "avg_charge": 186380
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 126502
+        },
+        "378": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH CC",
+          "avg_charge": 88302
+        },
+        "389": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH CC",
+          "avg_charge": 78854
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 78179
+        },
+        "468": {
+          "description": "REVISION OF HIP OR KNEE REPLACEMENT WITHOUT CC/MCC",
+          "avg_charge": 206187
+        },
+        "470": {
+          "description": "MAJOR HIP AND KNEE JOINT REPLACEMENT OR REATTACHMENT OF LOWER EXTREMITY WITHOUT MCC",
+          "avg_charge": 185562
+        },
+        "481": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH CC",
+          "avg_charge": 140565
+        },
+        "522": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITHOUT MCC",
+          "avg_charge": 206914
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 83852
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 155918
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 72526
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 99099
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 136743
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 326043
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 155730
+        },
+        "872": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC",
+          "avg_charge": 90950
+        },
+        "884": {
+          "description": "ORGANIC DISTURBANCES AND INTELLECTUAL DISABILITY",
+          "avg_charge": 142727
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290039",
+      "name": "MOUNTAINVIEW HOSPITAL",
+      "type": "acute_care_hospital",
+      "ownership": "Proprietary",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "3100 N TENAYA WAY",
+      "city": "LAS VEGAS",
+      "state": "NV",
+      "zip": "89128",
+      "county": "CLARK",
+      "lat": 36.213594341954,
+      "lon": -115.249848312314,
+      "drg_charges": {
+        "040": {
+          "description": "PERIPHERAL, CRANIAL NERVE AND OTHER NERVOUS SYSTEM PROCEDURES WITH MCC",
+          "avg_charge": 330166
+        },
+        "041": {
+          "description": "PERIPHERAL, CRANIAL NERVE AND OTHER NERVOUS SYSTEM PROCEDURES WITH CC OR PERIPHERAL NEUR",
+          "avg_charge": 319113
+        },
+        "057": {
+          "description": "DEGENERATIVE NERVOUS SYSTEM DISORDERS WITHOUT MCC",
+          "avg_charge": 122292
+        },
+        "064": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH MCC",
+          "avg_charge": 174372
+        },
+        "065": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH CC OR TPA IN 24 HOURS",
+          "avg_charge": 126577
+        },
+        "069": {
+          "description": "TRANSIENT ISCHEMIA WITHOUT THROMBOLYTIC",
+          "avg_charge": 126675
+        },
+        "071": {
+          "description": "OTHER CEREBROVASCULAR DISORDERS WITH CC",
+          "avg_charge": 111360
+        },
+        "073": {
+          "description": "CRANIAL AND PERIPHERAL NERVE DISORDERS WITH MCC",
+          "avg_charge": 161298
+        },
+        "074": {
+          "description": "CRANIAL AND PERIPHERAL NERVE DISORDERS WITHOUT MCC",
+          "avg_charge": 95452
+        },
+        "085": {
+          "description": "TRAUMATIC STUPOR AND COMA <1 HOUR WITH MCC",
+          "avg_charge": 217504
+        },
+        "091": {
+          "description": "OTHER DISORDERS OF NERVOUS SYSTEM WITH MCC",
+          "avg_charge": 129960
+        },
+        "092": {
+          "description": "OTHER DISORDERS OF NERVOUS SYSTEM WITH CC",
+          "avg_charge": 101988
+        },
+        "100": {
+          "description": "SEIZURES WITH MCC",
+          "avg_charge": 198307
+        },
+        "101": {
+          "description": "SEIZURES WITHOUT MCC",
+          "avg_charge": 110896
+        },
+        "103": {
+          "description": "HEADACHES WITHOUT MCC",
+          "avg_charge": 109813
+        },
+        "149": {
+          "description": "DYSEQUILIBRIUM",
+          "avg_charge": 86975
+        },
+        "163": {
+          "description": "MAJOR CHEST PROCEDURES WITH MCC",
+          "avg_charge": 518971
+        },
+        "164": {
+          "description": "MAJOR CHEST PROCEDURES WITH CC",
+          "avg_charge": 320459
+        },
+        "166": {
+          "description": "OTHER RESPIRATORY SYSTEM O.R. PROCEDURES WITH MCC",
+          "avg_charge": 314832
+        },
+        "175": {
+          "description": "PULMONARY EMBOLISM WITH MCC OR ACUTE COR PULMONALE",
+          "avg_charge": 137357
+        },
+        "176": {
+          "description": "PULMONARY EMBOLISM WITHOUT MCC",
+          "avg_charge": 93661
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 164407
+        },
+        "178": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH CC",
+          "avg_charge": 80686
+        },
+        "180": {
+          "description": "RESPIRATORY NEOPLASMS WITH MCC",
+          "avg_charge": 299845
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 127950
+        },
+        "190": {
+          "description": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH MCC",
+          "avg_charge": 118263
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 138739
+        },
+        "194": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH CC",
+          "avg_charge": 94240
+        },
+        "208": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT <=96 HOURS",
+          "avg_charge": 291139
+        },
+        "216": {
+          "description": "CARDIAC VALVE AND OTHER MAJOR CARDIOTHORACIC PROCEDURES WITH CARDIAC CATHETERIZATION WIT",
+          "avg_charge": 1641909
+        },
+        "219": {
+          "description": "CARDIAC VALVE AND OTHER MAJOR CARDIOTHORACIC PROCEDURES WITHOUT CARDIAC CATHETERIZATION",
+          "avg_charge": 1001592
+        },
+        "233": {
+          "description": "CORONARY BYPASS WITH CARDIAC CATHETERIZATION OR OPEN ABLATION WITH MCC",
+          "avg_charge": 943024
+        },
+        "235": {
+          "description": "CORONARY BYPASS WITHOUT CARDIAC CATHETERIZATION WITH MCC",
+          "avg_charge": 788221
+        },
+        "242": {
+          "description": "PERMANENT CARDIAC PACEMAKER IMPLANT WITH MCC",
+          "avg_charge": 399235
+        },
+        "243": {
+          "description": "PERMANENT CARDIAC PACEMAKER IMPLANT WITH CC",
+          "avg_charge": 354410
+        },
+        "244": {
+          "description": "PERMANENT CARDIAC PACEMAKER IMPLANT WITHOUT CC/MCC",
+          "avg_charge": 239972
+        },
+        "252": {
+          "description": "OTHER VASCULAR PROCEDURES WITH MCC",
+          "avg_charge": 455499
+        },
+        "253": {
+          "description": "OTHER VASCULAR PROCEDURES WITH CC",
+          "avg_charge": 279484
+        },
+        "266": {
+          "description": "ENDOVASCULAR CARDIAC VALVE REPLACEMENT AND SUPPLEMENT PROCEDURES WITH MCC",
+          "avg_charge": 647104
+        },
+        "267": {
+          "description": "ENDOVASCULAR CARDIAC VALVE REPLACEMENT AND SUPPLEMENT PROCEDURES WITHOUT MCC",
+          "avg_charge": 525829
+        },
+        "270": {
+          "description": "OTHER MAJOR CARDIOVASCULAR PROCEDURES WITH MCC",
+          "avg_charge": 572246
+        },
+        "273": {
+          "description": "PERCUTANEOUS AND OTHER INTRACARDIAC PROCEDURES WITH MCC",
+          "avg_charge": 600413
+        },
+        "274": {
+          "description": "PERCUTANEOUS AND OTHER INTRACARDIAC PROCEDURES WITHOUT MCC",
+          "avg_charge": 450333
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 172011
+        },
+        "281": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH CC",
+          "avg_charge": 125822
+        },
+        "286": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITH MCC",
+          "avg_charge": 305841
+        },
+        "287": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITHOUT MCC",
+          "avg_charge": 173808
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 119602
+        },
+        "299": {
+          "description": "PERIPHERAL VASCULAR DISORDERS WITH MCC",
+          "avg_charge": 147842
+        },
+        "300": {
+          "description": "PERIPHERAL VASCULAR DISORDERS WITH CC",
+          "avg_charge": 121157
+        },
+        "303": {
+          "description": "ATHEROSCLEROSIS WITHOUT MCC",
+          "avg_charge": 94068
+        },
+        "305": {
+          "description": "HYPERTENSION WITHOUT MCC",
+          "avg_charge": 93611
+        },
+        "308": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC",
+          "avg_charge": 140996
+        },
+        "309": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH CC",
+          "avg_charge": 74478
+        },
+        "310": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITHOUT CC/MCC",
+          "avg_charge": 73549
+        },
+        "312": {
+          "description": "SYNCOPE AND COLLAPSE",
+          "avg_charge": 96717
+        },
+        "313": {
+          "description": "CHEST PAIN",
+          "avg_charge": 88306
+        },
+        "314": {
+          "description": "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 206826
+        },
+        "315": {
+          "description": "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 84780
+        },
+        "321": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITH MCC OR 4+ ARTERIES/",
+          "avg_charge": 445656
+        },
+        "322": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITHOUT MCC",
+          "avg_charge": 328624
+        },
+        "329": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH MCC",
+          "avg_charge": 409838
+        },
+        "330": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH CC",
+          "avg_charge": 223780
+        },
+        "331": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITHOUT CC/MCC",
+          "avg_charge": 178345
+        },
+        "371": {
+          "description": "MAJOR GASTROINTESTINAL DISORDERS AND PERITONEAL INFECTIONS WITH MCC",
+          "avg_charge": 150224
+        },
+        "372": {
+          "description": "MAJOR GASTROINTESTINAL DISORDERS AND PERITONEAL INFECTIONS WITH CC",
+          "avg_charge": 139669
+        },
+        "374": {
+          "description": "DIGESTIVE MALIGNANCY WITH MCC",
+          "avg_charge": 182786
+        },
+        "375": {
+          "description": "DIGESTIVE MALIGNANCY WITH CC",
+          "avg_charge": 157959
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 189781
+        },
+        "378": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH CC",
+          "avg_charge": 91422
+        },
+        "388": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH MCC",
+          "avg_charge": 121332
+        },
+        "389": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH CC",
+          "avg_charge": 90174
+        },
+        "390": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITHOUT CC/MCC",
+          "avg_charge": 66690
+        },
+        "391": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITH MCC",
+          "avg_charge": 137015
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 94622
+        },
+        "393": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 129012
+        },
+        "394": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 121754
+        },
+        "417": {
+          "description": "LAPAROSCOPIC CHOLECYSTECTOMY WITHOUT C.D.E. WITH MCC",
+          "avg_charge": 230721
+        },
+        "418": {
+          "description": "LAPAROSCOPIC CHOLECYSTECTOMY WITHOUT C.D.E. WITH CC",
+          "avg_charge": 211578
+        },
+        "432": {
+          "description": "CIRRHOSIS AND ALCOHOLIC HEPATITIS WITH MCC",
+          "avg_charge": 221963
+        },
+        "433": {
+          "description": "CIRRHOSIS AND ALCOHOLIC HEPATITIS WITH CC",
+          "avg_charge": 123441
+        },
+        "435": {
+          "description": "MALIGNANCY OF HEPATOBILIARY SYSTEM OR PANCREAS WITH MCC",
+          "avg_charge": 187715
+        },
+        "441": {
+          "description": "DISORDERS OF LIVER EXCEPT MALIGNANCY, CIRRHOSIS OR ALCOHOLIC HEPATITIS WITH MCC",
+          "avg_charge": 145323
+        },
+        "444": {
+          "description": "DISORDERS OF THE BILIARY TRACT WITH MCC",
+          "avg_charge": 196915
+        },
+        "445": {
+          "description": "DISORDERS OF THE BILIARY TRACT WITH CC",
+          "avg_charge": 116628
+        },
+        "470": {
+          "description": "MAJOR HIP AND KNEE JOINT REPLACEMENT OR REATTACHMENT OF LOWER EXTREMITY WITHOUT MCC",
+          "avg_charge": 184305
+        },
+        "480": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH MCC",
+          "avg_charge": 334165
+        },
+        "481": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH CC",
+          "avg_charge": 206315
+        },
+        "482": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITHOUT CC/MCC",
+          "avg_charge": 152818
+        },
+        "519": {
+          "description": "BACK AND NECK PROCEDURES EXCEPT SPINAL FUSION WITH CC",
+          "avg_charge": 248982
+        },
+        "521": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITH MCC",
+          "avg_charge": 269866
+        },
+        "522": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITHOUT MCC",
+          "avg_charge": 201768
+        },
+        "536": {
+          "description": "FRACTURES OF HIP AND PELVIS WITHOUT MCC",
+          "avg_charge": 84983
+        },
+        "551": {
+          "description": "MEDICAL BACK PROBLEMS WITH MCC",
+          "avg_charge": 154855
+        },
+        "552": {
+          "description": "MEDICAL BACK PROBLEMS WITHOUT MCC",
+          "avg_charge": 92866
+        },
+        "554": {
+          "description": "BONE DISEASES AND ARTHROPATHIES WITHOUT MCC",
+          "avg_charge": 88334
+        },
+        "556": {
+          "description": "SIGNS AND SYMPTOMS OF MUSCULOSKELETAL SYSTEM AND CONNECTIVE TISSUE WITHOUT MCC",
+          "avg_charge": 90920
+        },
+        "563": {
+          "description": "FRACTURE, SPRAIN, STRAIN AND DISLOCATION EXCEPT FEMUR, HIP, PELVIS AND THIGH WITHOUT MCC",
+          "avg_charge": 80563
+        },
+        "580": {
+          "description": "OTHER SKIN, SUBCUTANEOUS TISSUE AND BREAST PROCEDURES WITH CC",
+          "avg_charge": 128170
+        },
+        "603": {
+          "description": "CELLULITIS WITHOUT MCC",
+          "avg_charge": 103653
+        },
+        "617": {
+          "description": "AMPUTATION OF LOWER LIMB FOR ENDOCRINE, NUTRITIONAL AND METABOLIC DISORDERS WITH CC",
+          "avg_charge": 185123
+        },
+        "637": {
+          "description": "DIABETES WITH MCC",
+          "avg_charge": 163276
+        },
+        "638": {
+          "description": "DIABETES WITH CC",
+          "avg_charge": 92192
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 145307
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 87414
+        },
+        "643": {
+          "description": "ENDOCRINE DISORDERS WITH MCC",
+          "avg_charge": 175295
+        },
+        "644": {
+          "description": "ENDOCRINE DISORDERS WITH CC",
+          "avg_charge": 108025
+        },
+        "660": {
+          "description": "KIDNEY AND URETER PROCEDURES FOR NON-NEOPLASM WITH CC",
+          "avg_charge": 165745
+        },
+        "661": {
+          "description": "KIDNEY AND URETER PROCEDURES FOR NON-NEOPLASM WITHOUT CC/MCC",
+          "avg_charge": 131351
+        },
+        "673": {
+          "description": "OTHER KIDNEY AND URINARY TRACT PROCEDURES WITH MCC",
+          "avg_charge": 463095
+        },
+        "674": {
+          "description": "OTHER KIDNEY AND URINARY TRACT PROCEDURES WITH CC",
+          "avg_charge": 243007
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 130293
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 97253
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 119551
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 93355
+        },
+        "694": {
+          "description": "URINARY STONES WITHOUT MCC",
+          "avg_charge": 103722
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 189637
+        },
+        "699": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH CC",
+          "avg_charge": 112897
+        },
+        "808": {
+          "description": "MAJOR HEMATOLOGICAL AND IMMUNOLOGICAL DIAGNOSES EXCEPT SICKLE CELL CRISIS AND COAGULATIO",
+          "avg_charge": 169733
+        },
+        "809": {
+          "description": "MAJOR HEMATOLOGICAL AND IMMUNOLOGICAL DIAGNOSES EXCEPT SICKLE CELL CRISIS AND COAGULATIO",
+          "avg_charge": 175618
+        },
+        "811": {
+          "description": "RED BLOOD CELL DISORDERS WITH MCC",
+          "avg_charge": 155975
+        },
+        "812": {
+          "description": "RED BLOOD CELL DISORDERS WITHOUT MCC",
+          "avg_charge": 84980
+        },
+        "813": {
+          "description": "COAGULATION DISORDERS",
+          "avg_charge": 180563
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 453864
+        },
+        "854": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH CC",
+          "avg_charge": 199310
+        },
+        "856": {
+          "description": "POSTOPERATIVE OR POST-TRAUMATIC INFECTIONS WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 233454
+        },
+        "870": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITH MV >96 HOURS",
+          "avg_charge": 639838
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 213503
+        },
+        "872": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC",
+          "avg_charge": 115262
+        },
+        "884": {
+          "description": "ORGANIC DISTURBANCES AND INTELLECTUAL DISABILITY",
+          "avg_charge": 134535
+        },
+        "885": {
+          "description": "PSYCHOSES",
+          "avg_charge": 97917
+        },
+        "917": {
+          "description": "POISONING AND TOXIC EFFECTS OF DRUGS WITH MCC",
+          "avg_charge": 160740
+        },
+        "919": {
+          "description": "COMPLICATIONS OF TREATMENT WITH MCC",
+          "avg_charge": 154201
+        },
+        "920": {
+          "description": "COMPLICATIONS OF TREATMENT WITH CC",
+          "avg_charge": 117977
+        },
+        "945": {
+          "description": "REHABILITATION WITH CC/MCC",
+          "avg_charge": 136301
+        },
+        "981": {
+          "description": "EXTENSIVE O.R. PROCEDURES UNRELATED TO PRINCIPAL DIAGNOSIS WITH MCC",
+          "avg_charge": 321282
+        },
+        "982": {
+          "description": "EXTENSIVE O.R. PROCEDURES UNRELATED TO PRINCIPAL DIAGNOSIS WITH CC",
+          "avg_charge": 209269
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290041",
+      "name": "SUMMERLIN HOSPITAL MEDICAL CENTER",
+      "type": "acute_care_hospital",
+      "ownership": "Proprietary",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "657 TOWN CENTER DRIVE",
+      "city": "LAS VEGAS",
+      "state": "NV",
+      "zip": "89144",
+      "county": "CLARK",
+      "lat": 36.165906315768,
+      "lon": -115.324328907257,
+      "drg_charges": {
+        "057": {
+          "description": "DEGENERATIVE NERVOUS SYSTEM DISORDERS WITHOUT MCC",
+          "avg_charge": 120365
+        },
+        "064": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH MCC",
+          "avg_charge": 270887
+        },
+        "065": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH CC OR TPA IN 24 HOURS",
+          "avg_charge": 150976
+        },
+        "069": {
+          "description": "TRANSIENT ISCHEMIA WITHOUT THROMBOLYTIC",
+          "avg_charge": 122117
+        },
+        "074": {
+          "description": "CRANIAL AND PERIPHERAL NERVE DISORDERS WITHOUT MCC",
+          "avg_charge": 169956
+        },
+        "149": {
+          "description": "DYSEQUILIBRIUM",
+          "avg_charge": 113326
+        },
+        "175": {
+          "description": "PULMONARY EMBOLISM WITH MCC OR ACUTE COR PULMONALE",
+          "avg_charge": 202522
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 227442
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 171769
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 178475
+        },
+        "194": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH CC",
+          "avg_charge": 117002
+        },
+        "196": {
+          "description": "INTERSTITIAL LUNG DISEASE WITH MCC",
+          "avg_charge": 177234
+        },
+        "202": {
+          "description": "BRONCHITIS AND ASTHMA WITH CC/MCC",
+          "avg_charge": 139424
+        },
+        "208": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT <=96 HOURS",
+          "avg_charge": 430961
+        },
+        "243": {
+          "description": "PERMANENT CARDIAC PACEMAKER IMPLANT WITH CC",
+          "avg_charge": 372470
+        },
+        "270": {
+          "description": "OTHER MAJOR CARDIOVASCULAR PROCEDURES WITH MCC",
+          "avg_charge": 468898
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 266625
+        },
+        "281": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH CC",
+          "avg_charge": 215412
+        },
+        "286": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITH MCC",
+          "avg_charge": 362712
+        },
+        "287": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITHOUT MCC",
+          "avg_charge": 245443
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 176697
+        },
+        "305": {
+          "description": "HYPERTENSION WITHOUT MCC",
+          "avg_charge": 104254
+        },
+        "308": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC",
+          "avg_charge": 143696
+        },
+        "309": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH CC",
+          "avg_charge": 105040
+        },
+        "310": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITHOUT CC/MCC",
+          "avg_charge": 87596
+        },
+        "312": {
+          "description": "SYNCOPE AND COLLAPSE",
+          "avg_charge": 108756
+        },
+        "313": {
+          "description": "CHEST PAIN",
+          "avg_charge": 109852
+        },
+        "314": {
+          "description": "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 224796
+        },
+        "321": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITH MCC OR 4+ ARTERIES/",
+          "avg_charge": 440426
+        },
+        "322": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITHOUT MCC",
+          "avg_charge": 339520
+        },
+        "329": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH MCC",
+          "avg_charge": 700970
+        },
+        "330": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH CC",
+          "avg_charge": 247133
+        },
+        "371": {
+          "description": "MAJOR GASTROINTESTINAL DISORDERS AND PERITONEAL INFECTIONS WITH MCC",
+          "avg_charge": 213635
+        },
+        "372": {
+          "description": "MAJOR GASTROINTESTINAL DISORDERS AND PERITONEAL INFECTIONS WITH CC",
+          "avg_charge": 148901
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 215666
+        },
+        "378": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH CC",
+          "avg_charge": 146022
+        },
+        "386": {
+          "description": "INFLAMMATORY BOWEL DISEASE WITH CC",
+          "avg_charge": 118881
+        },
+        "388": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH MCC",
+          "avg_charge": 177930
+        },
+        "389": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH CC",
+          "avg_charge": 89914
+        },
+        "391": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITH MCC",
+          "avg_charge": 166782
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 129658
+        },
+        "393": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 204305
+        },
+        "394": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 114767
+        },
+        "418": {
+          "description": "LAPAROSCOPIC CHOLECYSTECTOMY WITHOUT C.D.E. WITH CC",
+          "avg_charge": 283356
+        },
+        "439": {
+          "description": "DISORDERS OF PANCREAS EXCEPT MALIGNANCY WITH CC",
+          "avg_charge": 141412
+        },
+        "480": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH MCC",
+          "avg_charge": 333005
+        },
+        "481": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH CC",
+          "avg_charge": 204596
+        },
+        "522": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITHOUT MCC",
+          "avg_charge": 280180
+        },
+        "536": {
+          "description": "FRACTURES OF HIP AND PELVIS WITHOUT MCC",
+          "avg_charge": 95249
+        },
+        "552": {
+          "description": "MEDICAL BACK PROBLEMS WITHOUT MCC",
+          "avg_charge": 118913
+        },
+        "563": {
+          "description": "FRACTURE, SPRAIN, STRAIN AND DISLOCATION EXCEPT FEMUR, HIP, PELVIS AND THIGH WITHOUT MCC",
+          "avg_charge": 92832
+        },
+        "603": {
+          "description": "CELLULITIS WITHOUT MCC",
+          "avg_charge": 137161
+        },
+        "637": {
+          "description": "DIABETES WITH MCC",
+          "avg_charge": 165462
+        },
+        "638": {
+          "description": "DIABETES WITH CC",
+          "avg_charge": 119053
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 186173
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 108555
+        },
+        "643": {
+          "description": "ENDOCRINE DISORDERS WITH MCC",
+          "avg_charge": 232946
+        },
+        "660": {
+          "description": "KIDNEY AND URETER PROCEDURES FOR NON-NEOPLASM WITH CC",
+          "avg_charge": 155803
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 264656
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 119979
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 151269
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 123412
+        },
+        "694": {
+          "description": "URINARY STONES WITHOUT MCC",
+          "avg_charge": 88172
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 227443
+        },
+        "699": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH CC",
+          "avg_charge": 128107
+        },
+        "707": {
+          "description": "MAJOR MALE PELVIC PROCEDURES WITH CC/MCC",
+          "avg_charge": 207626
+        },
+        "717": {
+          "description": "OTHER MALE REPRODUCTIVE SYSTEM O.R. PROCEDURES EXCEPT MALIGNANCY WITH CC/MCC",
+          "avg_charge": 206831
+        },
+        "811": {
+          "description": "RED BLOOD CELL DISORDERS WITH MCC",
+          "avg_charge": 146017
+        },
+        "812": {
+          "description": "RED BLOOD CELL DISORDERS WITHOUT MCC",
+          "avg_charge": 110564
+        },
+        "813": {
+          "description": "COAGULATION DISORDERS",
+          "avg_charge": 245308
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 741890
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 302391
+        },
+        "872": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC",
+          "avg_charge": 138499
+        },
+        "884": {
+          "description": "ORGANIC DISTURBANCES AND INTELLECTUAL DISABILITY",
+          "avg_charge": 190283
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290042",
+      "name": "HARMON HOSPITAL",
+      "type": "acute_care_hospital",
+      "ownership": "Proprietary",
+      "has_er": false,
+      "star_rating": null,
+      "address": "2170 EAST HARMON AVENUE",
+      "city": "LAS VEGAS",
+      "state": "NV",
+      "zip": "89119",
+      "county": "CLARK",
+      "lat": 36.107451213665,
+      "lon": -115.122615862966,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290045",
+      "name": "SAINT ROSE DOMINICAN HOSPITALS - SIENA CAMPUS",
+      "type": "acute_care_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "3001 ST ROSE PARKWAY",
+      "city": "HENDERSON",
+      "state": "NV",
+      "zip": "89052",
+      "county": "CLARK",
+      "lat": 36.007054017448,
+      "lon": -115.114186622136,
+      "drg_charges": {
+        "023": {
+          "description": "CRANIOTOMY WITH MAJOR DEVICE IMPLANT OR ACUTE COMPLEX CNS PRINCIPAL DIAGNOSIS WITH MCC O",
+          "avg_charge": 378553
+        },
+        "025": {
+          "description": "CRANIOTOMY AND ENDOVASCULAR INTRACRANIAL PROCEDURES WITH MCC",
+          "avg_charge": 309171
+        },
+        "039": {
+          "description": "EXTRACRANIAL PROCEDURES WITHOUT CC/MCC",
+          "avg_charge": 104616
+        },
+        "064": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH MCC",
+          "avg_charge": 128509
+        },
+        "065": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH CC OR TPA IN 24 HOURS",
+          "avg_charge": 100082
+        },
+        "070": {
+          "description": "OTHER CEREBROVASCULAR DISORDERS WITH MCC",
+          "avg_charge": 135616
+        },
+        "071": {
+          "description": "OTHER CEREBROVASCULAR DISORDERS WITH CC",
+          "avg_charge": 85595
+        },
+        "091": {
+          "description": "OTHER DISORDERS OF NERVOUS SYSTEM WITH MCC",
+          "avg_charge": 95310
+        },
+        "100": {
+          "description": "SEIZURES WITH MCC",
+          "avg_charge": 150271
+        },
+        "101": {
+          "description": "SEIZURES WITHOUT MCC",
+          "avg_charge": 86591
+        },
+        "175": {
+          "description": "PULMONARY EMBOLISM WITH MCC OR ACUTE COR PULMONALE",
+          "avg_charge": 114666
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 112438
+        },
+        "178": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH CC",
+          "avg_charge": 73347
+        },
+        "180": {
+          "description": "RESPIRATORY NEOPLASMS WITH MCC",
+          "avg_charge": 158645
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 77202
+        },
+        "190": {
+          "description": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH MCC",
+          "avg_charge": 89723
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 101981
+        },
+        "194": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH CC",
+          "avg_charge": 68380
+        },
+        "199": {
+          "description": "PNEUMOTHORAX WITH MCC",
+          "avg_charge": 93478
+        },
+        "207": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT >96 HOURS",
+          "avg_charge": 386324
+        },
+        "208": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT <=96 HOURS",
+          "avg_charge": 212566
+        },
+        "216": {
+          "description": "CARDIAC VALVE AND OTHER MAJOR CARDIOTHORACIC PROCEDURES WITH CARDIAC CATHETERIZATION WIT",
+          "avg_charge": 771596
+        },
+        "233": {
+          "description": "CORONARY BYPASS WITH CARDIAC CATHETERIZATION OR OPEN ABLATION WITH MCC",
+          "avg_charge": 656787
+        },
+        "234": {
+          "description": "CORONARY BYPASS WITH CARDIAC CATHETERIZATION OR OPEN ABLATION WITHOUT MCC",
+          "avg_charge": 506751
+        },
+        "235": {
+          "description": "CORONARY BYPASS WITHOUT CARDIAC CATHETERIZATION WITH MCC",
+          "avg_charge": 423493
+        },
+        "236": {
+          "description": "CORONARY BYPASS WITHOUT CARDIAC CATHETERIZATION WITHOUT MCC",
+          "avg_charge": 370761
+        },
+        "242": {
+          "description": "PERMANENT CARDIAC PACEMAKER IMPLANT WITH MCC",
+          "avg_charge": 239484
+        },
+        "243": {
+          "description": "PERMANENT CARDIAC PACEMAKER IMPLANT WITH CC",
+          "avg_charge": 179336
+        },
+        "253": {
+          "description": "OTHER VASCULAR PROCEDURES WITH CC",
+          "avg_charge": 221125
+        },
+        "266": {
+          "description": "ENDOVASCULAR CARDIAC VALVE REPLACEMENT AND SUPPLEMENT PROCEDURES WITH MCC",
+          "avg_charge": 331493
+        },
+        "267": {
+          "description": "ENDOVASCULAR CARDIAC VALVE REPLACEMENT AND SUPPLEMENT PROCEDURES WITHOUT MCC",
+          "avg_charge": 293593
+        },
+        "270": {
+          "description": "OTHER MAJOR CARDIOVASCULAR PROCEDURES WITH MCC",
+          "avg_charge": 342770
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 121354
+        },
+        "281": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH CC",
+          "avg_charge": 81275
+        },
+        "282": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITHOUT CC/MCC",
+          "avg_charge": 93837
+        },
+        "286": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITH MCC",
+          "avg_charge": 156904
+        },
+        "287": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITHOUT MCC",
+          "avg_charge": 113863
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 95744
+        },
+        "300": {
+          "description": "PERIPHERAL VASCULAR DISORDERS WITH CC",
+          "avg_charge": 70881
+        },
+        "305": {
+          "description": "HYPERTENSION WITHOUT MCC",
+          "avg_charge": 68377
+        },
+        "308": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC",
+          "avg_charge": 92133
+        },
+        "309": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH CC",
+          "avg_charge": 67944
+        },
+        "310": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITHOUT CC/MCC",
+          "avg_charge": 54537
+        },
+        "312": {
+          "description": "SYNCOPE AND COLLAPSE",
+          "avg_charge": 79598
+        },
+        "313": {
+          "description": "CHEST PAIN",
+          "avg_charge": 77196
+        },
+        "314": {
+          "description": "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 125793
+        },
+        "315": {
+          "description": "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 82798
+        },
+        "321": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITH MCC OR 4+ ARTERIES/",
+          "avg_charge": 250471
+        },
+        "322": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITHOUT MCC",
+          "avg_charge": 190521
+        },
+        "329": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH MCC",
+          "avg_charge": 410455
+        },
+        "330": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH CC",
+          "avg_charge": 188674
+        },
+        "331": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITHOUT CC/MCC",
+          "avg_charge": 159670
+        },
+        "371": {
+          "description": "MAJOR GASTROINTESTINAL DISORDERS AND PERITONEAL INFECTIONS WITH MCC",
+          "avg_charge": 94553
+        },
+        "372": {
+          "description": "MAJOR GASTROINTESTINAL DISORDERS AND PERITONEAL INFECTIONS WITH CC",
+          "avg_charge": 80666
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 133471
+        },
+        "378": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH CC",
+          "avg_charge": 84114
+        },
+        "388": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH MCC",
+          "avg_charge": 107782
+        },
+        "389": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH CC",
+          "avg_charge": 60404
+        },
+        "390": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITHOUT CC/MCC",
+          "avg_charge": 69454
+        },
+        "391": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITH MCC",
+          "avg_charge": 113784
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 67139
+        },
+        "393": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 110504
+        },
+        "394": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 81334
+        },
+        "418": {
+          "description": "LAPAROSCOPIC CHOLECYSTECTOMY WITHOUT C.D.E. WITH CC",
+          "avg_charge": 190650
+        },
+        "432": {
+          "description": "CIRRHOSIS AND ALCOHOLIC HEPATITIS WITH MCC",
+          "avg_charge": 137680
+        },
+        "455": {
+          "description": "COMBINED ANTERIOR AND POSTERIOR SPINAL FUSION WITHOUT CC/MCC",
+          "avg_charge": 176405
+        },
+        "466": {
+          "description": "REVISION OF HIP OR KNEE REPLACEMENT WITH MCC",
+          "avg_charge": 274719
+        },
+        "467": {
+          "description": "REVISION OF HIP OR KNEE REPLACEMENT WITH CC",
+          "avg_charge": 234699
+        },
+        "468": {
+          "description": "REVISION OF HIP OR KNEE REPLACEMENT WITHOUT CC/MCC",
+          "avg_charge": 196020
+        },
+        "470": {
+          "description": "MAJOR HIP AND KNEE JOINT REPLACEMENT OR REATTACHMENT OF LOWER EXTREMITY WITHOUT MCC",
+          "avg_charge": 144222
+        },
+        "480": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH MCC",
+          "avg_charge": 203366
+        },
+        "481": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH CC",
+          "avg_charge": 145922
+        },
+        "482": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITHOUT CC/MCC",
+          "avg_charge": 129200
+        },
+        "483": {
+          "description": "MAJOR JOINT OR LIMB REATTACHMENT PROCEDURES OF UPPER EXTREMITIES",
+          "avg_charge": 189810
+        },
+        "521": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITH MCC",
+          "avg_charge": 217019
+        },
+        "522": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITHOUT MCC",
+          "avg_charge": 149201
+        },
+        "535": {
+          "description": "FRACTURES OF HIP AND PELVIS WITH MCC",
+          "avg_charge": 100891
+        },
+        "552": {
+          "description": "MEDICAL BACK PROBLEMS WITHOUT MCC",
+          "avg_charge": 68183
+        },
+        "563": {
+          "description": "FRACTURE, SPRAIN, STRAIN AND DISLOCATION EXCEPT FEMUR, HIP, PELVIS AND THIGH WITHOUT MCC",
+          "avg_charge": 61645
+        },
+        "602": {
+          "description": "CELLULITIS WITH MCC",
+          "avg_charge": 96689
+        },
+        "603": {
+          "description": "CELLULITIS WITHOUT MCC",
+          "avg_charge": 68697
+        },
+        "637": {
+          "description": "DIABETES WITH MCC",
+          "avg_charge": 112074
+        },
+        "638": {
+          "description": "DIABETES WITH CC",
+          "avg_charge": 73129
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 108180
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 57675
+        },
+        "660": {
+          "description": "KIDNEY AND URETER PROCEDURES FOR NON-NEOPLASM WITH CC",
+          "avg_charge": 103624
+        },
+        "673": {
+          "description": "OTHER KIDNEY AND URINARY TRACT PROCEDURES WITH MCC",
+          "avg_charge": 217303
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 93256
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 67017
+        },
+        "684": {
+          "description": "RENAL FAILURE WITHOUT CC/MCC",
+          "avg_charge": 55855
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 83481
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 64400
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 129336
+        },
+        "699": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH CC",
+          "avg_charge": 61674
+        },
+        "811": {
+          "description": "RED BLOOD CELL DISORDERS WITH MCC",
+          "avg_charge": 106317
+        },
+        "812": {
+          "description": "RED BLOOD CELL DISORDERS WITHOUT MCC",
+          "avg_charge": 71159
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 385320
+        },
+        "870": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITH MV >96 HOURS",
+          "avg_charge": 452591
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 141633
+        },
+        "872": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC",
+          "avg_charge": 88001
+        },
+        "896": {
+          "description": "ALCOHOL, DRUG ABUSE OR DEPENDENCE WITHOUT REHABILITATION THERAPY WITH MCC",
+          "avg_charge": 101670
+        },
+        "907": {
+          "description": "OTHER O.R. PROCEDURES FOR INJURIES WITH MCC",
+          "avg_charge": 178248
+        },
+        "917": {
+          "description": "POISONING AND TOXIC EFFECTS OF DRUGS WITH MCC",
+          "avg_charge": 90536
+        },
+        "919": {
+          "description": "COMPLICATIONS OF TREATMENT WITH MCC",
+          "avg_charge": 132803
+        },
+        "981": {
+          "description": "EXTENSIVE O.R. PROCEDURES UNRELATED TO PRINCIPAL DIAGNOSIS WITH MCC",
+          "avg_charge": 325825
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290046",
+      "name": "SPRING VALLEY HOSPITAL MEDICAL CENTER",
+      "type": "acute_care_hospital",
+      "ownership": "Proprietary",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "5400 SOUTH RAINBOW BLVD",
+      "city": "LAS VEGAS",
+      "state": "NV",
+      "zip": "89118",
+      "county": "CLARK",
+      "lat": 36.090719016443,
+      "lon": -115.242809529715,
+      "drg_charges": {
+        "025": {
+          "description": "CRANIOTOMY AND ENDOVASCULAR INTRACRANIAL PROCEDURES WITH MCC",
+          "avg_charge": 757949
+        },
+        "057": {
+          "description": "DEGENERATIVE NERVOUS SYSTEM DISORDERS WITHOUT MCC",
+          "avg_charge": 188771
+        },
+        "064": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH MCC",
+          "avg_charge": 419156
+        },
+        "065": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH CC OR TPA IN 24 HOURS",
+          "avg_charge": 153261
+        },
+        "069": {
+          "description": "TRANSIENT ISCHEMIA WITHOUT THROMBOLYTIC",
+          "avg_charge": 128963
+        },
+        "074": {
+          "description": "CRANIAL AND PERIPHERAL NERVE DISORDERS WITHOUT MCC",
+          "avg_charge": 207033
+        },
+        "100": {
+          "description": "SEIZURES WITH MCC",
+          "avg_charge": 185534
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 230306
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 153959
+        },
+        "190": {
+          "description": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH MCC",
+          "avg_charge": 98638
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 188873
+        },
+        "194": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH CC",
+          "avg_charge": 95158
+        },
+        "207": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT >96 HOURS",
+          "avg_charge": 845689
+        },
+        "208": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT <=96 HOURS",
+          "avg_charge": 353486
+        },
+        "233": {
+          "description": "CORONARY BYPASS WITH CARDIAC CATHETERIZATION OR OPEN ABLATION WITH MCC",
+          "avg_charge": 825795
+        },
+        "235": {
+          "description": "CORONARY BYPASS WITHOUT CARDIAC CATHETERIZATION WITH MCC",
+          "avg_charge": 623090
+        },
+        "266": {
+          "description": "ENDOVASCULAR CARDIAC VALVE REPLACEMENT AND SUPPLEMENT PROCEDURES WITH MCC",
+          "avg_charge": 638625
+        },
+        "267": {
+          "description": "ENDOVASCULAR CARDIAC VALVE REPLACEMENT AND SUPPLEMENT PROCEDURES WITHOUT MCC",
+          "avg_charge": 547874
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 175190
+        },
+        "286": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITH MCC",
+          "avg_charge": 234990
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 147811
+        },
+        "299": {
+          "description": "PERIPHERAL VASCULAR DISORDERS WITH MCC",
+          "avg_charge": 164271
+        },
+        "300": {
+          "description": "PERIPHERAL VASCULAR DISORDERS WITH CC",
+          "avg_charge": 133304
+        },
+        "305": {
+          "description": "HYPERTENSION WITHOUT MCC",
+          "avg_charge": 100585
+        },
+        "308": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC",
+          "avg_charge": 225618
+        },
+        "309": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH CC",
+          "avg_charge": 96190
+        },
+        "312": {
+          "description": "SYNCOPE AND COLLAPSE",
+          "avg_charge": 98550
+        },
+        "313": {
+          "description": "CHEST PAIN",
+          "avg_charge": 93163
+        },
+        "314": {
+          "description": "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 235539
+        },
+        "321": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITH MCC OR 4+ ARTERIES/",
+          "avg_charge": 492684
+        },
+        "322": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITHOUT MCC",
+          "avg_charge": 277377
+        },
+        "329": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH MCC",
+          "avg_charge": 574454
+        },
+        "330": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH CC",
+          "avg_charge": 298518
+        },
+        "371": {
+          "description": "MAJOR GASTROINTESTINAL DISORDERS AND PERITONEAL INFECTIONS WITH MCC",
+          "avg_charge": 188121
+        },
+        "372": {
+          "description": "MAJOR GASTROINTESTINAL DISORDERS AND PERITONEAL INFECTIONS WITH CC",
+          "avg_charge": 124943
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 242188
+        },
+        "378": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH CC",
+          "avg_charge": 141217
+        },
+        "391": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITH MCC",
+          "avg_charge": 201343
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 104322
+        },
+        "393": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 184455
+        },
+        "394": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 146890
+        },
+        "454": {
+          "description": "COMBINED ANTERIOR AND POSTERIOR SPINAL FUSION WITH CC",
+          "avg_charge": 374654
+        },
+        "460": {
+          "description": "SPINAL FUSION EXCEPT CERVICAL WITHOUT MCC",
+          "avg_charge": 425174
+        },
+        "470": {
+          "description": "MAJOR HIP AND KNEE JOINT REPLACEMENT OR REATTACHMENT OF LOWER EXTREMITY WITHOUT MCC",
+          "avg_charge": 240018
+        },
+        "481": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH CC",
+          "avg_charge": 184242
+        },
+        "483": {
+          "description": "MAJOR JOINT OR LIMB REATTACHMENT PROCEDURES OF UPPER EXTREMITIES",
+          "avg_charge": 227274
+        },
+        "551": {
+          "description": "MEDICAL BACK PROBLEMS WITH MCC",
+          "avg_charge": 204596
+        },
+        "552": {
+          "description": "MEDICAL BACK PROBLEMS WITHOUT MCC",
+          "avg_charge": 99331
+        },
+        "563": {
+          "description": "FRACTURE, SPRAIN, STRAIN AND DISLOCATION EXCEPT FEMUR, HIP, PELVIS AND THIGH WITHOUT MCC",
+          "avg_charge": 84858
+        },
+        "602": {
+          "description": "CELLULITIS WITH MCC",
+          "avg_charge": 174337
+        },
+        "603": {
+          "description": "CELLULITIS WITHOUT MCC",
+          "avg_charge": 112405
+        },
+        "637": {
+          "description": "DIABETES WITH MCC",
+          "avg_charge": 161989
+        },
+        "638": {
+          "description": "DIABETES WITH CC",
+          "avg_charge": 126875
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 140205
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 89074
+        },
+        "643": {
+          "description": "ENDOCRINE DISORDERS WITH MCC",
+          "avg_charge": 227135
+        },
+        "673": {
+          "description": "OTHER KIDNEY AND URINARY TRACT PROCEDURES WITH MCC",
+          "avg_charge": 726708
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 259590
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 95387
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 141002
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 114048
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 254332
+        },
+        "699": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH CC",
+          "avg_charge": 90450
+        },
+        "812": {
+          "description": "RED BLOOD CELL DISORDERS WITHOUT MCC",
+          "avg_charge": 77650
+        },
+        "813": {
+          "description": "COAGULATION DISORDERS",
+          "avg_charge": 130284
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 562938
+        },
+        "870": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITH MV >96 HOURS",
+          "avg_charge": 797723
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 271051
+        },
+        "872": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC",
+          "avg_charge": 134958
+        },
+        "884": {
+          "description": "ORGANIC DISTURBANCES AND INTELLECTUAL DISABILITY",
+          "avg_charge": 175993
+        },
+        "917": {
+          "description": "POISONING AND TOXIC EFFECTS OF DRUGS WITH MCC",
+          "avg_charge": 157039
+        },
+        "919": {
+          "description": "COMPLICATIONS OF TREATMENT WITH MCC",
+          "avg_charge": 269801
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290047",
+      "name": "SOUTHERN HILLS HOSPITAL AND MEDICAL CENTER",
+      "type": "acute_care_hospital",
+      "ownership": "Proprietary",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "9300 WEST SUNSET RD",
+      "city": "LAS VEGAS",
+      "state": "NV",
+      "zip": "89148",
+      "county": "CLARK",
+      "lat": 36.070322008288,
+      "lon": -115.294382374128,
+      "drg_charges": {
+        "023": {
+          "description": "CRANIOTOMY WITH MAJOR DEVICE IMPLANT OR ACUTE COMPLEX CNS PRINCIPAL DIAGNOSIS WITH MCC O",
+          "avg_charge": 624714
+        },
+        "025": {
+          "description": "CRANIOTOMY AND ENDOVASCULAR INTRACRANIAL PROCEDURES WITH MCC",
+          "avg_charge": 548347
+        },
+        "056": {
+          "description": "DEGENERATIVE NERVOUS SYSTEM DISORDERS WITH MCC",
+          "avg_charge": 158005
+        },
+        "057": {
+          "description": "DEGENERATIVE NERVOUS SYSTEM DISORDERS WITHOUT MCC",
+          "avg_charge": 108168
+        },
+        "064": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH MCC",
+          "avg_charge": 211510
+        },
+        "065": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH CC OR TPA IN 24 HOURS",
+          "avg_charge": 124271
+        },
+        "069": {
+          "description": "TRANSIENT ISCHEMIA WITHOUT THROMBOLYTIC",
+          "avg_charge": 82680
+        },
+        "074": {
+          "description": "CRANIAL AND PERIPHERAL NERVE DISORDERS WITHOUT MCC",
+          "avg_charge": 132171
+        },
+        "092": {
+          "description": "OTHER DISORDERS OF NERVOUS SYSTEM WITH CC",
+          "avg_charge": 99471
+        },
+        "100": {
+          "description": "SEIZURES WITH MCC",
+          "avg_charge": 200521
+        },
+        "101": {
+          "description": "SEIZURES WITHOUT MCC",
+          "avg_charge": 92930
+        },
+        "149": {
+          "description": "DYSEQUILIBRIUM",
+          "avg_charge": 79130
+        },
+        "163": {
+          "description": "MAJOR CHEST PROCEDURES WITH MCC",
+          "avg_charge": 377011
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 113663
+        },
+        "180": {
+          "description": "RESPIRATORY NEOPLASMS WITH MCC",
+          "avg_charge": 138078
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 97779
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 121985
+        },
+        "208": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT <=96 HOURS",
+          "avg_charge": 221883
+        },
+        "253": {
+          "description": "OTHER VASCULAR PROCEDURES WITH CC",
+          "avg_charge": 362612
+        },
+        "271": {
+          "description": "OTHER MAJOR CARDIOVASCULAR PROCEDURES WITH CC",
+          "avg_charge": 498416
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 146501
+        },
+        "281": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH CC",
+          "avg_charge": 79905
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 104842
+        },
+        "300": {
+          "description": "PERIPHERAL VASCULAR DISORDERS WITH CC",
+          "avg_charge": 85670
+        },
+        "305": {
+          "description": "HYPERTENSION WITHOUT MCC",
+          "avg_charge": 80003
+        },
+        "308": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC",
+          "avg_charge": 108530
+        },
+        "309": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH CC",
+          "avg_charge": 61245
+        },
+        "312": {
+          "description": "SYNCOPE AND COLLAPSE",
+          "avg_charge": 79210
+        },
+        "313": {
+          "description": "CHEST PAIN",
+          "avg_charge": 71347
+        },
+        "322": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITHOUT MCC",
+          "avg_charge": 246416
+        },
+        "329": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH MCC",
+          "avg_charge": 474368
+        },
+        "330": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH CC",
+          "avg_charge": 185889
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 172586
+        },
+        "378": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH CC",
+          "avg_charge": 87718
+        },
+        "389": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH CC",
+          "avg_charge": 65985
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 74832
+        },
+        "394": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 83796
+        },
+        "402": {
+          "description": "SINGLE LEVEL COMBINED ANTERIOR AND POSTERIOR SPINAL FUSION EXCEPT CERVICAL",
+          "avg_charge": 324410
+        },
+        "418": {
+          "description": "LAPAROSCOPIC CHOLECYSTECTOMY WITHOUT C.D.E. WITH CC",
+          "avg_charge": 151243
+        },
+        "432": {
+          "description": "CIRRHOSIS AND ALCOHOLIC HEPATITIS WITH MCC",
+          "avg_charge": 138695
+        },
+        "445": {
+          "description": "DISORDERS OF THE BILIARY TRACT WITH CC",
+          "avg_charge": 137434
+        },
+        "453": {
+          "description": "COMBINED ANTERIOR AND POSTERIOR SPINAL FUSION WITH MCC",
+          "avg_charge": 591118
+        },
+        "454": {
+          "description": "COMBINED ANTERIOR AND POSTERIOR SPINAL FUSION WITH CC",
+          "avg_charge": 440955
+        },
+        "455": {
+          "description": "COMBINED ANTERIOR AND POSTERIOR SPINAL FUSION WITHOUT CC/MCC",
+          "avg_charge": 350732
+        },
+        "460": {
+          "description": "SPINAL FUSION EXCEPT CERVICAL WITHOUT MCC",
+          "avg_charge": 311028
+        },
+        "470": {
+          "description": "MAJOR HIP AND KNEE JOINT REPLACEMENT OR REATTACHMENT OF LOWER EXTREMITY WITHOUT MCC",
+          "avg_charge": 188963
+        },
+        "472": {
+          "description": "CERVICAL SPINAL FUSION WITH CC",
+          "avg_charge": 251663
+        },
+        "481": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH CC",
+          "avg_charge": 174729
+        },
+        "483": {
+          "description": "MAJOR JOINT OR LIMB REATTACHMENT PROCEDURES OF UPPER EXTREMITIES",
+          "avg_charge": 235585
+        },
+        "522": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITHOUT MCC",
+          "avg_charge": 172721
+        },
+        "552": {
+          "description": "MEDICAL BACK PROBLEMS WITHOUT MCC",
+          "avg_charge": 100030
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 135872
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 67555
+        },
+        "661": {
+          "description": "KIDNEY AND URETER PROCEDURES FOR NON-NEOPLASM WITHOUT CC/MCC",
+          "avg_charge": 121691
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 122621
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 75779
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 106408
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 94498
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 136176
+        },
+        "699": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH CC",
+          "avg_charge": 85466
+        },
+        "811": {
+          "description": "RED BLOOD CELL DISORDERS WITH MCC",
+          "avg_charge": 112586
+        },
+        "812": {
+          "description": "RED BLOOD CELL DISORDERS WITHOUT MCC",
+          "avg_charge": 79550
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 371031
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 182270
+        },
+        "872": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC",
+          "avg_charge": 96265
+        },
+        "884": {
+          "description": "ORGANIC DISTURBANCES AND INTELLECTUAL DISABILITY",
+          "avg_charge": 72229
+        },
+        "917": {
+          "description": "POISONING AND TOXIC EFFECTS OF DRUGS WITH MCC",
+          "avg_charge": 122625
+        },
+        "981": {
+          "description": "EXTENSIVE O.R. PROCEDURES UNRELATED TO PRINCIPAL DIAGNOSIS WITH MCC",
+          "avg_charge": 275456
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290049",
+      "name": "RENOWN SOUTH MEADOWS MEDICAL CENTER",
+      "type": "acute_care_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "10101 DOUBLE R BLVD",
+      "city": "RENO",
+      "state": "NV",
+      "zip": "89521",
+      "county": "WASHOE",
+      "lat": 39.436948328931,
+      "lon": -119.758478482412,
+      "drg_charges": {
+        "065": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH CC OR TPA IN 24 HOURS",
+          "avg_charge": 28963
+        },
+        "175": {
+          "description": "PULMONARY EMBOLISM WITH MCC OR ACUTE COR PULMONALE",
+          "avg_charge": 40248
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 28415
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 57841
+        },
+        "190": {
+          "description": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH MCC",
+          "avg_charge": 61982
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 35933
+        },
+        "194": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH CC",
+          "avg_charge": 32967
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 36130
+        },
+        "308": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC",
+          "avg_charge": 32165
+        },
+        "309": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH CC",
+          "avg_charge": 31387
+        },
+        "329": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH MCC",
+          "avg_charge": 98473
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 64152
+        },
+        "378": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH CC",
+          "avg_charge": 42987
+        },
+        "389": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH CC",
+          "avg_charge": 22048
+        },
+        "390": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITHOUT CC/MCC",
+          "avg_charge": 18318
+        },
+        "391": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITH MCC",
+          "avg_charge": 28488
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 26538
+        },
+        "394": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 36502
+        },
+        "444": {
+          "description": "DISORDERS OF THE BILIARY TRACT WITH MCC",
+          "avg_charge": 41697
+        },
+        "445": {
+          "description": "DISORDERS OF THE BILIARY TRACT WITH CC",
+          "avg_charge": 40698
+        },
+        "467": {
+          "description": "REVISION OF HIP OR KNEE REPLACEMENT WITH CC",
+          "avg_charge": 98395
+        },
+        "468": {
+          "description": "REVISION OF HIP OR KNEE REPLACEMENT WITHOUT CC/MCC",
+          "avg_charge": 81401
+        },
+        "470": {
+          "description": "MAJOR HIP AND KNEE JOINT REPLACEMENT OR REATTACHMENT OF LOWER EXTREMITY WITHOUT MCC",
+          "avg_charge": 68782
+        },
+        "480": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH MCC",
+          "avg_charge": 82754
+        },
+        "481": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH CC",
+          "avg_charge": 53620
+        },
+        "483": {
+          "description": "MAJOR JOINT OR LIMB REATTACHMENT PROCEDURES OF UPPER EXTREMITIES",
+          "avg_charge": 92709
+        },
+        "522": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITHOUT MCC",
+          "avg_charge": 73310
+        },
+        "603": {
+          "description": "CELLULITIS WITHOUT MCC",
+          "avg_charge": 23390
+        },
+        "637": {
+          "description": "DIABETES WITH MCC",
+          "avg_charge": 42681
+        },
+        "638": {
+          "description": "DIABETES WITH CC",
+          "avg_charge": 19268
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 34891
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 24922
+        },
+        "660": {
+          "description": "KIDNEY AND URETER PROCEDURES FOR NON-NEOPLASM WITH CC",
+          "avg_charge": 41744
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 40011
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 25983
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 25210
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 41642
+        },
+        "699": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH CC",
+          "avg_charge": 28499
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 111459
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 57254
+        },
+        "872": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC",
+          "avg_charge": 36536
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290053",
+      "name": "SAINT ROSE DOMINICAN HOSPITALS - SAN MARTIN CAMPUS",
+      "type": "acute_care_hospital",
+      "ownership": "Voluntary non-profit - Private",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "8280 W WARM SPRINGS ROAD",
+      "city": "LAS VEGAS",
+      "state": "NV",
+      "zip": "89113",
+      "county": "CLARK",
+      "lat": 36.055630527281,
+      "lon": -115.272822822031,
+      "drg_charges": {
+        "039": {
+          "description": "EXTRACRANIAL PROCEDURES WITHOUT CC/MCC",
+          "avg_charge": 89666
+        },
+        "065": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH CC OR TPA IN 24 HOURS",
+          "avg_charge": 85201
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 90757
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 106807
+        },
+        "190": {
+          "description": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH MCC",
+          "avg_charge": 76091
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 89195
+        },
+        "219": {
+          "description": "CARDIAC VALVE AND OTHER MAJOR CARDIOTHORACIC PROCEDURES WITHOUT CARDIAC CATHETERIZATION",
+          "avg_charge": 548049
+        },
+        "235": {
+          "description": "CORONARY BYPASS WITHOUT CARDIAC CATHETERIZATION WITH MCC",
+          "avg_charge": 388583
+        },
+        "236": {
+          "description": "CORONARY BYPASS WITHOUT CARDIAC CATHETERIZATION WITHOUT MCC",
+          "avg_charge": 315505
+        },
+        "274": {
+          "description": "PERCUTANEOUS AND OTHER INTRACARDIAC PROCEDURES WITHOUT MCC",
+          "avg_charge": 231515
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 105988
+        },
+        "281": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH CC",
+          "avg_charge": 86949
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 88288
+        },
+        "304": {
+          "description": "HYPERTENSION WITH MCC",
+          "avg_charge": 72907
+        },
+        "308": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC",
+          "avg_charge": 85912
+        },
+        "329": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH MCC",
+          "avg_charge": 284718
+        },
+        "331": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITHOUT CC/MCC",
+          "avg_charge": 134001
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 114728
+        },
+        "378": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH CC",
+          "avg_charge": 64347
+        },
+        "389": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH CC",
+          "avg_charge": 64100
+        },
+        "391": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITH MCC",
+          "avg_charge": 104491
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 62948
+        },
+        "394": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 56125
+        },
+        "418": {
+          "description": "LAPAROSCOPIC CHOLECYSTECTOMY WITHOUT C.D.E. WITH CC",
+          "avg_charge": 141438
+        },
+        "432": {
+          "description": "CIRRHOSIS AND ALCOHOLIC HEPATITIS WITH MCC",
+          "avg_charge": 161316
+        },
+        "603": {
+          "description": "CELLULITIS WITHOUT MCC",
+          "avg_charge": 65118
+        },
+        "621": {
+          "description": "O.R. PROCEDURES FOR OBESITY WITHOUT CC/MCC",
+          "avg_charge": 120209
+        },
+        "638": {
+          "description": "DIABETES WITH CC",
+          "avg_charge": 49157
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 77284
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 58287
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 89430
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 63537
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 93343
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 63200
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 118898
+        },
+        "699": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH CC",
+          "avg_charge": 50886
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 234375
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 129871
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290054",
+      "name": "CENTENNIAL HILLS HOSPITAL MEDICAL CENTER",
+      "type": "acute_care_hospital",
+      "ownership": "Proprietary",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "6900 N DURANGO DR",
+      "city": "LAS VEGAS",
+      "state": "NV",
+      "zip": "89149",
+      "county": "CLARK",
+      "lat": 36.287264148757,
+      "lon": -115.28777872861,
+      "drg_charges": {
+        "057": {
+          "description": "DEGENERATIVE NERVOUS SYSTEM DISORDERS WITHOUT MCC",
+          "avg_charge": 124822
+        },
+        "064": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH MCC",
+          "avg_charge": 298879
+        },
+        "065": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH CC OR TPA IN 24 HOURS",
+          "avg_charge": 161934
+        },
+        "069": {
+          "description": "TRANSIENT ISCHEMIA WITHOUT THROMBOLYTIC",
+          "avg_charge": 148079
+        },
+        "091": {
+          "description": "OTHER DISORDERS OF NERVOUS SYSTEM WITH MCC",
+          "avg_charge": 193741
+        },
+        "100": {
+          "description": "SEIZURES WITH MCC",
+          "avg_charge": 246801
+        },
+        "101": {
+          "description": "SEIZURES WITHOUT MCC",
+          "avg_charge": 111455
+        },
+        "103": {
+          "description": "HEADACHES WITHOUT MCC",
+          "avg_charge": 114650
+        },
+        "149": {
+          "description": "DYSEQUILIBRIUM",
+          "avg_charge": 102805
+        },
+        "175": {
+          "description": "PULMONARY EMBOLISM WITH MCC OR ACUTE COR PULMONALE",
+          "avg_charge": 215608
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 238111
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 191942
+        },
+        "190": {
+          "description": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH MCC",
+          "avg_charge": 154088
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 210879
+        },
+        "194": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH CC",
+          "avg_charge": 120576
+        },
+        "208": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT <=96 HOURS",
+          "avg_charge": 332936
+        },
+        "243": {
+          "description": "PERMANENT CARDIAC PACEMAKER IMPLANT WITH CC",
+          "avg_charge": 276318
+        },
+        "252": {
+          "description": "OTHER VASCULAR PROCEDURES WITH MCC",
+          "avg_charge": 402057
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 247372
+        },
+        "286": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITH MCC",
+          "avg_charge": 294870
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 177619
+        },
+        "300": {
+          "description": "PERIPHERAL VASCULAR DISORDERS WITH CC",
+          "avg_charge": 119189
+        },
+        "304": {
+          "description": "HYPERTENSION WITH MCC",
+          "avg_charge": 163106
+        },
+        "305": {
+          "description": "HYPERTENSION WITHOUT MCC",
+          "avg_charge": 103118
+        },
+        "308": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC",
+          "avg_charge": 160480
+        },
+        "309": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH CC",
+          "avg_charge": 97250
+        },
+        "310": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITHOUT CC/MCC",
+          "avg_charge": 85936
+        },
+        "312": {
+          "description": "SYNCOPE AND COLLAPSE",
+          "avg_charge": 109304
+        },
+        "313": {
+          "description": "CHEST PAIN",
+          "avg_charge": 114423
+        },
+        "314": {
+          "description": "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 281833
+        },
+        "315": {
+          "description": "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 112793
+        },
+        "329": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH MCC",
+          "avg_charge": 651401
+        },
+        "371": {
+          "description": "MAJOR GASTROINTESTINAL DISORDERS AND PERITONEAL INFECTIONS WITH MCC",
+          "avg_charge": 390196
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 430361
+        },
+        "378": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH CC",
+          "avg_charge": 160141
+        },
+        "389": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH CC",
+          "avg_charge": 131980
+        },
+        "391": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITH MCC",
+          "avg_charge": 146827
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 135297
+        },
+        "393": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 277124
+        },
+        "394": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 206130
+        },
+        "417": {
+          "description": "LAPAROSCOPIC CHOLECYSTECTOMY WITHOUT C.D.E. WITH MCC",
+          "avg_charge": 340995
+        },
+        "418": {
+          "description": "LAPAROSCOPIC CHOLECYSTECTOMY WITHOUT C.D.E. WITH CC",
+          "avg_charge": 236266
+        },
+        "445": {
+          "description": "DISORDERS OF THE BILIARY TRACT WITH CC",
+          "avg_charge": 156684
+        },
+        "467": {
+          "description": "REVISION OF HIP OR KNEE REPLACEMENT WITH CC",
+          "avg_charge": 386179
+        },
+        "468": {
+          "description": "REVISION OF HIP OR KNEE REPLACEMENT WITHOUT CC/MCC",
+          "avg_charge": 301030
+        },
+        "470": {
+          "description": "MAJOR HIP AND KNEE JOINT REPLACEMENT OR REATTACHMENT OF LOWER EXTREMITY WITHOUT MCC",
+          "avg_charge": 236312
+        },
+        "481": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH CC",
+          "avg_charge": 244550
+        },
+        "521": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITH MCC",
+          "avg_charge": 458669
+        },
+        "522": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITHOUT MCC",
+          "avg_charge": 319349
+        },
+        "551": {
+          "description": "MEDICAL BACK PROBLEMS WITH MCC",
+          "avg_charge": 238102
+        },
+        "552": {
+          "description": "MEDICAL BACK PROBLEMS WITHOUT MCC",
+          "avg_charge": 102975
+        },
+        "563": {
+          "description": "FRACTURE, SPRAIN, STRAIN AND DISLOCATION EXCEPT FEMUR, HIP, PELVIS AND THIGH WITHOUT MCC",
+          "avg_charge": 95785
+        },
+        "603": {
+          "description": "CELLULITIS WITHOUT MCC",
+          "avg_charge": 124073
+        },
+        "637": {
+          "description": "DIABETES WITH MCC",
+          "avg_charge": 197096
+        },
+        "638": {
+          "description": "DIABETES WITH CC",
+          "avg_charge": 167274
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 194085
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 114558
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 165586
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 114235
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 144439
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 126770
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 306679
+        },
+        "699": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH CC",
+          "avg_charge": 284617
+        },
+        "713": {
+          "description": "TRANSURETHRAL PROSTATECTOMY WITH CC/MCC",
+          "avg_charge": 202707
+        },
+        "811": {
+          "description": "RED BLOOD CELL DISORDERS WITH MCC",
+          "avg_charge": 248352
+        },
+        "812": {
+          "description": "RED BLOOD CELL DISORDERS WITHOUT MCC",
+          "avg_charge": 148185
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 705198
+        },
+        "870": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITH MV >96 HOURS",
+          "avg_charge": 704947
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 305759
+        },
+        "872": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC",
+          "avg_charge": 174230
+        },
+        "917": {
+          "description": "POISONING AND TOXIC EFFECTS OF DRUGS WITH MCC",
+          "avg_charge": 152320
+        },
+        "919": {
+          "description": "COMPLICATIONS OF TREATMENT WITH MCC",
+          "avg_charge": 202381
+        },
+        "981": {
+          "description": "EXTENSIVE O.R. PROCEDURES UNRELATED TO PRINCIPAL DIAGNOSIS WITH MCC",
+          "avg_charge": 531326
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290057",
+      "name": "HENDERSON HOSPITAL",
+      "type": "acute_care_hospital",
+      "ownership": "Proprietary",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "1050 WEST GALLERIA DRIVE",
+      "city": "HENDERSON",
+      "state": "NV",
+      "zip": "89011",
+      "county": "CLARK",
+      "lat": 36.071147787744,
+      "lon": -115.030713708723,
+      "drg_charges": {
+        "064": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH MCC",
+          "avg_charge": 334555
+        },
+        "065": {
+          "description": "INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION WITH CC OR TPA IN 24 HOURS",
+          "avg_charge": 145592
+        },
+        "069": {
+          "description": "TRANSIENT ISCHEMIA WITHOUT THROMBOLYTIC",
+          "avg_charge": 116950
+        },
+        "070": {
+          "description": "OTHER CEREBROVASCULAR DISORDERS WITH MCC",
+          "avg_charge": 170979
+        },
+        "074": {
+          "description": "CRANIAL AND PERIPHERAL NERVE DISORDERS WITHOUT MCC",
+          "avg_charge": 112601
+        },
+        "091": {
+          "description": "OTHER DISORDERS OF NERVOUS SYSTEM WITH MCC",
+          "avg_charge": 181275
+        },
+        "092": {
+          "description": "OTHER DISORDERS OF NERVOUS SYSTEM WITH CC",
+          "avg_charge": 100597
+        },
+        "101": {
+          "description": "SEIZURES WITHOUT MCC",
+          "avg_charge": 94468
+        },
+        "103": {
+          "description": "HEADACHES WITHOUT MCC",
+          "avg_charge": 121380
+        },
+        "149": {
+          "description": "DYSEQUILIBRIUM",
+          "avg_charge": 92931
+        },
+        "175": {
+          "description": "PULMONARY EMBOLISM WITH MCC OR ACUTE COR PULMONALE",
+          "avg_charge": 213481
+        },
+        "176": {
+          "description": "PULMONARY EMBOLISM WITHOUT MCC",
+          "avg_charge": 145801
+        },
+        "177": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH MCC",
+          "avg_charge": 212443
+        },
+        "178": {
+          "description": "RESPIRATORY INFECTIONS AND INFLAMMATIONS WITH CC",
+          "avg_charge": 126026
+        },
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 131410
+        },
+        "190": {
+          "description": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH MCC",
+          "avg_charge": 133175
+        },
+        "191": {
+          "description": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE WITH CC",
+          "avg_charge": 111909
+        },
+        "193": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH MCC",
+          "avg_charge": 156751
+        },
+        "194": {
+          "description": "SIMPLE PNEUMONIA AND PLEURISY WITH CC",
+          "avg_charge": 101715
+        },
+        "196": {
+          "description": "INTERSTITIAL LUNG DISEASE WITH MCC",
+          "avg_charge": 174161
+        },
+        "202": {
+          "description": "BRONCHITIS AND ASTHMA WITH CC/MCC",
+          "avg_charge": 92955
+        },
+        "205": {
+          "description": "OTHER RESPIRATORY SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 191305
+        },
+        "206": {
+          "description": "OTHER RESPIRATORY SYSTEM DIAGNOSES WITHOUT MCC",
+          "avg_charge": 120982
+        },
+        "208": {
+          "description": "RESPIRATORY SYSTEM DIAGNOSIS WITH VENTILATOR SUPPORT <=96 HOURS",
+          "avg_charge": 375549
+        },
+        "280": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH MCC",
+          "avg_charge": 200518
+        },
+        "281": {
+          "description": "ACUTE MYOCARDIAL INFARCTION, DISCHARGED ALIVE WITH CC",
+          "avg_charge": 127008
+        },
+        "286": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITH MCC",
+          "avg_charge": 352901
+        },
+        "287": {
+          "description": "CIRCULATORY DISORDERS EXCEPT AMI, WITH CARDIAC CATHETERIZATION WITHOUT MCC",
+          "avg_charge": 174637
+        },
+        "291": {
+          "description": "HEART FAILURE AND SHOCK WITH MCC",
+          "avg_charge": 186705
+        },
+        "300": {
+          "description": "PERIPHERAL VASCULAR DISORDERS WITH CC",
+          "avg_charge": 142711
+        },
+        "304": {
+          "description": "HYPERTENSION WITH MCC",
+          "avg_charge": 176984
+        },
+        "305": {
+          "description": "HYPERTENSION WITHOUT MCC",
+          "avg_charge": 102434
+        },
+        "308": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH MCC",
+          "avg_charge": 188086
+        },
+        "309": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITH CC",
+          "avg_charge": 91424
+        },
+        "310": {
+          "description": "CARDIAC ARRHYTHMIA AND CONDUCTION DISORDERS WITHOUT CC/MCC",
+          "avg_charge": 79371
+        },
+        "312": {
+          "description": "SYNCOPE AND COLLAPSE",
+          "avg_charge": 92365
+        },
+        "313": {
+          "description": "CHEST PAIN",
+          "avg_charge": 102970
+        },
+        "314": {
+          "description": "OTHER CIRCULATORY SYSTEM DIAGNOSES WITH MCC",
+          "avg_charge": 236869
+        },
+        "321": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITH MCC OR 4+ ARTERIES/",
+          "avg_charge": 437651
+        },
+        "322": {
+          "description": "PERCUTANEOUS CARDIOVASCULAR PROCEDURES WITH INTRALUMINAL DEVICE WITHOUT MCC",
+          "avg_charge": 259343
+        },
+        "329": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH MCC",
+          "avg_charge": 727647
+        },
+        "330": {
+          "description": "MAJOR SMALL AND LARGE BOWEL PROCEDURES WITH CC",
+          "avg_charge": 230547
+        },
+        "371": {
+          "description": "MAJOR GASTROINTESTINAL DISORDERS AND PERITONEAL INFECTIONS WITH MCC",
+          "avg_charge": 251910
+        },
+        "372": {
+          "description": "MAJOR GASTROINTESTINAL DISORDERS AND PERITONEAL INFECTIONS WITH CC",
+          "avg_charge": 142274
+        },
+        "377": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH MCC",
+          "avg_charge": 260867
+        },
+        "378": {
+          "description": "GASTROINTESTINAL HEMORRHAGE WITH CC",
+          "avg_charge": 137772
+        },
+        "388": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH MCC",
+          "avg_charge": 161724
+        },
+        "389": {
+          "description": "GASTROINTESTINAL OBSTRUCTION WITH CC",
+          "avg_charge": 110196
+        },
+        "391": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITH MCC",
+          "avg_charge": 205854
+        },
+        "392": {
+          "description": "ESOPHAGITIS, GASTROENTERITIS AND MISCELLANEOUS DIGESTIVE DISORDERS WITHOUT MCC",
+          "avg_charge": 126960
+        },
+        "394": {
+          "description": "OTHER DIGESTIVE SYSTEM DIAGNOSES WITH CC",
+          "avg_charge": 101110
+        },
+        "432": {
+          "description": "CIRRHOSIS AND ALCOHOLIC HEPATITIS WITH MCC",
+          "avg_charge": 241456
+        },
+        "445": {
+          "description": "DISORDERS OF THE BILIARY TRACT WITH CC",
+          "avg_charge": 150008
+        },
+        "455": {
+          "description": "COMBINED ANTERIOR AND POSTERIOR SPINAL FUSION WITHOUT CC/MCC",
+          "avg_charge": 382425
+        },
+        "470": {
+          "description": "MAJOR HIP AND KNEE JOINT REPLACEMENT OR REATTACHMENT OF LOWER EXTREMITY WITHOUT MCC",
+          "avg_charge": 174557
+        },
+        "481": {
+          "description": "HIP AND FEMUR PROCEDURES EXCEPT MAJOR JOINT WITH CC",
+          "avg_charge": 200119
+        },
+        "522": {
+          "description": "HIP REPLACEMENT WITH PRINCIPAL DIAGNOSIS OF HIP FRACTURE WITHOUT MCC",
+          "avg_charge": 256569
+        },
+        "551": {
+          "description": "MEDICAL BACK PROBLEMS WITH MCC",
+          "avg_charge": 163451
+        },
+        "552": {
+          "description": "MEDICAL BACK PROBLEMS WITHOUT MCC",
+          "avg_charge": 99282
+        },
+        "563": {
+          "description": "FRACTURE, SPRAIN, STRAIN AND DISLOCATION EXCEPT FEMUR, HIP, PELVIS AND THIGH WITHOUT MCC",
+          "avg_charge": 87078
+        },
+        "602": {
+          "description": "CELLULITIS WITH MCC",
+          "avg_charge": 197205
+        },
+        "603": {
+          "description": "CELLULITIS WITHOUT MCC",
+          "avg_charge": 121666
+        },
+        "637": {
+          "description": "DIABETES WITH MCC",
+          "avg_charge": 169967
+        },
+        "638": {
+          "description": "DIABETES WITH CC",
+          "avg_charge": 120435
+        },
+        "640": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITH MCC",
+          "avg_charge": 176533
+        },
+        "641": {
+          "description": "MISCELLANEOUS DISORDERS OF NUTRITION, METABOLISM, FLUIDS AND ELECTROLYTES WITHOUT MCC",
+          "avg_charge": 101713
+        },
+        "643": {
+          "description": "ENDOCRINE DISORDERS WITH MCC",
+          "avg_charge": 207776
+        },
+        "682": {
+          "description": "RENAL FAILURE WITH MCC",
+          "avg_charge": 181139
+        },
+        "683": {
+          "description": "RENAL FAILURE WITH CC",
+          "avg_charge": 98359
+        },
+        "689": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITH MCC",
+          "avg_charge": 125912
+        },
+        "690": {
+          "description": "KIDNEY AND URINARY TRACT INFECTIONS WITHOUT MCC",
+          "avg_charge": 108658
+        },
+        "698": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH MCC",
+          "avg_charge": 187476
+        },
+        "699": {
+          "description": "OTHER KIDNEY AND URINARY TRACT DIAGNOSES WITH CC",
+          "avg_charge": 99370
+        },
+        "811": {
+          "description": "RED BLOOD CELL DISORDERS WITH MCC",
+          "avg_charge": 173455
+        },
+        "812": {
+          "description": "RED BLOOD CELL DISORDERS WITHOUT MCC",
+          "avg_charge": 96487
+        },
+        "813": {
+          "description": "COAGULATION DISORDERS",
+          "avg_charge": 175023
+        },
+        "853": {
+          "description": "INFECTIOUS AND PARASITIC DISEASES WITH O.R. PROCEDURES WITH MCC",
+          "avg_charge": 605873
+        },
+        "870": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITH MV >96 HOURS",
+          "avg_charge": 818541
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 277956
+        },
+        "872": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITHOUT MCC",
+          "avg_charge": 150608
+        },
+        "884": {
+          "description": "ORGANIC DISTURBANCES AND INTELLECTUAL DISABILITY",
+          "avg_charge": 162747
+        },
+        "885": {
+          "description": "PSYCHOSES",
+          "avg_charge": 155723
+        },
+        "896": {
+          "description": "ALCOHOL, DRUG ABUSE OR DEPENDENCE WITHOUT REHABILITATION THERAPY WITH MCC",
+          "avg_charge": 170208
+        },
+        "917": {
+          "description": "POISONING AND TOXIC EFFECTS OF DRUGS WITH MCC",
+          "avg_charge": 204326
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290058",
+      "name": "SAINT ROSE DOMINICAN HOSPITALS - NORTH LAS VEGAS",
+      "type": "acute_care_hospital",
+      "ownership": "Proprietary",
+      "has_er": true,
+      "star_rating": null,
+      "address": "1550 W CRAIG RANCH",
+      "city": "NORTH LAS VEGAS",
+      "state": "NV",
+      "zip": "89031",
+      "county": "CLARK",
+      "lat": 36.239542308703,
+      "lon": -115.162771331191,
+      "drg_charges": {
+        "189": {
+          "description": "PULMONARY EDEMA AND RESPIRATORY FAILURE",
+          "avg_charge": 51471
+        },
+        "871": {
+          "description": "SEPTICEMIA OR SEVERE SEPSIS WITHOUT MV >96 HOURS WITH MCC",
+          "avg_charge": 52905
+        }
+      },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "290062",
+      "name": "WEST HENDERSON HOSPITAL",
+      "type": "acute_care_hospital",
+      "ownership": "Proprietary",
+      "has_er": true,
+      "star_rating": null,
+      "address": "1155 RAIDERS WAY",
+      "city": "HENDERSON",
+      "state": "NV",
+      "zip": "89052",
+      "county": "CLARK",
+      "lat": 35.980447781491,
+      "lon": -115.147134217181,
+      "drg_charges": {},
+      "charity_care_participant": false
+    }
+  ]
+}

@@ -12,7 +12,7 @@ type Mode = "guided" | "chat";
 
 export default function App() {
   const { facilities: allFacilities, zipCentroids, loading: dataLoading, error } = useCareMapData();
-  const { messages, facilities, tierPct, flyTo, loading, sendMessage } = useCareMap(allFacilities, zipCentroids);
+  const { messages, facilities, tierPct, insured, flyTo, loading, sendMessage } = useCareMap(allFacilities, zipCentroids);
   const [activeCcn, setActiveCcn] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("guided");
 
@@ -33,6 +33,7 @@ export default function App() {
       <MapView
         facilities={facilities}
         tierPct={tierPct}
+        insured={insured}
         flyTo={flyTo}
         activeCcn={activeCcn}
         onSelectFacility={setActiveCcn}
@@ -54,6 +55,7 @@ export default function App() {
                 key={f.ccn}
                 facility={f}
                 tierPct={tierPct}
+                insured={insured}
                 need={need}
                 index={i}
                 active={f.ccn === activeCcn}
@@ -78,7 +80,7 @@ export default function App() {
 
         {mode === "guided" ? (
           <GlassPanel className="p-4">
-            <GuidedForm onSubmit={handleGuidedSubmit} />
+            <GuidedForm onSubmit={handleGuidedSubmit} zipCentroids={zipCentroids} />
           </GlassPanel>
         ) : (
           <div className="h-64 sm:h-80">

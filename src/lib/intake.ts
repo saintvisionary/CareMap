@@ -66,8 +66,13 @@ export function redact(message: string): IntakeHint {
   if (dollar && household) {
     const [income, dollarSpan] = dollar;
     const [size, householdSpan] = household;
-    const fplPct = fplPercent(income, size);
-    tierPct = njCharityTier(fplPct).patientPaysPct;
+    // NJ Charity Care only applies to uninsured/underinsured patients -- an
+    // insured person gets no tier at all, not a $0 one. Raw numbers are
+    // still redacted either way; only whether a tier is exposed changes.
+    if (insured !== true) {
+      const fplPct = fplPercent(income, size);
+      tierPct = njCharityTier(fplPct).patientPaysPct;
+    }
     redacted = redacted.replace(dollarSpan, "[income redacted]").replace(householdSpan, "[household redacted]");
   }
 

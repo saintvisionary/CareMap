@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { NEED_TO_DRG } from "../lib/drg";
+import { nearestZip } from "../lib/geo";
+import type { ZipCentroid } from "../lib/types";
 
 interface GuidedFormProps {
   onSubmit: (message: string) => void;
+  zipCentroids: Record<string, ZipCentroid>;
 }
 
 const NEEDS = Object.keys(NEED_TO_DRG);
@@ -12,15 +15,39 @@ const fieldClass =
   "w-full rounded-xl bg-white/10 border border-white/10 px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-white/30";
 const labelClass = "text-[11px] uppercase tracking-wide text-white/40 mb-1 block";
 
-export function GuidedForm({ onSubmit }: GuidedFormProps) {
+export function GuidedForm({ onSubmit, zipCentroids }: GuidedFormProps) {
   const [zip, setZip] = useState("");
   const [household, setHousehold] = useState("4");
   const [income, setIncome] = useState("");
   const [insured, setInsured] = useState<"insured" | "uninsured">("uninsured");
   const [need, setNeed] = useState(NEEDS[0]);
   const [otherNeed, setOtherNeed] = useState("");
+  const [locating, setLocating] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
 
   const valid = /^\d{5}$/.test(zip) && Number(household) > 0 && Number(income) >= 0;
+
+  const useMyLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError("Location isn't available in this browser.");
+      return;
+    }
+    setLocating(true);
+    setLocationError(null);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const found = nearestZip(pos.coords.latitude, pos.coords.longitude, zipCentroids);
+        if (found) setZip(found);
+        else setLocationError("Couldn't match your location to a zip code.");
+        setLocating(false);
+      },
+      (err) => {
+        setLocationError(err.code === err.PERMISSION_DENIED ? "Location permission denied." : "Couldn't get your location.");
+        setLocating(false);
+      },
+      { timeout: 10000, maximumAge: 300000 },
+    );
+  };
 
   const submit = () => {
     if (!valid) return;
@@ -35,13 +62,24 @@ export function GuidedForm({ onSubmit }: GuidedFormProps) {
       <div className="grid grid-cols-2 gap-2.5">
         <div>
           <label className={labelClass}>Zip code</label>
-          <input
-            value={zip}
-            onChange={(e) => setZip(e.target.value.replace(/\D/g, "").slice(0, 5))}
-            placeholder="07018"
-            inputMode="numeric"
-            className={fieldClass}
-          />
+          <div className="flex gap-1.5">
+            <input
+              value={zip}
+              onChange={(e) => setZip(e.target.value.replace(/\D/g, "").slice(0, 5))}
+              placeholder="07018"
+              inputMode="numeric"
+              className={fieldClass}
+            />
+            <button
+              type="button"
+              onClick={useMyLocation}
+              disabled={locating}
+              title="Use my location"
+              className="shrink-0 rounded-xl border border-white/10 bg-white/5 px-2.5 text-sm text-white/70 hover:bg-white/10 transition-colors disabled:opacity-40"
+            >
+              {locating ? "..." : "📍"}
+            </button>
+          </div>
         </div>
         <div>
           <label className={labelClass}>Household size</label>
@@ -54,6 +92,7 @@ export function GuidedForm({ onSubmit }: GuidedFormProps) {
           />
         </div>
       </div>
+      {locationError && <p className="text-[11px] text-red-400">{locationError}</p>}
 
       <div>
         <label className={labelClass}>Annual household income</label>

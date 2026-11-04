@@ -21,6 +21,7 @@ export interface CareMapState {
   messages: ChatMessage[];
   facilities: FacilityWithDistance[];
   tierPct: number | null;
+  insured: boolean | null;
   flyTo: MapFlyTo | null;
   loading: boolean;
   sendMessage: (text: string) => void;
@@ -39,6 +40,7 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
   ]);
   const [facilities, setFacilities] = useState<FacilityWithDistance[]>([]);
   const [tierPct, setTierPct] = useState<number | null>(null);
+  const [insured, setInsured] = useState<boolean | null>(null);
   const [flyTo, setFlyTo] = useState<MapFlyTo | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -51,6 +53,7 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
       const nearby = hint.zipCode ? facilitiesNear(allFacilities, zipCentroids, hint.zipCode, 25) : [];
       setFacilities(nearby);
       setTierPct(hint.tierPct);
+      setInsured(hint.insured);
 
       if (hint.zipCode && zipCentroids[hint.zipCode]) {
         const c = zipCentroids[hint.zipCode];
@@ -60,6 +63,7 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
       const instantReply = summarize({
         zipCode: hint.zipCode,
         tierPct: hint.tierPct,
+        insured: hint.insured,
         need: hint.need,
         facilities: nearby,
       });
@@ -81,5 +85,5 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
     [allFacilities, zipCentroids],
   );
 
-  return { messages, facilities, tierPct, flyTo, loading, sendMessage };
+  return { messages, facilities, tierPct, insured, flyTo, loading, sendMessage };
 }

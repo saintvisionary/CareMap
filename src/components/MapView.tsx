@@ -9,12 +9,13 @@ const STYLE_URL = "https://tiles.openfreemap.org/styles/dark";
 interface MapViewProps {
   facilities: FacilityWithDistance[];
   tierPct: number | null;
+  insured: boolean | null;
   flyTo: MapFlyTo | null;
   activeCcn: string | null;
   onSelectFacility: (ccn: string) => void;
 }
 
-export function MapView({ facilities, tierPct, flyTo, activeCcn, onSelectFacility }: MapViewProps) {
+export function MapView({ facilities, tierPct, insured, flyTo, activeCcn, onSelectFacility }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map());
@@ -50,7 +51,7 @@ export function MapView({ facilities, tierPct, flyTo, activeCcn, onSelectFacilit
 
     facilities.forEach((f, i) => {
       if (f.lat == null || f.lon == null) return;
-      const tier = facilityTier(f, tierPct);
+      const tier = facilityTier(f, tierPct, insured);
       // MapLibre sets a positioning `transform` directly on this outer element;
       // the pop-in animation must live on a child instead, or it clobbers that
       // transform and every marker collapses to (0,0).
@@ -68,7 +69,7 @@ export function MapView({ facilities, tierPct, flyTo, activeCcn, onSelectFacilit
         .addTo(map);
       markersRef.current.set(f.ccn, marker);
     });
-  }, [facilities, tierPct, onSelectFacility]);
+  }, [facilities, tierPct, insured, onSelectFacility]);
 
   useEffect(() => {
     for (const [ccn, marker] of markersRef.current.entries()) {

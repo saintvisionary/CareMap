@@ -27,4 +27,7 @@ export interface ZipCentroid {
   lon: number;
 }
 
-export type Tier = "free" | "reduced" | "full" | "unknown";
+// "insured" is distinct from "unknown": it means NJ Charity Care doesn't
+// apply at all (program is uninsured/underinsured only), not that we
+// haven't been told the person's income yet.
+export type Tier = "free" | "reduced" | "full" | "unknown" | "insured";

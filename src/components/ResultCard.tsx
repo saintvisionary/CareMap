@@ -9,20 +9,26 @@ const money = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
 interface ResultCardProps {
   facility: FacilityWithDistance;
   tierPct: number | null;
+  insured: boolean | null;
   need: string | null;
   index: number;
   active: boolean;
   onSelect: () => void;
 }
 
-export function ResultCard({ facility, tierPct, need, index, active, onSelect }: ResultCardProps) {
-  const tier = facilityTier(facility, tierPct);
+export function ResultCard({ facility, tierPct, insured, need, index, active, onSelect }: ResultCardProps) {
+  const tier = facilityTier(facility, tierPct, insured);
   const drg = need ? NEED_TO_DRG[need] : null;
   const charge = drg ? facility.drg_charges[drg.code]?.avg_charge : undefined;
 
   let hero = "Tier unknown";
   let heroLabel = "Tell us your income for an estimate.";
-  if (charge != null) {
+  if (tier === "insured") {
+    // NJ Charity Care doesn't apply to insured patients -- never claim a
+    // charity-care price here, even if we happen to know a typical charge.
+    hero = charge != null ? money(charge) : "Insured";
+    heroLabel = "typical billed charge; contact your insurer for your copay/deductible";
+  } else if (charge != null) {
     heroLabel = "typical billed charge, estimate, confirm with billing office";
     hero = tierPct != null ? money(applyTier(charge, tierPct)) : money(charge);
   } else if (tier === "free") {

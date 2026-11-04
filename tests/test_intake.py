@@ -34,3 +34,14 @@ def test_no_tier_without_both_income_and_household():
     assert hint.tier_pct is None
     hint2 = redact("$52k income, uninsured")
     assert hint2.tier_pct is None
+
+
+def test_insured_person_gets_no_charity_care_tier():
+    # NJ Charity Care is uninsured/underinsured only. An insured person must
+    # never get a tier_pct (e.g. a false "$0"), even though the FPL math
+    # would otherwise produce one. Raw numbers are still redacted either way.
+    hint = redact("07018, family of 4, $52k, insured, need gallbladder surgery")
+    assert hint.insured is True
+    assert hint.tier_pct is None
+    assert "[income redacted]" in hint.redacted_message
+    assert "[household redacted]" in hint.redacted_message

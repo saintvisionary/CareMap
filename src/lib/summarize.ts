@@ -5,6 +5,7 @@ import type { FacilityWithDistance } from "./geo";
 export interface QueryResult {
   zipCode: string | null;
   tierPct: number | null;
+  insured: boolean | null;
   need: string | null;
   facilities: FacilityWithDistance[];
 }
@@ -16,7 +17,7 @@ const money = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
  * always "estimate, confirm with billing office" -- kept here too so the
  * instant local path and the AI-enhanced path never contradict each other. */
 export function summarize(result: QueryResult): string {
-  const { zipCode, tierPct, need, facilities } = result;
+  const { zipCode, tierPct, insured, need, facilities } = result;
 
   if (!zipCode) {
     return "Tell me your zip code and I can find hospitals near you.";
@@ -32,7 +33,11 @@ export function summarize(result: QueryResult): string {
       `Nearest: ${nearest.name}, ${nearest.distanceMiles.toFixed(1)} mi away.`,
   );
 
-  if (tierPct == null) {
+  if (insured === true) {
+    lines.push(
+      "Since you're insured, NJ Charity Care doesn't apply to you -- contact your insurer for your specific copay/deductible.",
+    );
+  } else if (tierPct == null) {
     lines.push("Tell me your household income and size for a personal NJ Charity Care estimate.");
   } else if (nearest.state === "NJ" && nearest.charity_care_participant) {
     lines.push(
@@ -59,6 +64,8 @@ export function summarize(result: QueryResult): string {
     }
   }
 
-  lines.push("Always ask for a Good Faith Estimate if you're uninsured and scheduling ahead.");
+  if (insured !== true) {
+    lines.push("Always ask for a Good Faith Estimate if you're uninsured and scheduling ahead.");
+  }
   return lines.join(" ");
 }

@@ -15,6 +15,24 @@ export interface FacilityWithDistance extends Facility {
   distanceMiles: number;
 }
 
+/** Nearest zip code (by centroid) to a raw lat/lon -- used to turn a
+ * geolocation result into a zip the rest of the app already knows how to
+ * work with, rather than threading a second lat/lon-based search path
+ * through every facilities_near/agent call. 33k linear scans is well under
+ * a millisecond budget in a browser. */
+export function nearestZip(lat: number, lon: number, zipCentroids: Record<string, ZipCentroid>): string | null {
+  let best: string | null = null;
+  let bestDist = Infinity;
+  for (const [zip, c] of Object.entries(zipCentroids)) {
+    const d = haversineMiles(lat, lon, c.lat, c.lon);
+    if (d < bestDist) {
+      bestDist = d;
+      best = zip;
+    }
+  }
+  return best;
+}
+
 export function facilitiesNear(
   facilities: Facility[],
   zipCentroids: Record<string, ZipCentroid>,
@@ -34,8 +52,12 @@ export function facilitiesNear(
 
 /** Tier color for a facility given the user's own patient_pays_pct (NJ Charity
  * Care is a statewide formula, so it's the same percent at every participating
- * NJ hospital -- color reflects whether the program applies here at all). */
-export function facilityTier(facility: Facility, patientPaysPct: number | null): Tier {
+ * NJ hospital -- color reflects whether the program applies here at all).
+ * insured=true always wins: Charity Care is uninsured/underinsured only, so
+ * an insured person never gets a charity-care price here, regardless of
+ * income -- that's a distinct state from "we don't know your income yet". */
+export function facilityTier(facility: Facility, patientPaysPct: number | null, insured: boolean | null): Tier {
+  if (insured === true) return "insured";
   if (facility.state !== "NJ" || !facility.charity_care_participant) return "unknown";
   if (patientPaysPct == null) return "unknown";
   if (patientPaysPct <= 0) return "free";
@@ -48,4 +70,5 @@ export const TIER_COLORS: Record<Tier, string> = {
   reduced: "#f59e0b",
   full: "#9ca3af",
   unknown: "#6b7280",
+  insured: "#60a5fa",
 };
