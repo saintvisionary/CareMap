@@ -62,7 +62,9 @@ export function summarize(result: QueryResult): string {
         ? `Your income is above ${programName}'s free-care line, so there's no exact percentage to show (Illinois law bases it on each hospital's own cost-to-charge ratio, which CareMap doesn't have). State law still caps total collection at 20% of your family income in any 12-month period -- ask this hospital's billing office for your exact discount.`
         : nearest.state === "NY"
           ? `Your income is above ${programName}'s free-care line, so there's no exact percentage to show (New York's cap there is based on the Medicaid rate for the service, not billed charges, and CareMap doesn't have Medicaid-rate data). Ask this hospital's billing office for your exact discount.`
-          : `${programName} doesn't have a modeled percentage at your income -- ask this hospital's billing office directly.`,
+          : nearest.state === "RI"
+            ? `Your income is above ${programName}'s free-care line. Rhode Island's own regulation leaves the discount at your income level to each hospital to set, so there's no statewide number to show -- ask this hospital's billing office for its own sliding scale.`
+            : `${programName} doesn't have a modeled percentage at your income -- ask this hospital's billing office directly.`,
     );
   } else {
     lines.push(

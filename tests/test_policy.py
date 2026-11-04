@@ -1,4 +1,4 @@
-from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, il_charity_tier, md_charity_tier, nj_charity_tier, ny_charity_tier, or_charity_tier, wa_charity_tier
+from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, il_charity_tier, md_charity_tier, nj_charity_tier, ny_charity_tier, or_charity_tier, ri_charity_tier, wa_charity_tier
 
 
 def test_demo_case_family_of_4():
@@ -175,3 +175,23 @@ def test_charity_tier_dispatches_md():
     assert charity_tier("MD", 220)["patient_pays_pct"] == 25
     # ownership/facility_type must be ignored, not required or error.
     assert charity_tier("MD", 220, "critical_access_hospital", "Proprietary")["patient_pays_pct"] == 25
+
+
+def test_ri_tier_free_care_threshold():
+    # 216-RICR-40-10-23.14 -- verified directly against the current
+    # regulatory text. Free up to 200% FPL.
+    assert ri_charity_tier(200)["patient_pays_pct"] == 0
+    assert ri_charity_tier(201) is None
+
+
+def test_ri_tier_above_threshold_returns_none_not_a_guess():
+    # Unlike IL, RI has no disclosable cap fact above its free-care line --
+    # the regulation delegates 200-300% FPL to each hospital and says
+    # nothing above 300% at all. Must return None, never a guessed figure.
+    assert ri_charity_tier(250) is None
+    assert ri_charity_tier(400) is None
+
+
+def test_charity_tier_dispatches_ri():
+    assert charity_tier("RI", 150)["patient_pays_pct"] == 0
+    assert charity_tier("RI", 250) is None

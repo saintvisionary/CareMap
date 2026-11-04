@@ -263,8 +263,31 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
             </div>
 
+            <div className={section}>
+              <h2 className={h2}>Rhode Island hospital charity care</h2>
+              <p className={p}>
+                Rhode Island's hospital licensing regulation (216-RICR-40-10-23.14). Applies to every licensed RI hospital, for patients who are{" "}
+                <strong className="text-white/90">uninsured or underinsured</strong>.
+              </p>
+              <div className="rounded-xl bg-white/5 p-3 text-xs">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
+                  <span className="text-white/40">Income, % of poverty line</span>
+                  <span className="text-white/40">You pay</span>
+                  <span>Up to 200%</span>
+                  <span className="text-white/90">$0 -- fully covered</span>
+                  <span>Over 200%</span>
+                  <span className="text-white/90">No statewide percentage</span>
+                </div>
+              </div>
+              <p className={p}>
+                <strong className="text-white/90">Above 200%, CareMap shows no percentage.</strong> Rhode Island's regulation itself leaves the
+                200-300% FPL discount to each individual hospital to set, and says nothing about pricing above 300% FPL at all -- there's no statewide
+                number to show, and unlike Illinois, no other disclosable cap fact either. Ask the hospital's billing office for its own sliding scale.
+              </p>
+            </div>
+
             <p className={p}>
-              <strong className="text-white/90">Right now, NJ, WA, IL, NY, OR, and MD are the only states with a modeled tier.</strong> Every other
+              <strong className="text-white/90">Right now, NJ, WA, IL, NY, OR, MD, and RI are the only states with a modeled tier.</strong> Every other
               state still shows real hospital locations and typical billed charges, but says "[state] rules coming soon" instead of a personal estimate.
             </p>
 
@@ -320,6 +343,7 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                 <li>NY charity care rules -- NY Public Health Law 2807-k, Hospital Financial Assistance Law</li>
                 <li>OR charity care rules -- ORS 442.610-442.618, Oregon hospital financial assistance law</li>
                 <li>MD charity care rules -- Md. Code, Health-General 19-214.1</li>
+                <li>RI charity care rules -- 216-RICR-40-10-23.14, Rhode Island hospital licensing regulation</li>
                 <li>International locations -- OpenStreetMap (Nominatim, Overpass, Photon)</li>
               </ul>
               <p className={p}>All public, official sources -- CareMap never adds or guesses a number that isn't already in that data.</p>

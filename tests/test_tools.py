@@ -199,3 +199,19 @@ def test_draft_application_md_facility():
     assert "Maryland hospital financial assistance law" in r["letter"]
     assert "MD residency" in r["checklist"][0]
     assert "Submit within 240 days" in r["checklist"][-1]
+
+
+def test_charity_tier_ri_free_care_and_gap():
+    assert charity_tier(state="RI", fpl_pct=150)["patient_pays_pct"] == 0
+    r = charity_tier(state="RI", fpl_pct=250)
+    assert "error" in r
+    assert "each individual hospital" in r["error"]
+
+
+def test_draft_application_ri_facility():
+    # ROGER WILLIAMS MEDICAL CENTER, a real RI acute care hospital (CCN 410004).
+    r = draft_application(ccn="410004", patient_pays_pct=0)
+    assert "ROGER WILLIAMS MEDICAL CENTER" in r["letter"]
+    assert "Rhode Island" in r["letter"]
+    assert "RI residency" in r["checklist"][0]
+    assert "help_phone" not in r

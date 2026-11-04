@@ -98,6 +98,29 @@ def il_charity_tier(fpl_pct: float, is_critical_access: bool = False) -> dict | 
     return None
 
 
+def ri_charity_tier(fpl_pct: float) -> dict | None:
+    """RI hospital charity-care tier (216-RICR-40-10-23.14) for a percent of FPL.
+
+    Verified directly against the current regulatory text. Below the
+    free-care threshold this is a real, exact 0%. Returns None above it:
+    unlike IL/NY, this isn't a missing-data problem -- the regulation
+    itself delegates the 200-300% FPL sliding-scale percentage to each
+    individual hospital, and says nothing about pricing above 300% FPL at
+    all. There's no disclosable cap fact here the way IL has its
+    20%-of-income cap -- showing anything above the free line would be a
+    guess, not a grounded number.
+    """
+    threshold = POLICY["ri_charity_care"]["free_care_max_fpl_pct"]
+    if fpl_pct <= threshold:
+        return {
+            "patient_pays_pct": 0,
+            "fpl_pct": fpl_pct,
+            "max_fpl_pct": threshold,
+            "source": POLICY["ri_charity_care"]["source"],
+        }
+    return None
+
+
 def md_charity_tier(fpl_pct: float) -> dict:
     """MD hospital financial assistance tier (Md. Code, Health-General 19-214.1) for a percent of FPL.
 
@@ -184,6 +207,7 @@ STATE_CHARITY_TIER_FNS = {
     "NY": lambda fpl_pct, facility_type=None, ownership=None: ny_charity_tier(fpl_pct),
     "OR": lambda fpl_pct, facility_type=None, ownership=None: or_charity_tier(fpl_pct, ownership=ownership),
     "MD": lambda fpl_pct, facility_type=None, ownership=None: md_charity_tier(fpl_pct),
+    "RI": lambda fpl_pct, facility_type=None, ownership=None: ri_charity_tier(fpl_pct),
 }
 
 

@@ -125,6 +125,18 @@
     "apply_window_days_after_service": 240,
     "decision_window_calendar_days": 14
   },
+  "ri_charity_care": {
+    "source": "216-RICR-40-10-23.14 (Rhode Island hospital licensing regulation, Provision of Charity Care, Uncompensated Care, and Community Benefits)",
+    "applies_to": "every licensed RI hospital, as a condition of licensure (R.I. Gen. Laws 23-17-43) -- uninsured and underinsured patients alike",
+    "note": "Verified directly against the current regulatory text. Section 23.14.1(A)(3) sets a real, exact 0% at or below 200% FPL -- no gap there. From 200-300% FPL, section 23.14.1(A)(6) requires a sliding scale but explicitly leaves the specific percentage at each band to EACH INDIVIDUAL HOSPITAL to set -- there is no statewide number to encode, not a missing-data problem like IL's cost-to-charge ratio, but an intentional delegation in the regulation itself. Above 300% FPL the regulation doesn't address pricing at all. Unlike IL (whose 20%-of-income cap is a disclosable fact even without a percentage), RI has no comparable fallback fact found -- CareMap shows NO percentage and NO cap fact above the free-care threshold, only the free-care floor is real here.",
+    "eligibility": {
+      "must_be_un_or_underinsured": true,
+      "asset_limit_individual": null,
+      "asset_limit_family": null,
+      "asset_limit_note": "optional per hospital (23.14.1(A)(4)) -- if used, $8,000 single / $12,000 family (2006 base, CPI-adjusted annually), primary residence and one vehicle excluded"
+    },
+    "free_care_max_fpl_pct": 200
+  },
   "good_faith_estimate": {
     "source": "https://www.cms.gov/medical-bill-rights/help/guides/good-faith-estimate",
     "applies_to": "uninsured or self-pay patients scheduling care at least 3 business days ahead",

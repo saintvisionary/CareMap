@@ -159,6 +159,22 @@ export function mdCharityTier(fplPct: number): CharityTier {
   return lookupTier(MD_CHARITY_TIERS, fplPct);
 }
 
+// 216-RICR-40-10-23.14 -- verified directly against the current
+// regulatory text. Below the free-care threshold this is a real, exact
+// 0%. Returns null above it: unlike IL/NY, this isn't a missing-data
+// problem -- the regulation itself delegates the 200-300% FPL
+// sliding-scale percentage to each individual hospital, and says nothing
+// about pricing above 300% FPL at all. No disclosable cap fact here the
+// way IL has its 20%-of-income cap.
+const RI_FREE_CARE_MAX_FPL = 200;
+
+export function riCharityTier(fplPct: number): CharityTier | null {
+  if (fplPct <= RI_FREE_CARE_MAX_FPL) {
+    return { patientPaysPct: 0, fplPct, maxFplPct: RI_FREE_CARE_MAX_FPL };
+  }
+  return null;
+}
+
 // Keyed by a facility's own state. Only states with a real, codified,
 // state-wide formula belong here -- most states have no such law (just
 // federal 501(r): each nonprofit hospital must have *a* policy, with no
@@ -170,6 +186,7 @@ const STATE_CHARITY_TIER_FNS: Record<string, (fplPct: number, facilityType?: str
   NY: (fplPct) => nyCharityTier(fplPct),
   OR: (fplPct, _facilityType, ownership) => orCharityTier(fplPct, ownership),
   MD: (fplPct) => mdCharityTier(fplPct),
+  RI: (fplPct) => riCharityTier(fplPct),
 };
 
 export const MODELED_CHARITY_STATES = Object.keys(STATE_CHARITY_TIER_FNS);
@@ -185,6 +202,7 @@ export const CHARITY_PROGRAM_NAMES: Record<string, string> = {
   NY: "the New York Hospital Financial Assistance Law",
   OR: "Oregon's hospital financial assistance law (nonprofit hospitals only)",
   MD: "Maryland's hospital financial assistance law",
+  RI: "Rhode Island's hospital charity care regulation",
 };
 
 /** Charity-care tier for whichever state a facility is in, or null if that
