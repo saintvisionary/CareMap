@@ -7,9 +7,9 @@ Type a plain-language message like:
 > "07018, family of 4, $52k, uninsured, need gallbladder surgery"
 
 and CareMap finds nearby hospitals, estimates what you'd actually owe under
-New Jersey's Documented Charity Care program, and shows it on a map colored
-by what you'd pay: green for free care, amber for a reduced rate, gray for
-full price.
+a state hospital charity-care program (currently New Jersey, Washington,
+and Illinois), and shows it on a map colored by what you'd pay: green for
+free care, amber for a reduced rate, gray for full price.
 
 ## Why
 
@@ -48,11 +48,20 @@ run:
 - Zip code centroids: US Census ZCTA Gazetteer
 - NJ Documented Charity Care tier formula: NJ Department of Health fact
   sheet
+- WA hospital charity care tier formula: RCW 70.170.060, Washington State
+  Legislature
+- IL hospital charity care tier formula: 210 ILCS 89, Illinois Hospital
+  Uninsured Patient Discount Act
 - Federal poverty guidelines: HHS annual update
 
-Currently covers New Jersey's 61 acute care hospitals. The pipeline is
-state-agnostic (`python scripts/build_data.py --states XX`); adding a state
-is a data pull, not a rewrite.
+Hospital locations and typical billed charges cover all 50 states + DC. A
+personal charity-care tier is modeled for NJ, WA, and IL so far -- every
+other state shows "rules coming soon" plus federal (501(r)) guidance
+instead of a guessed number. The pipeline is state-agnostic
+(`python scripts/build_data.py --states XX`); adding a state's *location*
+data is a data pull, not a rewrite, but adding its *tier formula* requires
+verifying that state's actual statute first -- CareMap never encodes a
+percentage it hasn't confirmed against the primary source.
 
 ## Running it
 
@@ -77,8 +86,12 @@ AI chat enhancement, set `VITE_AGENT_URL` to a deployed agent endpoint (see
 
 ## What's not in yet
 
-- Only NJ Charity Care's tier formula; other states show "state rules
-  coming" plus federal rules
+- Only NJ, WA, and IL have a modeled charity-care tier formula; every other
+  state shows "state rules coming" plus federal rules
+- IL's real sliding-scale discount above its free-care threshold needs a
+  per-hospital Medicare cost-to-charge ratio CareMap doesn't have loaded
+  yet (a different CMS dataset than what's in use); CareMap discloses the
+  gap rather than showing a guessed percentage there
 - FQHC / urgent care layer (HRSA, NPPES) -- hospitals only so far
-- A national point layer (currently one state's worth of markers, loaded
-  directly as GeoJSON; a `.pmtiles` tile layer is the next step for scale)
+- A national point layer (currently loaded as per-state GeoJSON; a
+  `.pmtiles` tile layer is the next step for scale)
