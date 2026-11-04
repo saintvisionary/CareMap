@@ -91,8 +91,17 @@ def handler(event: dict, context) -> dict:  # noqa: ARG001 (context required by 
     if _orchestrator is None:
         _orchestrator = build_orchestrator()
 
+    zip_code = payload.get("zipCode")
+    insured = payload.get("insured")
+    tier_pct = payload.get("tierPct")
+
     try:
-        result = handle_message(message, orchestrator=_orchestrator)
+        result = handle_message(
+            message, orchestrator=_orchestrator,
+            zip_code=zip_code if isinstance(zip_code, str) else None,
+            insured=insured if isinstance(insured, bool) else None,
+            tier_pct=tier_pct if isinstance(tier_pct, (int, float)) else None,
+        )
     except Exception as exc:  # noqa: BLE001
         print(f"handle_message failed: {exc!r}")
         return _response(502, {"error": "agent failed, try again"}, origin)

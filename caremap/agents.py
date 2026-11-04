@@ -98,7 +98,7 @@ def build_orchestrator(model=None) -> Orchestrator:
     return Orchestrator(agent=orchestrator, ledger=ledger, guard=guard)
 
 
-def _prompt_for(message: str, hint: IntakeHint) -> str:
+def _prompt_for(hint: IntakeHint) -> str:
     context = [f"User message (redacted): {hint.redacted_message}"]
     if hint.zip_code:
         context.append(f"zip_code: {hint.zip_code}")
@@ -109,15 +109,35 @@ def _prompt_for(message: str, hint: IntakeHint) -> str:
     return "\n".join(context)
 
 
-def handle_message(message: str, orchestrator: Orchestrator | None = None, model=None) -> dict:
+def handle_message(
+    message: str,
+    orchestrator: Orchestrator | None = None,
+    model=None,
+    zip_code: str | None = None,
+    insured: bool | None = None,
+    tier_pct: float | None = None,
+) -> dict:
     """Entry point for the Lambda handler. Redacts, then runs the Orchestrator.
+
+    zip_code/insured/tier_pct are hints the caller already computed
+    client-side (the browser's own redact() pass) and sent as separate
+    fields alongside the redacted message text -- they take precedence over
+    anything redact() re-derives from the message text here, since the
+    message text alone may not restate them (e.g. a guided-form submission
+    where the frontend sends the zip as structured data, not prose).
 
     Returns {reply, map_commands, audit, guard} -- audit/guard are for the
     grounding-hook log, not shown to the user.
     """
     orchestrator = orchestrator or build_orchestrator(model=model)
     hint = redact(message)
-    prompt = _prompt_for(message, hint)
+    if zip_code is not None:
+        hint.zip_code = zip_code
+    if insured is not None:
+        hint.insured = insured
+    if tier_pct is not None:
+        hint.tier_pct = tier_pct
+    prompt = _prompt_for(hint)
     result = orchestrator.agent(prompt, structured_output_model=OrchestratorOutput)
     output: OrchestratorOutput = result.structured_output
     return {
