@@ -11667,6 +11667,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "44013F",
+      "name": "MEMPHIS VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "116 N PAULINE ST",
+      "city": "MEMPHIS",
+      "state": "TN",
+      "zip": "38105",
+      "county": "SHELBY",
+      "lat": 35.145266990016,
+      "lon": -90.028215113481,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "440144",
       "name": "VANDERBILT TULLAHOMA-HARTON HOSPITAL",
       "type": "acute_care_hospital",
@@ -13148,6 +13165,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "44016F",
+      "name": "MOUNTAIN HOME VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "CORNER OF LAMONT STREET AND VETERANS WAY",
+      "city": "MOUNTAIN HOME",
+      "state": "TN",
+      "zip": "37684",
+      "county": "WASHINGTON",
+      "lat": null,
+      "lon": null,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "440173",
       "name": "PARKWEST MEDICAL CENTER",
       "type": "acute_care_hospital",
@@ -13656,6 +13690,24 @@
           "avg_charge": 36441
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "44017F",
+      "name": "VA MIDDLE TENNESSEE HEALTHCARE SYSTEM - MURFREESBORO",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": null,
+      "address": "3400 LEBANON PIKE",
+      "city": "MURFREESBORO",
+      "state": "TN",
+      "zip": "37129",
+      "county": "RUTHERFORD",
+      "lat": 35.929834,
+      "lon": -86.450822,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -14296,6 +14348,23 @@
           "avg_charge": 52981
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "44018F",
+      "name": "VA MIDDLE TENNESSEE HEALTHCARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "1310 24TH AVENUE SOUTH",
+      "city": "NASHVILLE",
+      "state": "TN",
+      "zip": "37212",
+      "county": "DAVIDSON",
+      "lat": 36.14235476789,
+      "lon": -86.804736748126,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {

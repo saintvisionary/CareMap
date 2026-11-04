@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { NEED_TO_DRG } from "../lib/drg";
 import { facilityTier, TIER_COLORS, type FacilityWithDistance } from "../lib/geo";
+import { insuranceGuidance } from "../lib/insurance";
+import type { InsuranceType } from "../lib/intake";
 import { applyTier } from "../lib/policy";
 import { GlassPanel } from "./GlassPanel";
 
@@ -9,15 +11,15 @@ const money = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
 interface ResultCardProps {
   facility: FacilityWithDistance;
   tierPct: number | null;
-  insured: boolean | null;
+  insuranceType: InsuranceType | null;
   need: string | null;
   index: number;
   active: boolean;
   onSelect: () => void;
 }
 
-export function ResultCard({ facility, tierPct, insured, need, index, active, onSelect }: ResultCardProps) {
-  const tier = facilityTier(facility, tierPct, insured);
+export function ResultCard({ facility, tierPct, insuranceType, need, index, active, onSelect }: ResultCardProps) {
+  const tier = facilityTier(facility, tierPct, insuranceType);
   const drg = need ? NEED_TO_DRG[need] : null;
   const charge = drg ? facility.drg_charges[drg.code]?.avg_charge : undefined;
 
@@ -26,10 +28,10 @@ export function ResultCard({ facility, tierPct, insured, need, index, active, on
     ? "Tell us your income for an estimate."
     : `${facility.state} rules coming soon -- ask this hospital's billing office about financial assistance.`;
   if (tier === "insured") {
-    // NJ Charity Care doesn't apply to insured patients -- never claim a
+    // NJ Charity Care only applies to the uninsured -- never claim a
     // charity-care price here, even if we happen to know a typical charge.
-    hero = charge != null ? money(charge) : "Insured";
-    heroLabel = "typical billed charge; contact your insurer for your copay/deductible";
+    hero = charge != null ? money(charge) : "See coverage";
+    heroLabel = `typical billed charge; ${insuranceType ? insuranceGuidance(insuranceType) : "check your plan for your specific costs"}`;
   } else if (charge != null) {
     heroLabel = "typical billed charge, estimate, confirm with billing office";
     hero = tierPct != null ? money(applyTier(charge, tierPct)) : money(charge);
@@ -61,6 +63,11 @@ export function ResultCard({ facility, tierPct, insured, need, index, active, on
                 style={{ backgroundColor: TIER_COLORS[tier] }}
               />
               <h3 className="text-sm font-medium text-white/90 truncate">{facility.name}</h3>
+              {facility.type === "va_hospital" && (
+                <span className="shrink-0 rounded-full bg-sky-500/20 px-1.5 py-0.5 text-[9px] font-semibold text-sky-300">
+                  VA
+                </span>
+              )}
             </div>
             <p className="mt-1 text-xs text-white/50">
               {facility.distanceMiles.toFixed(1)} mi &middot; {facility.city}, {facility.state}

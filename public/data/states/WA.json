@@ -9767,6 +9767,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "50011F",
+      "name": "SPOKANE VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "4815 N. ASSEMBLY STREET",
+      "city": "SPOKANE",
+      "state": "WA",
+      "zip": "99205",
+      "county": "SPOKANE",
+      "lat": 47.701449153053,
+      "lon": -117.475636324342,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "500124",
       "name": "EVERGREENHEALTH MEDICAL CENTER",
       "type": "acute_care_hospital",
@@ -11628,6 +11645,23 @@
           "avg_charge": 28162
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "50030F",
+      "name": "SEATTLE VA MEDICAL CENTER (VA PUGET SOUND HEALTHCARE SYSTEM)",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "1660 S. COLUMBIAN WAY",
+      "city": "SEATTLE",
+      "state": "WA",
+      "zip": "98108",
+      "county": "KING",
+      "lat": 47.562152214612,
+      "lon": -122.311160076185,
+      "drg_charges": {},
       "charity_care_participant": false
     }
   ]

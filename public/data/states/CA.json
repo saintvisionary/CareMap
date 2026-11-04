@@ -25298,6 +25298,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "05025F",
+      "name": "FRESNO VA MEDICAL CENTER (VA CENTRAL CALIFORNIA HEALTHCARE SYSTEM)",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "2615 E. CLINTON AVENUE",
+      "city": "FRESNO",
+      "state": "CA",
+      "zip": "93703",
+      "county": "FRESNO",
+      "lat": 36.772331109463,
+      "lon": -119.780255868764,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "050261",
       "name": "SIERRA VIEW MEDICAL CENTER",
       "type": "acute_care_hospital",
@@ -26475,6 +26492,23 @@
           "avg_charge": 142638
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "05027F",
+      "name": "VA LONG BEACH HEALTHCARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "5901 E. SEVENTH STREET",
+      "city": "LONG BEACH",
+      "state": "CA",
+      "zip": "90822",
+      "county": "LOS ANGELES",
+      "lat": 33.775376247476,
+      "lon": -118.118872963062,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -30321,6 +30355,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "05030F",
+      "name": "VA N CALIFORNIA HEALTHCARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "10535 HOSPITAL WAY",
+      "city": "MATHER",
+      "state": "CA",
+      "zip": "95655",
+      "county": "SACRAMENTO",
+      "lat": 38.571753383517,
+      "lon": -121.297358965054,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "050313",
       "name": "SUTTER TRACY COMMUNITY HOSPITAL",
       "type": "acute_care_hospital",
@@ -30466,6 +30517,23 @@
           "avg_charge": 64201
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "05031F",
+      "name": "PALO ALTO VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "3801 MIRANDA AVENUE",
+      "city": "PALO ALTO",
+      "state": "CA",
+      "zip": "94304",
+      "county": "SANTA CLARA",
+      "lat": 37.402891256268,
+      "lon": -122.141739001605,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -57986,6 +58054,76 @@
       "county": "MADERA",
       "lat": 36.945361869871,
       "lon": -120.044898788667,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "05114F",
+      "name": "VA SAN DIEGO HEALTHCARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "3350 LA JOLLA VILLAGE DRIVE",
+      "city": "SAN DIEGO",
+      "state": "CA",
+      "zip": "92161",
+      "county": "SAN DIEGO",
+      "lat": 32.874072,
+      "lon": -117.231563,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "05127F",
+      "name": "LOMA LINDA VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "11201 BENTON STREET",
+      "city": "LOMA LINDA",
+      "state": "CA",
+      "zip": "92357",
+      "county": "SAN BERNARDINO",
+      "lat": 34.051019412141,
+      "lon": -117.252324232319,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "05128F",
+      "name": "VA GREATER LOS ANGELES HEALTHCARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "11301 WILSHIRE BLVD.",
+      "city": "LOS ANGELES",
+      "state": "CA",
+      "zip": "90073",
+      "county": "LOS ANGELES",
+      "lat": 34.05733,
+      "lon": -118.459534,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "05130F",
+      "name": "SAN FRANCISCO VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "4150 CLEMENT STREET",
+      "city": "SAN FRANCISCO",
+      "state": "CA",
+      "zip": "94121",
+      "county": "SAN FRANCISCO",
+      "lat": 37.781125699995,
+      "lon": -122.505409624345,
       "drg_charges": {},
       "charity_care_participant": false
     }

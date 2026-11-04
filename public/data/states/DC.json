@@ -2132,6 +2132,23 @@
         }
       },
       "charity_care_participant": false
+    },
+    {
+      "ccn": "09002F",
+      "name": "WASHINGTON DC VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "50 IRVING STREET N.W.",
+      "city": "WASHINGTON",
+      "state": "DC",
+      "zip": "20422",
+      "county": "THE DISTRICT",
+      "lat": 38.931125205408,
+      "lon": -77.010896114085,
+      "drg_charges": {},
+      "charity_care_participant": false
     }
   ]
 }

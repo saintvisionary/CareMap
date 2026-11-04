@@ -12823,6 +12823,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "03012F",
+      "name": "PHOENIX VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "650 E. INDIAN SCHOOL ROAD",
+      "city": "PHOENIX",
+      "state": "AZ",
+      "zip": "85012",
+      "county": "MARICOPA",
+      "lat": 33.494839576449,
+      "lon": -112.066785872032,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "030130",
       "name": "BANNER IRONWOOD MEDICAL CENTER",
       "type": "acute_care_hospital",
@@ -13039,6 +13056,23 @@
           "avg_charge": 46473
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "03013F",
+      "name": "VA S. ARIZONA HEALTHCARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "3601 SOUTH SIXTH AVENUE",
+      "city": "TUCSON",
+      "state": "AZ",
+      "zip": "85723",
+      "county": "PIMA",
+      "lat": 32.182108085359,
+      "lon": -110.968054322803,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -13454,6 +13488,24 @@
       "county": "YAVAPAI",
       "lat": 34.554176413665,
       "lon": -112.382239834295,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "03033F",
+      "name": "VA NORTHERN ARIZONA HEALTHCARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "500 HIGHWAY 89 NORTH",
+      "city": "PRESCOTT",
+      "state": "AZ",
+      "zip": "86313",
+      "county": "YAVAPAI",
+      "lat": 34.554222,
+      "lon": -112.452883,
+      "lat_lon_approximate": true,
       "drg_charges": {},
       "charity_care_participant": false
     }

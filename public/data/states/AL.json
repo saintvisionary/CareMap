@@ -9906,6 +9906,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "01014F",
+      "name": "BIRMINGHAM VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "700 SOUTH 19TH STREET",
+      "city": "BIRMINGHAM",
+      "state": "AL",
+      "zip": "35233",
+      "county": "JEFFERSON",
+      "lat": 33.505120096305,
+      "lon": -86.801302643246,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "010150",
       "name": "THE HEALTH CARE AUTHORITY OF THE CITY OF GREENVILLE- LV STABLER HOSPITAL",
       "type": "acute_care_hospital",
@@ -10158,6 +10175,40 @@
           "avg_charge": 23736
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "01019F",
+      "name": "VA CENTRAL ALABAMA HEALTHCARE SYSTEM - MONTGOMERY",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "215 PERRY HILL ROAD",
+      "city": "MONTGOMERY",
+      "state": "AL",
+      "zip": "36109",
+      "county": "MONTGOMERY",
+      "lat": 32.380424890678,
+      "lon": -86.246614285867,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "01021F",
+      "name": "TUSCALOOSA VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": null,
+      "address": "3701 LOOP ROAD EAST",
+      "city": "TUSCALOOSA",
+      "state": "AL",
+      "zip": "35404",
+      "county": "TUSCALOOSA",
+      "lat": 33.19305964926,
+      "lon": -87.488591341934,
+      "drg_charges": {},
       "charity_care_participant": false
     }
   ]

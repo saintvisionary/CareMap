@@ -4431,6 +4431,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "26004F",
+      "name": "KANSAS CITY VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "4801 LINWOOD BLVD.",
+      "city": "KANSAS CITY",
+      "state": "MO",
+      "zip": "64128",
+      "county": "JACKSON",
+      "lat": 39.067204374738,
+      "lon": -94.527764351298,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "260052",
       "name": "MERCY HOSPITAL WASHINGTON",
       "type": "acute_care_hospital",
@@ -6580,6 +6597,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "26007F",
+      "name": "POPLAR BLUFF VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": null,
+      "address": "1500 N. WESTWOOD BLVD.",
+      "city": "POPLAR BLUFF",
+      "state": "MO",
+      "zip": "63901",
+      "county": "BUTLER",
+      "lat": 36.771509748156,
+      "lon": -90.417944387679,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "260081",
       "name": "SSM ST CLARE HEALTH CENTER",
       "type": "acute_care_hospital",
@@ -8111,6 +8145,23 @@
           "avg_charge": 23585
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "26009F",
+      "name": "ST LOUIS-JOHN COCHRAN VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "915 NORTH GRAND",
+      "city": "ST. LOUIS",
+      "state": "MO",
+      "zip": "63106",
+      "county": "ST. LOUIS",
+      "lat": 38.641421430338,
+      "lon": -90.229929607926,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -14320,6 +14371,23 @@
           "avg_charge": 31107
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "26023F",
+      "name": "COLUMBIA MO VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "800 HOSPITAL DR",
+      "city": "COLUMBIA",
+      "state": "MO",
+      "zip": "65201",
+      "county": "BOONE",
+      "lat": 38.937540298422,
+      "lon": -92.328529579632,
+      "drg_charges": {},
       "charity_care_participant": false
     }
   ]

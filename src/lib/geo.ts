@@ -1,3 +1,4 @@
+import type { InsuranceType } from "./intake";
 import type { Facility, Tier, ZipCentroid } from "./types";
 
 export function haversineMiles(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -53,11 +54,17 @@ export function facilitiesNear(
 /** Tier color for a facility given the user's own patient_pays_pct (NJ Charity
  * Care is a statewide formula, so it's the same percent at every participating
  * NJ hospital -- color reflects whether the program applies here at all).
- * insured=true always wins: Charity Care is uninsured/underinsured only, so
- * an insured person never gets a charity-care price here, regardless of
- * income -- that's a distinct state from "we don't know your income yet". */
-export function facilityTier(facility: Facility, patientPaysPct: number | null, insured: boolean | null): Tier {
-  if (insured === true) return "insured";
+ * Any insuranceType other than "uninsured" (or not yet given) always wins:
+ * Charity Care applies only to the uninsured/underinsured, so anyone with
+ * Medicaid, Medicare, private coverage, VA/Tricare, or "not sure" never gets
+ * a charity-care price here, regardless of income -- that's a distinct
+ * state from "we don't know your income yet". */
+export function facilityTier(
+  facility: Facility,
+  patientPaysPct: number | null,
+  insuranceType: InsuranceType | null,
+): Tier {
+  if (insuranceType != null && insuranceType !== "uninsured") return "insured";
   if (facility.state !== "NJ" || !facility.charity_care_participant) return "unknown";
   if (patientPaysPct == null) return "unknown";
   if (patientPaysPct <= 0) return "free";

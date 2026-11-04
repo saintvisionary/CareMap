@@ -7574,6 +7574,41 @@
       "lon": -89.414732502246,
       "drg_charges": {},
       "charity_care_participant": false
+    },
+    {
+      "ccn": "25042F",
+      "name": "VA GULF COAST HEALTHCARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "400 VETERANS AVENUE",
+      "city": "BILOXI",
+      "state": "MS",
+      "zip": "39531",
+      "county": "HARRISON",
+      "lat": 30.412897609411,
+      "lon": -88.946029705891,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "25043F",
+      "name": "G. V. (SONNY) MONTGOMERY VA MEDICAL CENTER (JACKSON)",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "1500 E. WOODROW WILSON DRIVE",
+      "city": "JACKSON",
+      "state": "MS",
+      "zip": "39216",
+      "county": "HINDS",
+      "lat": 32.335241,
+      "lon": -90.161417,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": false
     }
   ]
 }

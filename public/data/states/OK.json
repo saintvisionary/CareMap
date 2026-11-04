@@ -7652,6 +7652,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "37012F",
+      "name": "MUSKOGEE VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "1011 HONOR HEIGHTS DRIVE",
+      "city": "MUSKOGEE",
+      "state": "OK",
+      "zip": "74401",
+      "county": "MUSKOGEE",
+      "lat": 35.763926249638,
+      "lon": -95.413268098668,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "370149",
       "name": "SSM HEALTH ST ANTHONY HOSPITAL - SHAWNEE",
       "type": "acute_care_hospital",
@@ -7763,6 +7780,23 @@
           "avg_charge": 20952
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "37014F",
+      "name": "OKLAHOMA CITY VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "921 NE 13TH STREET",
+      "city": "OKLAHOMA CITY",
+      "state": "OK",
+      "zip": "73104",
+      "county": "OKLAHOMA",
+      "lat": 35.482461926743,
+      "lon": -97.496507189034,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {

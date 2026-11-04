@@ -1083,6 +1083,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "52002F",
+      "name": "TOMAH VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": null,
+      "address": "500 EAST VETERANS STREET",
+      "city": "TOMAH",
+      "state": "WI",
+      "zip": "54660",
+      "county": "MONROE",
+      "lat": 44.000993111808,
+      "lon": -90.509202550209,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "520030",
       "name": "ASPIRUS WAUSAU HOSPITAL",
       "type": "acute_care_hospital",
@@ -1951,6 +1968,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "52003F",
+      "name": "MILWAUKEE VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "5000 W. NATIONAL AVENUE",
+      "city": "MILWAUKEE",
+      "state": "WI",
+      "zip": "53295",
+      "county": "MILWAUKEE",
+      "lat": 43.020268571228,
+      "lon": -87.972172511791,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "520041",
       "name": "ASPIRUS DIVINE SAVIOR HOSPITAL",
       "type": "acute_care_hospital",
@@ -2257,6 +2291,23 @@
           "avg_charge": 16721
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "52004F",
+      "name": "MADISON VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "2500 OVERLOOK TERRACE",
+      "city": "MADISON",
+      "state": "WI",
+      "zip": "53705",
+      "county": "DANE",
+      "lat": 43.074013602825,
+      "lon": -89.428971349434,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {

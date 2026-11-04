@@ -2184,6 +2184,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "39001F",
+      "name": "JAMES E. VAN ZANDT VA MEDICAL CENTER (ALTOONA)",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": 5,
+      "address": "2907 PLEASANT VALLEY BOULEVARD",
+      "city": "ALTOONA",
+      "state": "PA",
+      "zip": "16602",
+      "county": "BLAIR",
+      "lat": 40.490217537891,
+      "lon": -78.397677895885,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "390025",
       "name": "KENSINGTON HOSPITAL",
       "type": "acute_care_hospital",
@@ -6649,6 +6666,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "39004F",
+      "name": "COATESVILLE VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": null,
+      "address": "1400 BLACK HORSE HILL ROAD",
+      "city": "COATESVILLE",
+      "state": "PA",
+      "zip": "19320",
+      "county": "CHESTER",
+      "lat": 39.998616527274,
+      "lon": -75.800499388978,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "390050",
       "name": "ALLEGHENY GENERAL HOSPITAL",
       "type": "acute_care_hospital",
@@ -7662,6 +7696,23 @@
           "avg_charge": 15039
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "39005F",
+      "name": "ERIE VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": null,
+      "address": "135 EAST 38TH STREET",
+      "city": "ERIE",
+      "state": "PA",
+      "zip": "16504",
+      "county": "ERIE",
+      "lat": 42.102912912318,
+      "lon": -80.064825110504,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -9210,6 +9261,23 @@
           "avg_charge": 34187
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "39006F",
+      "name": "LEBANON VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "1700 SOUTH LINCOLN AVENUE",
+      "city": "LEBANON",
+      "state": "PA",
+      "zip": "17042",
+      "county": "LEBANON",
+      "lat": 40.313111341501,
+      "lon": -76.407362190878,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -10866,6 +10934,23 @@
           "avg_charge": 27487
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "39009F",
+      "name": "PHILADELPHIA VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "3900 WOODLAND AVENUE",
+      "city": "PHILADELPHIA",
+      "state": "PA",
+      "zip": "19104",
+      "county": "PHILADELPHIA",
+      "lat": 39.949686794261,
+      "lon": -75.201452395459,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -14675,6 +14760,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "39012F",
+      "name": "VA PITTSBURGH HEALTHCARE SYSTEM - UNIV DR",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "UNIVERSITY DRIVE",
+      "city": "PITTSBURGH",
+      "state": "PA",
+      "zip": "15240",
+      "county": "ALLEGHENY",
+      "lat": null,
+      "lon": null,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "390133",
       "name": "LEHIGH VALLEY HOSPITAL",
       "type": "acute_care_hospital",
@@ -16596,6 +16698,23 @@
           "avg_charge": 78933
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "39013F",
+      "name": "WILKES BARRE VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "1111 EAST END BOULEVARD",
+      "city": "WILKES-BARRE",
+      "state": "PA",
+      "zip": "18711",
+      "county": "LUZERNE",
+      "lat": 41.249261999311,
+      "lon": -75.836187727424,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {

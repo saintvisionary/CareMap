@@ -26047,6 +26047,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "45060F",
+      "name": "VA AMARILLO HEALTHCARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "6010 AMARILLO BLVD. WEST",
+      "city": "AMARILLO",
+      "state": "TX",
+      "zip": "79106",
+      "county": "POTTER",
+      "lat": 35.202807694345,
+      "lon": -101.90570426805,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "450610",
       "name": "MEMORIAL HERMANN MEMORIAL CITY HOSPITAL",
       "type": "acute_care_hospital",
@@ -29680,6 +29697,23 @@
           "avg_charge": 78797
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "45066F",
+      "name": "DALLAS VA MEDICAL CENTER (VA NORTH TEXAS HEALTHCARE SYSTEM)",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "4500 S. LANCASTER ROAD",
+      "city": "DALLAS",
+      "state": "TX",
+      "zip": "75216",
+      "county": "DALLAS",
+      "lat": 32.691659746987,
+      "lon": -96.791887868321,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -33582,6 +33616,23 @@
           "avg_charge": 55023
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "45074F",
+      "name": "HOUSTON VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "2002 HOLCOMBE BLVD.",
+      "city": "HOUSTON",
+      "state": "TX",
+      "zip": "77030",
+      "county": "HARRIS",
+      "lat": 29.705917076104,
+      "lon": -95.390066952977,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -38313,6 +38364,24 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "45086F",
+      "name": "TEMPLE VA MEDICAL CENTER (VA CENTRAL TEXAS HEALTHCARE SYSTEM)",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "1901 VETERANS MEMORIAL DRIVE",
+      "city": "TEMPLE",
+      "state": "TX",
+      "zip": "76504",
+      "county": "BELL",
+      "lat": 31.142333,
+      "lon": -97.374637,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "450872",
       "name": "USMD HOSPITAL AT ARLINGTON L P",
       "type": "acute_care_hospital",
@@ -39115,6 +39184,23 @@
       "county": "DENTON",
       "lat": 33.175782679931,
       "lon": -97.088210031776,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "45090F",
+      "name": "SAN ANTONIO VA MEDICAL CENTER (VA SOUTH TEXAS HEALTHCARE SYSTEM)",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "7400 MERTON MINTER BLVD.",
+      "city": "SAN ANTONIO",
+      "state": "TX",
+      "zip": "78229",
+      "county": "BEXAR",
+      "lat": 29.508351116754,
+      "lon": -98.580918956265,
       "drg_charges": {},
       "charity_care_participant": false
     },

@@ -2,6 +2,7 @@ import * as maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef } from "react";
 import { facilityTier, TIER_COLORS, type FacilityWithDistance } from "../lib/geo";
+import type { InsuranceType } from "../lib/intake";
 import type { MapFlyTo } from "../hooks/useCareMap";
 
 const STYLE_URL = "https://tiles.openfreemap.org/styles/dark";
@@ -9,13 +10,13 @@ const STYLE_URL = "https://tiles.openfreemap.org/styles/dark";
 interface MapViewProps {
   facilities: FacilityWithDistance[];
   tierPct: number | null;
-  insured: boolean | null;
+  insuranceType: InsuranceType | null;
   flyTo: MapFlyTo | null;
   activeCcn: string | null;
   onSelectFacility: (ccn: string) => void;
 }
 
-export function MapView({ facilities, tierPct, insured, flyTo, activeCcn, onSelectFacility }: MapViewProps) {
+export function MapView({ facilities, tierPct, insuranceType, flyTo, activeCcn, onSelectFacility }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map());
@@ -51,7 +52,7 @@ export function MapView({ facilities, tierPct, insured, flyTo, activeCcn, onSele
 
     facilities.forEach((f, i) => {
       if (f.lat == null || f.lon == null) return;
-      const tier = facilityTier(f, tierPct, insured);
+      const tier = facilityTier(f, tierPct, insuranceType);
       // MapLibre sets a positioning `transform` directly on this outer element;
       // the pop-in animation must live on a child instead, or it clobbers that
       // transform and every marker collapses to (0,0).
@@ -61,6 +62,9 @@ export function MapView({ facilities, tierPct, insured, flyTo, activeCcn, onSele
       dot.className = "caremap-marker";
       dot.style.backgroundColor = TIER_COLORS[tier];
       dot.style.animationDelay = `${i * 70}ms`;
+      // VA hospitals get a visually distinct ring regardless of cost tier --
+      // facility category and cost tier are separate pieces of information.
+      if (f.type === "va_hospital") dot.style.boxShadow = "0 0 0 4px rgba(56, 189, 248, 0.6)";
       el.appendChild(dot);
       el.addEventListener("click", () => onSelectFacility(f.ccn));
 
@@ -69,7 +73,7 @@ export function MapView({ facilities, tierPct, insured, flyTo, activeCcn, onSele
         .addTo(map);
       markersRef.current.set(f.ccn, marker);
     });
-  }, [facilities, tierPct, insured, onSelectFacility]);
+  }, [facilities, tierPct, insuranceType, onSelectFacility]);
 
   useEffect(() => {
     for (const [ccn, marker] of markersRef.current.entries()) {

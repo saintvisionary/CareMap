@@ -2446,6 +2446,24 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "22001F",
+      "name": "BEDFORD VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": null,
+      "address": "200 SPRINGS ROAD",
+      "city": "BEDFORD",
+      "state": "MA",
+      "zip": "01730",
+      "county": "MIDDLESEX",
+      "lat": 42.499332,
+      "lon": -71.281901,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "220020",
       "name": "SAINT ANNE'S HOSPITAL",
       "type": "acute_care_hospital",
@@ -12451,6 +12469,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "22009F",
+      "name": "NORTHAMPTON VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": null,
+      "address": "421 N MAIN ST",
+      "city": "LEEDS",
+      "state": "MA",
+      "zip": "01053",
+      "county": "HAMPSHIRE",
+      "lat": 42.346066840147,
+      "lon": -72.683841567985,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "220100",
       "name": "SOUTH SHORE HOSPITAL",
       "type": "acute_care_hospital",
@@ -14488,6 +14523,23 @@
           "avg_charge": 14467
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "22010F",
+      "name": "VA BOSTON HEALTHCARE SYSTEM - JAMAICA PLAIN",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "150 S. HUNTINGTON AVENUE",
+      "city": "JAMAICA PLAIN",
+      "state": "MA",
+      "zip": "02130",
+      "county": "SUFFOLK",
+      "lat": 42.327440551062,
+      "lon": -71.110902872489,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {

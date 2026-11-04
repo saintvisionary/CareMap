@@ -3478,6 +3478,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "14003F",
+      "name": "JESSE BROWN VA MEDICAL CENTER - VA CHICAGO HEALTHCARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "820 S DAMEN STREET",
+      "city": "CHICAGO",
+      "state": "IL",
+      "zip": "60612",
+      "county": "COOK",
+      "lat": 41.871191351939,
+      "lon": -87.676451946646,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "140043",
       "name": "CGH MEDICAL CENTER",
       "type": "acute_care_hospital",
@@ -4235,6 +4252,23 @@
           "avg_charge": 87244
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "14004F",
+      "name": "VA ILLIANA HEALTHCARE SYSTEM - DANVILLE",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": null,
+      "address": "1900 E. MAIN",
+      "city": "DANVILLE",
+      "state": "IL",
+      "zip": "61832",
+      "county": "VERMILION",
+      "lat": 40.131729958642,
+      "lon": -87.593130024884,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -7011,6 +7045,24 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "14007F",
+      "name": "HINES VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "5000 SOUTH 5TH AVENUE",
+      "city": "HINES",
+      "state": "IL",
+      "zip": "60141",
+      "county": "COOK",
+      "lat": 41.858344,
+      "lon": -87.83791,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "140080",
       "name": "SAINT FRANCIS HOSPITAL-EVANSTON",
       "type": "acute_care_hospital",
@@ -8120,6 +8172,23 @@
           "avg_charge": 22630
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "14008F",
+      "name": "MARION IL VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "2401 WEST MAIN",
+      "city": "MARION",
+      "state": "IL",
+      "zip": "62959",
+      "county": "WILLIAMSON",
+      "lat": 37.730079338766,
+      "lon": -88.954029733389,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -27573,6 +27642,23 @@
       "lat": 42.230279,
       "lon": -88.329654,
       "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "14034F",
+      "name": "NORTH CHICAGO VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "3001 GREENBAY ROAD",
+      "city": "NORTH CHICAGO",
+      "state": "IL",
+      "zip": "60064",
+      "county": "LAKE",
+      "lat": 42.308545597118,
+      "lon": -87.862450099636,
       "drg_charges": {},
       "charity_care_participant": false
     }

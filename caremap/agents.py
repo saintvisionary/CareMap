@@ -16,7 +16,9 @@ Privacy: caremap.intake.redact() runs BEFORE any of this, stripping raw
 income/household size out of the user's message and replacing them with a
 pre-computed tier_pct (hard rule: "Income/household size stay in
 browser. Agent gets only tier + facility IDs."). Only the redacted message
-and the tier_pct/zip/insured hints are ever put in a prompt here.
+and the tier_pct/zip/insurance_type/veteran hints are ever put in a prompt
+here -- insurance_type is a public coverage category (e.g. "medicaid"),
+never a plan name or member ID.
 """
 from __future__ import annotations
 
@@ -38,16 +40,31 @@ affordable care near them in the US.
 You receive a redacted version of the user's message: any exact dollar
 income or household size has already been removed and replaced with
 "[income redacted]" / "[household redacted]". You may also receive a
-pre-computed tier_pct, a zip code, and an insured flag. NEVER ask the user to
-repeat their exact income or household size, and never guess a dollar income
-or household size yourself.
+pre-computed tier_pct, a zip code, an insurance_type category, and a
+veteran flag. NEVER ask the user to repeat their exact income or household
+size, and never guess a dollar income or household size yourself.
 
-If insured is true, NJ Charity Care does NOT apply to this person (the
-program is for uninsured/underinsured patients only) -- never claim a tier,
-a "$0", or any charity-care price for them, even if a tier_pct happens to
-be present. Tell them to contact their insurer for their specific copay or
-deductible. You may still share a typical billed charge as a neutral
-reference point if they ask about cost.
+insurance_type is a public coverage category, never PII -- one of
+"uninsured", "medicaid", "medicare", "private", "va_tricare", "unsure".
+NJ Charity Care applies ONLY when insurance_type is "uninsured" (per its
+own rule: uninsured/underinsured AND not Medicaid-eligible). For any other
+value, never claim a tier, a "$0", or any charity-care price, even if a
+tier_pct happens to be present:
+- medicaid: Medicaid generally covers hospital care at little to no direct
+  cost; point them to their Medicaid plan for billing questions.
+- medicare: point them to Medicare or their Medicare Advantage plan.
+- private: point them to their insurer for their specific copay/deductible.
+- va_tricare: mention care through the VA system is an option; point them
+  to Tricare for costs outside it.
+- unsure / not given: say Charity Care applies only if uninsured/underinsured,
+  and ask them to confirm their coverage status for a personal estimate.
+You may still share a typical billed charge as a neutral reference point
+regardless of insurance_type if they ask about cost.
+
+If veteran is true, mention that VA facilities (shown as a distinct type in
+facilities_near / facilities_with_drg results) may be worth considering,
+regardless of their insurance_type -- not every veteran is VA-enrolled, so
+this is independent of whether insurance_type is "va_tricare".
 
 Use your tools as needed:
 - fpl_percent, nj_charity_tier: only if you have income/household info the
@@ -109,8 +126,9 @@ def _prompt_for(hint: IntakeHint) -> str:
     context = [f"User message (redacted): {hint.redacted_message}"]
     if hint.zip_code:
         context.append(f"zip_code: {hint.zip_code}")
-    if hint.insured is not None:
-        context.append(f"insured: {hint.insured}")
+    if hint.insurance_type is not None:
+        context.append(f"insurance_type: {hint.insurance_type}")
+    context.append(f"veteran: {hint.veteran}")
     if hint.tier_pct is not None:
         context.append(f"tier_pct (already computed, NJ Charity Care): {hint.tier_pct}")
     return "\n".join(context)
@@ -121,17 +139,19 @@ def handle_message(
     orchestrator: Orchestrator | None = None,
     model=None,
     zip_code: str | None = None,
-    insured: bool | None = None,
+    insurance_type: str | None = None,
+    veteran: bool | None = None,
     tier_pct: float | None = None,
 ) -> dict:
     """Entry point for the Lambda handler. Redacts, then runs the Orchestrator.
 
-    zip_code/insured/tier_pct are hints the caller already computed
-    client-side (the browser's own redact() pass) and sent as separate
-    fields alongside the redacted message text -- they take precedence over
-    anything redact() re-derives from the message text here, since the
-    message text alone may not restate them (e.g. a guided-form submission
-    where the frontend sends the zip as structured data, not prose).
+    zip_code/insurance_type/veteran/tier_pct are hints the caller already
+    computed client-side (the browser's own redact() pass) and sent as
+    separate fields alongside the redacted message text -- they take
+    precedence over anything redact() re-derives from the message text
+    here, since the message text alone may not restate them (e.g. a
+    guided-form submission where the frontend sends the zip as structured
+    data, not prose).
 
     Returns {reply, map_commands, audit, guard} -- audit/guard are for the
     grounding-hook log, not shown to the user.
@@ -140,8 +160,10 @@ def handle_message(
     hint = redact(message)
     if zip_code is not None:
         hint.zip_code = zip_code
-    if insured is not None:
-        hint.insured = insured
+    if insurance_type is not None:
+        hint.insurance_type = insurance_type  # type: ignore[assignment]
+    if veteran is not None:
+        hint.veteran = veteran
     if tier_pct is not None:
         hint.tier_pct = tier_pct
     prompt = _prompt_for(hint)

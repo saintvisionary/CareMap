@@ -1784,6 +1784,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "43002F",
+      "name": "VA BLACK HILLS HEALTHCARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "113 COMANCHE ROAD",
+      "city": "FORT MEADE",
+      "state": "SD",
+      "zip": "57741",
+      "county": "MEADE",
+      "lat": 44.412043099396,
+      "lon": -103.467736862421,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "430048",
       "name": "MONUMENT HEALTH SPEARFISH HOSPITAL",
       "type": "acute_care_hospital",
@@ -1823,6 +1840,23 @@
           "avg_charge": 40916
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "43005F",
+      "name": "SIOUX FALLS VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "2501 WEST 22ND STREET",
+      "city": "SIOUX FALLS",
+      "state": "SD",
+      "zip": "57117",
+      "county": "MINNEHAHA",
+      "lat": 43.532987962874,
+      "lon": -96.757638949529,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {

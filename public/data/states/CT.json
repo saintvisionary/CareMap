@@ -6480,6 +6480,23 @@
       "lon": -72.833182534273,
       "drg_charges": {},
       "charity_care_participant": false
+    },
+    {
+      "ccn": "07003F",
+      "name": "WEST HAVEN VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "950 CAMPBELL AVENUE",
+      "city": "WEST HAVEN",
+      "state": "CT",
+      "zip": "06516",
+      "county": "NEW HAVEN",
+      "lat": 41.284682926489,
+      "lon": -72.957475075687,
+      "drg_charges": {},
+      "charity_care_participant": false
     }
   ]
 }

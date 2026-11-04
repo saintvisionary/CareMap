@@ -12,7 +12,7 @@ type Mode = "guided" | "chat";
 
 export default function App() {
   const { facilities: allFacilities, zipCentroids, loading: dataLoading, error } = useCareMapData();
-  const { messages, facilities, tierPct, insured, flyTo, loading, sendMessage } = useCareMap(allFacilities, zipCentroids);
+  const { messages, facilities, tierPct, insuranceType, flyTo, loading, sendMessage } = useCareMap(allFacilities, zipCentroids);
   const [activeCcn, setActiveCcn] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("guided");
 
@@ -33,7 +33,7 @@ export default function App() {
       <MapView
         facilities={facilities}
         tierPct={tierPct}
-        insured={insured}
+        insuranceType={insuranceType}
         flyTo={flyTo}
         activeCcn={activeCcn}
         onSelectFacility={setActiveCcn}
@@ -60,7 +60,7 @@ export default function App() {
                 key={f.ccn}
                 facility={f}
                 tierPct={tierPct}
-                insured={insured}
+                insuranceType={insuranceType}
                 need={need}
                 index={i}
                 active={f.ccn === activeCcn}

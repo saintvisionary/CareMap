@@ -114,7 +114,7 @@ def facilities_near(zip_code: str, radius_miles: float = 15, types: list[str] | 
     Args:
         zip_code: 5-digit US zip code.
         radius_miles: Search radius in miles (default 15).
-        types: Optional filter, any of "acute_care_hospital", "fqhc".
+        types: Optional filter, any of "acute_care_hospital", "va_hospital", "fqhc".
     """
     matches = facility_data.facilities_near(zip_code, radius_miles=radius_miles, types=types)
     return {"zip_code": zip_code, "radius_miles": radius_miles, "facilities": matches}

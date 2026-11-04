@@ -17971,6 +17971,57 @@
       "lon": -83.488209927414,
       "drg_charges": {},
       "charity_care_participant": false
+    },
+    {
+      "ccn": "11029F",
+      "name": "DECATUR (ATLANTA) VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "1670 CLAIRMONT ROAD",
+      "city": "DECATUR",
+      "state": "GA",
+      "zip": "30033",
+      "county": "DE KALB",
+      "lat": 33.802760767333,
+      "lon": -84.31049138259,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "11030F",
+      "name": "AUGUSTA VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "1 FREEDOM WAY",
+      "city": "AUGUSTA",
+      "state": "GA",
+      "zip": "30904",
+      "county": "RICHMOND",
+      "lat": 33.468383911176,
+      "lon": -82.025380142148,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "11031F",
+      "name": "DUBLIN VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": null,
+      "address": "1826 VETERANS BOULEVARD",
+      "city": "DUBLIN",
+      "state": "GA",
+      "zip": "31021",
+      "county": "LAURENS",
+      "lat": 32.540677585747,
+      "lon": -82.946848267241,
+      "drg_charges": {},
+      "charity_care_participant": false
     }
   ]
 }

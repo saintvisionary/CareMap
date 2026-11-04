@@ -10,13 +10,22 @@ If a message states both a dollar income and a household size (e.g. "family
 of 4, $52k"), we compute the NJ Charity Care tier right here and strip the
 raw numbers out of the text before anything downstream -- an Intake agent, an
 Eligibility agent, an audit log -- ever sees it.
+
+Insurance is a category, not a yes/no: NJ Charity Care's actual rule is
+"uninsured/underinsured and not Medicaid-eligible", so Medicaid needs its
+own answer (not a tier), distinct from "privately insured" or "not sure".
+No PII here -- these are public coverage-type categories, never a plan
+name, member ID, or similar identifying detail.
 """
 from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from typing import Literal
 
 from . import policy
+
+InsuranceType = Literal["uninsured", "medicaid", "medicare", "private", "va_tricare", "unsure"]
 
 _ZIP = re.compile(r"\b(\d{5})\b")
 _DOLLAR_K = re.compile(r"\$\s?(\d+(?:\.\d+)?)\s*k\b", re.IGNORECASE)
@@ -25,14 +34,25 @@ _DOLLAR = re.compile(r"\$\s?(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)\b")
 _HOUSEHOLD = re.compile(
     r"family of (\d+)|household of (\d+)|(\d+)[\s-]*person household", re.IGNORECASE
 )
-_UNINSURED = re.compile(r"\buninsured\b", re.IGNORECASE)
-_INSURED = re.compile(r"\binsured\b", re.IGNORECASE)
+_VETERAN = re.compile(r"\bveteran\b", re.IGNORECASE)
+
+# Order matters: checked top to bottom, first match wins. "uninsured" must
+# come before "insured" since the plain word "insured" is a substring of it.
+_INSURANCE_PATTERNS: list[tuple[InsuranceType, re.Pattern[str]]] = [
+    ("uninsured", re.compile(r"\buninsured\b", re.IGNORECASE)),
+    ("medicaid", re.compile(r"\bmedicaid\b", re.IGNORECASE)),
+    ("medicare", re.compile(r"\bmedicare\b", re.IGNORECASE)),
+    ("va_tricare", re.compile(r"\btricare\b|\bva (coverage|insurance|health|benefits)\b|\bveterans? affairs\b", re.IGNORECASE)),
+    ("unsure", re.compile(r"\b(not sure|unsure|don't know|dont know)\b.*\binsur", re.IGNORECASE)),
+    ("private", re.compile(r"\b(private insurance|privately insured|\binsured\b)", re.IGNORECASE)),
+]
 
 
 @dataclass
 class IntakeHint:
     zip_code: str | None
-    insured: bool | None
+    insurance_type: InsuranceType | None
+    veteran: bool
     tier_pct: float | None
     redacted_message: str
 
@@ -55,15 +75,19 @@ def _parse_household_size(text: str) -> tuple[int, str] | None:
     return int(size), m.group(0)
 
 
+def _parse_insurance_type(text: str) -> InsuranceType | None:
+    for insurance_type, pattern in _INSURANCE_PATTERNS:
+        if pattern.search(text):
+            return insurance_type
+    return None
+
+
 def redact(message: str) -> IntakeHint:
     zip_match = _ZIP.search(message)
     zip_code = zip_match.group(1) if zip_match else None
 
-    insured: bool | None = None
-    if _UNINSURED.search(message):
-        insured = False
-    elif _INSURED.search(message):
-        insured = True
+    insurance_type = _parse_insurance_type(message)
+    veteran = bool(_VETERAN.search(message))
 
     redacted = message
     tier_pct = None
@@ -72,15 +96,22 @@ def redact(message: str) -> IntakeHint:
     if dollar and household:
         income, dollar_span = dollar
         size, household_span = household
-        # NJ Charity Care only applies to uninsured/underinsured patients --
-        # an insured person gets no tier at all, not a $0 one. Raw numbers
-        # are still redacted either way; only whether a tier is exposed
-        # changes.
-        if insured is not True:
+        # NJ Charity Care applies only to the uninsured/underinsured -- any
+        # other category (including Medicaid, per policy.json's own "not
+        # Medicaid-eligible" rule) gets no tier at all, not a $0 one. Raw
+        # numbers are still redacted either way; only whether a tier is
+        # exposed changes.
+        if insurance_type == "uninsured":
             fpl_pct = policy.fpl_percent(income, size)
             tier = policy.nj_charity_tier(fpl_pct)
             tier_pct = tier["patient_pays_pct"]
         redacted = redacted.replace(dollar_span, "[income redacted]")
         redacted = redacted.replace(household_span, "[household redacted]")
 
-    return IntakeHint(zip_code=zip_code, insured=insured, tier_pct=tier_pct, redacted_message=redacted)
+    return IntakeHint(
+        zip_code=zip_code,
+        insurance_type=insurance_type,
+        veteran=veteran,
+        tier_pct=tier_pct,
+        redacted_message=redacted,
+    )

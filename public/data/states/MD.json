@@ -14891,6 +14891,41 @@
         }
       },
       "charity_care_participant": false
+    },
+    {
+      "ccn": "21010F",
+      "name": "VA MARYLAND HEALTHCARE SYSTEM - PERRY POINT",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": null,
+      "address": "VA MEDICAL CENTER",
+      "city": "PERRY POINT",
+      "state": "MD",
+      "zip": "21902",
+      "county": "CECIL",
+      "lat": 39.552352,
+      "lon": -76.063758,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "21020F",
+      "name": "VA MARYLAND HEALTHCARE SYSTEM - BALTIMORE",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "10 NORTH GREENE STREET",
+      "city": "BALTIMORE",
+      "state": "MD",
+      "zip": "21201",
+      "county": "BALTIMORE CITY",
+      "lat": 39.2893214973,
+      "lon": -76.623776529435,
+      "drg_charges": {},
+      "charity_care_participant": false
     }
   ]
 }

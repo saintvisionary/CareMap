@@ -3245,6 +3245,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "51002F",
+      "name": "BECKLEY VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "200 VETERANS AVENUE",
+      "city": "BECKLEY",
+      "state": "WV",
+      "zip": "25801",
+      "county": "RALEIGH",
+      "lat": 37.765749118286,
+      "lon": -81.192448124003,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "510030",
       "name": "DAVIS MEDICAL CENTER",
       "type": "acute_care_hospital",
@@ -3358,6 +3375,23 @@
           "avg_charge": 45442
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "51003F",
+      "name": "CLARKSBURG VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "1 MEDICAL CENTER DRIVE",
+      "city": "CLARKSBURG",
+      "state": "WV",
+      "zip": "26301",
+      "county": "HARRISON",
+      "lat": 39.269507906218,
+      "lon": -80.362642768656,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -3650,6 +3684,23 @@
           "avg_charge": 33365
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "51004F",
+      "name": "HUNTINGTON VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "1540 SPRING VALLEY ROAD",
+      "city": "HUNTINGTON",
+      "state": "WV",
+      "zip": "25704",
+      "county": "WAYNE",
+      "lat": 38.38401521052,
+      "lon": -82.518091341231,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -4537,6 +4588,23 @@
           "avg_charge": 26110
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "51005F",
+      "name": "MARTINSBURG VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "510 BUTLER AVE.",
+      "city": "MARTINSBURG",
+      "state": "WV",
+      "zip": "25405",
+      "county": "BERKELEY",
+      "lat": 39.413778556405,
+      "lon": -77.913362731643,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {

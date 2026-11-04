@@ -2684,6 +2684,24 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "24002F",
+      "name": "ST CLOUD VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": null,
+      "address": "4801 VETERANS DRIVE",
+      "city": "ST. CLOUD",
+      "state": "MN",
+      "zip": "56303",
+      "county": "STEARNS",
+      "lat": 45.574017,
+      "lon": -94.215271,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "240030",
       "name": "ALOMERE HEALTH",
       "type": "acute_care_hospital",
@@ -3819,6 +3837,23 @@
           "avg_charge": 73204
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "24003F",
+      "name": "MINNEAPOLIS VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "ONE VETERANS DRIVE",
+      "city": "MINNEAPOLIS",
+      "state": "MN",
+      "zip": "55417",
+      "county": "HENNEPIN",
+      "lat": 44.901951033563,
+      "lon": -93.203969985519,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {

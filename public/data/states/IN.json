@@ -4375,6 +4375,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "15003F",
+      "name": "INDIANAPOLIS VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "1481 W. TENTH STREET",
+      "city": "INDIANAPOLIS",
+      "state": "IN",
+      "zip": "46202",
+      "county": "MARION",
+      "lat": 39.779687351801,
+      "lon": -86.187395824804,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "150042",
       "name": "GOOD SAMARITAN HOSPITAL",
       "type": "acute_care_hospital",
@@ -5472,6 +5489,23 @@
           "avg_charge": 60757
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "15004F",
+      "name": "VA N. INDIANA HEALTHCARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "1700 E. 38TH STREET",
+      "city": "MARION",
+      "state": "IN",
+      "zip": "46953",
+      "county": "GRANT",
+      "lat": 40.523703229003,
+      "lon": -85.637207225707,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {

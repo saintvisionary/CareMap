@@ -9176,6 +9176,57 @@
       "lat_lon_approximate": true,
       "drg_charges": {},
       "charity_care_participant": false
+    },
+    {
+      "ccn": "19043F",
+      "name": "ALEXANDRIA VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": null,
+      "address": "2495 SHREVEPORT HIGHWAY 71 N",
+      "city": "PINEVILLE",
+      "state": "LA",
+      "zip": "71360",
+      "county": "RAPIDES",
+      "lat": 31.354292382011,
+      "lon": -92.434043175994,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "19047F",
+      "name": "SOUTHEAST LOUISIANA VETERANS HEALTH CARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "2400 CANAL STREET",
+      "city": "NEW ORLEANS",
+      "state": "LA",
+      "zip": "70119",
+      "county": "ORLEANS",
+      "lat": 29.963226548616,
+      "lon": -90.084144755355,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "19048F",
+      "name": "OVERTON BROOKS VA MEDICAL CENTER (SHREVEPORT)",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "510 EAST STONER AVENUE",
+      "city": "SHREVEPORT",
+      "state": "LA",
+      "zip": "71101",
+      "county": "CADDO",
+      "lat": 32.500048444512,
+      "lon": -93.721942465316,
+      "drg_charges": {},
+      "charity_care_participant": false
     }
   ]
 }

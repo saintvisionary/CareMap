@@ -1570,6 +1570,24 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "27003F",
+      "name": "VA MONTANA HEALTHCARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "3687 VETERANS DRIVE",
+      "city": "FORT HARRISON",
+      "state": "MT",
+      "zip": "59636",
+      "county": "LEWIS AND CLARK",
+      "lat": 46.61614,
+      "lon": -112.114018,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "270049",
       "name": "INTERMOUNTAIN HEALTH ST VINCENT REGIONAL HOSPITAL",
       "type": "acute_care_hospital",

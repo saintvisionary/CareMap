@@ -11942,6 +11942,40 @@
         }
       },
       "charity_care_participant": false
+    },
+    {
+      "ccn": "42011F",
+      "name": "COLUMBIA SC VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "6439 GARNERS FERRY ROAD",
+      "city": "COLUMBIA",
+      "state": "SC",
+      "zip": "29209",
+      "county": "RICHLAND",
+      "lat": 33.980000480252,
+      "lon": -80.961896335762,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "42029F",
+      "name": "CHARLESTON VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "109 BEE STREET",
+      "city": "CHARLESTON",
+      "state": "SC",
+      "zip": "29401",
+      "county": "CHARLESTON",
+      "lat": 32.785072656226,
+      "lon": -79.953888257447,
+      "drg_charges": {},
+      "charity_care_participant": false
     }
   ]
 }

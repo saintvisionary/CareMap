@@ -2,8 +2,11 @@
 // Orchestrator (see caremap/agents.py). If VITE_AGENT_URL isn't set, or the
 // call fails/times out, callers should fall back to the instant local
 // summary -- the map and eligibility answer must never depend on this.
-// Only ever send the REDACTED message + tier/zip/insured hints, never raw
-// income or household size.
+// Only ever send the REDACTED message + tier/zip/insuranceType/veteran
+// hints, never raw income or household size. insuranceType is a public
+// coverage category, never PII.
+import type { InsuranceType } from "./intake";
+
 export interface MapCommand {
   type: "flyTo" | "highlight" | "filter";
   payload: Record<string, unknown>;
@@ -24,7 +27,7 @@ const TIMEOUT_MS = 50000;
 
 export async function askAgent(
   redactedMessage: string,
-  hints: { zipCode: string | null; insured: boolean | null; tierPct: number | null },
+  hints: { zipCode: string | null; insuranceType: InsuranceType | null; veteran: boolean; tierPct: number | null },
 ): Promise<AgentResponse | null> {
   if (!AGENT_URL) return null;
   const controller = new AbortController();

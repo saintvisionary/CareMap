@@ -23,6 +23,7 @@ import io
 import json
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 import zipfile
@@ -45,12 +46,20 @@ CENSUS_ONELINE_GEOCODER_URL = "https://geocoding.geo.census.gov/geocoder/locatio
 # physical zip is 07960). Used only as a last-resort fallback key.
 PO_BOX_ZIP_TO_PHYSICAL_ZIP = {"07962": "07960"}
 
-def _get(url: str) -> bytes:
+def _get(url: str, retries: int = 3) -> bytes:
     # No custom User-Agent: data.cms.gov's bot protection blocks non-browser-looking
     # UA strings, but is fine with urllib/curl's plain defaults (verified via curl).
     req = Request(url)
-    with urlopen(req, timeout=60) as resp:
-        return resp.read()
+    for attempt in range(retries):
+        try:
+            with urlopen(req, timeout=60) as resp:
+                return resp.read()
+        except urllib.error.HTTPError as exc:
+            if exc.code < 500 or attempt == retries - 1:
+                raise
+            print(f"  {url} -> HTTP {exc.code}, retrying ({attempt + 1}/{retries})...", file=sys.stderr)
+            time.sleep(2 * (attempt + 1))
+    raise AssertionError("unreachable")
 
 
 def _cached(path: Path, fetch) -> bytes:
@@ -67,6 +76,12 @@ def resolve_hgi_csv_url() -> str:
     return meta["distribution"][0]["downloadURL"]
 
 
+HOSPITAL_TYPE_TO_FACILITY_TYPE = {
+    "Acute Care Hospitals": "acute_care_hospital",
+    "Acute Care - Veterans Administration": "va_hospital",
+}
+
+
 def load_hospital_general_info(states: set[str]) -> list[dict]:
     csv_bytes = _cached(RAW / "hospital_general_information.csv", lambda: _get(resolve_hgi_csv_url()))
     reader = csv.DictReader(io.StringIO(csv_bytes.decode("utf-8")))
@@ -74,13 +89,14 @@ def load_hospital_general_info(states: set[str]) -> list[dict]:
     for row in reader:
         if row["State"] not in states:
             continue
-        if row["Hospital Type"] != "Acute Care Hospitals":
+        facility_type = HOSPITAL_TYPE_TO_FACILITY_TYPE.get(row["Hospital Type"])
+        if facility_type is None:
             continue
         rating = row["Hospital overall rating"]
         out.append({
             "ccn": row["Facility ID"],
             "name": row["Facility Name"].strip(),
-            "type": "acute_care_hospital",
+            "type": facility_type,
             "ownership": row["Hospital Ownership"],
             "has_er": row["Emergency Services"] == "Yes",
             "star_rating": int(rating) if rating.isdigit() else None,
@@ -188,8 +204,18 @@ def _geocode_batch(facilities: list[dict], zip_centroids: dict[str, dict]) -> No
         CENSUS_BATCH_GEOCODER_URL, data=body,
         headers={"Content-Type": f"multipart/form-data; boundary={boundary}"},
     )
-    with urllib.request.urlopen(req, timeout=120) as resp:
-        result_csv = resp.read().decode("utf-8")
+    result_csv = None
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                result_csv = resp.read().decode("utf-8")
+            break
+        except urllib.error.HTTPError as exc:
+            if exc.code < 500 or attempt == 2:
+                raise
+            print(f"  batch geocode -> HTTP {exc.code}, retrying ({attempt + 1}/3)...", file=sys.stderr)
+            time.sleep(3 * (attempt + 1))
+    assert result_csv is not None
 
     by_ccn = {f["ccn"]: f for f in facilities}
     unmatched = []
@@ -261,7 +287,10 @@ def build_states(states: set[str], zip_centroids: dict[str, dict]) -> dict[str, 
     by_state: dict[str, list[dict]] = {}
     for f in facilities:
         f["drg_charges"] = drg_by_ccn.get(f["ccn"], {})
-        f["charity_care_participant"] = f["state"] == "NJ"  # see policy.json -- only NJ's formula is implemented
+        # NJ Charity Care applies to NJ acute-care hospitals; VA hospitals are
+        # federal and run their own separate means-tested eligibility system
+        # entirely outside state charity-care programs.
+        f["charity_care_participant"] = f["state"] == "NJ" and f["type"] == "acute_care_hospital"
         by_state.setdefault(f["state"], []).append(f)
 
     return {state: {"state": state, "facilities": fs} for state, fs in by_state.items()}

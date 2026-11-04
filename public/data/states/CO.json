@@ -4728,6 +4728,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "06005F",
+      "name": "VA EASTERN COLORADO HEALTHCARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "1700 NORTH WHEELING STREET",
+      "city": "AURORA",
+      "state": "CO",
+      "zip": "80045",
+      "county": "ADAMS",
+      "lat": 39.741411343723,
+      "lon": -104.83092327661,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "060064",
       "name": "AdventHealth Porter",
       "type": "acute_care_hospital",
@@ -5095,6 +5112,23 @@
           "avg_charge": 15645
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "06007F",
+      "name": "GRAND JUNCTION VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "2121 N. AVENUE",
+      "city": "GRAND JUNCTION",
+      "state": "CO",
+      "zip": "81501",
+      "county": "MESA",
+      "lat": 39.070071418757,
+      "lon": -108.540426603529,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {

@@ -2926,6 +2926,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "46002F",
+      "name": "VA SALT LAKE CITY HEALTHCARE - GEORGE E. WAHLEN VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "500 FOOTHILL BLVD.",
+      "city": "SALT LAKE CITY",
+      "state": "UT",
+      "zip": "84148",
+      "county": "SALT LAKE",
+      "lat": 40.756175592631,
+      "lon": -111.834687299485,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "460030",
       "name": "ASHLEY REGIONAL MEDICAL CENTER",
       "type": "acute_care_hospital",

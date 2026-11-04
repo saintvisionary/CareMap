@@ -990,6 +990,41 @@
       "lat_lon_approximate": true,
       "drg_charges": {},
       "charity_care_participant": false
+    },
+    {
+      "ccn": "53004F",
+      "name": "CHEYENNE VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "2360 E. PERSHING BLVD.",
+      "city": "CHEYENNE",
+      "state": "WY",
+      "zip": "82001",
+      "county": "LARAMIE",
+      "lat": 41.145765354318,
+      "lon": -104.787488670189,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "53005F",
+      "name": "SHERIDAN VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": null,
+      "address": "1898 FORT ROAD",
+      "city": "SHERIDAN",
+      "state": "WY",
+      "zip": "82801",
+      "county": "SHERIDAN",
+      "lat": 44.832499,
+      "lon": -106.896325,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": false
     }
   ]
 }

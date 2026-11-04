@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { askAgent } from "../lib/agentClient";
 import { facilitiesNear, type FacilityWithDistance } from "../lib/geo";
-import { redact } from "../lib/intake";
+import { redact, type InsuranceType } from "../lib/intake";
 import { summarize } from "../lib/summarize";
 import type { Facility, ZipCentroid } from "../lib/types";
 
@@ -21,7 +21,8 @@ export interface CareMapState {
   messages: ChatMessage[];
   facilities: FacilityWithDistance[];
   tierPct: number | null;
-  insured: boolean | null;
+  insuranceType: InsuranceType | null;
+  veteran: boolean;
   flyTo: MapFlyTo | null;
   loading: boolean;
   sendMessage: (text: string) => void;
@@ -40,7 +41,8 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
   ]);
   const [facilities, setFacilities] = useState<FacilityWithDistance[]>([]);
   const [tierPct, setTierPct] = useState<number | null>(null);
-  const [insured, setInsured] = useState<boolean | null>(null);
+  const [insuranceType, setInsuranceType] = useState<InsuranceType | null>(null);
+  const [veteran, setVeteran] = useState(false);
   const [flyTo, setFlyTo] = useState<MapFlyTo | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -53,7 +55,8 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
       const nearby = hint.zipCode ? facilitiesNear(allFacilities, zipCentroids, hint.zipCode, 25) : [];
       setFacilities(nearby);
       setTierPct(hint.tierPct);
-      setInsured(hint.insured);
+      setInsuranceType(hint.insuranceType);
+      setVeteran(hint.veteran);
 
       if (hint.zipCode && zipCentroids[hint.zipCode]) {
         const c = zipCentroids[hint.zipCode];
@@ -63,7 +66,8 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
       const instantReply = summarize({
         zipCode: hint.zipCode,
         tierPct: hint.tierPct,
-        insured: hint.insured,
+        insuranceType: hint.insuranceType,
+        veteran: hint.veteran,
         need: hint.need,
         facilities: nearby,
       });
@@ -72,7 +76,8 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
       setLoading(true);
       askAgent(hint.redactedMessage, {
         zipCode: hint.zipCode,
-        insured: hint.insured,
+        insuranceType: hint.insuranceType,
+        veteran: hint.veteran,
         tierPct: hint.tierPct,
       })
         .then((agentReply) => {
@@ -85,5 +90,5 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
     [allFacilities, zipCentroids],
   );
 
-  return { messages, facilities, tierPct, insured, flyTo, loading, sendMessage };
+  return { messages, facilities, tierPct, insuranceType, veteran, flyTo, loading, sendMessage };
 }

@@ -1904,6 +1904,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "13003F",
+      "name": "BOISE VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "500 W. FORT STREET",
+      "city": "BOISE",
+      "state": "ID",
+      "zip": "83702",
+      "county": "ADA",
+      "lat": 43.619441776231,
+      "lon": -116.194854741647,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "130049",
       "name": "KOOTENAI HEALTH",
       "type": "acute_care_hospital",

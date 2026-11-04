@@ -2051,6 +2051,23 @@
         }
       },
       "charity_care_participant": false
+    },
+    {
+      "ccn": "41005F",
+      "name": "PROVIDENCE VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "830 CHALKSTONE AVENUE",
+      "city": "PROVIDENCE",
+      "state": "RI",
+      "zip": "02908",
+      "county": "PROVIDENCE",
+      "lat": 41.833575206798,
+      "lon": -71.435659970153,
+      "drg_charges": {},
+      "charity_care_participant": false
     }
   ]
 }

@@ -3476,6 +3476,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "36001F",
+      "name": "LOUIS STOKES CLEVELAND VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "10701 EAST BLVD",
+      "city": "CLEVELAND",
+      "state": "OH",
+      "zip": "44106",
+      "county": "CUYAHOGA",
+      "lat": 41.512622027436,
+      "lon": -81.613367945091,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "360020",
       "name": "SUMMA HEALTH SYSTEM",
       "type": "acute_care_hospital",
@@ -5556,6 +5573,24 @@
           "avg_charge": 98512
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "36003F",
+      "name": "CINCINNATI VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "3200 VINE STREET",
+      "city": "CINCINNATI",
+      "state": "OH",
+      "zip": "45220",
+      "county": "HAMILTON",
+      "lat": 39.146693,
+      "lon": -84.520265,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -11291,6 +11326,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "36007F",
+      "name": "DAYTON VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "4100 WEST THIRD STREET",
+      "city": "DAYTON",
+      "state": "OH",
+      "zip": "45428",
+      "county": "MONTGOMERY",
+      "lat": 39.749329074671,
+      "lon": -84.25318047029,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "360080",
       "name": "EAST OHIO REGIONAL HOSPITAL",
       "type": "acute_care_hospital",
@@ -12879,6 +12931,23 @@
           "avg_charge": 26175
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "36008F",
+      "name": "CHILLICOTHE VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": null,
+      "address": "17273 STATE ROUTE 104",
+      "city": "CHILLICOTHE",
+      "state": "OH",
+      "zip": "45601",
+      "county": "ROSS",
+      "lat": 39.389306382196,
+      "lon": -83.012355799842,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {

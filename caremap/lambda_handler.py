@@ -92,14 +92,17 @@ def handler(event: dict, context) -> dict:  # noqa: ARG001 (context required by 
         _orchestrator = build_orchestrator()
 
     zip_code = payload.get("zipCode")
-    insured = payload.get("insured")
+    insurance_type = payload.get("insuranceType")
+    veteran = payload.get("veteran")
     tier_pct = payload.get("tierPct")
+    _valid_insurance_types = {"uninsured", "medicaid", "medicare", "private", "va_tricare", "unsure"}
 
     try:
         result = handle_message(
             message, orchestrator=_orchestrator,
             zip_code=zip_code if isinstance(zip_code, str) else None,
-            insured=insured if isinstance(insured, bool) else None,
+            insurance_type=insurance_type if insurance_type in _valid_insurance_types else None,
+            veteran=veteran if isinstance(veteran, bool) else None,
             tier_pct=tier_pct if isinstance(tier_pct, (int, float)) else None,
         )
     except Exception as exc:  # noqa: BLE001

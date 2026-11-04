@@ -9280,6 +9280,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "33009F",
+      "name": "ALBANY VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 2,
+      "address": "113 HOLLAND AVENUE",
+      "city": "ALBANY",
+      "state": "NY",
+      "zip": "12208",
+      "county": "ALBANY",
+      "lat": 42.648637579816,
+      "lon": -73.773696803206,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "330100",
       "name": "NY EYE AND EAR INFIRMARY OF MOUNT SINAI",
       "type": "acute_care_hospital",
@@ -13388,6 +13405,24 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "33011F",
+      "name": "BATH VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": null,
+      "address": "76 VETERANS AVE.",
+      "city": "BATH",
+      "state": "NY",
+      "zip": "14810",
+      "county": "STEUBEN",
+      "lat": 42.347484,
+      "lon": -77.346851,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "330125",
       "name": "ROCHESTER GENERAL HOSPITAL",
       "type": "acute_care_hospital",
@@ -14734,6 +14769,23 @@
           "avg_charge": 36568
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "33012F",
+      "name": "UPSTATE NEW YORK VA HEALTHCARE SYSTEM (WESTERN NY VA HEALTHCARE SYSTEM)",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "3495 BAILEY AVENUE",
+      "city": "BUFFALO",
+      "state": "NY",
+      "zip": "14215",
+      "county": "ERIE",
+      "lat": 42.953459043708,
+      "lon": -78.813706969958,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -16557,6 +16609,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "33015F",
+      "name": "VA HUDSON VALLEY HEALTHCARE SYSTEM",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": false,
+      "star_rating": 5,
+      "address": "2094 ALBANY POST ROAD",
+      "city": "MONTROSE",
+      "state": "NY",
+      "zip": "10548",
+      "county": "WESTCHESTER",
+      "lat": 41.245117785887,
+      "lon": -73.926435976616,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "330160",
       "name": "STATEN ISLAND UNIVERSITY HOSPITAL",
       "type": "acute_care_hospital",
@@ -18098,6 +18167,23 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "33016F",
+      "name": "BRONX VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "130 WEST KINGSBRIDGE ROAD",
+      "city": "BRONX",
+      "state": "NY",
+      "zip": "10468",
+      "county": "BRONX",
+      "lat": 40.86913508361,
+      "lon": -73.903159768426,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "330175",
       "name": "GUTHRIE CORTLAND REGIONAL MEDICAL CENTER",
       "type": "acute_care_hospital",
@@ -18173,6 +18259,23 @@
           "avg_charge": 24884
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "33017F",
+      "name": "VA NEW YORK HARBOR HEALTHCARE SYSTEM - NY DIV.",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "423 EAST 23RD STREET",
+      "city": "NEW YORK",
+      "state": "NY",
+      "zip": "10010",
+      "county": "NEW YORK",
+      "lat": 40.736625080398,
+      "lon": -73.977962566682,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -22740,6 +22843,24 @@
       "charity_care_participant": false
     },
     {
+      "ccn": "33019F",
+      "name": "NORTHPORT VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 5,
+      "address": "79 MIDDLEVILLE ROAD",
+      "city": "NORTHPORT",
+      "state": "NY",
+      "zip": "11768",
+      "county": "SUFFOLK",
+      "lat": 40.923631,
+      "lon": -73.339309,
+      "lat_lon_approximate": true,
+      "drg_charges": {},
+      "charity_care_participant": false
+    },
+    {
       "ccn": "330202",
       "name": "KINGS COUNTY HOSPITAL CENTER",
       "type": "acute_care_hospital",
@@ -23771,6 +23892,23 @@
           "avg_charge": 13408
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "33020F",
+      "name": "VA NEW YORK HARBOR HEALTHCARE SYSTEM - BROOKLYN",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 4,
+      "address": "800 POLY PLACE",
+      "city": "BROOKLYN",
+      "state": "NY",
+      "zip": "11209",
+      "county": "KINGS",
+      "lat": 40.610281045168,
+      "lon": -74.027011099671,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
@@ -28588,6 +28726,23 @@
           "avg_charge": 90867
         }
       },
+      "charity_care_participant": false
+    },
+    {
+      "ccn": "33024F",
+      "name": "SYRACUSE VA MEDICAL CENTER",
+      "type": "va_hospital",
+      "ownership": "Veterans Health Administration",
+      "has_er": true,
+      "star_rating": 3,
+      "address": "800 IRVING AVE.",
+      "city": "SYRACUSE",
+      "state": "NY",
+      "zip": "13210",
+      "county": "ONONDAGA",
+      "lat": 43.039379026466,
+      "lon": -76.138106335712,
+      "drg_charges": {},
       "charity_care_participant": false
     },
     {
