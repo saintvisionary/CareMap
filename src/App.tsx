@@ -67,7 +67,7 @@ export default function App() {
             a new query. The form resets to Chat on submit, so results still
             appear right where you'd expect them. */}
         {mode === "chat" && facilities.length > 0 && (
-          <div className="overflow-y-auto space-y-3 pr-1">
+          <div className="min-h-0 overflow-y-auto space-y-3 pr-1">
             {facilities.map((f, i) => (
               <ResultCard
                 key={f.ccn}
@@ -97,7 +97,7 @@ export default function App() {
         </div>
 
         {mode === "guided" ? (
-          <GlassPanel className="p-4 overflow-y-auto">
+          <GlassPanel className="min-h-0 p-4 overflow-y-auto">
             <GuidedForm onSubmit={handleGuidedSubmit} zipCentroids={zipCentroids} facilities={allFacilities} />
           </GlassPanel>
         ) : (
