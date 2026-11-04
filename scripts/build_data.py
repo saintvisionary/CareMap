@@ -93,8 +93,15 @@ def load_hospital_general_info(states: set[str]) -> list[dict]:
     return out
 
 
-def load_drg_charges_for_ccns(ccns: set[str]) -> dict[str, dict[str, dict]]:
-    cache_path = RAW / "drg_charges_filtered.json"
+def load_all_drg_charges() -> dict[str, dict[str, dict]]:
+    """All DRG charges nationally, keyed by CCN then DRG code. Cached in full
+    (not pre-filtered to a CCN subset) so a later run with a different
+    --states selection doesn't silently reuse a stale, narrower cache --
+    an earlier version of this function cached only the CCNs it was asked
+    for, so an NJ-only run's cache would have wrongly short-circuited a
+    later national run.
+    """
+    cache_path = RAW / "drg_charges_national.json"
     if cache_path.exists():
         return json.loads(cache_path.read_text())
 
@@ -108,14 +115,11 @@ def load_drg_charges_for_ccns(ccns: set[str]) -> dict[str, dict[str, dict]]:
             break
         for row in page:
             ccn = row["Rndrng_Prvdr_CCN"]
-            if ccn not in ccns:
-                continue
             by_ccn.setdefault(ccn, {})[row["DRG_Cd"]] = {
                 "description": row["DRG_Desc"],
                 "avg_charge": round(float(row["Avg_Submtd_Cvrd_Chrg"])),
             }
-        print(f"  drg page offset={offset} rows={len(page)} matched_so_far={sum(len(v) for v in by_ccn.values())}",
-              file=sys.stderr)
+        print(f"  drg page offset={offset} rows={len(page)} facilities_so_far={len(by_ccn)}", file=sys.stderr)
         offset += page_size
         time.sleep(0.2)
 
@@ -154,7 +158,18 @@ def geocode_facilities(facilities: list[dict], zip_centroids: dict[str, dict]) -
 
     Falls back to the facility's zip centroid (approximate, but keeps every
     facility on the map) if even the single-address geocoder has no match.
+    Chunked at 1,000 records per batch call -- under the documented 10,000
+    limit, but a smaller chunk fails (and can be retried) cheaply instead of
+    losing a multi-thousand-record batch to one dropped connection.
     """
+    chunk_size = 1000
+    for i in range(0, len(facilities), chunk_size):
+        chunk = facilities[i : i + chunk_size]
+        print(f"  geocoding {i + 1}-{i + len(chunk)} of {len(facilities)}...", file=sys.stderr)
+        _geocode_batch(chunk, zip_centroids)
+
+
+def _geocode_batch(facilities: list[dict], zip_centroids: dict[str, dict]) -> None:
     rows = "\n".join(
         f'{f["ccn"]},"{f["address"]}","{f["city"]}","{f["state"]}","{f["zip"]}"' for f in facilities
     )
@@ -214,9 +229,23 @@ def geocode_facilities(facilities: list[dict], zip_centroids: dict[str, dict]) -
         time.sleep(0.3)
 
 
-def build_state(state: str, zip_centroids: dict[str, dict]) -> dict:
-    print(f"Loading Hospital General Information for {state}...", file=sys.stderr)
-    facilities = load_hospital_general_info({state})
+US_STATES_AND_DC = {
+    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN",
+    "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH",
+    "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT",
+    "VT", "VA", "WA", "WV", "WI", "WY",
+}
+
+
+def build_states(states: set[str], zip_centroids: dict[str, dict]) -> dict[str, dict]:
+    """One combined pass across every requested state: a single CSV parse, a
+    single (chunked) geocoding run, and a single DRG lookup, then grouped
+    back into per-state output. Geocoding ~3,000 addresses one state at a
+    time would mean 50 separate batch calls; doing it once is both faster
+    and friendlier to the free Census geocoder.
+    """
+    print(f"Loading Hospital General Information for {len(states)} state(s)...", file=sys.stderr)
+    facilities = load_hospital_general_info(states)
     print(f"  {len(facilities)} acute care hospitals", file=sys.stderr)
 
     print("Geocoding addresses (Census batch geocoder)...", file=sys.stderr)
@@ -226,29 +255,32 @@ def build_state(state: str, zip_centroids: dict[str, dict]) -> dict:
     print(f"  geocoded {matched}/{len(facilities)} ({approximate} approximate via zip centroid)",
           file=sys.stderr)
 
-    print("Loading DRG charges (this pages through the full national dataset)...", file=sys.stderr)
-    ccns = {f["ccn"] for f in facilities}
-    drg_by_ccn = load_drg_charges_for_ccns(ccns)
+    print("Loading DRG charges (pages through the full national dataset once, cached after)...", file=sys.stderr)
+    drg_by_ccn = load_all_drg_charges()
 
+    by_state: dict[str, list[dict]] = {}
     for f in facilities:
         f["drg_charges"] = drg_by_ccn.get(f["ccn"], {})
-        f["charity_care_participant"] = state == "NJ"
+        f["charity_care_participant"] = f["state"] == "NJ"  # see policy.json -- only NJ's formula is implemented
+        by_state.setdefault(f["state"], []).append(f)
 
-    return {"state": state, "facilities": facilities}
+    return {state: {"state": state, "facilities": fs} for state, fs in by_state.items()}
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--states", nargs="+", default=["NJ"])
+    parser.add_argument("--states", nargs="+", default=["NJ"],
+                         help='State codes, e.g. "NJ NY CA", or "all" for every US state + DC')
     args = parser.parse_args()
+    states = US_STATES_AND_DC if args.states == ["all"] else set(args.states)
 
     print("Loading national zip centroid lookup (Census ZCTA gazetteer)...", file=sys.stderr)
     centroids = build_zip_centroids()
     print(f"  {len(centroids)} zip centroids -> {OUT_ZIP_CENTROIDS}", file=sys.stderr)
 
     OUT_STATES.mkdir(parents=True, exist_ok=True)
-    for state in args.states:
-        data = build_state(state, centroids)
+    results = build_states(states, centroids)
+    for state, data in sorted(results.items()):
         out_path = OUT_STATES / f"{state}.json"
         out_path.write_text(json.dumps(data, indent=2))
         print(f"Wrote {out_path} ({len(data['facilities'])} facilities)", file=sys.stderr)
