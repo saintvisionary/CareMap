@@ -52,7 +52,7 @@ def nj_charity_tier(fpl_pct: float) -> dict:
 
 
 @tool
-def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_hospital", ownership: str = "") -> dict:
+def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_hospital", ownership: str = "", ccn: str = "") -> dict:
     """Look up the charity-care tier for a hospital's state, for a percent of the federal poverty line.
 
     Only a short list of states have a real, codified, state-wide formula --
@@ -124,7 +124,23 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
         fpl_pct: Household income as a percent of the federal poverty line (e.g. 158 for 158%).
         facility_type: The facility's own type (e.g. "acute_care_hospital", "critical_access_hospital") -- only matters for IL.
         ownership: The facility's own CMS ownership string (e.g. "Voluntary non-profit - Private") -- only matters for OR.
+        ccn: The facility's CMS Certification Number. Always pass it: some programs only cover specific
+            hospitals (NC's participating list, NV's major hospitals), and VA hospitals are never covered.
     """
+    if ccn:
+        facility = facility_data.facility_by_ccn(ccn)
+        if facility is not None and not facility.get("charity_care_participant"):
+            if facility.get("type") == "va_hospital":
+                return {"error": "This is a VA hospital: the VA's own eligibility rules apply, not state charity care."}
+            return {
+                "error": (
+                    f"{facility['name']} isn't covered by {state}'s modeled charity-care program (CareMap's data "
+                    "doesn't confirm it as a participant) -- say that, and direct the user to its own billing/"
+                    "financial-assistance office."
+                )
+            }
+    elif state == "NV":
+        return {"error": "NV's discount only applies at specific 'major hospitals' -- call charity_tier again with the facility's ccn."}
     tier = policy_mod.charity_tier(state, fpl_pct, facility_type, ownership or None)
     if tier is not None:
         return tier
@@ -329,13 +345,14 @@ _STATE_PROGRAM_NAMES = {
     "NC": "North Carolina's Medical Debt Mitigation program (NCDHHS HASP hospital commitment)",
     "OH": "Ohio's Hospital Care Assurance Program (OAC 5160-2-17)",
     "SC": "South Carolina's Medically Indigent Assistance Program (S.C. Code 44-6-150)",
+    "NV": "Nevada's major-hospital discount law (NRS 439B.260)",
 }
 _STATE_POLICY_KEYS = {
     "NJ": "nj_charity_care", "WA": "wa_charity_care", "IL": "il_charity_care",
     "NY": "ny_charity_care", "OR": "or_charity_care", "MD": "md_charity_care",
     "RI": "ri_charity_care", "MA": "ma_charity_care", "ME": "me_charity_care",
     "VT": "vt_charity_care", "NC": "nc_charity_care", "OH": "oh_charity_care",
-    "SC": "sc_charity_care",
+    "SC": "sc_charity_care", "NV": "nv_charity_care",
 }
 
 
@@ -369,6 +386,13 @@ def draft_application(ccn: str, patient_pays_pct: float) -> dict:
                 f"{facility['name']} isn't confirmed as a nonprofit hospital -- OR's charity-care law only "
                 "covers nonprofit hospitals. Direct the user to this hospital's own billing/financial-"
                 "assistance office instead."
+            )
+        }
+    if not facility.get("charity_care_participant"):
+        return {
+            "error": (
+                f"{facility['name']} isn't confirmed as a participant in {state}'s modeled charity-care program -- "
+                "direct the user to this hospital's own billing/financial-assistance office instead."
             )
         }
     program = policy_mod.POLICY[policy_key]

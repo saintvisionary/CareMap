@@ -218,6 +218,20 @@
     "free_tier_note": "Inpatient hospital care only, not physician bills, through South Carolina's Medically Indigent Assistance Program: the patient's county decides eligibility, liquid assets must be $500 or less, Medicaid and other coverage must be applied for first, and it's limited to SC residents who are US citizens or lawful permanent residents.",
     "gap_disclosure": "SC has no computable share above its 100% FPL line -- say that plainly. From 100-200% FPL the program offers partial sponsorship using a state payment figure CareMap doesn't have, so give no percentage or dollar figure. Eligibility is decided by the patient's county, not the hospital."
   },
+  "nv_charity_care": {
+    "source": "https://www.leg.state.nv.us/NRS/NRS-439B.html (NRS 439B.260(1), last amended 2021; 'major hospital' defined in NRS 439B.115)",
+    "applies_to": "Nevada 'major hospitals' only -- 200+ licensed or approved beds, or part of an affiliated in-county group with 200+ combined beds, and not government-operated -- for uninsured inpatients",
+    "note": "Verified against the official statute text. NRS 439B.260(1): 'A major hospital shall reduce or discount the total billed charge by at least 30 percent for hospital services provided to an inpatient who' has no insurance, 'is not eligible for coverage by a state or federal program of public assistance', and 'makes reasonable arrangements within 30 days' of notice to pay. No income test, and the base is the total billed charge -- CareMap's own base -- so the patient pays at most 70% of it (a minimum discount, so an upper bound). Major hospitals were identified from CMS's Provider of Services bed counts and CMS hospital ownership data (affiliation = shared CMS-reported owner in the same county, since the statute doesn't define 'affiliated'); the CCN list is in build_data.py. University Medical Center (290007) is excluded as county-operated even though CMS labels it nonprofit. Carson Tahoe (290019, 211 total but 190 certified beds) is left out as not confirmed, since the statute counts state-licensed beds. CareMap can't check the public-assistance or 30-day conditions, so they're disclosed.",
+    "eligibility": {
+      "must_be_uninsured": true,
+      "not_eligible_for_public_assistance": true,
+      "payment_arrangements_within_days": 30
+    },
+    "tiers": [
+      {"max_fpl_pct": null, "patient_pays_pct": 70}
+    ],
+    "tier_note": "Inpatient care only, at Nevada's major hospitals, if you aren't eligible for Medicaid or other public coverage (apply for that first if you might be) and you make reasonable payment arrangements within 30 days of the hospital's notice. It's a minimum discount, so you may owe less."
+  },
   "good_faith_estimate": {
     "source": "https://www.cms.gov/medical-bill-rights/help/guides/good-faith-estimate",
     "applies_to": "uninsured or self-pay patients scheduling care at least 3 business days ahead",

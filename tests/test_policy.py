@@ -243,3 +243,9 @@ def test_free_tier_states_nc_oh_sc():
     assert charity_tier("OH", 101) is None
     assert charity_tier("SC", 100)["patient_pays_pct"] == 0
     assert charity_tier("SC", 101) is None
+
+
+def test_nv_flat_share_any_income():
+    # NRS 439B.260: at least 30% off total billed charges, no income test.
+    assert charity_tier("NV", 50)["patient_pays_pct"] == 70
+    assert charity_tier("NV", 900)["patient_pays_pct"] == 70

@@ -282,3 +282,20 @@ def test_draft_application_nc_oh_sc_facilities():
         r = draft_application(ccn=ccn, patient_pays_pct=0)
         assert name in r["letter"]
         assert f"{st} residency" in r["checklist"][0]
+
+
+def test_charity_tier_nv_requires_major_hospital():
+    assert "error" in charity_tier(state="NV", fpl_pct=150)  # no ccn: can't tell
+    r = charity_tier(state="NV", fpl_pct=150, ccn="290003")  # Sunrise, 834 beds
+    assert r["patient_pays_pct"] == 70 and "30 days" in r["note"]
+    # University Medical Center: county-run, so not a "major hospital" even
+    # though CMS labels it nonprofit.
+    assert "error" in charity_tier(state="NV", fpl_pct=150, ccn="290007")
+
+
+def test_non_participant_never_gets_a_tier():
+    # Novant Ballantyne isn't on NCDHHS's participating list.
+    assert "error" in charity_tier(state="NC", fpl_pct=150, ccn="340195")
+    assert "error" in draft_application(ccn="340195", patient_pays_pct=0)
+    r = draft_application(ccn="290003", patient_pays_pct=70)
+    assert "Nevada" in r["letter"]

@@ -28,7 +28,12 @@ interface ResultCardProps {
 export function ResultCard({ facility, fplPct, insuranceType, need, index, active, onSelect }: ResultCardProps) {
   const tier = facilityTier(facility, fplPct, insuranceType);
   const programName = CHARITY_PROGRAM_NAMES[facility.state] ?? "charity care";
-  const patientPaysPct = fplPct != null ? charityTier(facility.state, fplPct, facility.type, facility.ownership)?.patientPaysPct : undefined;
+  // Only a participating facility gets a tier -- a state's formula never
+  // applies to a hospital its program excludes.
+  const patientPaysPct =
+    fplPct != null && facility.charity_care_participant
+      ? charityTier(facility.state, fplPct, facility.type, facility.ownership)?.patientPaysPct
+      : undefined;
   const drg = need ? NEED_TO_DRG[need] : null;
   const charge = drg ? facility.drg_charges[drg.code]?.avg_charge : undefined;
 
@@ -56,7 +61,7 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
       // The hero is what the patient owes, not the charge -- say so, and
       // show the real typical billed charge it was computed from.
       hero = money(applyTier(charge, patientPaysPct));
-      const bound = facility.state === "OR" && patientPaysPct > 0 ? "at most, " : "";
+      const bound = (facility.state === "OR" || facility.state === "NV") && patientPaysPct > 0 ? "at most, " : "";
       heroLabel = `${bound}est. owed on a ${money(charge)} typical billed charge (estimate, confirm with billing office)${patientPaysPct === 0 && freeNote ? `. ${freeNote}` : ""}`;
     } else {
       hero = money(charge);

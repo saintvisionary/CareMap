@@ -82,6 +82,18 @@ NC_NOT_PARTICIPATING = {
     "340195",  # NOVANT HEALTH BALLANTYNE MEDICAL CENTER
 }
 
+# NRS 439B.115 "major hospitals": 200+ beds (CMS Provider of Services bed
+# counts, Q3 2026), or part of an affiliated in-county group with 200+
+# combined beds (shared CMS-reported owner), and not government-operated.
+# Excludes University Medical Center (290007, county-run though CMS labels
+# it nonprofit) and Carson Tahoe (290019, 211 total / 190 certified beds,
+# not confirmed against state-licensed beds).
+NV_MAJOR_HOSPITALS = {
+    "290001", "290003", "290009", "290021", "290039", "290041", "290045",
+    "290046", "290047", "290054",  # 200+ beds on their own
+    "290049", "290012", "290053", "290058", "290057", "290062", "290042",  # affiliated groups
+}
+
 HOSPITAL_TYPE_TO_FACILITY_TYPE = {
     "Acute Care Hospitals": "acute_care_hospital",
     "Acute Care - Veterans Administration": "va_hospital",
@@ -335,6 +347,8 @@ def build_states(states: set[str], zip_centroids: dict[str, dict]) -> dict[str, 
             "OH": {"acute_care_hospital", "critical_access_hospital"},
             # SC: S.C. Code Regs. 126-500(E) licensed general hospitals.
             "SC": {"acute_care_hospital", "critical_access_hospital"},
+            # NV: only the major hospitals listed above (gated below).
+            "NV": {"acute_care_hospital", "critical_access_hospital"},
         }
         f["charity_care_participant"] = f["type"] in state_facility_types.get(f["state"], set())
         # OR's law (ORS 442.610-442.618) ONLY covers nonprofit hospitals
@@ -346,6 +360,8 @@ def build_states(states: set[str], zip_centroids: dict[str, dict]) -> dict[str, 
         # (ncdhhs.gov/participating-hospitals-med-debt). Matched to CCNs by
         # hand, since the list has names only; these three aren't on it.
         if f["ccn"] in NC_NOT_PARTICIPATING:
+            f["charity_care_participant"] = False
+        if f["state"] == "NV" and f["ccn"] not in NV_MAJOR_HOSPITALS:
             f["charity_care_participant"] = False
         by_state.setdefault(f["state"], []).append(f)
 

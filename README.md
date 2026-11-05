@@ -7,7 +7,7 @@ Type a plain-language message like:
 > "07018, family of 4, $52k, uninsured, need gallbladder surgery"
 
 and CareMap finds nearby hospitals, estimates what you'd actually owe under
-your state's hospital charity-care law (13 states modeled so far, see
+your state's hospital charity-care law (14 states modeled so far, see
 below), and shows it on a map colored by what you'd pay: green for free
 care, amber for a reduced rate, gray for full price.
 
@@ -78,12 +78,13 @@ can ground and says why.
 | NC | NCDHHS Medical Debt Mitigation program (a Medicaid payment condition, not a statute) | Free tier (below 200% FPL, residents only, 97 participating hospitals); above it, the 5%-of-income payment-plan cap |
 | OH | OAC 5160-2-17 (Hospital Care Assurance Program) | Free tier (100% FPL, residents not on Medicaid) |
 | SC | S.C. Code 44-6-150 (Medically Indigent Assistance Program) | Free tier (100% FPL, inpatient only, county-approved) |
+| NV | NRS 439B.260 | At most 70% of the billed charge for uninsured inpatients at any income, at 17 "major hospitals" (identified from CMS bed-count and ownership data) |
 
 Checked and left unmodeled, because there's no statewide percentage CareMap
 could compute from billed charges, or the rule depends on data CareMap
 doesn't have (bed counts, county or opt-in programs): AK, AL, AR, AZ, CA,
 CO, CT, FL, GA, HI, IA, ID, IN, KS, KY, LA, MI, MN, MO, MS, MT, ND, NE, NH,
-NM, NV, OK, PA, SD, TN, TX, UT, VA, WI, WV, WY. DC's and Delaware's new laws
+NM, OK, PA, SD, TN, TX, UT, VA, WI, WV, WY. DC's and Delaware's new laws
 aren't confirmed in force: an emergency act lifted DC's funding delay on
 October 1, 2026, but the official DC Code still lists it as not
 implemented, and Delaware's starts January 1, 2027.
@@ -117,7 +118,7 @@ AI chat enhancement, set `VITE_AGENT_URL` to a deployed agent endpoint (see
 
 ## What's not in yet
 
-- Charity-care tiers for the other 37 states + DC
+- Charity-care tiers for the other 36 states + DC
 - Above the free tier in IL, NY, RI, MA, ME, VT, NC, OH and SC, the real discount depends
   on data CareMap doesn't load yet (cost-to-charge ratios, Medicaid rates,
   insurance premiums) or is left to each hospital; CareMap discloses the

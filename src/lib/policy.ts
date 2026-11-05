@@ -292,6 +292,10 @@ const STATE_CHARITY_TIER_FNS: Record<string, (fplPct: number, facilityType?: str
   MA: (fplPct) => maCharityTier(fplPct),
   ME: (fplPct) => meCharityTier(fplPct),
   VT: (fplPct) => vtCharityTier(fplPct),
+  // NRS 439B.260: at least 30% off total billed charges for uninsured
+  // inpatients at NV "major hospitals" (gated by charity_care_participant),
+  // regardless of income -- so a flat, upper-bound 70% share.
+  NV: (fplPct) => ({ patientPaysPct: 70, fplPct, maxFplPct: null }),
 };
 
 export const MODELED_CHARITY_STATES = [...Object.keys(STATE_CHARITY_TIER_FNS), ...Object.keys(FREE_TIER_STATES)];
@@ -312,6 +316,7 @@ export const CHARITY_PROGRAM_NAMES: Record<string, string> = {
   MA: "Massachusetts's Health Safety Net",
   ME: "Maine's free hospital care law (Maine residents only)",
   VT: "Vermont's hospital financial assistance law (Vermont residents only)",
+  NV: "Nevada's major-hospital discount law (uninsured inpatients)",
 };
 
 /** Charity-care tier for whichever state a facility is in, or null if that

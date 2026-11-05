@@ -360,6 +360,20 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
             </div>
 
+            <div className={section}>
+              <h2 className={h2}>Nevada major-hospital discount</h2>
+              <p className={p}>
+                Nevada's law (NRS 439B.260) isn't based on income. At Nevada's <strong className="text-white/90">major hospitals</strong> (200 or more
+                beds, or part of an affiliated group with 200 or more in the same county, and not government-run), uninsured inpatients get at least{" "}
+                <strong className="text-white/90">30% off the total billed charge</strong> -- so you'd pay at most 70% of it, at any income.
+              </p>
+              <p className={p}>
+                It only applies if you aren't eligible for Medicaid or other public coverage, and you make reasonable payment arrangements within 30
+                days of the hospital's notice. CareMap identifies major hospitals from CMS bed-count and ownership data; a hospital it can't confirm
+                shows as "not confirmed."
+              </p>
+            </div>
+
             {Object.entries(FREE_TIER_STATES).map(([st, f]) => (
               <div key={st} className={section}>
                 <h2 className={h2}>{f.heading}</h2>
@@ -449,6 +463,7 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                 <li>MA charity care rules -- 101 CMR 613.00, Massachusetts Health Safety Net</li>
                 <li>ME free care rules -- 22 M.R.S. 1716-A, Maine Legislature</li>
                 <li>VT financial assistance rules -- 18 V.S.A. 9482, Vermont Legislature</li>
+                <li>NV major-hospital discount -- NRS 439B.260, Nevada Legislature</li>
                 {Object.entries(FREE_TIER_STATES).map(([st, f]) => (
                   <li key={st}>
                     {st} charity care rules -- {f.law}

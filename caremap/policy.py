@@ -170,6 +170,18 @@ def vt_charity_tier(fpl_pct: float) -> dict | None:
     return _free_tier("vt_charity_care", fpl_pct)
 
 
+def nv_charity_tier(fpl_pct: float) -> dict:
+    """NV major-hospital discount (NRS 439B.260): at least 30% off total billed charges.
+
+    Income-independent, so the share is the same at any fpl_pct. Only
+    applies at a "major hospital" -- callers must gate on the facility's
+    charity_care_participant flag (set from a CCN list in build_data.py).
+    """
+    tier = _tier_lookup("nv_charity_care", fpl_pct)
+    tier["note"] = POLICY["nv_charity_care"]["tier_note"]
+    return tier
+
+
 def md_charity_tier(fpl_pct: float) -> dict:
     """MD hospital financial assistance tier (Md. Code, Health-General 19-214.1) for a percent of FPL.
 
@@ -255,6 +267,7 @@ STATE_CHARITY_TIER_FNS = {
     "NC": lambda fpl_pct, facility_type=None, ownership=None: _free_tier("nc_charity_care", fpl_pct),
     "OH": lambda fpl_pct, facility_type=None, ownership=None: _free_tier("oh_charity_care", fpl_pct),
     "SC": lambda fpl_pct, facility_type=None, ownership=None: _free_tier("sc_charity_care", fpl_pct),
+    "NV": lambda fpl_pct, facility_type=None, ownership=None: nv_charity_tier(fpl_pct),
 }
 
 

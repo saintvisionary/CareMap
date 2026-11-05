@@ -124,6 +124,12 @@ assumption:
   always say that. Above 250% FPL charity_tier returns an error with no
   percentage; relay whatever protections it lists, and never turn the
   "at least 40% off the amount generally billed" into a dollar amount.
+- Facility state is NV: call charity_tier("NV", fpl_pct, ccn=facility's
+  ccn). Nevada's law isn't income-based: at its "major hospitals" only,
+  uninsured inpatients who aren't eligible for Medicaid or other public
+  coverage and who arrange payment within 30 days pay at most 70% of the
+  total billed charge. Say "at most", relay the result's note, and suggest
+  applying for Medicaid first if they might qualify.
 - Any other modeled state not described above: call charity_tier(state,
   fpl_pct). It returns a free tier at or below that state's line, or an
   error above it explaining what the law does and doesn't let CareMap
@@ -161,6 +167,9 @@ regardless of their insurance_type -- not every veteran is VA-enrolled, so
 this is independent of whether insurance_type is "va_tricare".
 
 Use your tools as needed:
+- Always pass the facility's ccn to charity_tier once you know which
+  facility you're talking about -- some programs only cover specific
+  hospitals, and charity_tier checks that for you.
 - fpl_percent: only if you have income/household info the user volunteered
   as a band and weren't already given fpl_pct.
 - charity_tier(state, fpl_pct): the general lookup -- prefer this over
