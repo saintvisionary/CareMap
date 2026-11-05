@@ -51,7 +51,29 @@ function sampleFacilities(all: Facility[], limit: number): Facility[] {
   return out;
 }
 
-export function useCareMap(allFacilities: Facility[], zipCentroids: Record<string, ZipCentroid>): CareMapState {
+// Hospitals within 25 miles plus the few nearest sliding-fee clinics (a
+// city can have dozens of clinic sites), merged nearest-first so a close
+// clinic isn't buried below every hospital. summarize() separates the two
+// types itself.
+const NEARBY_CLINIC_LIMIT = 5;
+
+function nearbyCare(
+  hospitals: Facility[],
+  clinics: Facility[],
+  zipCentroids: Record<string, ZipCentroid>,
+  zip: string,
+): FacilityWithDistance[] {
+  return [
+    ...facilitiesNear(hospitals, zipCentroids, zip, 25),
+    ...facilitiesNear(clinics, zipCentroids, zip, 25).slice(0, NEARBY_CLINIC_LIMIT),
+  ].sort((a, b) => a.distanceMiles - b.distanceMiles);
+}
+
+export function useCareMap(
+  allFacilities: Facility[],
+  zipCentroids: Record<string, ZipCentroid>,
+  allClinics: Facility[] = [],
+): CareMapState {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: id(),
@@ -104,8 +126,7 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
           showNationalPreview();
           return;
         }
-        const nearby = facilitiesNear(allFacilities, zipCentroids, zip, 25);
-        setFacilities(nearby);
+        setFacilities(nearbyCare(allFacilities, allClinics, zipCentroids, zip));
         const c = zipCentroids[zip];
         setFlyTo({ center: [c.lon, c.lat], zoom: 10.5, pitch: 55 });
       },
@@ -158,7 +179,7 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
         return;
       }
 
-      const nearby = hint.zipCode ? facilitiesNear(allFacilities, zipCentroids, hint.zipCode, 25) : [];
+      const nearby = hint.zipCode ? nearbyCare(allFacilities, allClinics, zipCentroids, hint.zipCode) : [];
       setFacilities(nearby);
       setInternationalFacilities([]);
       setTierPct(hint.tierPct);
@@ -196,7 +217,7 @@ export function useCareMap(allFacilities: Facility[], zipCentroids: Record<strin
         })
         .finally(() => setLoading(false));
     },
-    [allFacilities, zipCentroids],
+    [allFacilities, allClinics, zipCentroids],
   );
 
   // Clicking a preview marker is the one interaction it supports: run a

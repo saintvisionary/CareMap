@@ -8,6 +8,7 @@ import {
   charityTier,
   CHARITY_PROGRAM_NAMES,
   FREE_TIER_STATES,
+  fqhcSlidingFee,
   ME_PAYMENT_PLAN_MAX_FPL,
   ME_PAYMENT_PLAN_MAX_PCT_OF_MONTHLY_INCOME,
   VT_AGB_DISCOUNT_MAX_FPL,
@@ -30,13 +31,21 @@ const money = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
  * always "estimate, confirm with billing office" -- kept here too so the
  * instant local path and the AI-enhanced path never contradict each other. */
 export function summarize(result: QueryResult): string {
-  const { zipCode, fplPct, insuranceType, veteran, need, facilities } = result;
+  const { zipCode, fplPct, insuranceType, veteran, need } = result;
+  // Hospitals drive the main answer; nearby sliding-fee clinics get their
+  // own line (see clinicLine below).
+  const facilities = result.facilities.filter((f) => f.type !== "fqhc");
+  const clinic = result.facilities.find((f) => f.type === "fqhc");
+  const insured = insuranceType != null && insuranceType !== "uninsured";
+  const clinicLine = clinic
+    ? `Nearest sliding-fee health center: ${clinic.name}, ${clinic.distanceMiles.toFixed(1)} mi away. ${fqhcSlidingFee(fplPct, insured).label}`
+    : null;
 
   if (!zipCode) {
     return "Tell me your zip code and I can find hospitals near you.";
   }
   if (facilities.length === 0) {
-    return `I couldn't find a hospital within 25 miles of ${zipCode}. Try a nearby zip code.`;
+    return `I couldn't find a hospital within 25 miles of ${zipCode}.` + (clinicLine ? ` ${clinicLine}` : " Try a nearby zip code.");
   }
 
   const nearest = facilities[0];
@@ -141,6 +150,7 @@ export function summarize(result: QueryResult): string {
     }
   }
 
+  if (clinicLine) lines.push(clinicLine);
   if (insuranceType === "uninsured" || insuranceType == null) {
     lines.push("Always ask for a Good Faith Estimate if you're uninsured and scheduling ahead.");
   }

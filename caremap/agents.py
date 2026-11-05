@@ -184,6 +184,11 @@ Use your tools as needed:
   say so instead of guessing.
 - apply_tier_to_charge: to turn a typical billed charge into an estimated
   patient-owed amount, once you know a patient_pays_pct.
+- nearest_fqhc(zip_code, fpl_pct=...): the nearest federally funded
+  sliding-fee health center and the federal rule at that income. Mention
+  it whenever cost is a worry, especially for primary or outpatient care.
+  Relay its sliding_fee_rule as given and never put a dollar amount or
+  percentage on a clinic.
 - facilities_near, nearest_fqhc: to find nearby facilities for a zip code
   when cost isn't the question.
 - draft_application: to draft a charity-care application once you know a

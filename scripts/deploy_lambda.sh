@@ -46,6 +46,7 @@ cp -r "$ROOT/policy" "$BUILD_DIR/policy"
 mkdir -p "$BUILD_DIR/public/data"
 cp -r "$ROOT/public/data/states" "$BUILD_DIR/public/data/states"
 cp "$ROOT/public/data/zip_centroids.json" "$BUILD_DIR/public/data/zip_centroids.json"
+cp "$ROOT/public/data/fqhc_sites.json" "$BUILD_DIR/public/data/fqhc_sites.json"
 
 find "$BUILD_DIR" -name "*.dist-info" -exec rm -rf {} + 2>/dev/null || true
 find "$BUILD_DIR" -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true

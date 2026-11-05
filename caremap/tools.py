@@ -129,6 +129,8 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
     """
     if ccn:
         facility = facility_data.facility_by_ccn(ccn)
+        if facility is not None and facility.get("type") == "fqhc":
+            return {"facility_type": "fqhc", **policy_mod.fqhc_sliding_fee(fpl_pct)}
         if facility is not None and not facility.get("charity_care_participant"):
             if facility.get("type") == "va_hospital":
                 return {"error": "This is a VA hospital: the VA's own eligibility rules apply, not state charity care."}
@@ -318,17 +320,23 @@ def facilities_near(zip_code: str, radius_miles: float = 15, types: list[str] | 
 
 
 @tool
-def nearest_fqhc(zip_code: str, radius_miles: float = 25) -> dict:
-    """Find the nearest Federally Qualified Health Center (sliding-fee clinic) to a zip code.
+def nearest_fqhc(zip_code: str, radius_miles: float = 25, fpl_pct: float | None = None) -> dict:
+    """Find the nearest Federally Qualified Health Center (sliding-fee clinic) to a zip code,
+    with the federal sliding-fee rule that applies there. Useful for primary and outpatient
+    care, or whenever cost is a worry. Never quote a dollar amount for a clinic: CareMap has
+    no clinic charge data.
 
     Args:
         zip_code: 5-digit US zip code.
         radius_miles: Search radius in miles (default 25).
+        fpl_pct: Household income as a percent of the federal poverty line, if known.
     """
     match = facility_data.nearest_fqhc(zip_code, radius_miles=radius_miles)
     if match is None:
         return {"error": f"No FQHC found within {radius_miles} miles of '{zip_code}'."}
-    return match
+    keep = ("ccn", "name", "operator", "ownership", "address", "city", "state", "zip", "phone", "website",
+            "lat", "lon", "distance_miles")
+    return {**{k: match[k] for k in keep if k in match}, **policy_mod.fqhc_sliding_fee(fpl_pct)}
 
 
 _STATE_PROGRAM_NAMES = {

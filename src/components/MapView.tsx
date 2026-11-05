@@ -131,6 +131,15 @@ export function MapView({
       // VA hospitals get a visually distinct ring regardless of cost tier --
       // facility category and cost tier are separate pieces of information.
       if (f.type === "va_hospital") dot.style.boxShadow = "0 0 0 4px rgba(56, 189, 248, 0.6)";
+      // Sliding-fee clinics are a rounded square, so they read as a different
+      // kind of place by shape, not just color.
+      // One fixed color at every income: a clinic sets its own fees, so a
+      // tier color (green especially) would imply a price CareMap can't know.
+      if (f.type === "fqhc") {
+        dot.style.backgroundColor = "rgb(167, 139, 250)";
+        dot.style.borderRadius = "3px";
+        dot.style.boxShadow = "0 0 0 3px rgba(196, 181, 253, 0.55)";
+      }
       el.appendChild(dot);
       el.addEventListener("click", () => onSelectFacility(f.ccn));
 

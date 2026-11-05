@@ -16,6 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 STATES_DIR = ROOT / "public" / "data" / "states"
 ZIPS_PATH = ROOT / "public" / "data" / "zip_centroids.json"
+FQHC_PATH = ROOT / "public" / "data" / "fqhc_sites.json"
 
 
 def _load_facilities() -> list[dict]:
@@ -24,6 +25,8 @@ def _load_facilities() -> list[dict]:
         if path.stem == "index":  # build_data.py's state-list manifest, not facility data
             continue
         out.extend(json.loads(path.read_text(encoding="utf-8"))["facilities"])
+    if FQHC_PATH.exists():  # HRSA health center sites, built by scripts/build_fqhc.py
+        out.extend(json.loads(FQHC_PATH.read_text(encoding="utf-8"))["sites"])
     return out
 
 
@@ -53,14 +56,16 @@ def facilities_near(zip_code: str, radius_miles: float = 15, types: list[str] | 
     """Facilities within radius_miles of a zip code centroid, nearest first.
 
     types filters on the facility "type" field (e.g. "acute_care_hospital",
-    "fqhc"); omit for all types.
+    "fqhc"). Omitted, it means every hospital type but not FQHC clinic
+    sites: there are ~12k of those, and a city can have dozens within a few
+    miles, so they're only returned when asked for by name.
     """
     center = zip_centroid(zip_code)
     if center is None:
         return []
     out = []
     for f in _FACILITIES:
-        if types and f["type"] not in types:
+        if (f["type"] not in types) if types else f["type"] == "fqhc":
             continue
         if f.get("lat") is None or f.get("lon") is None:
             continue

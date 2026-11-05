@@ -14,11 +14,11 @@ const h2 = "text-sm font-semibold text-white tracking-tight";
 const p = "text-xs leading-relaxed text-white/70";
 const section = "space-y-2";
 
-function Swatch({ color, ring, label, desc }: { color?: string; ring?: string; label: string; desc: string }) {
+function Swatch({ color, ring, square, label, desc }: { color?: string; ring?: string; square?: boolean; label: string; desc: string }) {
   return (
     <div className="flex items-start gap-3">
       <span
-        className="mt-0.5 h-3 w-3 shrink-0 rounded-full"
+        className={`mt-0.5 h-3 w-3 shrink-0 ${square ? "rounded-[3px]" : "rounded-full"}`}
         style={color ? { backgroundColor: color } : { background: "transparent", border: `2px solid ${ring}` }}
       />
       <div>
@@ -83,6 +83,7 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                 <Swatch color={TIER_COLORS.full} label="Full price" desc="Income is above that state's charity-care eligibility range at this hospital." />
                 <Swatch color={TIER_COLORS.unknown} label="Unknown" desc="Either this hospital isn't a confirmed charity-care participant, the state's rules aren't modeled in CareMap yet, or we don't have your income yet." />
                 <Swatch color={TIER_COLORS.insured} label="Insured" desc="Charity care only applies to the uninsured/underinsured -- shows a typical billed charge instead, as a reference point for your insurer." />
+                <Swatch color="rgb(167, 139, 250)" square label="Purple square" desc="A federally funded sliding-fee health center (FQHC). Always the same color, because each clinic sets its own fees -- see below." />
                 <Swatch ring="rgba(56, 189, 248, 0.9)" label="Blue ring" desc="A VA hospital, regardless of its cost-tier color -- facility type and cost tier are separate pieces of information." />
                 <Swatch ring="rgba(255, 255, 255, 0.4)" label="Small hollow dot" desc="A preview marker, shown before you've searched -- not a personalized result. Click it to run a real search centered there." />
               </div>
@@ -408,6 +409,30 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
             </p>
 
             <div className={section}>
+              <h2 className={h2}>Sliding-fee health centers</h2>
+              <p className={p}>
+                Federally Qualified Health Centers and Look-Alikes are clinics that follow a <strong className="text-white/90">federal</strong>{" "}
+                sliding-fee rule (42 CFR 51c.303), the same in every state. CareMap shows the nearest few, from HRSA's list of clinic sites.
+              </p>
+              <div className="rounded-xl bg-white/5 p-3 text-xs">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
+                  <span className="text-white/40">Income, % of poverty line</span>
+                  <span className="text-white/40">What the rule requires</span>
+                  <span>Up to 100%</span>
+                  <span className="text-white/90">Full discount (a small flat fee may apply)</span>
+                  <span>100% to 200%</span>
+                  <span className="text-white/90">Discount on the clinic's own sliding scale</span>
+                  <span>Over 200%</span>
+                  <span className="text-white/90">No discount required</span>
+                </div>
+              </div>
+              <p className={p}>
+                At any income, a federally funded health center <strong className="text-white/90">can't turn you away</strong> because you can't
+                pay. CareMap doesn't have clinic prices, so it never shows a dollar amount for a clinic.
+              </p>
+            </div>
+
+            <div className={section}>
               <h2 className={h2}>If you have other coverage</h2>
               <div className="space-y-2">
                 {OTHER_INSURANCE.map((t) => (
@@ -464,6 +489,7 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                 <li>ME free care rules -- 22 M.R.S. 1716-A, Maine Legislature</li>
                 <li>VT financial assistance rules -- 18 V.S.A. 9482, Vermont Legislature</li>
                 <li>NV major-hospital discount -- NRS 439B.260, Nevada Legislature</li>
+                <li>Sliding-fee health centers -- HRSA health center site list; federal rule 42 CFR 51c.303</li>
                 {Object.entries(FREE_TIER_STATES).map(([st, f]) => (
                   <li key={st}>
                     {st} charity care rules -- {f.law}

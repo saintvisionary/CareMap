@@ -3,6 +3,7 @@ import type { Facility, ZipCentroid } from "../lib/types";
 
 interface CareMapData {
   facilities: Facility[];
+  clinics: Facility[];
   zipCentroids: Record<string, ZipCentroid>;
   loading: boolean;
   error: string | null;
@@ -10,6 +11,7 @@ interface CareMapData {
 
 export function useCareMapData(): CareMapData {
   const [facilities, setFacilities] = useState<Facility[]>([]);
+  const [clinics, setClinics] = useState<Facility[]>([]);
   const [zipCentroids, setZipCentroids] = useState<Record<string, ZipCentroid>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,6 +41,14 @@ export function useCareMapData(): CareMapData {
           setZipCentroids(zips);
           setFacilities(all);
         }
+
+        // HRSA health center sites (scripts/build_fqhc.py). Optional: the
+        // hospital map works without them, so a failed load is ignored.
+        const clinicRes = await fetch("./data/fqhc_sites.json").catch(() => null);
+        if (clinicRes?.ok && !cancelled) {
+          const data = (await clinicRes.json()) as { sites: Facility[] };
+          if (!cancelled) setClinics(data.sites);
+        }
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : String(e));
       } finally {
@@ -50,5 +60,5 @@ export function useCareMapData(): CareMapData {
     };
   }, []);
 
-  return { facilities, zipCentroids, loading, error };
+  return { facilities, clinics, zipCentroids, loading, error };
 }

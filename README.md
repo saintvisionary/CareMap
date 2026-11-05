@@ -46,6 +46,9 @@ run:
   Provider and Service
 - Geocoding: US Census batch geocoder, with a zip-centroid fallback
 - Zip code centroids: US Census ZCTA Gazetteer
+- Sliding-fee health centers: HRSA Health Center Service Delivery and
+  Look-Alike Sites (11,744 permanent, public-facing clinic sites), priced by
+  the federal FQHC sliding-fee rule (42 CFR 51c.303)
 - State charity-care rules: each state's own statute or regulation (see
   the table below; every number lives in `policy/policy.json` with its
   citation)
@@ -53,6 +56,13 @@ run:
 
 Hospital locations and typical billed charges cover all 50 states + DC:
 about 4,500 acute care, Critical Access, and VA hospitals.
+
+Every search also shows the nearest few federally funded sliding-fee
+health centers (FQHCs and Look-Alikes). Their discounts follow a federal
+rule, the same in every state: a full discount at or below 100% FPL (a
+small flat fee may apply), each clinic's own sliding scale up to 200%, and
+no one turned away for inability to pay. CareMap has no clinic prices, so
+it never shows a dollar amount for a clinic.
 
 ## Modeled states
 
@@ -125,6 +135,7 @@ AI chat enhancement, set `VITE_AGENT_URL` to a deployed agent endpoint (see
   gap rather than showing a guessed percentage
 - Psychiatric, children's, long-term care, military and rural emergency
   hospitals, and US territories
-- FQHC / urgent care layer (HRSA, NPPES) -- hospitals only so far
+- Urgent care layer (NPPES) -- hospitals and sliding-fee health centers only
+  so far
 - A national point layer (currently loaded as per-state GeoJSON; a
   `.pmtiles` tile layer is the next step for scale)

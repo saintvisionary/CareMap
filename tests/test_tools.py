@@ -61,11 +61,28 @@ def test_facilities_near_east_orange():
     assert dists == sorted(dists)
 
 
-def test_nearest_fqhc_not_yet_in_dataset():
-    # FQHC data (HRSA sites) hasn't been pulled in yet.
-    # Should fail gracefully, not crash or invent a facility.
-    r = nearest_fqhc(zip_code="07018", radius_miles=25)
-    assert "error" in r
+def test_nearest_fqhc_returns_clinic_with_federal_rule():
+    # HRSA health center site near the East Orange demo case.
+    r = nearest_fqhc(zip_code="07018", radius_miles=25, fpl_pct=90)
+    assert r["name"] == "EAST ORANGE PRIMARY CARE CENTER"
+    assert "nominal fee" in r["sliding_fee_rule"]
+    assert "drg_charges" not in r  # trimmed: clinics have no charge data
+
+
+def test_nearest_fqhc_none_in_range_errors():
+    assert "error" in nearest_fqhc(zip_code="07018", radius_miles=0.01)
+
+
+def test_charity_tier_for_a_clinic_gives_federal_rule_not_a_tier():
+    clinic = nearest_fqhc(zip_code="07018")
+    r = charity_tier(state="NJ", fpl_pct=150, ccn=clinic["ccn"])
+    assert r["facility_type"] == "fqhc" and "patient_pays_pct" not in r
+    assert "sliding scale" in r["sliding_fee_rule"]
+
+
+def test_facilities_near_default_excludes_clinics():
+    r = facilities_near(zip_code="07018", radius_miles=5)
+    assert r["facilities"] and all(f["type"] != "fqhc" for f in r["facilities"])
 
 
 def test_draft_application():

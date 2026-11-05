@@ -3,7 +3,7 @@ import { NEED_TO_DRG } from "../lib/drg";
 import { facilityTier, TIER_COLORS, type FacilityWithDistance } from "../lib/geo";
 import { insuranceGuidance } from "../lib/insurance";
 import type { InsuranceType } from "../lib/intake";
-import { applyTier, charityTier, CHARITY_PROGRAM_NAMES, FREE_TIER_STATES } from "../lib/policy";
+import { applyTier, charityTier, CHARITY_PROGRAM_NAMES, FREE_TIER_STATES, fqhcSlidingFee } from "../lib/policy";
 import { GlassPanel } from "./GlassPanel";
 
 const money = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
@@ -77,6 +77,9 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
     hero = "Full price";
     heroLabel = `not eligible for ${programName} at this income`;
   }
+  if (facility.type === "fqhc") {
+    ({ hero, label: heroLabel } = fqhcSlidingFee(fplPct, insuranceType != null && insuranceType !== "uninsured"));
+  }
 
   return (
     <motion.button
@@ -135,7 +138,9 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
                   {facility.star_rating != null && <span>CMS quality rating: {facility.star_rating}/5</span>}
                 </div>
                 <div className="text-white/40">Ownership: {facility.ownership}</div>
-                {!facility.charity_care_participant && (
+                {facility.operator && <div className="text-white/40">Run by: {facility.operator}</div>}
+                {facility.phone && <div className="text-white/40">Phone: {facility.phone}</div>}
+                {!facility.charity_care_participant && facility.type !== "fqhc" && (
                   <div className="text-white/40">
                     {facility.type === "va_hospital"
                       ? "VA hospital: the VA's own eligibility rules apply here, not state charity care."

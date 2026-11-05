@@ -289,6 +289,30 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str | None = None, o
     return fn(fpl_pct, facility_type, ownership) if fn else None
 
 
+def fqhc_sliding_fee(fpl_pct: float | None = None) -> dict:
+    """The federal FQHC sliding-fee rule (42 CFR 51c.303(f), (u)) at an income.
+
+    Never a dollar amount or percentage: CareMap has no clinic charge data,
+    and the discount between 100% and 200% FPL is each center's own scale.
+    """
+    rule = POLICY["fqhc_sliding_fee"]
+    if fpl_pct is None:
+        band = ("Discounts by income on the clinic's own sliding scale, with a full discount at or below "
+                f"{rule['full_discount_max_fpl_pct']}% FPL (a small nominal fee may still apply) and no discount "
+                f"required above {rule['sliding_scale_max_fpl_pct']}% FPL.")
+    elif fpl_pct <= rule["full_discount_max_fpl_pct"]:
+        band = "Full discount at this income, though the clinic may charge a small nominal fee."
+    elif fpl_pct <= rule["sliding_scale_max_fpl_pct"]:
+        band = "Discounted on the clinic's own sliding scale at this income (no federal percentage)."
+    else:
+        band = "No income-based discount is required at this income."
+    return {
+        "sliding_fee_rule": band,
+        "cannot_be_turned_away": "Federally funded health centers can't deny service for inability to pay.",
+        "source": rule["source"],
+    }
+
+
 def apply_tier(typical_charge: float, patient_pays_pct: float) -> float:
     """Dollar amount the patient owes, given a typical billed charge and a tier's patient_pays_pct."""
     return round(typical_charge * (patient_pays_pct / 100), 2)

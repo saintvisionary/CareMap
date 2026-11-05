@@ -20,6 +20,10 @@ export interface Facility {
   lat_lon_approximate?: boolean;
   drg_charges: Record<string, DrgCharge>;
   charity_care_participant: boolean;
+  // HRSA health center sites only.
+  operator?: string;
+  phone?: string;
+  website?: string;
 }
 
 export interface ZipCentroid {

@@ -249,3 +249,13 @@ def test_nv_flat_share_any_income():
     # NRS 439B.260: at least 30% off total billed charges, no income test.
     assert charity_tier("NV", 50)["patient_pays_pct"] == 70
     assert charity_tier("NV", 900)["patient_pays_pct"] == 70
+
+
+def test_fqhc_sliding_fee_bands():
+    # 42 CFR 51c.303(f): full discount at or below 100% FPL (nominal fee
+    # allowed), clinic's own scale to 200%, no discount required above.
+    from caremap.policy import fqhc_sliding_fee
+    assert "Full discount" in fqhc_sliding_fee(100)["sliding_fee_rule"]
+    assert "sliding scale" in fqhc_sliding_fee(150)["sliding_fee_rule"]
+    assert "No income-based discount" in fqhc_sliding_fee(201)["sliding_fee_rule"]
+    assert "can't deny service" in fqhc_sliding_fee(None)["cannot_be_turned_away"]

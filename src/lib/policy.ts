@@ -334,6 +334,22 @@ export function charityTier(state: string, fplPct: number, facilityType?: string
   return null;
 }
 
+// 42 CFR 51c.303(f), (u): the federal sliding-fee rule for FQHCs and
+// Look-Alikes, the same in every state. Full discount at or below 100% FPL
+// (a nominal fee may still apply, with no federal cap), each clinic's own
+// sliding scale up to 200%, no discount required above. There's no clinic
+// charge data, so this never produces a dollar figure or percentage.
+export function fqhcSlidingFee(fplPct: number | null, insured: boolean): { hero: string; label: string } {
+  const noDenial = "It can't turn you away for inability to pay.";
+  if (insured) return { hero: "Health center", label: `Federally funded health center that bills your coverage. ${noDenial}` };
+  if (fplPct == null) return { hero: "Sliding fee", label: `Federally funded health center: discounts by income up to 200% of the poverty line. ${noDenial}` };
+  if (fplPct <= 100) {
+    return { hero: "Free or small fee", label: `Federal rule at your income: a full discount, though the clinic may charge a small flat fee. ${noDenial}` };
+  }
+  if (fplPct <= 200) return { hero: "Sliding scale", label: `Federal rule at your income: discounted on this clinic's own sliding scale. ${noDenial}` };
+  return { hero: "Regular fee", label: `No income discount is required above 200% of the poverty line. ${noDenial}` };
+}
+
 export function applyTier(typicalCharge: number, patientPaysPct: number): number {
   return Math.round(typicalCharge * (patientPaysPct / 100) * 100) / 100;
 }

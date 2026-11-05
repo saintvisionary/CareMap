@@ -232,6 +232,13 @@
     ],
     "tier_note": "Inpatient care only, at Nevada's major hospitals, if you aren't eligible for Medicaid or other public coverage (apply for that first if you might be) and you make reasonable payment arrangements within 30 days of the hospital's notice. It's a minimum discount, so you may owe less."
   },
+  "fqhc_sliding_fee": {
+    "source": "https://www.ecfr.gov/current/title-42/chapter-I/subchapter-D/part-51c/subpart-C/section-51c.303 (42 CFR 51c.303(f), (u)); 42 U.S.C. 254b(k)(3)(G); Look-Alikes via 42 U.S.C. 1395x(aa)(4)(B)",
+    "applies_to": "every Federally Qualified Health Center and FQHC Look-Alike, at any income -- federal, not state, so the same in every state",
+    "note": "Verified against the current regulation text. 51c.303(f): the schedule of discounts 'shall provide for a full discount to individuals and families with annual incomes at or below' the poverty guidelines 'and for no discount to individuals and families with annual incomes greater than twice' them, 'except that nominal fees for services may be collected' -- so at or below 100% FPL it's a full discount but not guaranteed $0, with no federal cap on the nominal fee. Between 100% and 200% FPL the discount follows each center's own sliding scale; no federal percentage. 51c.303(u): 'no person shall be denied service by reason of his inability to pay', and third parties obligated to pay (insurers, Medicaid) are billed. No claims are made about insured patients' out-of-pocket costs, assets or immigration status: HRSA's Compliance Manual chapter 9 couldn't be read directly. CareMap has no clinic charge data, so it never shows a dollar amount for a clinic.",
+    "full_discount_max_fpl_pct": 100,
+    "sliding_scale_max_fpl_pct": 200
+  },
   "good_faith_estimate": {
     "source": "https://www.cms.gov/medical-bill-rights/help/guides/good-faith-estimate",
     "applies_to": "uninsured or self-pay patients scheduling care at least 3 business days ahead",
