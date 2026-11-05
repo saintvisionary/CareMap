@@ -68,83 +68,25 @@ def nj_charity_tier(fpl_pct: float) -> dict:
 
 @tool
 def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_hospital", ownership: str = "", ccn: str = "") -> dict:
-    """Look up the charity-care tier for a hospital's state, for a percent of the federal poverty line.
+    """Look up the charity-care tier for a facility's state at a percent of the federal poverty line.
 
-    Only a short list of states have a real, codified, state-wide formula --
-    currently NJ, WA, IL, NY, OR, MD, RI, MA, ME, VT, NC, OH, SC, NV and CT
-    (CA and CO have Medicare-rate caps instead of tiers; this returns an
-    error describing them). For every other state, returns an error; say
-    the state's rules aren't modeled in CareMap yet rather than guessing a
-    tier. Pass the facility's ccn whenever you know it: it's required for
-    NC, NV and CT, and it makes the facility's own state, type and
-    participation win over the arguments.
-    For WA specifically, this is the legal MINIMUM floor every hospital must
-    offer (RCW 70.170.060(5)(b)) -- larger hospital systems are required to
-    offer better terms up to 400% FPL that this can't apply per-hospital
-    without bed-count/ownership data CareMap doesn't have; say so if the
-    state is WA.
-    For IL specifically, facility_type matters: free care applies up to 200%
-    FPL at a standard hospital but only up to 125% FPL at a Critical Access
-    Hospital (facility_type "critical_access_hospital"). Above that
-    threshold IL has NO modeled percentage -- the real statutory discount
-    needs each hospital's own Medicare cost-to-charge ratio, which CareMap
-    doesn't have (a different CMS dataset than what's loaded). Say so if the
-    state is IL and this returns an error -- but still mention IL's real cap:
-    a hospital can never collect more than 20% of the patient's family
-    income in any 12-month period, regardless of the missing percentage.
-    For NY specifically: free care applies up to 200% FPL (PBH
-    2807-k(9-a)). Above that threshold NY has NO modeled percentage either,
-    and unlike IL there's no disclosable cap fact to add -- NY's real cap
-    (10-20%) is of the Medicaid-equivalent rate for the service, a dataset
-    CareMap doesn't have at all (not just a missing ratio on an otherwise-
-    known base). Say that plainly if the state is NY and this returns an
-    error -- don't imply any specific cap percentage applies.
-    For OR specifically, ownership matters: ORS 442.610-442.618 only
-    covers NONPROFIT hospitals (ownership starting with "Voluntary
-    non-profit", from the facility's own CMS ownership field). Pass the
-    facility's ownership string when the state is OR. Without a confirmed
-    nonprofit ownership, this returns an error rather than a tier -- for-
-    profit and government-owned OR hospitals aren't covered by the law at
-    all, so never imply a discount applies to one of those. If OR does
-    return a tier, remember it's a statutory MINIMUM discount (the floor,
-    like WA) -- the patient's actual share may be lower.
-    For MD specifically: a real 7-band sliding scale (free up to 200%
-    FPL, down to a 65% share at 451-500% FPL), applying to virtually every
-    MD hospital regardless of ownership. Maryland also has a separate
-    hardship tier up to 500% FPL for patients with high medical debt
-    relative to income -- this is NOT computed here (it needs the
-    patient's actual debt history), so mention it only as a thing to ask
-    the hospital about, never as a number.
-    For RI specifically: free care applies up to 200% FPL. Above that,
-    RI's regulation explicitly leaves the 200-300% FPL sliding-scale
-    percentage to EACH INDIVIDUAL HOSPITAL to set (not a statewide
-    number), and says nothing about pricing above 300% FPL at all --
-    unlike IL, there's no cap fact to add either. Say plainly that RI
-    hasn't set a statewide percentage there, and the specific hospital's
-    own billing office would know its own sliding scale.
-    For MA specifically: free care (Health Safety Net) applies up to 150%
-    FPL -- note this threshold is LOWER than the 200% line most other
-    modeled states use. Above that threshold charity_tier returns an
-    error -- the real deductible there is a flat dollar amount tied to a
-    MA Health Connector insurance premium CareMap doesn't have, not a
-    percentage of billed charges at all. Say that plainly; no cap fact to
-    add, same as RI.
-    For ME specifically: free care up to 200% FPL, Maine residents only
-    (say so -- CareMap can't check residency). Above that there's no
-    percentage, but up to 400% FPL hospitals must offer a payment plan
-    capped at 4% of monthly family income; the error says which applies.
-    For VT specifically: free care up to 250% FPL, Vermont residents only.
-    Above that there's no computable percentage; the error says which
-    protections still apply at that income (a 40%-minimum discount off the
-    hospital's own "amount generally billed", and a 20%-of-income cap).
+    Returns patient_pays_pct (0-100) plus any note to relay, or an error
+    explaining what that state's law does and doesn't let CareMap show. Never
+    guess a tier when this returns an error; relay the error's facts instead.
+    Per-state rules (thresholds, caps, residency) are described in the system
+    prompt and repeated in each result.
+
+    Always pass the facility's ccn once you know it: it's required for NC, NV
+    and CT, and the facility's own state, type, ownership and participation
+    then win over the other arguments (VA hospitals, clinics and urgent care
+    get their own answers).
 
     Args:
-        state: Two-letter state code of the facility (e.g. "NJ", "WA", "IL", "NY", "OR", "MD", "RI", "MA", "ME", "VT"), not the user's own state.
+        state: Two-letter state code of the facility, not the user's own state.
         fpl_pct: Household income as a percent of the federal poverty line (e.g. 158 for 158%).
-        facility_type: The facility's own type (e.g. "acute_care_hospital", "critical_access_hospital") -- only matters for IL.
-        ownership: The facility's own CMS ownership string (e.g. "Voluntary non-profit - Private") -- only matters for OR.
-        ccn: The facility's CMS Certification Number. Always pass it: some programs only cover specific
-            hospitals (NC's participating list, NV's major hospitals), and VA hospitals are never covered.
+        facility_type: The facility's type (e.g. "critical_access_hospital"); only matters for IL without a ccn.
+        ownership: The facility's CMS ownership string; only matters for OR without a ccn.
+        ccn: The facility's CMS Certification Number (or clinic id).
     """
     cost_cap_pct = None
     if ccn:
@@ -531,7 +473,8 @@ def draft_application(ccn: str, patient_pays_pct: float) -> dict:
     return result
 
 
-ELIGIBILITY_TOOLS = [fpl_percent, nj_charity_tier, charity_tier]
+# nj_charity_tier stays importable for older callers, but the agent only needs charity_tier.
+ELIGIBILITY_TOOLS = [fpl_percent, charity_tier]
 COST_TOOLS = [facilities_with_drg, estimate_cost, apply_tier_to_charge]
 QUALITY_TOOLS = [facilities_near, nearest_fqhc, nearest_urgent_care]
 ADVOCATE_TOOLS = [draft_application]

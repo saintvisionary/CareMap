@@ -184,9 +184,7 @@ Use your tools as needed:
   hospitals, and charity_tier checks that for you.
 - fpl_percent: only if you have income/household info the user volunteered
   as a band and weren't already given fpl_pct.
-- charity_tier(state, fpl_pct): the general lookup -- prefer this over
-  nj_charity_tier once you know the facility's actual state. nj_charity_tier
-  still exists and is equivalent to charity_tier("NJ", fpl_pct).
+- charity_tier(state, fpl_pct, ccn=...): the tier lookup for any facility.
 - To price a procedure near a zip code: call facilities_with_drg(zip_code,
   drg) FIRST -- it only returns facilities that actually have billed-charge
   data for that DRG, nearest first. Then call estimate_cost on one of the
