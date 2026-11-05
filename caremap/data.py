@@ -23,6 +23,12 @@ DRG_DESCRIPTIONS_PATH = ROOT / "public" / "data" / "drg_descriptions.json"
 CLINIC_TYPES = {"fqhc", "urgent_care"}
 
 
+def _with_defaults(data: dict) -> list[dict]:
+    """Site files store shared fields once, under "defaults"."""
+    defaults = data.get("defaults", {})
+    return [{**defaults, **s} for s in data["sites"]]
+
+
 def _load_facilities() -> list[dict]:
     out = []
     for path in sorted(STATES_DIR.glob("*.json")):
@@ -30,9 +36,9 @@ def _load_facilities() -> list[dict]:
             continue
         out.extend(json.loads(path.read_text(encoding="utf-8"))["facilities"])
     if FQHC_PATH.exists():  # HRSA health center sites, built by scripts/build_fqhc.py
-        out.extend(json.loads(FQHC_PATH.read_text(encoding="utf-8"))["sites"])
+        out.extend(_with_defaults(json.loads(FQHC_PATH.read_text(encoding="utf-8"))))
     if URGENT_CARE_PATH.exists():  # NPI registry urgent care sites, built by scripts/build_urgent_care.py
-        out.extend(json.loads(URGENT_CARE_PATH.read_text(encoding="utf-8"))["sites"])
+        out.extend(_with_defaults(json.loads(URGENT_CARE_PATH.read_text(encoding="utf-8"))))
     return out
 
 

@@ -10,6 +10,17 @@ interface CareMapData {
   error: string | null;
 }
 
+// Clinic and urgent care files store fields every site shares once, under
+// "defaults" (see scripts/build_fqhc.py), to keep the download small.
+interface SiteFile {
+  defaults?: Partial<Facility>;
+  sites: Partial<Facility>[];
+}
+
+function withDefaults(data: SiteFile): Facility[] {
+  return data.sites.map((s) => ({ ...data.defaults, ...s }) as Facility);
+}
+
 export function useCareMapData(): CareMapData {
   const [facilities, setFacilities] = useState<Facility[]>([]);
   const [clinics, setClinics] = useState<Facility[]>([]);
@@ -48,14 +59,14 @@ export function useCareMapData(): CareMapData {
         // hospital map works without them, so a failed load is ignored.
         const clinicRes = await fetch("./data/fqhc_sites.json").catch(() => null);
         if (clinicRes?.ok && !cancelled) {
-          const data = (await clinicRes.json()) as { sites: Facility[] };
-          if (!cancelled) setClinics(data.sites);
+          const data = (await clinicRes.json()) as SiteFile;
+          if (!cancelled) setClinics(withDefaults(data));
         }
         // NPI-registry urgent care sites (scripts/build_urgent_care.py), also optional.
         const ucRes = await fetch("./data/urgent_care_sites.json").catch(() => null);
         if (ucRes?.ok && !cancelled) {
-          const data = (await ucRes.json()) as { sites: Facility[] };
-          if (!cancelled) setUrgentCare(data.sites);
+          const data = (await ucRes.json()) as SiteFile;
+          if (!cancelled) setUrgentCare(withDefaults(data));
         }
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : String(e));

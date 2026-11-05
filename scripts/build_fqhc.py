@@ -33,6 +33,16 @@ DENTAL = re.compile(r"\bDENT(AL|ISTRY)\b", re.I)
 MEDICAL = re.compile(r"MEDICAL|PRIMARY|PEDIATRIC|FAMILY MEDICINE|FAMILY PRACTICE", re.I)
 
 
+# Fields every site shares; written once per file and merged back by readers
+# (caremap/data.py, src/hooks/useCareMapData.ts).
+DEFAULTS = {"type": "fqhc", "ownership": "Federally Qualified Health Center", "has_er": False,
+            "star_rating": None, "drg_charges": {}, "charity_care_participant": False}
+
+
+def slim_sites(sites: list[dict], defaults: dict) -> list[dict]:
+    """Drop per-site fields equal to the file-level defaults (readers merge them back)."""
+    return [{k: v for k, v in s.items() if k not in defaults or s[k] != defaults[k]} for s in sites]
+
 def load_rows() -> list[dict]:
     path = RAW / "hrsa_sites.csv"
     if not path.exists():
@@ -80,7 +90,8 @@ def main() -> None:
             "drg_charges": {},
             "charity_care_participant": False,
         })
-    OUT.write_text(json.dumps({"source": SOURCE_URL, "sites": sites}, separators=(",", ":")), encoding="utf-8")
+    OUT.write_text(json.dumps({"source": SOURCE_URL, "defaults": DEFAULTS, "sites": slim_sites(sites, DEFAULTS)},
+                              separators=(",", ":")), encoding="utf-8")
     print(f"Wrote {OUT} ({len(sites)} sites)", file=sys.stderr)
 
 

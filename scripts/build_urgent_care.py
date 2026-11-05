@@ -32,6 +32,14 @@ OUT = ROOT / "public" / "data" / "urgent_care_sites.json"
 API = "https://npiregistry.cms.hhs.gov/api/"
 TAXONOMY = "261QU0200X"
 PAGE, MAX_SKIP = 200, 1000
+# Fields every site shares; written once per file and merged back by readers.
+DEFAULTS = {"type": "urgent_care", "ownership": "Urgent care (federal NPI registry listing)", "has_er": False,
+            "star_rating": None, "county": "", "drg_charges": {}, "charity_care_participant": False}
+
+
+def slim_sites(sites: list[dict], defaults: dict) -> list[dict]:
+    """Drop per-site fields equal to the file-level defaults (readers merge them back)."""
+    return [{k: v for k, v in s.items() if k not in defaults or s[k] != defaults[k]} for s in sites]
 
 
 def _query(**params) -> list[dict]:
@@ -156,11 +164,14 @@ def geocode(sites: list[dict], zip_centroids: dict[str, dict]) -> None:
 def retry_approximate() -> None:
     """Re-geocode only the sites a flaky earlier run left at their zip centroid."""
     data = json.loads(OUT.read_text())
+    data["sites"] = [{**data.get("defaults", {}), **s} for s in data["sites"]]
     approx = [s for s in data["sites"] if s.get("lat_lon_approximate")]
     for s in approx:
         s.pop("lat_lon_approximate", None)
     print(f"  retrying {len(approx)} approximately placed sites", file=sys.stderr)
     geocode(approx, build_data.build_zip_centroids())
+    data["defaults"] = DEFAULTS
+    data["sites"] = slim_sites(data["sites"], DEFAULTS)
     OUT.write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")
     left = sum(1 for s in data["sites"] if s.get("lat_lon_approximate"))
     print(f"Wrote {OUT} ({len(data['sites'])} sites, {left} still approximate)", file=sys.stderr)
@@ -174,7 +185,8 @@ def main() -> None:
     sites = to_sites(fetch_all(states), set(states))
     geocode(sites, build_data.build_zip_centroids())
     sites = [s for s in sites if s.get("lat") is not None]
-    OUT.write_text(json.dumps({"source": API, "taxonomy": TAXONOMY, "sites": sites}, separators=(",", ":")), encoding="utf-8")
+    OUT.write_text(json.dumps({"source": API, "taxonomy": TAXONOMY, "defaults": DEFAULTS,
+                              "sites": slim_sites(sites, DEFAULTS)}, separators=(",", ":")), encoding="utf-8")
     print(f"Wrote {OUT} ({len(sites)} sites)", file=sys.stderr)
 
 
