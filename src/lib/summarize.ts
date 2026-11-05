@@ -8,6 +8,7 @@ import {
   charityTier,
   CHARITY_PROGRAM_NAMES,
   FREE_TIER_STATES,
+  MEDICARE_CAP_STATES,
   fqhcSlidingFee,
   ME_PAYMENT_PLAN_MAX_FPL,
   ME_PAYMENT_PLAN_MAX_PCT_OF_MONTHLY_INCOME,
@@ -30,6 +31,16 @@ const money = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
  * backend grounding guard: "typical billed charge", never "your price",
  * always "estimate, confirm with billing office" -- kept here too so the
  * instant local path and the AI-enhanced path never contradict each other. */
+/** CA/CO only: CMS's Medicare average as a reference for a Medicare/Medicaid-rate cap. */
+function medicareCapLine(f: FacilityWithDistance, drgCode: string, fplPct: number | null, insuranceType: InsuranceType | null): string {
+  const cap = MEDICARE_CAP_STATES[f.state];
+  const payment = f.drg_charges[drgCode]?.avg_total_payment;
+  if (!cap || payment == null || !f.charity_care_participant || insuranceType !== "uninsured" || fplPct == null || fplPct > cap.maxFplPct) {
+    return "";
+  }
+  return ` Medicare's average total payment for it there is ${money(payment)} (CMS, 2024); under ${cap.programName}, what you can be charged is capped at the greater of that or ${cap.medicaidName}'s rate, which CareMap doesn't have, so it could be higher.`;
+}
+
 export function summarize(result: QueryResult): string {
   const { zipCode, fplPct, insuranceType, veteran, need } = result;
   // Hospitals drive the main answer; nearby sliding-fee clinics get their
@@ -77,8 +88,13 @@ export function summarize(result: QueryResult): string {
     // percentage -- currently IL and NY above their free-care lines, where
     // the real discount needs data this app doesn't have. Must not be
     // confused with "we don't know your income yet".
+    const cap = MEDICARE_CAP_STATES[nearest.state];
     lines.push(
-      nearest.state === "IL"
+      cap
+        ? fplPct <= cap.maxFplPct
+          ? `At your income, ${cap.programName} ${cap.capLine}.${cap.extra ? ` ${cap.extra}` : ""}`
+          : `Your income is above the ${cap.maxFplPct}% line for ${cap.programName}, so its cap doesn't apply -- ask this hospital's billing office about its own financial assistance.`
+        : nearest.state === "IL"
         ? `Your income is above ${programName}'s free-care line, so there's no exact percentage to show (Illinois law bases it on each hospital's own cost-to-charge ratio, which CareMap doesn't have). State law still caps total collection at 20% of your family income in any 12-month period -- ask this hospital's billing office for your exact discount.`
         : nearest.state === "NY"
           ? `Your income is above ${programName}'s free-care line, so there's no exact percentage to show (New York's cap there is based on the Medicaid rate for the service, not billed charges, and CareMap doesn't have Medicaid-rate data). Ask this hospital's billing office for your exact discount.`
@@ -140,6 +156,7 @@ export function summarize(result: QueryResult): string {
           : null;
       lines.push(
         `${drg.label} at ${withCharge.name}: typical billed charge is ${money(charge)}.` +
+          medicareCapLine(withCharge, drg.code, fplPct, insuranceType) +
           (chargeTier != null && insuranceType === "uninsured"
             ? ` At your tier, estimated amount owed is ${(withCharge.state === "OR" || withCharge.state === "NV") && chargeTier.patientPaysPct > 0 ? "at most " : ""}${money(applyTier(charge, chargeTier.patientPaysPct))}.`
             : ""),

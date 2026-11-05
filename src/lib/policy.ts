@@ -298,7 +298,50 @@ const STATE_CHARITY_TIER_FNS: Record<string, (fplPct: number, facilityType?: str
   NV: (fplPct) => ({ patientPaysPct: 70, fplPct, maxFplPct: null }),
 };
 
-export const MODELED_CHARITY_STATES = [...Object.keys(STATE_CHARITY_TIER_FNS), ...Object.keys(FREE_TIER_STATES)];
+// H&SC 127405(d)(1) (CA) and 10 CCR 2505-10 8.928.2 (CO): caps tied to the
+// greater of Medicare or Medicaid rates, not a percentage. CareMap has
+// CMS's average Medicare total payment per procedure (2024 data) but not
+// Medicaid rates, so that figure is a reference the cap starts from --
+// never a price or a guaranteed ceiling.
+export interface MedicareCapState {
+  programName: string;
+  law: string;
+  maxFplPct: number;
+  scope: string;
+  capLine: string;
+  ruleLine: string;
+  medicaidName: string;
+  extra?: string;
+}
+
+export const MEDICARE_CAP_STATES: Record<string, MedicareCapState> = {
+  CA: {
+    programName: "California's Hospital Fair Pricing Act",
+    law: "H&SC 127405",
+    maxFplPct: 400,
+    scope: "For uninsured patients, or patients with high medical costs, at or below 400% of the poverty line (rural hospitals may set a lower line).",
+    capLine: "limits what this hospital can expect you to pay to the greater of what Medicare or Medi-Cal would pay it",
+    ruleLine: "A hospital must limit what it expects an eligible patient to pay to the greater of what Medicare or Medi-Cal would pay it for the service.",
+    medicaidName: "Medi-Cal",
+  },
+  CO: {
+    programName: "Colorado Hospital Discounted Care",
+    law: "C.R.S. 25.5-3-503 and 10 CCR 2505-10 8.928",
+    maxFplPct: 250,
+    scope: "For Colorado residents at or below 250% of the poverty line.",
+    capLine: "limits your bill to a state-set rate that's at least the greater of the Medicare or Medicaid rate",
+    ruleLine: "A hospital can bill an eligible patient no more than a state-set discounted rate, which by rule approximates and is at least the greater of the Medicare or Medicaid rate.",
+    medicaidName: "Medicaid",
+    extra:
+      "Payment plans can't exceed 4% of monthly household income on a hospital bill (6% if it also has professional charges), and the bill counts as paid after 36 months of payments.",
+  },
+};
+
+export const MODELED_CHARITY_STATES = [
+  ...Object.keys(STATE_CHARITY_TIER_FNS),
+  ...Object.keys(FREE_TIER_STATES),
+  ...Object.keys(MEDICARE_CAP_STATES),
+];
 
 // Only used to name the program in a sentence -- the actual numbers always
 // come from charityTier(), never hardcoded here. WA's note (confirm with
@@ -306,6 +349,7 @@ export const MODELED_CHARITY_STATES = [...Object.keys(STATE_CHARITY_TIER_FNS), .
 // enough to state inline, not just in the info panel.
 export const CHARITY_PROGRAM_NAMES: Record<string, string> = {
   ...Object.fromEntries(Object.entries(FREE_TIER_STATES).map(([st, f]) => [st, f.programName])),
+  ...Object.fromEntries(Object.entries(MEDICARE_CAP_STATES).map(([st, c]) => [st, c.programName])),
   NJ: "NJ Charity Care",
   WA: "Washington's charity care law (the minimum every hospital must offer -- some larger hospital systems must offer better terms)",
   IL: "the Illinois Hospital Uninsured Patient Discount Act (uninsured patients only)",

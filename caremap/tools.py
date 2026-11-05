@@ -25,6 +25,21 @@ def _money(amount: float) -> str:
     return f"${round(amount):,}"
 
 
+def _medicare_reference(charge_info: dict) -> dict:
+    """CMS's average Medicare total payment for the procedure, when the data has it.
+
+    A reference point for states whose cap is tied to Medicare rates (CA,
+    CO) -- never a price on its own.
+    """
+    if "avg_total_payment" not in charge_info:
+        return {}
+    return {
+        "medicare_avg_total_payment": charge_info["avg_total_payment"],
+        "medicare_avg_total_payment_formatted": _money(charge_info["avg_total_payment"]),
+        "medicare_reference_label": "Medicare's average total payment for this procedure here (CMS, 2024 data), a reference, not a price",
+    }
+
+
 @tool
 def fpl_percent(annual_income: float, household_size: int) -> dict:
     """Compute household income as a percent of the 2026 federal poverty line.
@@ -257,6 +272,7 @@ def estimate_cost(ccn: str, drg: str) -> dict:
         "typical_billed_charge": charge_info["avg_charge"],
         "typical_billed_charge_formatted": _money(charge_info["avg_charge"]),
         "label": "typical billed charge, estimate, confirm with billing office",
+        **_medicare_reference(charge_info),
     }
 
 
@@ -282,7 +298,8 @@ def facilities_with_drg(zip_code: str, drg: str, radius_miles: float = 25) -> di
             {"ccn": f["ccn"], "name": f["name"], "distance_miles": f["distance_miles"],
              "state": f["state"], "facility_type": f["type"], "ownership": f["ownership"],
              "typical_billed_charge": f["drg_charges"][drg]["avg_charge"],
-             "typical_billed_charge_formatted": _money(f["drg_charges"][drg]["avg_charge"])}
+             "typical_billed_charge_formatted": _money(f["drg_charges"][drg]["avg_charge"]),
+             **_medicare_reference(f["drg_charges"][drg])}
             for f in matches
         ],
     }
@@ -354,13 +371,16 @@ _STATE_PROGRAM_NAMES = {
     "OH": "Ohio's Hospital Care Assurance Program (OAC 5160-2-17)",
     "SC": "South Carolina's Medically Indigent Assistance Program (S.C. Code 44-6-150)",
     "NV": "Nevada's major-hospital discount law (NRS 439B.260)",
+    "CA": "California's Hospital Fair Pricing Act (H&SC 127405)",
+    "CO": "Colorado Hospital Discounted Care (C.R.S. 25.5-3-503)",
 }
 _STATE_POLICY_KEYS = {
     "NJ": "nj_charity_care", "WA": "wa_charity_care", "IL": "il_charity_care",
     "NY": "ny_charity_care", "OR": "or_charity_care", "MD": "md_charity_care",
     "RI": "ri_charity_care", "MA": "ma_charity_care", "ME": "me_charity_care",
     "VT": "vt_charity_care", "NC": "nc_charity_care", "OH": "oh_charity_care",
-    "SC": "sc_charity_care", "NV": "nv_charity_care",
+    "SC": "sc_charity_care", "NV": "nv_charity_care", "CA": "ca_charity_care",
+    "CO": "co_charity_care",
 }
 
 
@@ -418,9 +438,11 @@ def draft_application(ccn: str, patient_pays_pct: float) -> dict:
     letter = (
         f"To the Business Office of {facility['name']}:\n\n"
         f"I am requesting consideration for {program_name} for the hospital "
-        "charges referenced above. Based on my household income and size, I believe I "
-        f"qualify for a reduced-charge tier (patient responsibility: {patient_pays_pct}% of billed charges). "
-        "I have enclosed proof of income, residency and insurance status. "
+        "charges referenced above. "
+        + (program["letter_basis"] + " " if "letter_basis" in program else
+           "Based on my household income and size, I believe I qualify for a reduced-charge tier "
+           f"(patient responsibility: {patient_pays_pct}% of billed charges). ")
+        + "I have enclosed proof of income, residency and insurance status. "
     )
     if "decision_window_business_days" in program:
         letter += f"I understand a decision is due within {program['decision_window_business_days']} business days. "

@@ -136,7 +136,8 @@ def load_all_drg_charges() -> dict[str, dict[str, dict]]:
     for, so an NJ-only run's cache would have wrongly short-circuited a
     later national run.
     """
-    cache_path = RAW / "drg_charges_national.json"
+    # v2 adds Medicare payment fields; a new name keeps an old cache from being reused.
+    cache_path = RAW / "drg_charges_national_v2.json"
     if cache_path.exists():
         return json.loads(cache_path.read_text())
 
@@ -153,6 +154,8 @@ def load_all_drg_charges() -> dict[str, dict[str, dict]]:
             by_ccn.setdefault(ccn, {})[row["DRG_Cd"]] = {
                 "description": row["DRG_Desc"],
                 "avg_charge": round(float(row["Avg_Submtd_Cvrd_Chrg"])),
+                "avg_total_payment": round(float(row["Avg_Tot_Pymt_Amt"])),
+                "avg_medicare_payment": round(float(row["Avg_Mdcr_Pymt_Amt"])),
             }
         print(f"  drg page offset={offset} rows={len(page)} facilities_so_far={len(by_ccn)}", file=sys.stderr)
         offset += page_size
@@ -349,6 +352,10 @@ def build_states(states: set[str], zip_centroids: dict[str, dict]) -> dict[str, 
             "SC": {"acute_care_hospital", "critical_access_hospital"},
             # NV: only the major hospitals listed above (gated below).
             "NV": {"acute_care_hospital", "critical_access_hospital"},
+            # CA (H&SC 127405) and CO (C.R.S. 25.5-3-503): every hospital,
+            # but as a Medicare/Medicaid-rate cap, not a tier.
+            "CA": {"acute_care_hospital", "critical_access_hospital"},
+            "CO": {"acute_care_hospital", "critical_access_hospital"},
         }
         f["charity_care_participant"] = f["type"] in state_facility_types.get(f["state"], set())
         # OR's law (ORS 442.610-442.618) ONLY covers nonprofit hospitals

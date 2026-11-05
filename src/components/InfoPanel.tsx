@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import { TIER_COLORS } from "../lib/geo";
-import { FREE_TIER_STATES, MODELED_CHARITY_STATES } from "../lib/policy";
+import { FREE_TIER_STATES, MEDICARE_CAP_STATES, MODELED_CHARITY_STATES } from "../lib/policy";
 import { INSURANCE_LABELS, insuranceGuidance } from "../lib/insurance";
 import type { InsuranceType } from "../lib/intake";
 
@@ -408,6 +408,20 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               personal estimate.
             </p>
 
+            {Object.entries(MEDICARE_CAP_STATES).map(([st, c]) => (
+              <div key={st} className={section}>
+                <h2 className={h2}>{c.programName}</h2>
+                <p className={p}>
+                  {c.law}. {c.scope} There's no free-care line and no percentage. {c.ruleLine}
+                </p>
+                <p className={p}>
+                  For reference, CareMap shows <strong className="text-white/90">Medicare's average payment</strong> for the procedure at each hospital
+                  (CMS, 2024), often a small fraction of the typical billed charge. {c.medicaidName}'s rate isn't in CareMap's data, so the real cap could
+                  be higher -- it's a reference point, not a price.{c.extra ? ` ${c.extra}` : ""}
+                </p>
+              </div>
+            ))}
+
             <div className={section}>
               <h2 className={h2}>Sliding-fee health centers</h2>
               <p className={p}>
@@ -490,6 +504,12 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                 <li>VT financial assistance rules -- 18 V.S.A. 9482, Vermont Legislature</li>
                 <li>NV major-hospital discount -- NRS 439B.260, Nevada Legislature</li>
                 <li>Sliding-fee health centers -- HRSA health center site list; federal rule 42 CFR 51c.303</li>
+                {Object.entries(MEDICARE_CAP_STATES).map(([st, c]) => (
+                  <li key={st}>
+                    {st} charity care rules -- {c.law}
+                  </li>
+                ))}
+                <li>Medicare average payments per procedure -- CMS Medicare Inpatient by Provider and Service (2024 data)</li>
                 {Object.entries(FREE_TIER_STATES).map(([st, f]) => (
                   <li key={st}>
                     {st} charity care rules -- {f.law}

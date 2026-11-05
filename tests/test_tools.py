@@ -114,13 +114,11 @@ def test_draft_application_wa_facility():
 
 
 def test_draft_application_unmodeled_state_errors_not_guesses():
-    # Any non-NJ/WA facility -- draft_application must say so, not invent a
-    # charity-care program that doesn't exist for that state.
-    r = facilities_near(zip_code="90001", radius_miles=50, types=["acute_care_hospital"])
-    ca_ccn = next((f["ccn"] for f in r.get("facilities", []) if f.get("state") == "CA"), None)
-    if ca_ccn is None:
-        return  # CA data not loaded in this environment -- nothing to assert
-    result = draft_application(ccn=ca_ccn, patient_pays_pct=0)
+    # A facility in an unmodeled state (Texas) -- draft_application must say
+    # so, not invent a charity-care program that doesn't exist there.
+    r = facilities_near(zip_code="75201", radius_miles=10, types=["acute_care_hospital"])
+    tx_ccn = next(f["ccn"] for f in r["facilities"] if f["state"] == "TX")
+    result = draft_application(ccn=tx_ccn, patient_pays_pct=0)
     assert "error" in result
 
 
@@ -316,3 +314,25 @@ def test_non_participant_never_gets_a_tier():
     assert "error" in draft_application(ccn="340195", patient_pays_pct=0)
     r = draft_application(ccn="290003", patient_pays_pct=70)
     assert "Nevada" in r["letter"]
+
+
+def test_estimate_cost_includes_medicare_reference_for_ca():
+    # ST ROSE HOSPITAL (CA), hip/knee replacement without MCC (DRG 470).
+    r = estimate_cost(ccn="050002", drg="470")
+    assert r["typical_billed_charge"] == 127_793
+    assert r["medicare_avg_total_payment"] == 22_197
+    assert "not a price" in r["medicare_reference_label"]
+
+
+def test_charity_tier_ca_co_describe_cap_not_a_tier():
+    r = charity_tier(state="CA", fpl_pct=300, ccn="050002")
+    assert "error" in r and "Medi-Cal" in r["error"] and "greater of" in r["error"]
+    r = charity_tier(state="CO", fpl_pct=200, ccn="060001")
+    assert "error" in r and "4% of monthly household income" in r["error"]
+
+
+def test_draft_application_ca_co_cite_the_cap_not_a_percentage():
+    assert "127405" in draft_application(ccn="050002", patient_pays_pct=0)["letter"]
+    r = draft_application(ccn="060001", patient_pays_pct=0)
+    assert "Colorado Hospital Discounted Care" in r["letter"]
+    assert "% of billed charges" not in r["letter"]

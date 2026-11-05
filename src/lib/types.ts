@@ -1,6 +1,10 @@
 export interface DrgCharge {
   description: string;
   avg_charge: number;
+  // CMS's average Medicare payments for the same procedure at this hospital
+  // (present after a rebuild with build_data.py's v2 cache).
+  avg_total_payment?: number;
+  avg_medicare_payment?: number;
 }
 
 export interface Facility {

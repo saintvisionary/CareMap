@@ -3,7 +3,7 @@ import { NEED_TO_DRG } from "../lib/drg";
 import { facilityTier, TIER_COLORS, type FacilityWithDistance } from "../lib/geo";
 import { insuranceGuidance } from "../lib/insurance";
 import type { InsuranceType } from "../lib/intake";
-import { applyTier, charityTier, CHARITY_PROGRAM_NAMES, FREE_TIER_STATES, fqhcSlidingFee } from "../lib/policy";
+import { applyTier, charityTier, CHARITY_PROGRAM_NAMES, FREE_TIER_STATES, fqhcSlidingFee, MEDICARE_CAP_STATES } from "../lib/policy";
 import { GlassPanel } from "./GlassPanel";
 
 const money = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
@@ -36,6 +36,7 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
       : undefined;
   const drg = need ? NEED_TO_DRG[need] : null;
   const charge = drg ? facility.drg_charges[drg.code]?.avg_charge : undefined;
+  const medicarePayment = drg ? facility.drg_charges[drg.code]?.avg_total_payment : undefined;
 
   let hero = "Tier unknown";
   const freeNote = FREE_TIER_STATES[facility.state]?.freeNote;
@@ -79,6 +80,19 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
   }
   if (facility.type === "fqhc") {
     ({ hero, label: heroLabel } = fqhcSlidingFee(fplPct, insuranceType != null && insuranceType !== "uninsured"));
+  }
+  // CA/CO: a cap tied to Medicare/Medicaid rates, shown with CMS's Medicare
+  // average as a reference -- never as the price.
+  const cap = MEDICARE_CAP_STATES[facility.state];
+  if (cap && facility.charity_care_participant && tier !== "insured" && fplPct != null) {
+    if (fplPct > cap.maxFplPct) {
+      heroLabel = `Above ${cap.maxFplPct}% of the poverty line, ${cap.programName}'s cap doesn't apply -- ask the billing office.`;
+    } else if (medicarePayment != null && charge != null) {
+      hero = money(medicarePayment);
+      heroLabel = `Medicare's average payment here (CMS, 2024), vs a ${money(charge)} typical billed charge. ${cap.programName} ${cap.capLine}; ${cap.medicaidName}'s rate isn't in CareMap's data, so your cap could be higher (estimate, confirm with billing office).`;
+    } else {
+      heroLabel = `${cap.programName} ${cap.capLine} (estimate, confirm with billing office).`;
+    }
   }
 
   return (

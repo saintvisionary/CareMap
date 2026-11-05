@@ -8,13 +8,15 @@ Sites" (public, already geocoded by HRSA). Keeps only permanent,
 public-facing clinic sites in the 50 states + DC, the same coverage as the
 hospital data. School-based, mobile, seasonal, administrative and
 correctional/nursing-home sites are left out because they aren't open to the
-general public year-round at a fixed address.
+general public year-round at a fixed address. Dental-only sites (by name)
+are left out too, since CareMap is about hospital and medical costs.
 """
 from __future__ import annotations
 
 import csv
 import io
 import json
+import re
 import sys
 import urllib.request
 from pathlib import Path
@@ -25,6 +27,10 @@ OUT = ROOT / "public" / "data" / "fqhc_sites.json"
 STATES_INDEX = ROOT / "public" / "data" / "states" / "index.json"
 SOURCE_URL = "https://data.hrsa.gov/DataDownload/DD_Files/Health_Center_Service_Delivery_and_LookAlike_Sites.csv"
 PUBLIC_SETTINGS = {"All Other Clinic Types", "Unknown", "Hospital"}
+# HRSA's site list has no service-type field, so dental-only sites are
+# recognized by name: "dental"/"dentistry" with no sign of medical care.
+DENTAL = re.compile(r"\bDENT(AL|ISTRY)\b", re.I)
+MEDICAL = re.compile(r"MEDICAL|PRIMARY|PEDIATRIC|FAMILY MEDICINE|FAMILY PRACTICE", re.I)
 
 
 def load_rows() -> list[dict]:
@@ -50,6 +56,7 @@ def main() -> None:
             or r["Site State Abbreviation"] not in states
             or not x
             or not y
+            or (DENTAL.search(r["Site Name"]) and not MEDICAL.search(r["Site Name"]))
         ):
             continue
         lookalike = "Look-Alike" in r["Health Center Type"]

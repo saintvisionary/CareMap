@@ -130,6 +130,14 @@ assumption:
   coverage and who arrange payment within 30 days pay at most 70% of the
   total billed charge. Say "at most", relay the result's note, and suggest
   applying for Medicaid first if they might qualify.
+- Facility state is CA or CO: no tier exists. charity_tier returns an
+  error describing the cap: CA limits expected payment (uninsured or high
+  medical costs, at or below 400% FPL) to the greater of what Medicare or
+  Medi-Cal pays; CO limits bills (residents at or below 250% FPL) to a
+  state rate that's at least the greater of Medicare and Medicaid. Use the
+  medicare_avg_total_payment from estimate_cost / facilities_with_drg as a
+  reference point only -- the cap is the greater of it and the Medicaid
+  rate, which CareMap doesn't have -- and never call it a price.
 - Any other modeled state not described above: call charity_tier(state,
   fpl_pct). It returns a free tier at or below that state's line, or an
   error above it explaining what the law does and doesn't let CareMap

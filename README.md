@@ -7,7 +7,7 @@ Type a plain-language message like:
 > "07018, family of 4, $52k, uninsured, need gallbladder surgery"
 
 and CareMap finds nearby hospitals, estimates what you'd actually owe under
-your state's hospital charity-care law (14 states modeled so far, see
+your state's hospital charity-care law (16 states modeled so far, see
 below), and shows it on a map colored by what you'd pay: green for free
 care, amber for a reduced rate, gray for full price.
 
@@ -42,12 +42,12 @@ run:
 
 - Hospital names, addresses, ER/star rating: CMS Hospital General
   Information
-- Typical billed charges per procedure (DRG): CMS Medicare Inpatient by
-  Provider and Service
+- Typical billed charges and average Medicare payments per procedure (DRG):
+  CMS Medicare Inpatient by Provider and Service (2024 data)
 - Geocoding: US Census batch geocoder, with a zip-centroid fallback
 - Zip code centroids: US Census ZCTA Gazetteer
 - Sliding-fee health centers: HRSA Health Center Service Delivery and
-  Look-Alike Sites (11,744 permanent, public-facing clinic sites), priced by
+  Look-Alike Sites (11,200 permanent, public-facing medical clinic sites), priced by
   the federal FQHC sliding-fee rule (42 CFR 51c.303)
 - State charity-care rules: each state's own statute or regulation (see
   the table below; every number lives in `policy/policy.json` with its
@@ -89,12 +89,13 @@ can ground and says why.
 | OH | OAC 5160-2-17 (Hospital Care Assurance Program) | Free tier (100% FPL, residents not on Medicaid) |
 | SC | S.C. Code 44-6-150 (Medically Indigent Assistance Program) | Free tier (100% FPL, inpatient only, county-approved) |
 | NV | NRS 439B.260 | At most 70% of the billed charge for uninsured inpatients at any income, at 17 "major hospitals" (identified from CMS bed-count and ownership data) |
+| CA | H&SC 127405 (Hospital Fair Pricing Act) | No tier: at or below 400% FPL, a cap at the greater of Medicare or Medi-Cal rates, shown with CMS's average Medicare payment as a reference |
+| CO | C.R.S. 25.5-3-503, 10 CCR 2505-10 8.928 | No tier: at or below 250% FPL, a state rate of at least the greater of Medicare or Medicaid, with the Medicare reference and the 4%-of-income payment-plan cap |
 
 Checked and left unmodeled, because there's no statewide percentage CareMap
 could compute from billed charges, or the rule depends on data CareMap
-doesn't have (bed counts, county or opt-in programs): AK, AL, AR, AZ, CA,
-CO, CT, FL, GA, HI, IA, ID, IN, KS, KY, LA, MI, MN, MO, MS, MT, ND, NE, NH,
-NM, OK, PA, SD, TN, TX, UT, VA, WI, WV, WY. DC's and Delaware's new laws
+doesn't have (bed counts, county or opt-in programs): AK, AL, AR, AZ, CT,
+FL, GA, HI, IA, ID, IN, KS, KY, LA, MI, MN, MO, MS, MT, ND, NE, NH, NM, OK, PA, SD, TN, TX, UT, VA, WI, WV, WY. DC's and Delaware's new laws
 aren't confirmed in force: an emergency act lifted DC's funding delay on
 October 1, 2026, but the official DC Code still lists it as not
 implemented, and Delaware's starts January 1, 2027.
@@ -128,7 +129,7 @@ AI chat enhancement, set `VITE_AGENT_URL` to a deployed agent endpoint (see
 
 ## What's not in yet
 
-- Charity-care tiers for the other 36 states + DC
+- Charity-care tiers for the other 34 states + DC
 - Above the free tier in IL, NY, RI, MA, ME, VT, NC, OH and SC, the real discount depends
   on data CareMap doesn't load yet (cost-to-charge ratios, Medicaid rates,
   insurance premiums) or is left to each hospital; CareMap discloses the
