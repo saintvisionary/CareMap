@@ -3,7 +3,7 @@ import { NEED_TO_DRG } from "../lib/drg";
 import { facilityTier, TIER_COLORS, type FacilityWithDistance } from "../lib/geo";
 import { insuranceGuidance } from "../lib/insurance";
 import type { InsuranceType } from "../lib/intake";
-import { applyTier, charityTier, CHARITY_PROGRAM_NAMES } from "../lib/policy";
+import { applyTier, charityTier, CHARITY_PROGRAM_NAMES, FREE_TIER_STATES } from "../lib/policy";
 import { GlassPanel } from "./GlassPanel";
 
 const money = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
@@ -33,25 +33,38 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
   const charge = drg ? facility.drg_charges[drg.code]?.avg_charge : undefined;
 
   let hero = "Tier unknown";
+  const freeNote = FREE_TIER_STATES[facility.state]?.freeNote;
   let heroLabel = facility.charity_care_participant
-    ? "Tell us your income for an estimate."
-    : CHARITY_PROGRAM_NAMES[facility.state]
-      // A modeled state's formula can still exclude a specific facility
-      // (e.g. OR's law only covers nonprofit hospitals) -- not the same as
-      // the state having no rules in CareMap at all.
-      ? `Not confirmed as a ${programName} participant -- ask this hospital's billing office about financial assistance.`
-      : `${facility.state} rules coming soon -- ask this hospital's billing office about financial assistance.`;
+    ? fplPct != null
+      ? `${programName.charAt(0).toUpperCase()}${programName.slice(1)} sets no share CareMap can compute at this income -- ask the billing office.`
+      : "Tell us your income for an estimate."
+    : facility.type === "va_hospital"
+      ? "VA hospital: the VA's own eligibility rules apply here, not state charity care."
+      : CHARITY_PROGRAM_NAMES[facility.state]
+        // A modeled state's formula can still exclude a specific facility
+        // (e.g. OR's law only covers nonprofit hospitals) -- not the same as
+        // the state having no rules in CareMap at all.
+        ? `Not confirmed as a participant in ${programName} -- ask this hospital's billing office about financial assistance.`
+        : `${facility.state} rules coming soon -- ask this hospital's billing office about financial assistance.`;
   if (tier === "insured") {
     // Charity care only applies to the uninsured -- never claim a
     // charity-care price here, even if we happen to know a typical charge.
     hero = charge != null ? money(charge) : "See coverage";
     heroLabel = `typical billed charge; ${insuranceType ? insuranceGuidance(insuranceType) : "check your plan for your specific costs"}`;
   } else if (charge != null) {
-    heroLabel = "typical billed charge, estimate, confirm with billing office";
-    hero = patientPaysPct != null ? money(applyTier(charge, patientPaysPct)) : money(charge);
+    if (patientPaysPct != null) {
+      // The hero is what the patient owes, not the charge -- say so, and
+      // show the real typical billed charge it was computed from.
+      hero = money(applyTier(charge, patientPaysPct));
+      const bound = facility.state === "OR" && patientPaysPct > 0 ? "at most, " : "";
+      heroLabel = `${bound}est. owed on a ${money(charge)} typical billed charge (estimate, confirm with billing office)${patientPaysPct === 0 && freeNote ? `. ${freeNote}` : ""}`;
+    } else {
+      hero = money(charge);
+      heroLabel = "typical billed charge, estimate, confirm with billing office";
+    }
   } else if (tier === "free") {
     hero = "$0";
-    heroLabel = `${programName}, estimate, confirm with billing office`;
+    heroLabel = `${programName}, estimate, confirm with billing office${freeNote ? `. ${freeNote}` : ""}`;
   } else if (tier === "reduced") {
     hero = `${patientPaysPct}%`;
     heroLabel = "of typical billed charge, estimate, confirm with billing office";
@@ -119,9 +132,11 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
                 <div className="text-white/40">Ownership: {facility.ownership}</div>
                 {!facility.charity_care_participant && (
                   <div className="text-white/40">
-                    {CHARITY_PROGRAM_NAMES[facility.state]
-                      ? `Not confirmed as a ${programName} participant -- ask this hospital's billing office about financial assistance.`
-                      : `${facility.state}'s financial assistance rules aren't modeled in CareMap yet -- ask this hospital's billing office about charity care.`}
+                    {facility.type === "va_hospital"
+                      ? "VA hospital: the VA's own eligibility rules apply here, not state charity care."
+                      : CHARITY_PROGRAM_NAMES[facility.state]
+                        ? `Not confirmed as a participant in ${programName} -- ask this hospital's billing office about financial assistance.`
+                        : `${facility.state}'s financial assistance rules aren't modeled in CareMap yet -- ask this hospital's billing office about charity care.`}
                   </div>
                 )}
               </div>

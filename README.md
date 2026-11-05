@@ -84,7 +84,9 @@ could compute from billed charges, or the rule depends on data CareMap
 doesn't have (bed counts, county or opt-in programs): AK, AL, AR, AZ, CA,
 CO, CT, FL, GA, HI, IA, ID, IN, KS, KY, LA, MI, MN, MO, MS, MT, ND, NE, NH,
 NM, NV, OK, PA, SD, TN, TX, UT, VA, WI, WV, WY. DC's and Delaware's new laws
-aren't in force yet (DC's is unfunded; Delaware's starts January 1, 2027).
+aren't confirmed in force: an emergency act lifted DC's funding delay on
+October 1, 2026, but the official DC Code still lists it as not
+implemented, and Delaware's starts January 1, 2027.
 Every unmodeled state shows "rules coming soon" plus federal (501(r)) guidance
 instead of a guessed number.
 

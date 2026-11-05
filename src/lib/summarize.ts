@@ -55,9 +55,11 @@ export function summarize(result: QueryResult): string {
     // OR's law only covers nonprofit hospitals) -- distinct from the state
     // having no rules in CareMap at all.
     lines.push(
-      CHARITY_PROGRAM_NAMES[nearest.state]
-        ? `Not confirmed as a ${programName} participant -- ask this hospital's billing office about financial assistance.`
-        : `${nearest.state} financial assistance rules aren't in CareMap yet -- ask this hospital's billing office about charity care.`,
+      nearest.type === "va_hospital"
+        ? "VA hospital: the VA's own eligibility rules apply here, not state charity care."
+        : CHARITY_PROGRAM_NAMES[nearest.state]
+          ? `Not confirmed as a participant in ${programName} -- ask this hospital's billing office about financial assistance.`
+          : `${nearest.state} financial assistance rules aren't in CareMap yet -- ask this hospital's billing office about charity care.`,
     );
   } else if (fplPct == null) {
     lines.push(`Tell me your household income and size for a personal ${programName} estimate.`);
