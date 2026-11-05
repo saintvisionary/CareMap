@@ -326,17 +326,35 @@ def apply_tier_to_charge(typical_billed_charge: float, patient_pays_pct: float) 
     }
 
 
+_NEAR_FIELDS = ("ccn", "name", "type", "ownership", "address", "city", "state", "zip", "distance_miles",
+                "has_er", "star_rating", "charity_care_participant", "phone", "lat", "lon")
+_NEAR_LIMIT = 20
+
+
 @tool
 def facilities_near(zip_code: str, radius_miles: float = 15, types: list[str] | None = None) -> dict:
-    """Find hospitals, urgent care, FQHCs or clinics near a zip code.
+    """Find the nearest hospitals near a zip code (up to 20, nearest first), or other facility
+    types if asked for. Returns locations and basic facts only, not prices: use
+    facilities_with_drg / estimate_cost for a procedure's typical billed charge.
 
     Args:
         zip_code: 5-digit US zip code.
         radius_miles: Search radius in miles (default 15).
-        types: Optional filter, any of "acute_care_hospital", "va_hospital", "fqhc".
+        types: Optional filter, any of "acute_care_hospital", "critical_access_hospital",
+            "va_hospital", "fqhc", "urgent_care". Omitted means hospitals only.
     """
     matches = facility_data.facilities_near(zip_code, radius_miles=radius_miles, types=types)
-    return {"zip_code": zip_code, "radius_miles": radius_miles, "facilities": matches}
+    # Full records carry every procedure's charge data (~2k tokens per hospital), which the
+    # model doesn't need here and which made one city search cost ~90k tokens.
+    return {
+        "zip_code": zip_code,
+        "radius_miles": radius_miles,
+        "total_found": len(matches),
+        "facilities": [
+            {**{k: f[k] for k in _NEAR_FIELDS if k in f}, "procedures_with_charge_data": len(f.get("drg_charges", {}))}
+            for f in matches[:_NEAR_LIMIT]
+        ],
+    }
 
 
 @tool
