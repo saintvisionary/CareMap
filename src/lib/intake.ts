@@ -26,6 +26,10 @@ export interface IntakeHint {
    * than assuming tierPct's NJ formula applies. */
   fplPct: number | null;
   need: string | null;
+  /** True for words that signal an emergency (trouble breathing, overdose,
+   * stroke, ...). Urgent care must never be offered for these; the reply
+   * leads with 911 instead. UI-only, so not mirrored in caremap/intake.py. */
+  emergency: boolean;
   /** Set only for "traveling to X" messages (the guided form's traveler
    * mode, or free chat text). When present, callers should use the
    * international (OpenStreetMap, location-only) path instead of the
@@ -40,6 +44,8 @@ const DOLLAR_K_RE = /\$\s?(\d+(?:\.\d+)?)\s*k\b/i;
 const DOLLAR_RE = /\$\s?(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)\b/;
 const HOUSEHOLD_RE = /family of (\d+)|household of (\d+)|(\d+)[\s-]*person household/i;
 const VETERAN_RE = /\bveteran\b/i;
+const EMERGENCY_RE =
+  /\b(emergency|911|can'?t breathe|cannot breathe|trouble breathing|difficulty breathing|short(ness)? of breath|unconscious|passed out|not breathing|overdos(e|ed|ing)|suicid(e|al)|kill (myself|themselves)|severe(ly)? bleeding|bleeding (heavily|a lot)|stroke|seizure|anaphyla(xis|ctic)|choking|heart attack|chest pain)\b/i;
 // Stops the capture at the next recognized field rather than at a bare
 // comma, since a destination itself usually contains one ("Cancun,
 // Mexico"). Best-effort for free chat text; the guided form's traveler
@@ -230,6 +236,7 @@ export function redact(message: string): IntakeHint {
     tierPct,
     fplPct,
     need: parseNeed(message),
+    emergency: EMERGENCY_RE.test(message),
     destination: parseDestination(message),
     redactedMessage: redacted,
   };

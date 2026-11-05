@@ -191,7 +191,7 @@ export function useCareMap(
       }
 
       const nearby = hint.zipCode
-        ? nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, hint.zipCode, hint.need != null)
+        ? nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, hint.zipCode, hint.need != null || hint.emergency)
         : [];
       setFacilities(nearby);
       setInternationalFacilities([]);
@@ -211,6 +211,7 @@ export function useCareMap(
         insuranceType: hint.insuranceType,
         veteran: hint.veteran,
         need: hint.need,
+        emergency: hint.emergency,
         facilities: nearby,
       });
       setMessages((m) => [...m, { id: id(), role: "assistant", text: instantReply }]);

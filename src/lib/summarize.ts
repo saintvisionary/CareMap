@@ -23,6 +23,7 @@ export interface QueryResult {
   insuranceType: InsuranceType | null;
   veteran: boolean;
   need: string | null;
+  emergency?: boolean;
   facilities: FacilityWithDistance[];
 }
 
@@ -53,17 +54,19 @@ export function summarize(result: QueryResult): string {
     ? `Nearest sliding-fee health center: ${clinic.name}, ${clinic.distanceMiles.toFixed(1)} mi away. ${fqhcSlidingFee(fplPct, insured).label}`
     : null;
 
+  const emergencyLead = result.emergency ? "If this is an emergency, call 911 or go to the nearest ER now -- don't wait on cost. " : "";
   if (!zipCode) {
-    return "Tell me your zip code and I can find hospitals near you.";
+    return `${emergencyLead}Tell me your zip code and I can find hospitals near you.`;
   }
   if (facilities.length === 0) {
-    return `I couldn't find a hospital within 25 miles of ${zipCode}.` + (clinicLine ? ` ${clinicLine}` : " Try a nearby zip code.");
+    return `${emergencyLead}I couldn't find a hospital within 25 miles of ${zipCode}.` + (clinicLine ? ` ${clinicLine}` : " Try a nearby zip code.");
   }
 
   const nearest = facilities[0];
   const nearestTier = fplPct != null ? charityTier(nearest.state, fplPct, nearest.type, nearest.ownership, nearest.cost_cap_pct) : null;
   const programName = CHARITY_PROGRAM_NAMES[nearest.state] ?? "charity care";
   const lines: string[] = [];
+  if (emergencyLead) lines.push(emergencyLead.trim());
   lines.push(
     `Found ${facilities.length} hospital${facilities.length === 1 ? "" : "s"} near ${zipCode}. ` +
       `Nearest: ${nearest.name}, ${nearest.distanceMiles.toFixed(1)} mi away.`,
@@ -98,7 +101,7 @@ export function summarize(result: QueryResult): string {
         : nearest.state === "CT"
         ? "Your income is above the 250% line for Connecticut's uninsured cost-of-care limit, so it doesn't apply -- ask this hospital's billing office about its own financial assistance."
         : nearest.state === "IL"
-        ? `Your income is above ${programName}'s free-care line, so there's no exact percentage to show (Illinois law bases it on each hospital's own cost-to-charge ratio, which CareMap doesn't have). State law still caps total collection at 20% of your family income in any 12-month period -- ask this hospital's billing office for your exact discount.`
+        ? `Your income is above ${programName}'s free-care line, so there's no exact percentage to show (Illinois law bases it on each hospital's own cost-to-charge ratio, which CareMap doesn't have). ${fplPct <= (nearest.type === "critical_access_hospital" ? 300 : 600) ? "State law still caps total collection at 20% of your family income in any 12-month period -- " : ""}ask this hospital's billing office for your exact discount.`
         : nearest.state === "NY"
           ? `Your income is above ${programName}'s free-care line, so there's no exact percentage to show (New York's cap there is based on the Medicaid rate for the service, not billed charges, and CareMap doesn't have Medicaid-rate data). Ask this hospital's billing office for your exact discount.`
           : nearest.state === "RI"
@@ -176,7 +179,7 @@ export function summarize(result: QueryResult): string {
   // Only when no hospital procedure was asked about: every procedure CareMap
   // prices is a hospital condition urgent care isn't for.
   const urgent = result.facilities.find((f) => f.type === "urgent_care");
-  if (urgent && !need) {
+  if (urgent && !need && !result.emergency) {
     lines.push(
       `For minor, non-emergency care, the nearest listed urgent care center is ${urgent.name}, ${urgent.distanceMiles.toFixed(1)} mi away (no price data -- ask about self-pay rates). For an emergency, call 911 or go to the nearest ER.`,
     );

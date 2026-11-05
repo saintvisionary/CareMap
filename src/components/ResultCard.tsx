@@ -73,8 +73,8 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
     hero = "$0";
     heroLabel = `${programName}, estimate, confirm with billing office${freeNote ? `. ${freeNote}` : ""}`;
   } else if (tier === "reduced") {
-    hero = `${patientPaysPct}%`;
-    heroLabel = "of typical billed charge, estimate, confirm with billing office";
+    hero = `${UPPER_BOUND_STATES.has(facility.state) ? "≤ " : ""}${patientPaysPct}%`;
+    heroLabel = `of typical billed charge${UPPER_BOUND_STATES.has(facility.state) ? " (a legal maximum)" : ""}, estimate, confirm with billing office`;
   } else if (tier === "full") {
     hero = "Full price";
     heroLabel = `not eligible for ${programName} at this income`;

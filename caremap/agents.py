@@ -29,9 +29,8 @@ from strands import Agent
 
 from .guards import EvidenceLedger, GroundingGuard
 from .intake import IntakeHint, redact
-from .policy import STATE_CHARITY_TIER_FNS
 from .schemas import OrchestratorOutput
-from .tools import ALL_TOOLS, DATA_TOOL_NAMES
+from .tools import _STATE_POLICY_KEYS, ALL_TOOLS, DATA_TOOL_NAMES
 
 DEFAULT_MODEL_ID = "gemini-3.8-flash"
 
@@ -202,7 +201,7 @@ Use your tools as needed:
   emergency or any condition CareMap prices as a hospital stay (heart
   attack, stroke, chest pain, trouble breathing, and the like) -- tell
   them to call 911 or go to an ER. No urgent care prices exist in CareMap.
-- nearest_fqhc(zip_code, fpl_pct=...): the nearest federally funded
+- nearest_fqhc(zip_code, fpl_pct=..., insurance_type=...): the nearest federally funded
   sliding-fee health center and the federal rule at that income. Mention
   it whenever cost is a worry, especially for primary or outpatient care.
   Relay its sliding_fee_rule as given and never put a dollar amount or
@@ -236,7 +235,7 @@ reply, plus zero or more map_commands (type one of "flyTo", "highlight",
 "filter", with a payload dict) describing how the map should react, e.g.
 flyTo a facility's lat/lon, highlight the chosen facility's id, or filter by
 facility type.""".format(
-    modeled_states=", ".join(list(STATE_CHARITY_TIER_FNS)[:-1]) + " and " + list(STATE_CHARITY_TIER_FNS)[-1],
+    modeled_states=", ".join(list(_STATE_POLICY_KEYS)[:-1]) + " and " + list(_STATE_POLICY_KEYS)[-1],
 )
 
 

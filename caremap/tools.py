@@ -71,9 +71,13 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
     """Look up the charity-care tier for a hospital's state, for a percent of the federal poverty line.
 
     Only a short list of states have a real, codified, state-wide formula --
-    currently NJ, WA, IL, NY, OR, MD, RI, MA, ME, VT. For every other state,
-    returns an error; say the state's rules aren't modeled in CareMap yet
-    rather than guessing a tier.
+    currently NJ, WA, IL, NY, OR, MD, RI, MA, ME, VT, NC, OH, SC, NV and CT
+    (CA and CO have Medicare-rate caps instead of tiers; this returns an
+    error describing them). For every other state, returns an error; say
+    the state's rules aren't modeled in CareMap yet rather than guessing a
+    tier. Pass the facility's ccn whenever you know it: it's required for
+    NC, NV and CT, and it makes the facility's own state, type and
+    participation win over the arguments.
     For WA specifically, this is the legal MINIMUM floor every hospital must
     offer (RCW 70.170.060(5)(b)) -- larger hospital systems are required to
     offer better terms up to 400% FPL that this can't apply per-hospital
@@ -142,13 +146,21 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
         ccn: The facility's CMS Certification Number. Always pass it: some programs only cover specific
             hospitals (NC's participating list, NV's major hospitals), and VA hospitals are never covered.
     """
+    cost_cap_pct = None
     if ccn:
         facility = facility_data.facility_by_ccn(ccn)
-        if facility is not None and facility.get("type") == "fqhc":
+        if facility is None:
+            return {"error": f"No facility found for CCN '{ccn}'."}
+        if facility.get("type") == "fqhc":
             return {"facility_type": "fqhc", **policy_mod.fqhc_sliding_fee(fpl_pct)}
-        if facility is not None and not facility.get("charity_care_participant"):
-            if facility.get("type") == "va_hospital":
-                return {"error": "This is a VA hospital: the VA's own eligibility rules apply, not state charity care."}
+        if facility.get("type") == "urgent_care":
+            return {"error": "This is an urgent care center: no charity-care program covers it in CareMap's data, and CareMap has no urgent care prices."}
+        if facility.get("type") == "va_hospital":
+            return {"error": "This is a VA hospital: the VA's own eligibility rules apply, not state charity care."}
+        # The facility's own record wins over whatever the caller passed.
+        state, facility_type = facility["state"], facility.get("type", facility_type)
+        ownership = facility.get("ownership", ownership)
+        if not facility.get("charity_care_participant") and state != "OR":
             return {
                 "error": (
                     f"{facility['name']} isn't covered by {state}'s modeled charity-care program (CareMap's data "
@@ -156,13 +168,14 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
                     "financial-assistance office."
                 )
             }
-    elif state in ("NV", "CT"):
+        cost_cap_pct = facility.get("cost_cap_pct")
+    elif state in ("NV", "CT", "NC"):
         return {"error": f"{state}'s rule depends on the specific hospital -- call charity_tier again with the facility's ccn."}
-    cost_cap_pct = None
-    if ccn and (f := facility_data.facility_by_ccn(ccn)) is not None:
-        cost_cap_pct = f.get("cost_cap_pct")
     tier = policy_mod.charity_tier(state, fpl_pct, facility_type, ownership or None, cost_cap_pct)
     if tier is not None:
+        if not ccn:
+            tier["scope"] = (f"Applies only at participating {state} hospitals (never VA hospitals) -- call again with a "
+                             "facility's ccn before stating it for a specific hospital.")
         return tier
     if state == "OR":
         return {
@@ -173,11 +186,17 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
             )
         }
     if state == "IL":
+        il = policy_mod.POLICY["il_charity_care"]
+        band = il["rural_critical_access" if facility_type == "critical_access_hospital" else "standard"]
+        ceiling = band["eligibility_ceiling_fpl_pct"]
+        if fpl_pct > ceiling:
+            return {"error": f"IL's uninsured discount law doesn't apply above {ceiling}% FPL at this type of hospital -- say so, and direct the user to the hospital's own financial assistance policy."}
         return {
             "error": (
                 "IL has no modeled percentage above its free-care threshold (needs a cost-to-charge ratio "
-                "CareMap doesn't have) -- say that, and that state law still caps total collection at 20% of "
-                "family income per 12 months regardless, per policy.json's il_charity_care."
+                "CareMap doesn't have) -- say that, and that state law still caps total collection at "
+                f"{il['max_collection_pct_of_family_income_per_12mo']}% of family income per 12 months at this "
+                f"income (it applies up to {ceiling}% FPL at this type of hospital)."
             )
         }
     if state == "NY":
@@ -358,7 +377,7 @@ def facilities_near(zip_code: str, radius_miles: float = 15, types: list[str] | 
 
 
 @tool
-def nearest_fqhc(zip_code: str, radius_miles: float = 25, fpl_pct: float | None = None) -> dict:
+def nearest_fqhc(zip_code: str, radius_miles: float = 25, fpl_pct: float | None = None, insurance_type: str = "") -> dict:
     """Find the nearest Federally Qualified Health Center (sliding-fee clinic) to a zip code,
     with the federal sliding-fee rule that applies there. Useful for primary and outpatient
     care, or whenever cost is a worry. Never quote a dollar amount for a clinic: CareMap has
@@ -368,13 +387,19 @@ def nearest_fqhc(zip_code: str, radius_miles: float = 25, fpl_pct: float | None 
         zip_code: 5-digit US zip code.
         radius_miles: Search radius in miles (default 25).
         fpl_pct: Household income as a percent of the federal poverty line, if known.
+        insurance_type: The user's coverage category, if known (e.g. "uninsured", "private").
     """
     match = facility_data.nearest_fqhc(zip_code, radius_miles=radius_miles)
     if match is None:
         return {"error": f"No FQHC found within {radius_miles} miles of '{zip_code}'."}
     keep = ("ccn", "name", "operator", "ownership", "address", "city", "state", "zip", "phone", "website",
             "lat", "lon", "distance_miles")
-    return {**{k: match[k] for k in keep if k in match}, **policy_mod.fqhc_sliding_fee(fpl_pct)}
+    site = {k: match[k] for k in keep if k in match}
+    if insurance_type and insurance_type not in ("uninsured", "unsure"):
+        # No claims about how the sliding scale treats insured patients' costs.
+        return {**site, "coverage_note": "Federally funded health centers bill your coverage and can't deny service for inability to pay.",
+                "source": policy_mod.POLICY["fqhc_sliding_fee"]["source"]}
+    return {**site, **policy_mod.fqhc_sliding_fee(fpl_pct)}
 
 
 @tool
@@ -433,7 +458,7 @@ def draft_application(ccn: str, patient_pays_pct: float) -> dict:
     """Draft a charity-care application checklist and cover letter for a facility and tier.
 
     Works for any facility in a state CareMap has a modeled formula for
-    (currently NJ, WA, IL, NY, OR, MD, RI, MA, ME, VT) -- looks up the facility's own state, not
+    (currently NJ, WA, IL, NY, OR, MD, RI, MA, ME, VT, NC, OH, SC, NV, CT, CA, CO) -- looks up the facility's own state, not
     a fixed program. Fields the matching policy.json entry doesn't have
     (e.g. WA has no confirmed apply-window or help-phone, unlike NJ) are
     left out of the checklist/letter rather than guessed. For OR

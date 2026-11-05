@@ -290,7 +290,7 @@ def test_draft_application_ma_facility():
 
 
 def test_charity_tier_gap_disclosures_nc_oh_sc():
-    assert "5% of monthly household income" in charity_tier(state="NC", fpl_pct=250)["error"]
+    assert "5% of monthly household income" in charity_tier(state="NC", fpl_pct=250, ccn="340001")["error"]
     assert "100% FPL" in charity_tier(state="OH", fpl_pct=150)["error"]
     assert "county" in charity_tier(state="SC", fpl_pct=150)["error"]
 
@@ -353,3 +353,23 @@ def test_charity_tier_ct_is_per_hospital_upper_bound():
     assert "error" in charity_tier(state="CT", fpl_pct=200)  # needs the hospital
     # The Connecticut Hospice has no published ratio, so no tier.
     assert "error" in charity_tier(state="CT", fpl_pct=200, ccn="070038")
+
+
+
+def test_charity_tier_uses_the_facilitys_own_state_and_rejects_unknown_ccns():
+    # Sunrise Hospital is in NV: NV's 70%, even if the caller says "NJ".
+    assert charity_tier(state="NJ", fpl_pct=250, ccn="290003")["patient_pays_pct"] == 70
+    assert "error" in charity_tier(state="NV", fpl_pct=150, ccn="999999")
+    assert "error" in charity_tier(state="NC", fpl_pct=150)  # NC needs the hospital
+    r = charity_tier(state="NJ", fpl_pct=150)
+    assert r["patient_pays_pct"] == 0 and "ccn" in r["scope"]
+
+
+def test_il_income_cap_only_up_to_the_eligibility_ceiling():
+    assert "20%" in charity_tier(state="IL", fpl_pct=400, ccn="140001")["error"]
+    assert "doesn't apply above 600%" in charity_tier(state="IL", fpl_pct=700, ccn="140001")["error"]
+
+
+def test_nearest_fqhc_makes_no_sliding_claim_for_insured_users():
+    r = nearest_fqhc(zip_code="07018", fpl_pct=90, insurance_type="private")
+    assert "sliding_fee_rule" not in r and "bill your coverage" in r["coverage_note"]
