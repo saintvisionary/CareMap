@@ -7,9 +7,9 @@ Type a plain-language message like:
 > "07018, family of 4, $52k, uninsured, need gallbladder surgery"
 
 and CareMap finds nearby hospitals, estimates what you'd actually owe under
-a state hospital charity-care program (currently New Jersey, Washington,
-and Illinois), and shows it on a map colored by what you'd pay: green for
-free care, amber for a reduced rate, gray for full price.
+your state's hospital charity-care law (nine states modeled so far, see
+below), and shows it on a map colored by what you'd pay: green for free
+care, amber for a reduced rate, gray for full price.
 
 ## Why
 
@@ -46,22 +46,43 @@ run:
   Provider and Service
 - Geocoding: US Census batch geocoder, with a zip-centroid fallback
 - Zip code centroids: US Census ZCTA Gazetteer
-- NJ Documented Charity Care tier formula: NJ Department of Health fact
-  sheet
-- WA hospital charity care tier formula: RCW 70.170.060, Washington State
-  Legislature
-- IL hospital charity care tier formula: 210 ILCS 89, Illinois Hospital
-  Uninsured Patient Discount Act
+- State charity-care rules: each state's own statute or regulation (see
+  the table below; every number lives in `policy/policy.json` with its
+  citation)
 - Federal poverty guidelines: HHS annual update
 
-Hospital locations and typical billed charges cover all 50 states + DC. A
-personal charity-care tier is modeled for NJ, WA, and IL so far -- every
-other state shows "rules coming soon" plus federal (501(r)) guidance
-instead of a guessed number. The pipeline is state-agnostic
-(`python scripts/build_data.py --states XX`); adding a state's *location*
-data is a data pull, not a rewrite, but adding its *tier formula* requires
-verifying that state's actual statute first -- CareMap never encodes a
-percentage it hasn't confirmed against the primary source.
+Hospital locations and typical billed charges cover all 50 states + DC:
+about 4,500 acute care, Critical Access, and VA hospitals.
+
+## Modeled states
+
+Every state below was checked against the current text of its own law,
+not a summary. The deciding question is what the discount applies to: a
+percentage of billed charges can be computed from CMS data, but a
+discount tied to a Medicare or Medicaid rate, a hospital's cost-to-charge
+ratio, or an insurance premium can't, so CareMap shows only the part it
+can ground and says why.
+
+| State | Law | What CareMap shows |
+|---|---|---|
+| NJ | NJ Charity Care (NJ Department of Health) | Full sliding scale, free up to 200% FPL |
+| WA | RCW 70.170.060 | Full sliding scale (the legal floor; larger systems must do better) |
+| OR | ORS 442.610-442.618 | Full sliding scale (minimums), nonprofit hospitals only |
+| MD | Health-General 19-214.1 | Full sliding scale, free up to 200% FPL |
+| IL | 210 ILCS 89 | Free tier (200% FPL, 125% at Critical Access Hospitals); above it, the 20%-of-income cap |
+| NY | Public Health Law 2807-k(9-a) | Free tier (200% FPL) |
+| RI | 216-RICR-40-10-23.14 | Free tier (200% FPL) |
+| MA | 101 CMR 613.00 (Health Safety Net) | Free tier (150% FPL) |
+| ME | 22 M.R.S. 1716-A | Free tier (200% FPL, residents only); up to 400% FPL, the 4%-of-income payment-plan cap |
+
+Checked and left unmodeled, because the law sets no statewide percentage
+CareMap could compute from billed charges: CO, CA, MN, CT, PA, VA. Every
+unmodeled state shows "rules coming soon" plus federal (501(r)) guidance
+instead of a guessed number.
+
+The pipeline is state-agnostic (`python scripts/build_data.py --states
+XX`): adding a state's *location* data is a data pull, but adding its *tier
+formula* means verifying that state's actual law first.
 
 ## Running it
 
@@ -86,12 +107,13 @@ AI chat enhancement, set `VITE_AGENT_URL` to a deployed agent endpoint (see
 
 ## What's not in yet
 
-- Only NJ, WA, and IL have a modeled charity-care tier formula; every other
-  state shows "state rules coming" plus federal rules
-- IL's real sliding-scale discount above its free-care threshold needs a
-  per-hospital Medicare cost-to-charge ratio CareMap doesn't have loaded
-  yet (a different CMS dataset than what's in use); CareMap discloses the
-  gap rather than showing a guessed percentage there
+- Charity-care tiers for the other 41 states + DC
+- Above the free tier in IL, NY, RI, MA and ME, the real discount depends
+  on data CareMap doesn't load yet (cost-to-charge ratios, Medicaid rates,
+  insurance premiums) or is left to each hospital; CareMap discloses the
+  gap rather than showing a guessed percentage
+- Psychiatric, children's, long-term care, military and rural emergency
+  hospitals, and US territories
 - FQHC / urgent care layer (HRSA, NPPES) -- hospitals only so far
 - A national point layer (currently loaded as per-state GeoJSON; a
   `.pmtiles` tile layer is the next step for scale)

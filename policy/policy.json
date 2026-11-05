@@ -149,6 +149,20 @@
     },
     "free_care_max_fpl_pct": 150
   },
+  "me_charity_care": {
+    "source": "https://legislature.maine.gov/statutes/22/title22sec1716-A.html (22 M.R.S. 1716-A, enacted by PL 2025 c. 488, effective 2026-07-01; replaced the repealed 150% FPL rule in 22 M.R.S. 1716)",
+    "applies_to": "Maine hospitals (the statute doesn't define or limit 'hospital'; no ownership or type carve-out found) -- Maine residents only",
+    "note": "Verified against the current statute text: 1716-A(2) requires 'free, medically necessary services for patients whose family income ... is equal to or less than 200% of the federal poverty level.' There is no sliding scale above 200%, so CareMap shows no percentage there. One real fact still applies above the line and needs no extra data: 1716-A(8) requires hospitals to offer anyone with family income up to 400% FPL a payment plan whose monthly out-of-pocket payments do not exceed 4% of monthly family income. Eligibility is income-only in the statute (insured patients qualify too), but CareMap still only shows a charity-care price to the uninsured, as in every other state. Residency is required (1716-A(1)(F): living in Maine intending to stay, or having or seeking work there; tourists and visitors excluded) -- CareMap can't check this, so it's disclosed. No asset test (1716-A(4)(A)). Not confirmed verbatim: the 45-day decision window and 15-day missing-items notice were read through a summarizing fetch, so they're not encoded as fields. The 2026-07-01 effective date comes from the FindLaw mirror; the official page confirms 1716 was repealed and 1716-A is current.",
+    "eligibility": {
+      "must_be_un_or_underinsured": "not required by the statute (income-only) -- CareMap applies its uninsured-only display gate anyway",
+      "residency_required": true,
+      "asset_limit_individual": null,
+      "asset_limit_family": null
+    },
+    "free_care_max_fpl_pct": 200,
+    "payment_plan_max_fpl_pct": 400,
+    "payment_plan_max_monthly_pct_of_income": 4
+  },
   "good_faith_estimate": {
     "source": "https://www.cms.gov/medical-bill-rights/help/guides/good-faith-estimate",
     "applies_to": "uninsured or self-pay patients scheduling care at least 3 business days ahead",

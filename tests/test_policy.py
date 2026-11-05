@@ -1,4 +1,4 @@
-from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, il_charity_tier, ma_charity_tier, md_charity_tier, nj_charity_tier, ny_charity_tier, or_charity_tier, ri_charity_tier, wa_charity_tier
+from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, il_charity_tier, ma_charity_tier, md_charity_tier, me_charity_tier, nj_charity_tier, ny_charity_tier, or_charity_tier, ri_charity_tier, wa_charity_tier
 
 
 def test_demo_case_family_of_4():
@@ -215,3 +215,11 @@ def test_ma_tier_above_threshold_returns_none_not_a_guess():
 def test_charity_tier_dispatches_ma():
     assert charity_tier("MA", 100)["patient_pays_pct"] == 0
     assert charity_tier("MA", 200) is None
+
+
+def test_me_tier_free_care_threshold():
+    # 22 M.R.S. 1716-A(2): free at or below 200% FPL, no sliding scale above.
+    assert me_charity_tier(200)["patient_pays_pct"] == 0
+    assert me_charity_tier(201) is None
+    assert charity_tier("ME", 150)["patient_pays_pct"] == 0
+    assert charity_tier("ME", 350) is None

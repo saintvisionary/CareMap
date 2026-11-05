@@ -146,6 +146,25 @@ def ma_charity_tier(fpl_pct: float) -> dict | None:
     return None
 
 
+def me_charity_tier(fpl_pct: float) -> dict | None:
+    """ME free hospital care (22 M.R.S. 1716-A) for a percent of FPL.
+
+    A real, exact 0% at or below 200% FPL. Returns None above it: Maine
+    sets no sliding scale there, only a payment-plan cap (4% of monthly
+    income, up to 400% FPL) that callers should disclose instead of a
+    percentage. Maine residents only -- callers must disclose that too.
+    """
+    threshold = POLICY["me_charity_care"]["free_care_max_fpl_pct"]
+    if fpl_pct <= threshold:
+        return {
+            "patient_pays_pct": 0,
+            "fpl_pct": fpl_pct,
+            "max_fpl_pct": threshold,
+            "source": POLICY["me_charity_care"]["source"],
+        }
+    return None
+
+
 def md_charity_tier(fpl_pct: float) -> dict:
     """MD hospital financial assistance tier (Md. Code, Health-General 19-214.1) for a percent of FPL.
 
@@ -234,6 +253,7 @@ STATE_CHARITY_TIER_FNS = {
     "MD": lambda fpl_pct, facility_type=None, ownership=None: md_charity_tier(fpl_pct),
     "RI": lambda fpl_pct, facility_type=None, ownership=None: ri_charity_tier(fpl_pct),
     "MA": lambda fpl_pct, facility_type=None, ownership=None: ma_charity_tier(fpl_pct),
+    "ME": lambda fpl_pct, facility_type=None, ownership=None: me_charity_tier(fpl_pct),
 }
 
 

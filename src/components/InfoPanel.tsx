@@ -310,10 +310,32 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
             </div>
 
+            <div className={section}>
+              <h2 className={h2}>Maine free hospital care</h2>
+              <p className={p}>
+                Maine's free care law (22 M.R.S. 1716-A, in effect since July 1, 2026). Applies to Maine hospitals, for{" "}
+                <strong className="text-white/90">Maine residents only</strong> -- CareMap can't check residency, so confirm that applies to you.
+              </p>
+              <div className="rounded-xl bg-white/5 p-3 text-xs">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
+                  <span className="text-white/40">Income, % of poverty line</span>
+                  <span className="text-white/40">You pay</span>
+                  <span>Up to 200%</span>
+                  <span className="text-white/90">$0 -- fully covered</span>
+                  <span>Over 200%</span>
+                  <span className="text-white/90">No statewide percentage</span>
+                </div>
+              </div>
+              <p className={p}>
+                Above 200%, Maine sets no discount percentage. Up to 400% of the poverty line, though, the hospital must offer a payment plan whose
+                monthly payments are no more than <strong className="text-white/90">4% of your monthly family income</strong>.
+              </p>
+            </div>
+
             <p className={p}>
-              <strong className="text-white/90">Right now, NJ, WA, IL, NY, OR, MD, RI, and MA are the only states with a modeled tier.</strong> Every
-              other state still shows real hospital locations and typical billed charges, but says "[state] rules coming soon" instead of a personal
-              estimate.
+              <strong className="text-white/90">Right now, NJ, WA, IL, NY, OR, MD, RI, MA, and ME are the only states with a modeled tier.</strong>{" "}
+              Every other state still shows real hospital locations and typical billed charges, but says "[state] rules coming soon" instead of a
+              personal estimate.
             </p>
 
             <div className={section}>
@@ -370,6 +392,7 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                 <li>MD charity care rules -- Md. Code, Health-General 19-214.1</li>
                 <li>RI charity care rules -- 216-RICR-40-10-23.14, Rhode Island hospital licensing regulation</li>
                 <li>MA charity care rules -- 101 CMR 613.00, Massachusetts Health Safety Net</li>
+                <li>ME free care rules -- 22 M.R.S. 1716-A, Maine Legislature</li>
                 <li>International locations -- OpenStreetMap (Nominatim, Overpass, Photon)</li>
               </ul>
               <p className={p}>All public, official sources -- CareMap never adds or guesses a number that isn't already in that data.</p>

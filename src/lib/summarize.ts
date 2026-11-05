@@ -3,7 +3,13 @@ import type { FacilityWithDistance } from "./geo";
 import { insuranceGuidance } from "./insurance";
 import type { InsuranceType } from "./intake";
 import type { InternationalResult } from "./international";
-import { applyTier, charityTier, CHARITY_PROGRAM_NAMES } from "./policy";
+import {
+  applyTier,
+  charityTier,
+  CHARITY_PROGRAM_NAMES,
+  ME_PAYMENT_PLAN_MAX_FPL,
+  ME_PAYMENT_PLAN_MAX_PCT_OF_MONTHLY_INCOME,
+} from "./policy";
 
 export interface QueryResult {
   zipCode: string | null;
@@ -66,7 +72,12 @@ export function summarize(result: QueryResult): string {
             ? `Your income is above ${programName}'s free-care line. Rhode Island's own regulation leaves the discount at your income level to each hospital to set, so there's no statewide number to show -- ask this hospital's billing office for its own sliding scale.`
             : nearest.state === "MA"
               ? `Your income is above ${programName}'s free-care line (150% of the poverty line, lower than most other modeled states). Above that, the real deductible is a flat dollar amount tied to a Health Connector insurance premium, not a percentage of billed charges -- ask this hospital's billing office for your exact amount.`
-              : `${programName} doesn't have a modeled percentage at your income -- ask this hospital's billing office directly.`,
+              : nearest.state === "ME"
+                ? `Your income is above Maine's free-care line (200% of the poverty line), and Maine law sets no discount percentage above it.` +
+                  (fplPct <= ME_PAYMENT_PLAN_MAX_FPL
+                    ? ` It does require this hospital to offer you a payment plan capped at ${ME_PAYMENT_PLAN_MAX_PCT_OF_MONTHLY_INCOME}% of your monthly family income (Maine residents only) -- ask the billing office.`
+                    : " Ask this hospital's billing office about its own financial assistance.")
+                : `${programName} doesn't have a modeled percentage at your income -- ask this hospital's billing office directly.`,
     );
   } else {
     lines.push(

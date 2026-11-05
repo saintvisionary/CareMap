@@ -224,6 +224,23 @@ def test_charity_tier_ma_free_care_and_gap():
     assert "Health Connector" in r["error"]
 
 
+def test_charity_tier_me_gap_discloses_payment_plan_cap_only_up_to_400():
+    # 1716-A(8): payment plans capped at 4% of monthly income up to 400% FPL.
+    r = charity_tier(state="ME", fpl_pct=300)
+    assert "4% of monthly family income" in r["error"]
+    assert "residents only" in r["error"]
+    r = charity_tier(state="ME", fpl_pct=450)
+    assert "4% of monthly" not in r["error"]
+
+
+def test_draft_application_me_facility():
+    # ST JOSEPH HOSPITAL, a real ME acute care hospital (CCN 200001).
+    r = draft_application(ccn="200001", patient_pays_pct=0)
+    assert "ST JOSEPH HOSPITAL" in r["letter"]
+    assert "Maine's free hospital care law" in r["letter"]
+    assert "ME residency" in r["checklist"][0]
+
+
 def test_draft_application_ma_facility():
     # UMASS MEMORIAL HEALTHALLIANCE HOSPITALS, a real MA acute care hospital (CCN 220001).
     r = draft_application(ccn="220001", patient_pays_pct=0)

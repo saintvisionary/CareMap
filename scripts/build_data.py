@@ -318,6 +318,8 @@ def build_states(states: set[str], zip_centroids: dict[str, dict]) -> dict[str, 
             # MA's Health Safety Net reimburses any MA acute hospital
             # regardless of ownership -- no carve-out found.
             "MA": {"acute_care_hospital", "critical_access_hospital"},
+            # ME's 22 M.R.S. 1716-A doesn't define or limit "hospital".
+            "ME": {"acute_care_hospital", "critical_access_hospital"},
         }
         f["charity_care_participant"] = f["type"] in state_facility_types.get(f["state"], set())
         # OR's law (ORS 442.610-442.618) ONLY covers nonprofit hospitals

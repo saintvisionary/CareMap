@@ -56,7 +56,7 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
     """Look up the charity-care tier for a hospital's state, for a percent of the federal poverty line.
 
     Only a short list of states have a real, codified, state-wide formula --
-    currently NJ, WA, IL, NY, OR, MD, RI, MA. For every other state,
+    currently NJ, WA, IL, NY, OR, MD, RI, MA, ME. For every other state,
     returns an error; say the state's rules aren't modeled in CareMap yet
     rather than guessing a tier.
     For WA specifically, this is the legal MINIMUM floor every hospital must
@@ -110,9 +110,13 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
     MA Health Connector insurance premium CareMap doesn't have, not a
     percentage of billed charges at all. Say that plainly; no cap fact to
     add, same as RI.
+    For ME specifically: free care up to 200% FPL, Maine residents only
+    (say so -- CareMap can't check residency). Above that there's no
+    percentage, but up to 400% FPL hospitals must offer a payment plan
+    capped at 4% of monthly family income; the error says which applies.
 
     Args:
-        state: Two-letter state code of the facility (e.g. "NJ", "WA", "IL", "NY", "OR", "MD", "RI", "MA"), not the user's own state.
+        state: Two-letter state code of the facility (e.g. "NJ", "WA", "IL", "NY", "OR", "MD", "RI", "MA", "ME"), not the user's own state.
         fpl_pct: Household income as a percent of the federal poverty line (e.g. 158 for 158%).
         facility_type: The facility's own type (e.g. "acute_care_hospital", "critical_access_hospital") -- only matters for IL.
         ownership: The facility's own CMS ownership string (e.g. "Voluntary non-profit - Private") -- only matters for OR.
@@ -162,6 +166,21 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
                 "there is a flat dollar amount tied to a MA Health Connector insurance premium, not a "
                 "percentage of billed charges, and CareMap has no premium data loaded. Say that plainly, per "
                 "policy.json's ma_charity_care."
+            )
+        }
+    if state == "ME":
+        me = policy_mod.POLICY["me_charity_care"]
+        cap = (
+            f" State law does require this hospital to offer a payment plan capped at "
+            f"{me['payment_plan_max_monthly_pct_of_income']}% of monthly family income, since income is at or below "
+            f"{me['payment_plan_max_fpl_pct']}% FPL -- mention that."
+            if fpl_pct <= me["payment_plan_max_fpl_pct"]
+            else " Income is also above the 400% FPL payment-plan protection, so there's no state cap fact to add."
+        )
+        return {
+            "error": (
+                "ME has no modeled percentage above its 200% FPL free-care threshold -- Maine law sets no sliding "
+                f"scale there. Say that plainly.{cap} Maine's law covers Maine residents only."
             )
         }
     return {"error": f"No state-wide charity-care formula modeled for '{state}' -- direct the user to that hospital's billing/financial-assistance office."}
@@ -278,11 +297,12 @@ _STATE_PROGRAM_NAMES = {
     "MD": "the Maryland hospital financial assistance law (Health-General 19-214.1)",
     "RI": "Rhode Island's hospital charity care regulation (216-RICR-40-10-23.14)",
     "MA": "Massachusetts's Health Safety Net (101 CMR 613.00)",
+    "ME": "Maine's free hospital care law (22 M.R.S. 1716-A)",
 }
 _STATE_POLICY_KEYS = {
     "NJ": "nj_charity_care", "WA": "wa_charity_care", "IL": "il_charity_care",
     "NY": "ny_charity_care", "OR": "or_charity_care", "MD": "md_charity_care",
-    "RI": "ri_charity_care", "MA": "ma_charity_care",
+    "RI": "ri_charity_care", "MA": "ma_charity_care", "ME": "me_charity_care",
 }
 
 
@@ -291,7 +311,7 @@ def draft_application(ccn: str, patient_pays_pct: float) -> dict:
     """Draft a charity-care application checklist and cover letter for a facility and tier.
 
     Works for any facility in a state CareMap has a modeled formula for
-    (currently NJ, WA, IL, NY, OR, MD, RI, MA) -- looks up the facility's own state, not
+    (currently NJ, WA, IL, NY, OR, MD, RI, MA, ME) -- looks up the facility's own state, not
     a fixed program. Fields the matching policy.json entry doesn't have
     (e.g. WA has no confirmed apply-window or help-phone, unlike NJ) are
     left out of the checklist/letter rather than guessed. For OR
