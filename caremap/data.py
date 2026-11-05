@@ -18,6 +18,7 @@ STATES_DIR = ROOT / "public" / "data" / "states"
 ZIPS_PATH = ROOT / "public" / "data" / "zip_centroids.json"
 FQHC_PATH = ROOT / "public" / "data" / "fqhc_sites.json"
 URGENT_CARE_PATH = ROOT / "public" / "data" / "urgent_care_sites.json"
+DRG_DESCRIPTIONS_PATH = ROOT / "public" / "data" / "drg_descriptions.json"
 # Clinic-type layers: only returned when asked for by type (there are many).
 CLINIC_TYPES = {"fqhc", "urgent_care"}
 
@@ -38,6 +39,11 @@ def _load_facilities() -> list[dict]:
 _FACILITIES = _load_facilities()
 _ZIPS = json.loads(ZIPS_PATH.read_text(encoding="utf-8")) if ZIPS_PATH.exists() else {}
 _BY_CCN = {f["ccn"]: f for f in _FACILITIES}
+_DRG_DESCRIPTIONS = json.loads(DRG_DESCRIPTIONS_PATH.read_text(encoding="utf-8")) if DRG_DESCRIPTIONS_PATH.exists() else {}
+
+
+def drg_description(drg: str) -> str | None:
+    return _DRG_DESCRIPTIONS.get(drg)
 
 
 def facility_by_ccn(ccn: str) -> dict | None:

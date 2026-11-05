@@ -1,5 +1,5 @@
 export interface DrgCharge {
-  description: string;
+  // Descriptions live in public/data/drg_descriptions.json, not per facility.
   avg_charge: number;
   // CMS's average Medicare payments for the same procedure at this hospital
   // (present after a rebuild with build_data.py's v2 cache).

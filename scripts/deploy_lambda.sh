@@ -48,6 +48,7 @@ cp -r "$ROOT/public/data/states" "$BUILD_DIR/public/data/states"
 cp "$ROOT/public/data/zip_centroids.json" "$BUILD_DIR/public/data/zip_centroids.json"
 cp "$ROOT/public/data/fqhc_sites.json" "$BUILD_DIR/public/data/fqhc_sites.json"
 cp "$ROOT/public/data/urgent_care_sites.json" "$BUILD_DIR/public/data/urgent_care_sites.json"
+cp "$ROOT/public/data/drg_descriptions.json" "$BUILD_DIR/public/data/drg_descriptions.json"
 
 find "$BUILD_DIR" -name "*.dist-info" -exec rm -rf {} + 2>/dev/null || true
 find "$BUILD_DIR" -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true

@@ -35,6 +35,7 @@ ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
 OUT_STATES = ROOT / "public" / "data" / "states"
 OUT_ZIP_CENTROIDS = ROOT / "public" / "data" / "zip_centroids.json"
+OUT_DRG_DESCRIPTIONS = ROOT / "public" / "data" / "drg_descriptions.json"
 
 HGI_METASTORE_URL = "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/xubh-q36u"
 DRG_DATA_API = "https://data.cms.gov/data-api/v1/dataset/690ddc6c-2767-4618-b277-420ffb2bf27c/data"
@@ -398,6 +399,28 @@ def build_states(states: set[str], zip_centroids: dict[str, dict]) -> dict[str, 
     return {state: {"state": state, "facilities": fs} for state, fs in by_state.items()}
 
 
+def slim_state_data(data: dict, descriptions: dict[str, str]) -> None:
+    """Move each procedure's description into the shared descriptions map.
+
+    The same DRG description was repeated for every hospital (~42% of the
+    state files), and the browser never reads it; the backend looks it up
+    in drg_descriptions.json instead. Also drops avg_medicare_payment, which
+    nothing uses (avg_total_payment is the Medicare reference).
+    """
+    for f in data["facilities"]:
+        for code, charge in f["drg_charges"].items():
+            if "description" in charge:
+                descriptions[code] = charge.pop("description")
+            charge.pop("avg_medicare_payment", None)
+
+
+def write_state_file(state: str, data: dict, descriptions: dict[str, str]) -> Path:
+    slim_state_data(data, descriptions)
+    out_path = OUT_STATES / f"{state}.json"
+    out_path.write_text(json.dumps(data, separators=(",", ":")))
+    return out_path
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--states", nargs="+", default=["NJ"],
@@ -411,10 +434,11 @@ def main() -> None:
 
     OUT_STATES.mkdir(parents=True, exist_ok=True)
     results = build_states(states, centroids)
+    descriptions = json.loads(OUT_DRG_DESCRIPTIONS.read_text()) if OUT_DRG_DESCRIPTIONS.exists() else {}
     for state, data in sorted(results.items()):
-        out_path = OUT_STATES / f"{state}.json"
-        out_path.write_text(json.dumps(data, indent=2))
+        out_path = write_state_file(state, data, descriptions)
         print(f"Wrote {out_path} ({len(data['facilities'])} facilities)", file=sys.stderr)
+    OUT_DRG_DESCRIPTIONS.write_text(json.dumps(dict(sorted(descriptions.items())), indent=1))
 
     # Authoritative list of every state file currently on disk (not just the
     # ones this run touched) -- the frontend fetches this first to know what

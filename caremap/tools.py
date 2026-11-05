@@ -271,7 +271,7 @@ def estimate_cost(ccn: str, drg: str) -> dict:
         "facility_type": facility["type"],
         "ownership": facility["ownership"],
         "drg": drg,
-        "drg_description": charge_info["description"],
+        "drg_description": facility_data.drg_description(drg) or charge_info.get("description"),
         "typical_billed_charge": charge_info["avg_charge"],
         "typical_billed_charge_formatted": _money(charge_info["avg_charge"]),
         "label": "typical billed charge, estimate, confirm with billing office",
