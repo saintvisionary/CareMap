@@ -98,7 +98,9 @@ export function summarize(result: QueryResult): string {
       nearestTier.patientPaysPct <= 0
         ? `At your income, ${programName} covers hospital care in full at participating hospitals: you'd pay an estimated $0.` +
           (FREE_TIER_STATES[nearest.state]?.freeNote ? ` ${FREE_TIER_STATES[nearest.state].freeNote}` : "")
-        : `At your income, ${programName} sets your share at ${nearestTier.patientPaysPct}% of the typical billed charge at participating hospitals.`,
+        : nearest.state === "OR"
+          ? `At your income, ${programName} caps your share at ${nearestTier.patientPaysPct}% at participating hospitals. That's applied after federal limits on what nonprofit hospitals can charge, so dollar amounts below are upper bounds -- you may owe less.`
+          : `At your income, ${programName} sets your share at ${nearestTier.patientPaysPct}% of the typical billed charge at participating hospitals.`,
     );
   }
 
@@ -123,7 +125,7 @@ export function summarize(result: QueryResult): string {
       lines.push(
         `${drg.label} at ${withCharge.name}: typical billed charge is ${money(charge)}.` +
           (chargeTier != null && insuranceType === "uninsured"
-            ? ` At your tier, estimated amount owed is ${money(applyTier(charge, chargeTier.patientPaysPct))}.`
+            ? ` At your tier, estimated amount owed is ${withCharge.state === "OR" && chargeTier.patientPaysPct > 0 ? "at most " : ""}${money(applyTier(charge, chargeTier.patientPaysPct))}.`
             : ""),
       );
       lines.push("This is an estimate, confirm with billing office.");

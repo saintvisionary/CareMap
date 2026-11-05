@@ -225,7 +225,9 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </div>
               <p className={p}>
                 <strong className="text-white/90">These are legal minimum discounts.</strong> A nonprofit hospital's own policy may be more generous than
-                the table above -- confirm with the hospital's billing office for your actual rate.
+                the table above -- confirm with the hospital's billing office for your actual rate. The discount also applies after federal
+                limits on what nonprofit hospitals can charge, which is often less than the typical billed charge CareMap shows, so treat Oregon
+                dollar amounts here as upper bounds.
               </p>
             </div>
 
