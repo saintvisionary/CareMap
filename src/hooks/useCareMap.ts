@@ -105,6 +105,9 @@ export function useCareMap(
   // search -- set the instant a user-initiated query runs, checked before
   // the (possibly slow) geolocation callback lands.
   const hasSearchedRef = useRef(false);
+  // Zip the silent auto-locate landed on, so its results can pick up the
+  // clinic and urgent care files, which finish loading after the hospitals.
+  const autoZipRef = useRef<string | null>(null);
 
   // Nothing showed on the map until a search ran -- a first-time visitor
   // saw an empty basemap and had to already know to type something before
@@ -137,6 +140,7 @@ export function useCareMap(
           showNationalPreview();
           return;
         }
+        autoZipRef.current = zip;
         setFacilities(nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, zip, false));
         const c = zipCentroids[zip];
         setFlyTo({ center: [c.lon, c.lat], zoom: 10.5, pitch: 55 });
@@ -148,6 +152,13 @@ export function useCareMap(
     // answer it finishes loading.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allFacilities.length, zipCentroids]);
+
+  useEffect(() => {
+    if (hasSearchedRef.current || !autoZipRef.current) return;
+    setFacilities(nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, autoZipRef.current, false));
+    // Only re-run when the late-loading clinic layers arrive.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allClinics.length, allUrgentCare.length]);
 
   const sendMessage = useCallback(
     (text: string) => {

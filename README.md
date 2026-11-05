@@ -48,7 +48,7 @@ run:
 - Zip code centroids: US Census ZCTA Gazetteer
 - Urgent care centers: the CMS NPPES NPI Registry API, organizations whose
   primary specialty is urgent care (taxonomy 261QU0200X), one per practice
-  address (~10,500 sites; listings are self-reported)
+  address (~11,700 sites; listings are self-reported)
 - Sliding-fee health centers: HRSA Health Center Service Delivery and
   Look-Alike Sites (11,200 permanent, public-facing medical clinic sites), priced by
   the federal FQHC sliding-fee rule (42 CFR 51c.303)

@@ -65,15 +65,17 @@ def _query(**params) -> list[dict]:
     return out
 
 
+# USPS 3-digit ZIP ranges for the states big enough to hit the API's cap.
+ZIP3_RANGES = {"CA": [(900, 961)], "TX": [(750, 799), (885, 885)], "FL": [(320, 349)]}
+
+
 def _zip3_prefixes(state: str) -> list[str]:
-    """3-digit ZIP prefixes seen for a state in CareMap's own hospital and clinic data."""
-    prefixes = set()
-    for f in json.loads((ROOT / "public" / "data" / "states" / f"{state}.json").read_text())["facilities"]:
-        prefixes.add(f["zip"][:3])
-    fqhc = ROOT / "public" / "data" / "fqhc_sites.json"
-    if fqhc.exists():
-        prefixes |= {s["zip"][:3] for s in json.loads(fqhc.read_text())["sites"] if s["state"] == state}
-    return sorted(p for p in prefixes if len(p) == 3)
+    """Every 3-digit ZIP prefix in the state that has a Census ZIP area, so a
+    prefix with urgent care but no hospital or clinic isn't skipped."""
+    if state not in ZIP3_RANGES:
+        raise ValueError(f"{state} hit the API cap; add its USPS ZIP3 ranges to ZIP3_RANGES")
+    existing = {z[:3] for z in build_data.build_zip_centroids()}
+    return [f"{n:03d}" for lo, hi in ZIP3_RANGES[state] for n in range(lo, hi + 1) if f"{n:03d}" in existing]
 
 
 def fetch_all(states: list[str]) -> dict[str, dict]:
@@ -83,7 +85,15 @@ def fetch_all(states: list[str]) -> dict[str, dict]:
     for st in states:
         results = _query(state=st)
         if len(results) >= MAX_SKIP + PAGE:  # hit the cap: split by ZIP prefix
-            results = [r for p in _zip3_prefixes(st) for r in _query(state=st, postal_code=f"{p}*")]
+            results = []
+            for p in _zip3_prefixes(st):
+                part = _query(state=st, postal_code=f"{p}*")
+                if len(part) >= MAX_SKIP + PAGE:  # still capped: one more digit
+                    subs = [_query(state=st, postal_code=f"{p}{d}*") for d in "0123456789"]
+                    if any(len(sub) >= MAX_SKIP + PAGE for sub in subs):
+                        print(f"  WARNING: {st} ZIP {p}x* still hit the cap; some sites may be missing", file=sys.stderr)
+                    part = [r for sub in subs for r in sub]
+                results.extend(part)
         for r in results:
             by_npi[r["number"]] = r
         print(f"  {st}: {len(results)} results, {len(by_npi)} unique so far", file=sys.stderr)
@@ -110,7 +120,10 @@ def to_sites(by_npi: dict[str, dict], states: set[str]) -> list[dict]:
         if re.match(r"^(P\.?\s*O\.?\s*BOX|POST OFFICE BOX)\b", street, re.I):
             continue
         zip5 = (loc.get("postal_code") or "")[:5]
-        key = (re.sub(r"[^A-Z0-9]", "", street.upper()), zip5)
+        # Address plus name: separate centers in one building stay separate,
+        # duplicate NPIs for the same center at one address merge.
+        name_key = re.sub(r"[^A-Z0-9]", "", (r["basic"].get("organization_name") or "").upper())
+        key = (re.sub(r"[^A-Z0-9]", "", street.upper()), zip5, name_key)
         if key in seen:
             continue
         seen.add(key)
@@ -183,7 +196,23 @@ def main() -> None:
         return
     states = json.loads((ROOT / "public" / "data" / "states" / "index.json").read_text())
     sites = to_sites(fetch_all(states), set(states))
-    geocode(sites, build_data.build_zip_centroids())
+    # Reuse coordinates from the previous output, so a rerun only geocodes
+    # sites it hasn't placed before (the Census geocoder is slow and flaky).
+    known = {}
+    if OUT.exists():
+        prev = json.loads(OUT.read_text())
+        for p in prev["sites"]:
+            if not p.get("lat_lon_approximate"):
+                known[(p["address"].upper(), p["zip"])] = (p["lat"], p["lon"])
+    todo = []
+    for site in sites:
+        hit = known.get((site["address"].upper(), site["zip"]))
+        if hit:
+            site["lat"], site["lon"] = hit
+        else:
+            todo.append(site)
+    print(f"  {len(sites) - len(todo)} sites reuse earlier coordinates; geocoding {len(todo)}", file=sys.stderr)
+    geocode(todo, build_data.build_zip_centroids())
     sites = [s for s in sites if s.get("lat") is not None]
     OUT.write_text(json.dumps({"source": API, "taxonomy": TAXONOMY, "defaults": DEFAULTS,
                               "sites": slim_sites(sites, DEFAULTS)}, separators=(",", ":")), encoding="utf-8")
