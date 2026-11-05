@@ -7,6 +7,7 @@ import {
   applyTier,
   charityTier,
   CHARITY_PROGRAM_NAMES,
+  FREE_TIER_STATES,
   ME_PAYMENT_PLAN_MAX_FPL,
   ME_PAYMENT_PLAN_MAX_PCT_OF_MONTHLY_INCOME,
   VT_AGB_DISCOUNT_MAX_FPL,
@@ -88,7 +89,9 @@ export function summarize(result: QueryResult): string {
                       ? " If its bills come to more than 20% of your household income, it must cut what you owe to 20% of your household income."
                       : "") +
                     " Vermont residents only -- ask the billing office."
-                  : `${programName} doesn't have a modeled percentage at your income -- ask this hospital's billing office directly.`,
+                  : FREE_TIER_STATES[nearest.state]
+                    ? `Your income is above ${programName}'s free-care line (${FREE_TIER_STATES[nearest.state].maxFplPct}% of the poverty line). ${FREE_TIER_STATES[nearest.state].aboveLine}`
+                    : `${programName} doesn't have a modeled percentage at your income -- ask this hospital's billing office directly.`,
     );
   } else {
     lines.push(

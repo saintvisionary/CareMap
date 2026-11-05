@@ -207,6 +207,9 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
                 f"{detail} Vermont's law covers Vermont residents only."
             )
         }
+    policy_key = _STATE_POLICY_KEYS.get(state)
+    if policy_key and "gap_disclosure" in policy_mod.POLICY[policy_key]:
+        return {"error": policy_mod.POLICY[policy_key]["gap_disclosure"]}
     return {"error": f"No state-wide charity-care formula modeled for '{state}' -- direct the user to that hospital's billing/financial-assistance office."}
 
 

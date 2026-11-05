@@ -221,6 +221,21 @@ export function vtCharityTier(fplPct: number): CharityTier | null {
   return null;
 }
 
+// Free-tier-only states with nothing state-specific beyond these fields.
+// Each mirrors a caremap/policy.py registry entry and its policy.json
+// block. At or below maxFplPct the tier is a real 0%; above it the tier is
+// null and aboveLine explains what the law does say.
+export interface FreeTierState {
+  programName: string;
+  heading: string;
+  law: string;
+  scope: string;
+  maxFplPct: number;
+  aboveLine: string;
+}
+
+export const FREE_TIER_STATES: Record<string, FreeTierState> = {};
+
 // Keyed by a facility's own state. Only states with a real, codified,
 // state-wide formula belong here -- most states have no such law (just
 // federal 501(r): each nonprofit hospital must have *a* policy, with no
@@ -238,13 +253,14 @@ const STATE_CHARITY_TIER_FNS: Record<string, (fplPct: number, facilityType?: str
   VT: (fplPct) => vtCharityTier(fplPct),
 };
 
-export const MODELED_CHARITY_STATES = Object.keys(STATE_CHARITY_TIER_FNS);
+export const MODELED_CHARITY_STATES = [...Object.keys(STATE_CHARITY_TIER_FNS), ...Object.keys(FREE_TIER_STATES)];
 
 // Only used to name the program in a sentence -- the actual numbers always
 // come from charityTier(), never hardcoded here. WA's note (confirm with
 // the specific hospital whether it's part of a larger system) matters
 // enough to state inline, not just in the info panel.
 export const CHARITY_PROGRAM_NAMES: Record<string, string> = {
+  ...Object.fromEntries(Object.entries(FREE_TIER_STATES).map(([st, f]) => [st, f.programName])),
   NJ: "NJ Charity Care",
   WA: "Washington's charity care law (the minimum every hospital must offer -- some larger hospital systems must offer better terms)",
   IL: "the Illinois Hospital Uninsured Patient Discount Act (uninsured patients only)",
@@ -264,7 +280,10 @@ export const CHARITY_PROGRAM_NAMES: Record<string, string> = {
  * scope) -- each is ignored by states whose formula doesn't depend on it. */
 export function charityTier(state: string, fplPct: number, facilityType?: string, ownership?: string): CharityTier | null {
   const fn = STATE_CHARITY_TIER_FNS[state];
-  return fn ? fn(fplPct, facilityType, ownership) : null;
+  if (fn) return fn(fplPct, facilityType, ownership);
+  const free = FREE_TIER_STATES[state];
+  if (free && fplPct <= free.maxFplPct) return { patientPaysPct: 0, fplPct, maxFplPct: free.maxFplPct };
+  return null;
 }
 
 export function applyTier(typicalCharge: number, patientPaysPct: number): number {

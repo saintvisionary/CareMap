@@ -29,6 +29,7 @@ from strands import Agent
 
 from .guards import EvidenceLedger, GroundingGuard
 from .intake import IntakeHint, redact
+from .policy import STATE_CHARITY_TIER_FNS
 from .schemas import OrchestratorOutput
 from .tools import ALL_TOOLS, DATA_TOOL_NAMES
 
@@ -45,7 +46,7 @@ and a veteran flag. NEVER ask the user to repeat their exact income or
 household size, and never guess a dollar income or household size yourself.
 
 Only a short list of states have a real, state-wide charity-care formula
-modeled in CareMap -- currently NJ, WA, IL, NY, OR, MD, RI, MA, ME and VT. tier_pct (if present) is always
+modeled in CareMap -- currently {modeled_states}. tier_pct (if present) is always
 computed with NJ's formula specifically. Once you know which state a
 facility is actually in (every facilities_near / facilities_with_drg /
 estimate_cost result includes one), use that facility's own state, not an
@@ -123,6 +124,11 @@ assumption:
   always say that. Above 250% FPL charity_tier returns an error with no
   percentage; relay whatever protections it lists, and never turn the
   "at least 40% off the amount generally billed" into a dollar amount.
+- Any other modeled state not described above: call charity_tier(state,
+  fpl_pct). It returns a free tier at or below that state's line, or an
+  error above it explaining what the law does and doesn't let CareMap
+  show; relay that, including any residency or cap facts it gives, and
+  never turn it into a percentage or dollar amount it doesn't state.
 - Any other facility state: no modeled formula -- charity_tier will return
   an error; say that state's rules aren't in CareMap yet rather than
   guessing, and point to the hospital's own billing/financial-assistance
@@ -194,7 +200,9 @@ Return your answer as the given structured schema: a short plain-language
 reply, plus zero or more map_commands (type one of "flyTo", "highlight",
 "filter", with a payload dict) describing how the map should react, e.g.
 flyTo a facility's lat/lon, highlight the chosen facility's id, or filter by
-facility type."""
+facility type.""".format(
+    modeled_states=", ".join(list(STATE_CHARITY_TIER_FNS)[:-1]) + " and " + list(STATE_CHARITY_TIER_FNS)[-1],
+)
 
 
 def make_model(model_id: str | None = None):

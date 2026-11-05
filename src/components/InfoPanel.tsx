@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import { TIER_COLORS } from "../lib/geo";
+import { FREE_TIER_STATES, MODELED_CHARITY_STATES } from "../lib/policy";
 import { INSURANCE_LABELS, insuranceGuidance } from "../lib/insurance";
 import type { InsuranceType } from "../lib/intake";
 
@@ -357,8 +358,31 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
             </div>
 
+            {Object.entries(FREE_TIER_STATES).map(([st, f]) => (
+              <div key={st} className={section}>
+                <h2 className={h2}>{f.heading}</h2>
+                <p className={p}>
+                  {f.law}. {f.scope}
+                </p>
+                <div className="rounded-xl bg-white/5 p-3 text-xs">
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
+                    <span className="text-white/40">Income, % of poverty line</span>
+                    <span className="text-white/40">You pay</span>
+                    <span>Up to {f.maxFplPct}%</span>
+                    <span className="text-white/90">$0 -- fully covered</span>
+                    <span>Over {f.maxFplPct}%</span>
+                    <span className="text-white/90">No statewide percentage</span>
+                  </div>
+                </div>
+                <p className={p}>{f.aboveLine}</p>
+              </div>
+            ))}
+
             <p className={p}>
-              <strong className="text-white/90">Right now, NJ, WA, IL, NY, OR, MD, RI, MA, ME, and VT are the only states with a modeled tier.</strong>{" "}
+              <strong className="text-white/90">
+                Right now, {MODELED_CHARITY_STATES.slice(0, -1).join(", ")}, and {MODELED_CHARITY_STATES[MODELED_CHARITY_STATES.length - 1]} are
+                the only states with a modeled tier.
+              </strong>{" "}
               Every other state still shows real hospital locations and typical billed charges, but says "[state] rules coming soon" instead of a
               personal estimate.
             </p>
@@ -419,6 +443,11 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                 <li>MA charity care rules -- 101 CMR 613.00, Massachusetts Health Safety Net</li>
                 <li>ME free care rules -- 22 M.R.S. 1716-A, Maine Legislature</li>
                 <li>VT financial assistance rules -- 18 V.S.A. 9482, Vermont Legislature</li>
+                {Object.entries(FREE_TIER_STATES).map(([st, f]) => (
+                  <li key={st}>
+                    {st} charity care rules -- {f.law}
+                  </li>
+                ))}
                 <li>International locations -- OpenStreetMap (Nominatim, Overpass, Photon)</li>
               </ul>
               <p className={p}>All public, official sources -- CareMap never adds or guesses a number that isn't already in that data.</p>

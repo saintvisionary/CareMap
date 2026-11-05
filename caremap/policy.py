@@ -48,6 +48,19 @@ def _tier_lookup(policy_key: str, fpl_pct: float) -> dict:
     raise AssertionError(f"unreachable: last tier in {policy_key} has max_fpl_pct = null")
 
 
+def _free_tier(policy_key: str, fpl_pct: float) -> dict | None:
+    """A real 0% at or below the state's free-care line, else None (no guessed tier)."""
+    threshold = POLICY[policy_key]["free_care_max_fpl_pct"]
+    if fpl_pct > threshold:
+        return None
+    return {
+        "patient_pays_pct": 0,
+        "fpl_pct": fpl_pct,
+        "max_fpl_pct": threshold,
+        "source": POLICY[policy_key]["source"],
+    }
+
+
 def nj_charity_tier(fpl_pct: float) -> dict:
     """NJ Documented Charity Care tier for a given percent of FPL.
 
@@ -110,15 +123,7 @@ def ri_charity_tier(fpl_pct: float) -> dict | None:
     20%-of-income cap -- showing anything above the free line would be a
     guess, not a grounded number.
     """
-    threshold = POLICY["ri_charity_care"]["free_care_max_fpl_pct"]
-    if fpl_pct <= threshold:
-        return {
-            "patient_pays_pct": 0,
-            "fpl_pct": fpl_pct,
-            "max_fpl_pct": threshold,
-            "source": POLICY["ri_charity_care"]["source"],
-        }
-    return None
+    return _free_tier("ri_charity_care", fpl_pct)
 
 
 def ma_charity_tier(fpl_pct: float) -> dict | None:
@@ -135,15 +140,7 @@ def ma_charity_tier(fpl_pct: float) -> dict | None:
     FPL, HSN's general categories don't apply at all. No disclosable cap
     fact here, same as RI.
     """
-    threshold = POLICY["ma_charity_care"]["free_care_max_fpl_pct"]
-    if fpl_pct <= threshold:
-        return {
-            "patient_pays_pct": 0,
-            "fpl_pct": fpl_pct,
-            "max_fpl_pct": threshold,
-            "source": POLICY["ma_charity_care"]["source"],
-        }
-    return None
+    return _free_tier("ma_charity_care", fpl_pct)
 
 
 def me_charity_tier(fpl_pct: float) -> dict | None:
@@ -154,15 +151,7 @@ def me_charity_tier(fpl_pct: float) -> dict | None:
     income, up to 400% FPL) that callers should disclose instead of a
     percentage. Maine residents only -- callers must disclose that too.
     """
-    threshold = POLICY["me_charity_care"]["free_care_max_fpl_pct"]
-    if fpl_pct <= threshold:
-        return {
-            "patient_pays_pct": 0,
-            "fpl_pct": fpl_pct,
-            "max_fpl_pct": threshold,
-            "source": POLICY["me_charity_care"]["source"],
-        }
-    return None
+    return _free_tier("me_charity_care", fpl_pct)
 
 
 def vt_charity_tier(fpl_pct: float) -> dict | None:
@@ -174,15 +163,7 @@ def vt_charity_tier(fpl_pct: float) -> dict | None:
     charge can be computed. Callers disclose that and the 20%-of-income
     catastrophic cap (up to 600% FPL) instead. Vermont residents only.
     """
-    threshold = POLICY["vt_charity_care"]["free_care_max_fpl_pct"]
-    if fpl_pct <= threshold:
-        return {
-            "patient_pays_pct": 0,
-            "fpl_pct": fpl_pct,
-            "max_fpl_pct": threshold,
-            "source": POLICY["vt_charity_care"]["source"],
-        }
-    return None
+    return _free_tier("vt_charity_care", fpl_pct)
 
 
 def md_charity_tier(fpl_pct: float) -> dict:
@@ -246,15 +227,7 @@ def ny_charity_tier(fpl_pct: float) -> dict | None:
     disclosable cap fact to surface here -- showing anything above the free
     line would be a guess, not a grounded number.
     """
-    threshold = POLICY["ny_charity_care"]["free_care_max_fpl_pct"]
-    if fpl_pct <= threshold:
-        return {
-            "patient_pays_pct": 0,
-            "fpl_pct": fpl_pct,
-            "max_fpl_pct": threshold,
-            "source": POLICY["ny_charity_care"]["source"],
-        }
-    return None
+    return _free_tier("ny_charity_care", fpl_pct)
 
 
 # Keyed by the two-letter state code on a facility record. Add an entry here
