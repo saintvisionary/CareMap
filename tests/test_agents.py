@@ -42,3 +42,10 @@ def test_prompt_omits_unset_hints_but_always_states_veteran():
     # veteran always appears (defaults False) -- unlike the others, there's
     # no "we don't know yet" state worth representing for it.
     assert "veteran: False" in prompt
+
+
+def test_no_em_dashes_in_replies():
+    from caremap.lambda_handler import no_em_dashes
+    assert no_em_dashes("Go to the ER\u2014do not drive.") == "Go to the ER -- do not drive."
+    assert no_em_dashes("a \u2014 b") == "a -- b"
+    assert no_em_dashes("no dashes here") == "no dashes here"

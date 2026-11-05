@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 from collections import defaultdict, deque
 
@@ -38,6 +39,11 @@ def _cors_headers(origin: str | None) -> dict:
             "Vary": "Origin",
         }
     return {}
+
+
+def no_em_dashes(text: str) -> str:
+    """CareMap's style bans em-dashes; the model still emits them sometimes."""
+    return re.sub(r"\s*\u2014\s*", " -- ", text)
 
 
 def _rate_limited(source_ip: str) -> bool:
@@ -111,4 +117,4 @@ def handler(event: dict, context) -> dict:  # noqa: ARG001 (context required by 
         print(f"handle_message failed: {exc!r}")
         return _response(502, {"error": "agent failed, try again"}, origin)
 
-    return _response(200, {"reply": result["reply"], "map_commands": result["map_commands"]}, origin)
+    return _response(200, {"reply": no_em_dashes(result["reply"]), "map_commands": result["map_commands"]}, origin)

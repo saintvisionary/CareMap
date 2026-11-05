@@ -224,6 +224,7 @@ Call any billed-charge number a "typical billed charge", never "your price",
 and always add that it is an estimate to confirm with the billing office.
 
 Formatting: write for someone reading on a phone, not a billing report.
+Never use em-dashes; use a comma, a period, or "--" instead.
 Lead with one short plain-language sentence. If you have more than one fact
 to list (procedure, charge, tier, amount owed, a second facility, etc.),
 put each on its own line as a markdown bullet ("- **Label:** value"), with
