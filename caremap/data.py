@@ -17,6 +17,9 @@ ROOT = Path(__file__).resolve().parent.parent
 STATES_DIR = ROOT / "public" / "data" / "states"
 ZIPS_PATH = ROOT / "public" / "data" / "zip_centroids.json"
 FQHC_PATH = ROOT / "public" / "data" / "fqhc_sites.json"
+URGENT_CARE_PATH = ROOT / "public" / "data" / "urgent_care_sites.json"
+# Clinic-type layers: only returned when asked for by type (there are many).
+CLINIC_TYPES = {"fqhc", "urgent_care"}
 
 
 def _load_facilities() -> list[dict]:
@@ -27,6 +30,8 @@ def _load_facilities() -> list[dict]:
         out.extend(json.loads(path.read_text(encoding="utf-8"))["facilities"])
     if FQHC_PATH.exists():  # HRSA health center sites, built by scripts/build_fqhc.py
         out.extend(json.loads(FQHC_PATH.read_text(encoding="utf-8"))["sites"])
+    if URGENT_CARE_PATH.exists():  # NPI registry urgent care sites, built by scripts/build_urgent_care.py
+        out.extend(json.loads(URGENT_CARE_PATH.read_text(encoding="utf-8"))["sites"])
     return out
 
 
@@ -56,16 +61,16 @@ def facilities_near(zip_code: str, radius_miles: float = 15, types: list[str] | 
     """Facilities within radius_miles of a zip code centroid, nearest first.
 
     types filters on the facility "type" field (e.g. "acute_care_hospital",
-    "fqhc"). Omitted, it means every hospital type but not FQHC clinic
-    sites: there are ~12k of those, and a city can have dozens within a few
-    miles, so they're only returned when asked for by name.
+    "fqhc", "urgent_care"). Omitted, it means every hospital type but not
+    FQHC or urgent care sites: there are many thousands of those, and a city
+    can have dozens within a few miles, so they're only returned by name.
     """
     center = zip_centroid(zip_code)
     if center is None:
         return []
     out = []
     for f in _FACILITIES:
-        if (f["type"] not in types) if types else f["type"] == "fqhc":
+        if (f["type"] not in types) if types else f["type"] in CLINIC_TYPES:
             continue
         if f.get("lat") is None or f.get("lon") is None:
             continue
@@ -77,6 +82,11 @@ def facilities_near(zip_code: str, radius_miles: float = 15, types: list[str] | 
 
 def nearest_fqhc(zip_code: str, radius_miles: float = 25) -> dict | None:
     matches = facilities_near(zip_code, radius_miles=radius_miles, types=["fqhc"])
+    return matches[0] if matches else None
+
+
+def nearest_urgent_care(zip_code: str, radius_miles: float = 25) -> dict | None:
+    matches = facilities_near(zip_code, radius_miles=radius_miles, types=["urgent_care"])
     return matches[0] if matches else None
 
 

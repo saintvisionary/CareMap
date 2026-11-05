@@ -7,6 +7,7 @@ from caremap.tools import (
     facilities_with_drg,
     fpl_percent,
     nearest_fqhc,
+    nearest_urgent_care,
     nj_charity_tier,
 )
 
@@ -82,7 +83,13 @@ def test_charity_tier_for_a_clinic_gives_federal_rule_not_a_tier():
 
 def test_facilities_near_default_excludes_clinics():
     r = facilities_near(zip_code="07018", radius_miles=5)
-    assert r["facilities"] and all(f["type"] != "fqhc" for f in r["facilities"])
+    assert r["facilities"] and all(f["type"] not in ("fqhc", "urgent_care") for f in r["facilities"])
+
+
+def test_nearest_urgent_care_is_location_only():
+    r = nearest_urgent_care(zip_code="07018")
+    assert r["ccn"].startswith("NPI-") and r["distance_miles"] <= 25
+    assert "No price data" in r["pricing"]
 
 
 def test_draft_application():

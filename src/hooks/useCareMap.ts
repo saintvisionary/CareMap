@@ -56,16 +56,19 @@ function sampleFacilities(all: Facility[], limit: number): Facility[] {
 // clinic isn't buried below every hospital. summarize() separates the two
 // types itself.
 const NEARBY_CLINIC_LIMIT = 5;
+const NEARBY_URGENT_CARE_LIMIT = 3;
 
 function nearbyCare(
   hospitals: Facility[],
   clinics: Facility[],
+  urgentCare: Facility[],
   zipCentroids: Record<string, ZipCentroid>,
   zip: string,
 ): FacilityWithDistance[] {
   return [
     ...facilitiesNear(hospitals, zipCentroids, zip, 25),
     ...facilitiesNear(clinics, zipCentroids, zip, 25).slice(0, NEARBY_CLINIC_LIMIT),
+    ...facilitiesNear(urgentCare, zipCentroids, zip, 25).slice(0, NEARBY_URGENT_CARE_LIMIT),
   ].sort((a, b) => a.distanceMiles - b.distanceMiles);
 }
 
@@ -73,6 +76,7 @@ export function useCareMap(
   allFacilities: Facility[],
   zipCentroids: Record<string, ZipCentroid>,
   allClinics: Facility[] = [],
+  allUrgentCare: Facility[] = [],
 ): CareMapState {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -126,7 +130,7 @@ export function useCareMap(
           showNationalPreview();
           return;
         }
-        setFacilities(nearbyCare(allFacilities, allClinics, zipCentroids, zip));
+        setFacilities(nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, zip));
         const c = zipCentroids[zip];
         setFlyTo({ center: [c.lon, c.lat], zoom: 10.5, pitch: 55 });
       },
@@ -179,7 +183,7 @@ export function useCareMap(
         return;
       }
 
-      const nearby = hint.zipCode ? nearbyCare(allFacilities, allClinics, zipCentroids, hint.zipCode) : [];
+      const nearby = hint.zipCode ? nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, hint.zipCode) : [];
       setFacilities(nearby);
       setInternationalFacilities([]);
       setTierPct(hint.tierPct);
@@ -217,7 +221,7 @@ export function useCareMap(
         })
         .finally(() => setLoading(false));
     },
-    [allFacilities, allClinics, zipCentroids],
+    [allFacilities, allClinics, allUrgentCare, zipCentroids],
   );
 
   // Clicking a preview marker is the one interaction it supports: run a

@@ -14,12 +14,15 @@ const h2 = "text-sm font-semibold text-white tracking-tight";
 const p = "text-xs leading-relaxed text-white/70";
 const section = "space-y-2";
 
-function Swatch({ color, ring, square, label, desc }: { color?: string; ring?: string; square?: boolean; label: string; desc: string }) {
+function Swatch({ color, ring, square, diamond, label, desc }: { color?: string; ring?: string; square?: boolean; diamond?: boolean; label: string; desc: string }) {
   return (
     <div className="flex items-start gap-3">
       <span
         className={`mt-0.5 h-3 w-3 shrink-0 ${square ? "rounded-[3px]" : "rounded-full"}`}
-        style={color ? { backgroundColor: color } : { background: "transparent", border: `2px solid ${ring}` }}
+        style={{
+          ...(color ? { backgroundColor: color } : { background: "transparent", border: `2px solid ${ring}` }),
+          ...(diamond ? { clipPath: "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)" } : {}),
+        }}
       />
       <div>
         <div className="text-xs font-medium text-white/90">{label}</div>
@@ -83,6 +86,7 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                 <Swatch color={TIER_COLORS.full} label="Full price" desc="Income is above that state's charity-care eligibility range at this hospital." />
                 <Swatch color={TIER_COLORS.unknown} label="Unknown" desc="Either this hospital isn't a confirmed charity-care participant, the state's rules aren't modeled in CareMap yet, or we don't have your income yet." />
                 <Swatch color={TIER_COLORS.insured} label="Insured" desc="Charity care only applies to the uninsured/underinsured -- shows a typical billed charge instead, as a reference point for your insurer." />
+                <Swatch color="rgb(45, 212, 191)" diamond label="Teal diamond" desc="An urgent care center (listed in the federal NPI registry), for minor, non-emergency care. No prices -- see below." />
                 <Swatch color="rgb(167, 139, 250)" square label="Purple square" desc="A federally funded sliding-fee health center (FQHC). Always the same color, because each clinic sets its own fees -- see below." />
                 <Swatch ring="rgba(56, 189, 248, 0.9)" label="Blue ring" desc="A VA hospital, regardless of its cost-tier color -- facility type and cost tier are separate pieces of information." />
                 <Swatch ring="rgba(255, 255, 255, 0.4)" label="Small hollow dot" desc="A preview marker, shown before you've searched -- not a personalized result. Click it to run a real search centered there." />
@@ -461,6 +465,19 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
             </div>
 
             <div className={section}>
+              <h2 className={h2}>Urgent care</h2>
+              <p className={p}>
+                CareMap shows the nearest few urgent care centers, from organizations listed in the federal NPI registry with urgent care as their
+                main specialty. Listings are self-reported, so call ahead. CareMap has no urgent care prices, and no state charity-care law here covers
+                them -- ask about self-pay rates before you go.
+              </p>
+              <p className={p}>
+                <strong className="text-white/90">Urgent care is for minor, non-emergency problems.</strong> For chest pain, trouble breathing, stroke
+                signs, severe bleeding or anything life-threatening, call 911 or go to the nearest emergency room.
+              </p>
+            </div>
+
+            <div className={section}>
               <h2 className={h2}>If you have other coverage</h2>
               <div className="space-y-2">
                 {OTHER_INSURANCE.map((t) => (
@@ -518,6 +535,7 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                 <li>VT financial assistance rules -- 18 V.S.A. 9482, Vermont Legislature</li>
                 <li>NV major-hospital discount -- NRS 439B.260, Nevada Legislature</li>
                 <li>Sliding-fee health centers -- HRSA health center site list; federal rule 42 CFR 51c.303</li>
+                <li>Urgent care centers -- CMS NPPES NPI Registry (primary taxonomy 261QU0200X)</li>
                 {Object.entries(MEDICARE_CAP_STATES).map(([st, c]) => (
                   <li key={st}>
                     {st} charity care rules -- {c.law}

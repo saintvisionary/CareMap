@@ -12,6 +12,7 @@ const FACILITY_TYPE_LABELS: Record<string, string> = {
   acute_care_hospital: "Acute care hospital",
   va_hospital: "VA hospital",
   critical_access_hospital: "Critical Access Hospital",
+  urgent_care: "Urgent care center",
   fqhc: "Federally Qualified Health Center (sliding-fee clinic)",
 };
 
@@ -80,6 +81,11 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
   }
   if (facility.type === "fqhc") {
     ({ hero, label: heroLabel } = fqhcSlidingFee(fplPct, insuranceType != null && insuranceType !== "uninsured"));
+  }
+  if (facility.type === "urgent_care") {
+    hero = "Urgent care";
+    heroLabel =
+      "For minor, non-emergency care only -- for chest pain, trouble breathing, stroke signs or anything life-threatening, call 911 or go to an ER. Listed in the federal NPI registry; CareMap has no urgent care prices, so ask about self-pay rates.";
   }
   // CA/CO: a cap tied to Medicare/Medicaid rates, shown with CMS's Medicare
   // average as a reference -- never as the price.
@@ -154,7 +160,7 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
                 <div className="text-white/40">Ownership: {facility.ownership}</div>
                 {facility.operator && <div className="text-white/40">Run by: {facility.operator}</div>}
                 {facility.phone && <div className="text-white/40">Phone: {facility.phone}</div>}
-                {!facility.charity_care_participant && facility.type !== "fqhc" && (
+                {!facility.charity_care_participant && facility.type !== "fqhc" && facility.type !== "urgent_care" && (
                   <div className="text-white/40">
                     {facility.type === "va_hospital"
                       ? "VA hospital: the VA's own eligibility rules apply here, not state charity care."

@@ -4,6 +4,7 @@ import type { Facility, ZipCentroid } from "../lib/types";
 interface CareMapData {
   facilities: Facility[];
   clinics: Facility[];
+  urgentCare: Facility[];
   zipCentroids: Record<string, ZipCentroid>;
   loading: boolean;
   error: string | null;
@@ -12,6 +13,7 @@ interface CareMapData {
 export function useCareMapData(): CareMapData {
   const [facilities, setFacilities] = useState<Facility[]>([]);
   const [clinics, setClinics] = useState<Facility[]>([]);
+  const [urgentCare, setUrgentCare] = useState<Facility[]>([]);
   const [zipCentroids, setZipCentroids] = useState<Record<string, ZipCentroid>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,6 +51,12 @@ export function useCareMapData(): CareMapData {
           const data = (await clinicRes.json()) as { sites: Facility[] };
           if (!cancelled) setClinics(data.sites);
         }
+        // NPI-registry urgent care sites (scripts/build_urgent_care.py), also optional.
+        const ucRes = await fetch("./data/urgent_care_sites.json").catch(() => null);
+        if (ucRes?.ok && !cancelled) {
+          const data = (await ucRes.json()) as { sites: Facility[] };
+          if (!cancelled) setUrgentCare(data.sites);
+        }
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : String(e));
       } finally {
@@ -60,5 +68,5 @@ export function useCareMapData(): CareMapData {
     };
   }, []);
 
-  return { facilities, clinics, zipCentroids, loading, error };
+  return { facilities, clinics, urgentCare, zipCentroids, loading, error };
 }

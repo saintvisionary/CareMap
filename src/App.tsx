@@ -14,7 +14,7 @@ import { parseNeed } from "./lib/intake";
 type Mode = "guided" | "chat";
 
 export default function App() {
-  const { facilities: allFacilities, clinics, zipCentroids, loading: dataLoading, error } = useCareMapData();
+  const { facilities: allFacilities, clinics, urgentCare, zipCentroids, loading: dataLoading, error } = useCareMapData();
   const {
     messages,
     facilities,
@@ -26,7 +26,7 @@ export default function App() {
     loading,
     sendMessage,
     selectPreviewFacility,
-  } = useCareMap(allFacilities, zipCentroids, clinics);
+  } = useCareMap(allFacilities, zipCentroids, clinics, urgentCare);
   const [activeCcn, setActiveCcn] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("guided");
   // Mobile only -- the panel is full-width there and can cover most of the

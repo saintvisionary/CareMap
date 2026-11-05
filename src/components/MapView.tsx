@@ -135,6 +135,12 @@ export function MapView({
       // kind of place by shape, not just color.
       // One fixed color at every income: a clinic sets its own fees, so a
       // tier color (green especially) would imply a price CareMap can't know.
+      // Urgent care: a teal diamond (clip-path, since the dot's pop-in
+      // animation owns its transform).
+      if (f.type === "urgent_care") {
+        dot.style.backgroundColor = "rgb(45, 212, 191)";
+        dot.style.clipPath = "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)";
+      }
       if (f.type === "fqhc") {
         dot.style.backgroundColor = "rgb(167, 139, 250)";
         dot.style.borderRadius = "3px";

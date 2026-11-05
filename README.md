@@ -46,6 +46,9 @@ run:
   CMS Medicare Inpatient by Provider and Service (2024 data)
 - Geocoding: US Census batch geocoder, with a zip-centroid fallback
 - Zip code centroids: US Census ZCTA Gazetteer
+- Urgent care centers: the CMS NPPES NPI Registry API, organizations whose
+  primary specialty is urgent care (taxonomy 261QU0200X), one per practice
+  address (~10,500 sites; listings are self-reported)
 - Sliding-fee health centers: HRSA Health Center Service Delivery and
   Look-Alike Sites (11,200 permanent, public-facing medical clinic sites), priced by
   the federal FQHC sliding-fee rule (42 CFR 51c.303)
@@ -56,6 +59,11 @@ run:
 
 Hospital locations and typical billed charges cover all 50 states + DC:
 about 4,500 acute care, Critical Access, and VA hospitals.
+
+Searches also show the 3 nearest listed urgent care centers, as locations
+only (no prices), and only suggest them for minor, non-emergency care --
+never for a hospital procedure, and always alongside "call 911 or go to an
+ER" for emergencies.
 
 Every search also shows the nearest few federally funded sliding-fee
 health centers (FQHCs and Look-Alikes). Their discounts follow a federal
@@ -137,7 +145,5 @@ AI chat enhancement, set `VITE_AGENT_URL` to a deployed agent endpoint (see
   gap rather than showing a guessed percentage
 - Psychiatric, children's, long-term care, military and rural emergency
   hospitals, and US territories
-- Urgent care layer (NPPES) -- hospitals and sliding-fee health centers only
-  so far
 - A national point layer (currently loaded as per-state GeoJSON; a
   `.pmtiles` tile layer is the next step for scale)

@@ -359,6 +359,28 @@ def nearest_fqhc(zip_code: str, radius_miles: float = 25, fpl_pct: float | None 
     return {**{k: match[k] for k in keep if k in match}, **policy_mod.fqhc_sliding_fee(fpl_pct)}
 
 
+@tool
+def nearest_urgent_care(zip_code: str, radius_miles: float = 25) -> dict:
+    """Find the nearest listed urgent care center to a zip code, for minor, non-emergency care.
+    Never suggest it for an emergency (chest pain, trouble breathing, stroke signs, severe
+    bleeding, or anything life-threatening) -- say to call 911 or go to an ER instead.
+    CareMap has no urgent care prices, so never quote one.
+
+    Args:
+        zip_code: 5-digit US zip code.
+        radius_miles: Search radius in miles (default 25).
+    """
+    match = facility_data.nearest_urgent_care(zip_code, radius_miles=radius_miles)
+    if match is None:
+        return {"error": f"No listed urgent care center within {radius_miles} miles of '{zip_code}'."}
+    keep = ("ccn", "name", "address", "city", "state", "zip", "phone", "lat", "lon", "distance_miles")
+    return {
+        **{k: match[k] for k in keep if k in match},
+        "source": "Federal NPI registry listing (self-reported urgent care taxonomy), not a verified walk-in list",
+        "pricing": "No price data for urgent care in CareMap -- suggest asking the center about self-pay rates.",
+    }
+
+
 _STATE_PROGRAM_NAMES = {
     "NJ": "NJ Documented Charity Care",
     "WA": "the Washington hospital charity care program (RCW 70.170.060)",
@@ -468,7 +490,7 @@ def draft_application(ccn: str, patient_pays_pct: float) -> dict:
 
 ELIGIBILITY_TOOLS = [fpl_percent, nj_charity_tier, charity_tier]
 COST_TOOLS = [facilities_with_drg, estimate_cost, apply_tier_to_charge]
-QUALITY_TOOLS = [facilities_near, nearest_fqhc]
+QUALITY_TOOLS = [facilities_near, nearest_fqhc, nearest_urgent_care]
 ADVOCATE_TOOLS = [draft_application]
 
 ALL_TOOLS = ELIGIBILITY_TOOLS + COST_TOOLS + QUALITY_TOOLS + ADVOCATE_TOOLS

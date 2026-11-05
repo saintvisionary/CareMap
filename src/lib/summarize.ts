@@ -46,7 +46,7 @@ export function summarize(result: QueryResult): string {
   const { zipCode, fplPct, insuranceType, veteran, need } = result;
   // Hospitals drive the main answer; nearby sliding-fee clinics get their
   // own line (see clinicLine below).
-  const facilities = result.facilities.filter((f) => f.type !== "fqhc");
+  const facilities = result.facilities.filter((f) => f.type !== "fqhc" && f.type !== "urgent_care");
   const clinic = result.facilities.find((f) => f.type === "fqhc");
   const insured = insuranceType != null && insuranceType !== "uninsured";
   const clinicLine = clinic
@@ -173,6 +173,14 @@ export function summarize(result: QueryResult): string {
   }
 
   if (clinicLine) lines.push(clinicLine);
+  // Only when no hospital procedure was asked about: every procedure CareMap
+  // prices is a hospital condition urgent care isn't for.
+  const urgent = result.facilities.find((f) => f.type === "urgent_care");
+  if (urgent && !need) {
+    lines.push(
+      `For minor, non-emergency care, the nearest listed urgent care center is ${urgent.name}, ${urgent.distanceMiles.toFixed(1)} mi away (no price data -- ask about self-pay rates). For an emergency, call 911 or go to the nearest ER.`,
+    );
+  }
   if (insuranceType === "uninsured" || insuranceType == null) {
     lines.push("Always ask for a Good Faith Estimate if you're uninsured and scheduling ahead.");
   }
