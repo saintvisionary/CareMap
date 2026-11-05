@@ -51,10 +51,13 @@ function sampleFacilities(all: Facility[], limit: number): Facility[] {
   return out;
 }
 
-// Hospitals within 25 miles plus the few nearest sliding-fee clinics (a
-// city can have dozens of clinic sites), merged nearest-first so a close
-// clinic isn't buried below every hospital. summarize() separates the two
-// types itself.
+// Hospitals within 25 miles plus the few nearest sliding-fee clinics and
+// urgent care centers (a city can have dozens of each). With no procedure
+// asked about, everything is merged nearest-first so a close clinic isn't
+// buried. When a hospital procedure was asked about (every one CareMap
+// prices is a hospital condition), urgent care is left out entirely and
+// hospitals come first -- a heart-attack search must never lead with urgent
+// care. summarize() separates the types itself.
 const NEARBY_CLINIC_LIMIT = 5;
 const NEARBY_URGENT_CARE_LIMIT = 3;
 
@@ -64,10 +67,14 @@ function nearbyCare(
   urgentCare: Facility[],
   zipCentroids: Record<string, ZipCentroid>,
   zip: string,
+  hospitalProcedure: boolean,
 ): FacilityWithDistance[] {
+  const nearHospitals = facilitiesNear(hospitals, zipCentroids, zip, 25);
+  const nearClinics = facilitiesNear(clinics, zipCentroids, zip, 25).slice(0, NEARBY_CLINIC_LIMIT);
+  if (hospitalProcedure) return [...nearHospitals, ...nearClinics];
   return [
-    ...facilitiesNear(hospitals, zipCentroids, zip, 25),
-    ...facilitiesNear(clinics, zipCentroids, zip, 25).slice(0, NEARBY_CLINIC_LIMIT),
+    ...nearHospitals,
+    ...nearClinics,
     ...facilitiesNear(urgentCare, zipCentroids, zip, 25).slice(0, NEARBY_URGENT_CARE_LIMIT),
   ].sort((a, b) => a.distanceMiles - b.distanceMiles);
 }
@@ -130,7 +137,7 @@ export function useCareMap(
           showNationalPreview();
           return;
         }
-        setFacilities(nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, zip));
+        setFacilities(nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, zip, false));
         const c = zipCentroids[zip];
         setFlyTo({ center: [c.lon, c.lat], zoom: 10.5, pitch: 55 });
       },
@@ -183,7 +190,9 @@ export function useCareMap(
         return;
       }
 
-      const nearby = hint.zipCode ? nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, hint.zipCode) : [];
+      const nearby = hint.zipCode
+        ? nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, hint.zipCode, hint.need != null)
+        : [];
       setFacilities(nearby);
       setInternationalFacilities([]);
       setTierPct(hint.tierPct);
