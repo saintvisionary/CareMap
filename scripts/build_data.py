@@ -205,7 +205,7 @@ def build_zip_centroids() -> dict[str, dict]:
         out[zip_code] = {"lat": float(lat), "lon": float(lon)}
 
     OUT_ZIP_CENTROIDS.parent.mkdir(parents=True, exist_ok=True)
-    OUT_ZIP_CENTROIDS.write_text(json.dumps(out))
+    OUT_ZIP_CENTROIDS.write_text(json.dumps(out, separators=(",", ":")))
     return out
 
 
