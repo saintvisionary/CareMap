@@ -206,6 +206,21 @@ export function meCharityTier(fplPct: number): CharityTier | null {
   return null;
 }
 
+// 18 V.S.A. 9482: free care at or below 250% FPL, Vermont residents only.
+// Above it the 40%-minimum discount is off each hospital's own "amount
+// generally billed" (not this app's billed charge), so no share is
+// computed; summarize.ts discloses it and the 20%-of-income cap instead.
+const VT_FREE_CARE_MAX_FPL = 250;
+export const VT_AGB_DISCOUNT_MAX_FPL = 400;
+export const VT_CATASTROPHIC_CAP_MAX_FPL = 600;
+
+export function vtCharityTier(fplPct: number): CharityTier | null {
+  if (fplPct <= VT_FREE_CARE_MAX_FPL) {
+    return { patientPaysPct: 0, fplPct, maxFplPct: VT_FREE_CARE_MAX_FPL };
+  }
+  return null;
+}
+
 // Keyed by a facility's own state. Only states with a real, codified,
 // state-wide formula belong here -- most states have no such law (just
 // federal 501(r): each nonprofit hospital must have *a* policy, with no
@@ -220,6 +235,7 @@ const STATE_CHARITY_TIER_FNS: Record<string, (fplPct: number, facilityType?: str
   RI: (fplPct) => riCharityTier(fplPct),
   MA: (fplPct) => maCharityTier(fplPct),
   ME: (fplPct) => meCharityTier(fplPct),
+  VT: (fplPct) => vtCharityTier(fplPct),
 };
 
 export const MODELED_CHARITY_STATES = Object.keys(STATE_CHARITY_TIER_FNS);
@@ -238,6 +254,7 @@ export const CHARITY_PROGRAM_NAMES: Record<string, string> = {
   RI: "Rhode Island's hospital charity care regulation",
   MA: "Massachusetts's Health Safety Net",
   ME: "Maine's free hospital care law (Maine residents only)",
+  VT: "Vermont's hospital financial assistance law (Vermont residents only)",
 };
 
 /** Charity-care tier for whichever state a facility is in, or null if that

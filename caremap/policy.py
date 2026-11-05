@@ -165,6 +165,26 @@ def me_charity_tier(fpl_pct: float) -> dict | None:
     return None
 
 
+def vt_charity_tier(fpl_pct: float) -> dict | None:
+    """VT hospital financial assistance (18 V.S.A. 9482) for a percent of FPL.
+
+    A real, exact 0% at or below 250% FPL. Returns None above it: the
+    250-400% discount is taken off each hospital's own "amount generally
+    billed", not the CMS billed charge CareMap has, so no share of the
+    charge can be computed. Callers disclose that and the 20%-of-income
+    catastrophic cap (up to 600% FPL) instead. Vermont residents only.
+    """
+    threshold = POLICY["vt_charity_care"]["free_care_max_fpl_pct"]
+    if fpl_pct <= threshold:
+        return {
+            "patient_pays_pct": 0,
+            "fpl_pct": fpl_pct,
+            "max_fpl_pct": threshold,
+            "source": POLICY["vt_charity_care"]["source"],
+        }
+    return None
+
+
 def md_charity_tier(fpl_pct: float) -> dict:
     """MD hospital financial assistance tier (Md. Code, Health-General 19-214.1) for a percent of FPL.
 
@@ -254,6 +274,7 @@ STATE_CHARITY_TIER_FNS = {
     "RI": lambda fpl_pct, facility_type=None, ownership=None: ri_charity_tier(fpl_pct),
     "MA": lambda fpl_pct, facility_type=None, ownership=None: ma_charity_tier(fpl_pct),
     "ME": lambda fpl_pct, facility_type=None, ownership=None: me_charity_tier(fpl_pct),
+    "VT": lambda fpl_pct, facility_type=None, ownership=None: vt_charity_tier(fpl_pct),
 }
 
 

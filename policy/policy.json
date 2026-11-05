@@ -163,6 +163,22 @@
     "payment_plan_max_fpl_pct": 400,
     "payment_plan_max_monthly_pct_of_income": 4
   },
+  "vt_charity_care": {
+    "source": "https://legislature.vermont.gov/statutes/section/18/221/09482 (18 V.S.A. 9481-9482, Act 119 of 2022, eff. 2022-07-01; secondary sources say hospital compliance was required by 2024-07-01)",
+    "applies_to": "every hospital licensed under 18 V.S.A. chapter 43 (9481(6)), no size or ownership limit -- Vermont residents only (no minimum duration), plus people living in Vermont without stable housing",
+    "note": "Verified against the current statute text. 9482(b)(2)(A): uninsured patients at or below 250% FPL get 'a 100 percent discount from the amount generally billed' -- a real $0, and 250% is the highest free-care line of any modeled state. From 250-400% FPL the law requires at least a 40% discount, but off the 'amount generally billed' (9481(1), the 501(r) look-back method), which is each hospital's own figure, not the CMS billed charge CareMap has -- so CareMap names that protection without a dollar figure. Up to 600% FPL, if the hospital's bills for a patient exceed 20% of household income, it must reduce the amount due to 20% of household income -- disclosable without extra data (the statute text gives no time period for this, so CareMap doesn't state one). Income is measured under the federal premium tax credit rules, so CareMap's percent-of-poverty figure is an approximation, as in other states. Not confirmed from primary text: that Critical Access Hospitals are covered (inferred, since chapter 43 licensing isn't limited by type) and the 2024 compliance date.",
+    "eligibility": {
+      "must_be_un_or_underinsured": "free-tier percentage applies to the uninsured; insured patients get out-of-pocket costs waived instead (9482(b)(2)(C)) -- CareMap shows charity-care prices to the uninsured only",
+      "residency_required": true,
+      "asset_limit_individual": null,
+      "asset_limit_family": null
+    },
+    "free_care_max_fpl_pct": 250,
+    "agb_discount_max_fpl_pct": 400,
+    "agb_min_discount_pct": 40,
+    "catastrophic_cap_max_fpl_pct": 600,
+    "catastrophic_cap_pct_of_household_income": 20
+  },
   "good_faith_estimate": {
     "source": "https://www.cms.gov/medical-bill-rights/help/guides/good-faith-estimate",
     "applies_to": "uninsured or self-pay patients scheduling care at least 3 business days ahead",

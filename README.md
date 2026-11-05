@@ -7,7 +7,7 @@ Type a plain-language message like:
 > "07018, family of 4, $52k, uninsured, need gallbladder surgery"
 
 and CareMap finds nearby hospitals, estimates what you'd actually owe under
-your state's hospital charity-care law (nine states modeled so far, see
+your state's hospital charity-care law (ten states modeled so far, see
 below), and shows it on a map colored by what you'd pay: green for free
 care, amber for a reduced rate, gray for full price.
 
@@ -74,6 +74,7 @@ can ground and says why.
 | RI | 216-RICR-40-10-23.14 | Free tier (200% FPL) |
 | MA | 101 CMR 613.00 (Health Safety Net) | Free tier (150% FPL) |
 | ME | 22 M.R.S. 1716-A | Free tier (200% FPL, residents only); up to 400% FPL, the 4%-of-income payment-plan cap |
+| VT | 18 V.S.A. 9482 | Free tier (250% FPL, residents only); above it, the 40%-minimum discount (no dollar figure) and 20%-of-income cap |
 
 Checked and left unmodeled, because the law sets no statewide percentage
 CareMap could compute from billed charges: CO, CA, MN, CT, PA, VA. Every
@@ -107,8 +108,8 @@ AI chat enhancement, set `VITE_AGENT_URL` to a deployed agent endpoint (see
 
 ## What's not in yet
 
-- Charity-care tiers for the other 41 states + DC
-- Above the free tier in IL, NY, RI, MA and ME, the real discount depends
+- Charity-care tiers for the other 40 states + DC
+- Above the free tier in IL, NY, RI, MA, ME and VT, the real discount depends
   on data CareMap doesn't load yet (cost-to-charge ratios, Medicaid rates,
   insurance premiums) or is left to each hospital; CareMap discloses the
   gap rather than showing a guessed percentage

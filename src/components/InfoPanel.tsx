@@ -332,8 +332,33 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
             </div>
 
+            <div className={section}>
+              <h2 className={h2}>Vermont hospital financial assistance</h2>
+              <p className={p}>
+                Vermont's hospital financial assistance law (18 V.S.A. 9482). Applies to every licensed Vermont hospital, for{" "}
+                <strong className="text-white/90">Vermont residents</strong> (no minimum time living there).
+              </p>
+              <div className="rounded-xl bg-white/5 p-3 text-xs">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
+                  <span className="text-white/40">Income, % of poverty line</span>
+                  <span className="text-white/40">You pay</span>
+                  <span>Up to 250%</span>
+                  <span className="text-white/90">$0 -- fully covered</span>
+                  <span>250% to 400%</span>
+                  <span className="text-white/90">At least 40% off (no dollar figure)</span>
+                  <span>Up to 600%</span>
+                  <span className="text-white/90">Capped at 20% of income</span>
+                </div>
+              </div>
+              <p className={p}>
+                The 40% discount comes off what the hospital "generally bills" insurers, which is each hospital's own rate and isn't in CMS's
+                public data, so CareMap can't turn it into a dollar amount. Up to 600% of the poverty line, if the hospital's bills come to more
+                than 20% of your household income, it must reduce what you owe to 20% of your household income.
+              </p>
+            </div>
+
             <p className={p}>
-              <strong className="text-white/90">Right now, NJ, WA, IL, NY, OR, MD, RI, MA, and ME are the only states with a modeled tier.</strong>{" "}
+              <strong className="text-white/90">Right now, NJ, WA, IL, NY, OR, MD, RI, MA, ME, and VT are the only states with a modeled tier.</strong>{" "}
               Every other state still shows real hospital locations and typical billed charges, but says "[state] rules coming soon" instead of a
               personal estimate.
             </p>
@@ -393,6 +418,7 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                 <li>RI charity care rules -- 216-RICR-40-10-23.14, Rhode Island hospital licensing regulation</li>
                 <li>MA charity care rules -- 101 CMR 613.00, Massachusetts Health Safety Net</li>
                 <li>ME free care rules -- 22 M.R.S. 1716-A, Maine Legislature</li>
+                <li>VT financial assistance rules -- 18 V.S.A. 9482, Vermont Legislature</li>
                 <li>International locations -- OpenStreetMap (Nominatim, Overpass, Photon)</li>
               </ul>
               <p className={p}>All public, official sources -- CareMap never adds or guesses a number that isn't already in that data.</p>

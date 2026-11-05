@@ -9,6 +9,8 @@ import {
   CHARITY_PROGRAM_NAMES,
   ME_PAYMENT_PLAN_MAX_FPL,
   ME_PAYMENT_PLAN_MAX_PCT_OF_MONTHLY_INCOME,
+  VT_AGB_DISCOUNT_MAX_FPL,
+  VT_CATASTROPHIC_CAP_MAX_FPL,
 } from "./policy";
 
 export interface QueryResult {
@@ -77,7 +79,16 @@ export function summarize(result: QueryResult): string {
                   (fplPct <= ME_PAYMENT_PLAN_MAX_FPL
                     ? ` It does require this hospital to offer you a payment plan capped at ${ME_PAYMENT_PLAN_MAX_PCT_OF_MONTHLY_INCOME}% of your monthly family income (Maine residents only) -- ask the billing office.`
                     : " Ask this hospital's billing office about its own financial assistance.")
-                : `${programName} doesn't have a modeled percentage at your income -- ask this hospital's billing office directly.`,
+                : nearest.state === "VT"
+                  ? `Your income is above Vermont's free-care line (250% of the poverty line).` +
+                    (fplPct <= VT_AGB_DISCOUNT_MAX_FPL
+                      ? " State law still requires at least 40% off what this hospital generally bills, which is the hospital's own rate, so CareMap can't show a dollar figure."
+                      : "") +
+                    (fplPct <= VT_CATASTROPHIC_CAP_MAX_FPL
+                      ? " If its bills come to more than 20% of your household income, it must cut what you owe to 20% of your household income."
+                      : "") +
+                    " Vermont residents only -- ask the billing office."
+                  : `${programName} doesn't have a modeled percentage at your income -- ask this hospital's billing office directly.`,
     );
   } else {
     lines.push(

@@ -1,4 +1,4 @@
-from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, il_charity_tier, ma_charity_tier, md_charity_tier, me_charity_tier, nj_charity_tier, ny_charity_tier, or_charity_tier, ri_charity_tier, wa_charity_tier
+from caremap.policy import apply_tier, charity_tier, fpl_amount, fpl_percent, il_charity_tier, ma_charity_tier, md_charity_tier, me_charity_tier, nj_charity_tier, ny_charity_tier, or_charity_tier, ri_charity_tier, vt_charity_tier, wa_charity_tier
 
 
 def test_demo_case_family_of_4():
@@ -223,3 +223,11 @@ def test_me_tier_free_care_threshold():
     assert me_charity_tier(201) is None
     assert charity_tier("ME", 150)["patient_pays_pct"] == 0
     assert charity_tier("ME", 350) is None
+
+
+def test_vt_tier_free_care_threshold():
+    # 18 V.S.A. 9482(b)(2)(A): free at or below 250% FPL. Above it the
+    # discount is off each hospital's own AGB, so no tier is computed.
+    assert vt_charity_tier(250)["patient_pays_pct"] == 0
+    assert vt_charity_tier(251) is None
+    assert charity_tier("VT", 220)["patient_pays_pct"] == 0

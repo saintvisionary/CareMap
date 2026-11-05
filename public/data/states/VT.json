@@ -161,7 +161,7 @@
           "avg_charge": 33030
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "470003",
@@ -811,7 +811,7 @@
           "avg_charge": 158959
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "470005",
@@ -1013,7 +1013,7 @@
           "avg_charge": 15897
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "470011",
@@ -1075,7 +1075,7 @@
           "avg_charge": 28958
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "470012",
@@ -1185,7 +1185,7 @@
           "avg_charge": 15183
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "47001F",
@@ -1304,7 +1304,7 @@
           "avg_charge": 17790
         }
       },
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "471300",
@@ -1322,7 +1322,7 @@
       "lon": -72.68046,
       "lat_lon_approximate": true,
       "drg_charges": {},
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "471301",
@@ -1339,7 +1339,7 @@
       "lat": 43.915407242738,
       "lon": -72.665290093874,
       "drg_charges": {},
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "471302",
@@ -1356,7 +1356,7 @@
       "lat": 43.488407541878,
       "lon": -72.401689207303,
       "drg_charges": {},
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "471303",
@@ -1373,7 +1373,7 @@
       "lat": 44.445336691614,
       "lon": -72.009428698173,
       "drg_charges": {},
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "471304",
@@ -1390,7 +1390,7 @@
       "lat": 44.954666822519,
       "lon": -72.200380343219,
       "drg_charges": {},
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "471305",
@@ -1407,7 +1407,7 @@
       "lat": 44.554107592219,
       "lon": -72.591230672736,
       "drg_charges": {},
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "471306",
@@ -1425,7 +1425,7 @@
       "lon": -72.461623,
       "lat_lon_approximate": true,
       "drg_charges": {},
-      "charity_care_participant": false
+      "charity_care_participant": true
     },
     {
       "ccn": "471307",
@@ -1442,7 +1442,7 @@
       "lat": 43.99931592265,
       "lon": -73.169140689279,
       "drg_charges": {},
-      "charity_care_participant": false
+      "charity_care_participant": true
     }
   ]
 }

@@ -241,6 +241,24 @@ def test_draft_application_me_facility():
     assert "ME residency" in r["checklist"][0]
 
 
+def test_charity_tier_vt_gap_lists_only_protections_that_apply():
+    r = charity_tier(state="VT", fpl_pct=300)["error"]
+    assert "at least 40%" in r and "20% of household income" in r
+    r = charity_tier(state="VT", fpl_pct=500)["error"]
+    assert "at least 40%" not in r and "20% of household income" in r
+    r = charity_tier(state="VT", fpl_pct=700)["error"]
+    assert "at least 40%" not in r and "20% of household income" not in r
+    assert "residents only" in r
+
+
+def test_draft_application_vt_facility():
+    # CENTRAL VERMONT MEDICAL CENTER, a real VT acute care hospital (CCN 470001).
+    r = draft_application(ccn="470001", patient_pays_pct=0)
+    assert "CENTRAL VERMONT MEDICAL CENTER" in r["letter"]
+    assert "Vermont's hospital financial assistance law" in r["letter"]
+    assert "VT residency" in r["checklist"][0]
+
+
 def test_draft_application_ma_facility():
     # UMASS MEMORIAL HEALTHALLIANCE HOSPITALS, a real MA acute care hospital (CCN 220001).
     r = draft_application(ccn="220001", patient_pays_pct=0)
