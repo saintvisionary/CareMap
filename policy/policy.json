@@ -179,6 +179,45 @@
     "catastrophic_cap_max_fpl_pct": 600,
     "catastrophic_cap_pct_of_household_income": 20
   },
+  "nc_charity_care": {
+    "source": "https://www.ncdhhs.gov/medical-debt-toolkit/download?attachment (NCDHHS Medical Debt Initiative toolkit v1.1, 2026-10-12, Appendix 2 policy 2; participating hospitals: https://www.ncdhhs.gov/participating-hospitals-med-debt/open)",
+    "applies_to": "the 99 hospitals participating in NC's Medical Debt Mitigation program (a condition of NC Medicaid's HASP enhanced hospital payments, effective 2025-01-01 and renewed each payment year -- not a state statute); NC residents only",
+    "note": "Verified against the NCDHHS toolkit text (extracted directly from the PDF). Policy 2.b.i: 'Discount of 100% for individuals with incomes below 200% FPL' -- strictly below, so CareMap's free tier stops at 199% (with FPL rounded to a whole percent, a true 199.5-199.99% shows the gap message instead of $0, the conservative direction). 2.b.ii-iii: at least 75% off at 200-250% FPL and at least 50% at 250-300% FPL, but for the uninsured the base is 'the amount generally billed' (2.b.iv), a hospital-specific rate CareMap doesn't have, so no share is computed. 2.d: at 200-300% FPL the hospital must offer a payment plan of at most 36 months with monthly payments no greater than 5% of monthly household income. 2.c: emergency department visits may still be charged the greater of the discounted amount or $35 (not more than a health plan's cost-sharing). Participation was matched to CMS CCNs by name by hand against the official list (e.g. St. Luke's Hospital = AdventHealth Polk, renamed 2024); three CareMap NC hospitals aren't on it and are excluded in build_data.py.",
+    "eligibility": {
+      "must_be_un_or_underinsured": "not required (applies to insured and uninsured alike) -- CareMap shows charity-care prices to the uninsured only",
+      "residency_required": true
+    },
+    "free_care_max_fpl_pct": 200,
+    "free_care_strictly_below": true,
+    "free_tier_note": "Emergency department visits may still be charged the greater of the discounted amount or $35. NC residents only.",
+    "gap_disclosure": "NC has no computable percentage at or above 200% FPL -- say that plainly. Between 200% and 300% FPL, participating hospitals must give at least 75% (200-250%) or 50% (250-300%) off the hospital's own 'amount generally billed' -- a hospital-specific rate CareMap doesn't have, so give no dollar figure for it -- and must offer a payment plan of at most 36 months with monthly payments no greater than 5% of monthly household income. Above 300% FPL, none of that applies. NC residents only. This is a condition of NC's Medicaid hospital payment program that participating hospitals agreed to, not a state statute."
+  },
+  "oh_charity_care": {
+    "source": "https://codes.ohio.gov/ohio-administrative-code/rule-5160-2-17 (OAC 5160-2-17, Hospital Care Assurance Program, eff. 2022-07-28; hospital scope ORC 5168.01, 5168.09)",
+    "applies_to": "Ohio nonfederal general medical/surgical and pediatric general hospitals receiving Hospital Care Assurance Program payments (ORC 5168.01(F)), any ownership -- Ohio residents not receiving Medicaid",
+    "note": "Verified against the current rule text. Paragraph (A): each hospital that receives payment under ORC Chapter 5168 must 'provide, without charge to the individual, basic, medically necessary hospital-level services' to Ohio residents 'whose income is at or below the federal poverty line' who aren't Medicaid recipients -- a real $0 at or below 100% FPL, the lowest free-care line of any modeled state. 'Basic, medically necessary' means inpatient and outpatient services Medicaid covers, excluding transplants. Nothing statewide above 100% FPL. Applications accepted until three years from the follow-up notice (not encoded as a field). Not confirmed: that every Chapter 5168 hospital actually receives an HCAP payment; most quotes came through a summarizing fetch with key phrases verbatim.",
+    "eligibility": {
+      "must_be_un_or_underinsured": "not required by the rule -- CareMap shows charity-care prices to the uninsured only",
+      "not_medicaid_recipient": true,
+      "residency_required": true
+    },
+    "free_care_max_fpl_pct": 100,
+    "free_tier_note": "Covers basic, medically necessary services (what Medicaid covers, excluding transplants). Ohio residents not on Medicaid.",
+    "gap_disclosure": "OH has no statewide rule above its 100% FPL free-care line -- say that plainly and direct the user to that hospital's own financial assistance policy. Ohio's free care is for Ohio residents not on Medicaid."
+  },
+  "sc_charity_care": {
+    "source": "https://www.scstatehouse.gov/code/t44c006.php (S.C. Code 44-6-150, last amended 2026 Act 146 eff. 2026-05-15) and https://www.scstatehouse.gov/coderegs/Chapter%20126.pdf (S.C. Code Regs. 126-500 to 126-560, Medically Indigent Assistance Program)",
+    "applies_to": "SC general hospitals, for inpatient care of patients sponsored by the Medically Indigent Assistance Program -- eligibility is decided by the patient's county, not the hospital",
+    "note": "Verified against the current statute and regulation text. Reg 126-520(C): only those 'equal to or less than one hundred percent of the poverty guidelines may qualify for full sponsorship'; 44-6-150(A) requires general hospitals to admit sponsored patients for inpatient care. Under Reg 126-535 a fully sponsored patient owes only liquid assets above $500, so $0 for covered inpatient care. 100-200% FPL is partial sponsorship whose share depends on a state 'mean MIAP payment amount' CareMap doesn't have, so it isn't computed. Conditions: other payment sources, including a Medicaid application if possibly eligible, must be exhausted first; SC residents who are US citizens or lawful permanent residents; liquid assets $500 or less, home equity up to $35,000, other property up to $6,000; inpatient Medicaid-covered services only, not physician fees. Not confirmed: what the 2026 amendment to 44-6-150(A)(2) changed (the current text was read, the diff wasn't), and the 2018 regulations describe hospital payments the statute says hospitals don't receive -- the patient's $0 follows from the regulation either way.",
+    "eligibility": {
+      "must_be_un_or_underinsured": "all other payment sources must be exhausted first",
+      "residency_required": true,
+      "asset_limit_liquid": 500
+    },
+    "free_care_max_fpl_pct": 100,
+    "free_tier_note": "Inpatient hospital care only, not physician bills, through South Carolina's Medically Indigent Assistance Program: the patient's county decides eligibility, liquid assets must be $500 or less, Medicaid and other coverage must be applied for first, and it's limited to SC residents who are US citizens or lawful permanent residents.",
+    "gap_disclosure": "SC has no computable share above its 100% FPL line -- say that plainly. From 100-200% FPL the program offers partial sponsorship using a state payment figure CareMap doesn't have, so give no percentage or dollar figure. Eligibility is decided by the patient's county, not the hospital."
+  },
   "good_faith_estimate": {
     "source": "https://www.cms.gov/medical-bill-rights/help/guides/good-faith-estimate",
     "applies_to": "uninsured or self-pay patients scheduling care at least 3 business days ahead",

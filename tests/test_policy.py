@@ -231,3 +231,15 @@ def test_vt_tier_free_care_threshold():
     assert vt_charity_tier(250)["patient_pays_pct"] == 0
     assert vt_charity_tier(251) is None
     assert charity_tier("VT", 220)["patient_pays_pct"] == 0
+
+
+def test_free_tier_states_nc_oh_sc():
+    # NC: "100% for individuals with incomes below 200% FPL" -- strictly below.
+    assert charity_tier("NC", 199)["patient_pays_pct"] == 0
+    assert charity_tier("NC", 200) is None
+    assert "$35" in charity_tier("NC", 150)["note"]
+    # OH (OAC 5160-2-17) and SC (Regs. 126-520(C)): at or below 100% FPL.
+    assert charity_tier("OH", 100)["patient_pays_pct"] == 0
+    assert charity_tier("OH", 101) is None
+    assert charity_tier("SC", 100)["patient_pays_pct"] == 0
+    assert charity_tier("SC", 101) is None

@@ -7,7 +7,7 @@ Type a plain-language message like:
 > "07018, family of 4, $52k, uninsured, need gallbladder surgery"
 
 and CareMap finds nearby hospitals, estimates what you'd actually owe under
-your state's hospital charity-care law (ten states modeled so far, see
+your state's hospital charity-care law (13 states modeled so far, see
 below), and shows it on a map colored by what you'd pay: green for free
 care, amber for a reduced rate, gray for full price.
 
@@ -75,10 +75,17 @@ can ground and says why.
 | MA | 101 CMR 613.00 (Health Safety Net) | Free tier (150% FPL) |
 | ME | 22 M.R.S. 1716-A | Free tier (200% FPL, residents only); up to 400% FPL, the 4%-of-income payment-plan cap |
 | VT | 18 V.S.A. 9482 | Free tier (250% FPL, residents only); above it, the 40%-minimum discount (no dollar figure) and 20%-of-income cap |
+| NC | NCDHHS Medical Debt Mitigation program (a Medicaid payment condition, not a statute) | Free tier (below 200% FPL, residents only, 97 participating hospitals); above it, the 5%-of-income payment-plan cap |
+| OH | OAC 5160-2-17 (Hospital Care Assurance Program) | Free tier (100% FPL, residents not on Medicaid) |
+| SC | S.C. Code 44-6-150 (Medically Indigent Assistance Program) | Free tier (100% FPL, inpatient only, county-approved) |
 
-Checked and left unmodeled, because the law sets no statewide percentage
-CareMap could compute from billed charges: CO, CA, MN, CT, PA, VA. Every
-unmodeled state shows "rules coming soon" plus federal (501(r)) guidance
+Checked and left unmodeled, because there's no statewide percentage CareMap
+could compute from billed charges, or the rule depends on data CareMap
+doesn't have (bed counts, county or opt-in programs): AK, AL, AR, AZ, CA,
+CO, CT, FL, GA, HI, IA, ID, IN, KS, KY, LA, MI, MN, MO, MS, MT, ND, NE, NH,
+NM, NV, OK, PA, SD, TN, TX, UT, VA, WI, WV, WY. DC's and Delaware's new laws
+aren't in force yet (DC's is unfunded; Delaware's starts January 1, 2027).
+Every unmodeled state shows "rules coming soon" plus federal (501(r)) guidance
 instead of a guessed number.
 
 The pipeline is state-agnostic (`python scripts/build_data.py --states
@@ -108,8 +115,8 @@ AI chat enhancement, set `VITE_AGENT_URL` to a deployed agent endpoint (see
 
 ## What's not in yet
 
-- Charity-care tiers for the other 40 states + DC
-- Above the free tier in IL, NY, RI, MA, ME and VT, the real discount depends
+- Charity-care tiers for the other 37 states + DC
+- Above the free tier in IL, NY, RI, MA, ME, VT, NC, OH and SC, the real discount depends
   on data CareMap doesn't load yet (cost-to-charge ratios, Medicaid rates,
   insurance premiums) or is left to each hospital; CareMap discloses the
   gap rather than showing a guessed percentage

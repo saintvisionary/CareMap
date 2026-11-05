@@ -368,9 +368,13 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                   <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
                     <span className="text-white/40">Income, % of poverty line</span>
                     <span className="text-white/40">You pay</span>
-                    <span>Up to {f.maxFplPct}%</span>
+                    <span>
+                      {f.strictlyBelow ? "Below" : "Up to"} {f.maxFplPct}%
+                    </span>
                     <span className="text-white/90">$0 -- fully covered</span>
-                    <span>Over {f.maxFplPct}%</span>
+                    <span>
+                      {f.strictlyBelow ? "At or over" : "Over"} {f.maxFplPct}%
+                    </span>
                     <span className="text-white/90">No statewide percentage</span>
                   </div>
                 </div>

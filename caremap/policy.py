@@ -50,15 +50,19 @@ def _tier_lookup(policy_key: str, fpl_pct: float) -> dict:
 
 def _free_tier(policy_key: str, fpl_pct: float) -> dict | None:
     """A real 0% at or below the state's free-care line, else None (no guessed tier)."""
-    threshold = POLICY[policy_key]["free_care_max_fpl_pct"]
-    if fpl_pct > threshold:
+    rule = POLICY[policy_key]
+    threshold = rule["free_care_max_fpl_pct"]
+    if fpl_pct > threshold or (rule.get("free_care_strictly_below") and fpl_pct >= threshold):
         return None
-    return {
+    tier = {
         "patient_pays_pct": 0,
         "fpl_pct": fpl_pct,
         "max_fpl_pct": threshold,
-        "source": POLICY[policy_key]["source"],
+        "source": rule["source"],
     }
+    if "free_tier_note" in rule:
+        tier["note"] = rule["free_tier_note"]
+    return tier
 
 
 def nj_charity_tier(fpl_pct: float) -> dict:
@@ -248,6 +252,9 @@ STATE_CHARITY_TIER_FNS = {
     "MA": lambda fpl_pct, facility_type=None, ownership=None: ma_charity_tier(fpl_pct),
     "ME": lambda fpl_pct, facility_type=None, ownership=None: me_charity_tier(fpl_pct),
     "VT": lambda fpl_pct, facility_type=None, ownership=None: vt_charity_tier(fpl_pct),
+    "NC": lambda fpl_pct, facility_type=None, ownership=None: _free_tier("nc_charity_care", fpl_pct),
+    "OH": lambda fpl_pct, facility_type=None, ownership=None: _free_tier("oh_charity_care", fpl_pct),
+    "SC": lambda fpl_pct, facility_type=None, ownership=None: _free_tier("sc_charity_care", fpl_pct),
 }
 
 

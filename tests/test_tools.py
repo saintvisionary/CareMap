@@ -265,3 +265,20 @@ def test_draft_application_ma_facility():
     assert "UMASS MEMORIAL HEALTHALLIANCE HOSPITALS" in r["letter"]
     assert "Health Safety Net" in r["letter"]
     assert "MA residency" in r["checklist"][0]
+
+
+def test_charity_tier_gap_disclosures_nc_oh_sc():
+    assert "5% of monthly household income" in charity_tier(state="NC", fpl_pct=250)["error"]
+    assert "100% FPL" in charity_tier(state="OH", fpl_pct=150)["error"]
+    assert "county" in charity_tier(state="SC", fpl_pct=150)["error"]
+
+
+def test_draft_application_nc_oh_sc_facilities():
+    for ccn, name, st in [
+        ("340001", "CAROLINAS MEDICAL CENTER-NORTHEAST", "NC"),
+        ("360180", "CLEVELAND CLINIC", "OH"),
+        ("420004", "MUSC MEDICAL CENTER", "SC"),
+    ]:
+        r = draft_application(ccn=ccn, patient_pays_pct=0)
+        assert name in r["letter"]
+        assert f"{st} residency" in r["checklist"][0]

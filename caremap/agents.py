@@ -129,6 +129,8 @@ assumption:
   error above it explaining what the law does and doesn't let CareMap
   show; relay that, including any residency or cap facts it gives, and
   never turn it into a percentage or dollar amount it doesn't state.
+  If a free-tier result includes a note (what's covered, an ER minimum
+  charge, residency or eligibility conditions), always relay it too.
 - Any other facility state: no modeled formula -- charity_tier will return
   an error; say that state's rules aren't in CareMap yet rather than
   guessing, and point to the hospital's own billing/financial-assistance

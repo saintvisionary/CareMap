@@ -76,6 +76,12 @@ def resolve_hgi_csv_url() -> str:
     return meta["distribution"][0]["downloadURL"]
 
 
+NC_NOT_PARTICIPATING = {
+    "340156",  # CHEROKEE INDIAN HOSPITAL AUTHORITY
+    "340168",  # WILMINGTON TREATMENT CENTER
+    "340195",  # NOVANT HEALTH BALLANTYNE MEDICAL CENTER
+}
+
 HOSPITAL_TYPE_TO_FACILITY_TYPE = {
     "Acute Care Hospitals": "acute_care_hospital",
     "Acute Care - Veterans Administration": "va_hospital",
@@ -323,12 +329,23 @@ def build_states(states: set[str], zip_centroids: dict[str, dict]) -> dict[str, 
             # VT's 18 V.S.A. 9481(6) covers any hospital licensed under
             # chapter 43, with no size or ownership limit.
             "VT": {"acute_care_hospital", "critical_access_hospital"},
+            # NC: only hospitals on NCDHHS's participating list (see below).
+            "NC": {"acute_care_hospital", "critical_access_hospital"},
+            # OH: ORC 5168.01(F) nonfederal general/pediatric hospitals, any ownership.
+            "OH": {"acute_care_hospital", "critical_access_hospital"},
+            # SC: S.C. Code Regs. 126-500(E) licensed general hospitals.
+            "SC": {"acute_care_hospital", "critical_access_hospital"},
         }
         f["charity_care_participant"] = f["type"] in state_facility_types.get(f["state"], set())
         # OR's law (ORS 442.610-442.618) ONLY covers nonprofit hospitals
         # (ORS 442.612(8)) -- unlike every other modeled state, ownership
         # is an additional gate here, not just facility type.
         if f["state"] == "OR" and not f["ownership"].startswith("Voluntary non-profit"):
+            f["charity_care_participant"] = False
+        # NC's program covers only hospitals on NCDHHS's participating list
+        # (ncdhhs.gov/participating-hospitals-med-debt). Matched to CCNs by
+        # hand, since the list has names only; these three aren't on it.
+        if f["ccn"] in NC_NOT_PARTICIPATING:
             f["charity_care_participant"] = False
         by_state.setdefault(f["state"], []).append(f)
 

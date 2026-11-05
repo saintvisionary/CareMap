@@ -326,12 +326,16 @@ _STATE_PROGRAM_NAMES = {
     "MA": "Massachusetts's Health Safety Net (101 CMR 613.00)",
     "ME": "Maine's free hospital care law (22 M.R.S. 1716-A)",
     "VT": "Vermont's hospital financial assistance law (18 V.S.A. 9482)",
+    "NC": "North Carolina's Medical Debt Mitigation program (NCDHHS HASP hospital commitment)",
+    "OH": "Ohio's Hospital Care Assurance Program (OAC 5160-2-17)",
+    "SC": "South Carolina's Medically Indigent Assistance Program (S.C. Code 44-6-150)",
 }
 _STATE_POLICY_KEYS = {
     "NJ": "nj_charity_care", "WA": "wa_charity_care", "IL": "il_charity_care",
     "NY": "ny_charity_care", "OR": "or_charity_care", "MD": "md_charity_care",
     "RI": "ri_charity_care", "MA": "ma_charity_care", "ME": "me_charity_care",
-    "VT": "vt_charity_care",
+    "VT": "vt_charity_care", "NC": "nc_charity_care", "OH": "oh_charity_care",
+    "SC": "sc_charity_care",
 }
 
 

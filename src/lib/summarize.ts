@@ -90,13 +90,14 @@ export function summarize(result: QueryResult): string {
                       : "") +
                     " Vermont residents only -- ask the billing office."
                   : FREE_TIER_STATES[nearest.state]
-                    ? `Your income is above ${programName}'s free-care line (${FREE_TIER_STATES[nearest.state].maxFplPct}% of the poverty line). ${FREE_TIER_STATES[nearest.state].aboveLine}`
+                    ? `Your income is above the ${FREE_TIER_STATES[nearest.state].heading}'s free-care line (${FREE_TIER_STATES[nearest.state].maxFplPct}% of the poverty line). ${FREE_TIER_STATES[nearest.state].aboveLine}`
                     : `${programName} doesn't have a modeled percentage at your income -- ask this hospital's billing office directly.`,
     );
   } else {
     lines.push(
       nearestTier.patientPaysPct <= 0
-        ? `At your income, ${programName} covers hospital care in full at participating hospitals: you'd pay an estimated $0.`
+        ? `At your income, ${programName} covers hospital care in full at participating hospitals: you'd pay an estimated $0.` +
+          (FREE_TIER_STATES[nearest.state]?.freeNote ? ` ${FREE_TIER_STATES[nearest.state].freeNote}` : "")
         : `At your income, ${programName} sets your share at ${nearestTier.patientPaysPct}% of the typical billed charge at participating hospitals.`,
     );
   }

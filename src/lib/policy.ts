@@ -232,9 +232,50 @@ export interface FreeTierState {
   scope: string;
   maxFplPct: number;
   aboveLine: string;
+  freeNote?: string;
+  strictlyBelow?: boolean;
 }
 
-export const FREE_TIER_STATES: Record<string, FreeTierState> = {};
+export const FREE_TIER_STATES: Record<string, FreeTierState> = {
+  // NCDHHS Medical Debt Mitigation program (HASP hospital commitment):
+  // "100% for individuals with incomes below 200% FPL" -- strictly below.
+  NC: {
+    programName: "North Carolina's Medical Debt Mitigation program (NC residents only)",
+    heading: "North Carolina Medical Debt Mitigation program",
+    law: "NCDHHS Medical Debt Initiative toolkit, Appendix 2 (a condition of NC Medicaid hospital payments, not a state law)",
+    scope:
+      "Applies at the hospitals participating in the program (nearly every NC hospital), for North Carolina residents, insured or uninsured. Emergency room visits may still cost $35.",
+    maxFplPct: 200,
+    strictlyBelow: true,
+    aboveLine:
+      "From 200% to 300% of the poverty line, participating hospitals must still give at least 75% or 50% off what they generally bill (each hospital's own rate, so no dollar figure here) and offer a payment plan of up to 36 months with payments no more than 5% of monthly household income.",
+    freeNote: "Emergency room visits may still cost $35.",
+  },
+  // OAC 5160-2-17 (Hospital Care Assurance Program): free at or below 100% FPL.
+  OH: {
+    programName: "Ohio's Hospital Care Assurance Program (Ohio residents not on Medicaid)",
+    heading: "Ohio Hospital Care Assurance Program",
+    law: "OAC 5160-2-17 (Hospital Care Assurance Program)",
+    scope:
+      "Applies at Ohio's general hospitals, for Ohio residents who aren't on Medicaid. Free care covers basic, medically necessary services (what Medicaid covers, except transplants).",
+    maxFplPct: 100,
+    aboveLine: "Ohio sets no statewide discount above this line -- ask the hospital about its own financial assistance policy.",
+    freeNote: "Covers basic, medically necessary services, not transplants.",
+  },
+  // S.C. Code 44-6-150 and Regs. 126-500 to 126-560 (Medically Indigent
+  // Assistance Program): full sponsorship at or below 100% FPL.
+  SC: {
+    programName: "South Carolina's Medically Indigent Assistance Program",
+    heading: "South Carolina Medically Indigent Assistance Program",
+    law: "S.C. Code 44-6-150 and S.C. Code Regs. 126-500 to 126-560",
+    scope:
+      "Covers inpatient hospital care (not physician bills) at SC general hospitals for patients the program sponsors. Your county decides eligibility, liquid assets must be $500 or less, you must apply for Medicaid first if you might qualify, and it's limited to SC residents who are US citizens or lawful permanent residents.",
+    maxFplPct: 100,
+    aboveLine:
+      "From 100% to 200% of the poverty line the program offers partial sponsorship, but the share depends on a state payment figure CareMap doesn't have, so no amount is shown. Your county decides eligibility.",
+    freeNote: "Inpatient care only, if your county approves you for the program ($500 liquid-asset limit; apply for Medicaid first if you might qualify).",
+  },
+};
 
 // Keyed by a facility's own state. Only states with a real, codified,
 // state-wide formula belong here -- most states have no such law (just
@@ -282,7 +323,9 @@ export function charityTier(state: string, fplPct: number, facilityType?: string
   const fn = STATE_CHARITY_TIER_FNS[state];
   if (fn) return fn(fplPct, facilityType, ownership);
   const free = FREE_TIER_STATES[state];
-  if (free && fplPct <= free.maxFplPct) return { patientPaysPct: 0, fplPct, maxFplPct: free.maxFplPct };
+  if (free && (free.strictlyBelow ? fplPct < free.maxFplPct : fplPct <= free.maxFplPct)) {
+    return { patientPaysPct: 0, fplPct, maxFplPct: free.maxFplPct };
+  }
   return null;
 }
 
