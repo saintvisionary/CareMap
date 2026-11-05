@@ -9,6 +9,7 @@ import {
   CHARITY_PROGRAM_NAMES,
   FREE_TIER_STATES,
   MEDICARE_CAP_STATES,
+  UPPER_BOUND_STATES,
   fqhcSlidingFee,
   ME_PAYMENT_PLAN_MAX_FPL,
   ME_PAYMENT_PLAN_MAX_PCT_OF_MONTHLY_INCOME,
@@ -60,7 +61,7 @@ export function summarize(result: QueryResult): string {
   }
 
   const nearest = facilities[0];
-  const nearestTier = fplPct != null ? charityTier(nearest.state, fplPct, nearest.type, nearest.ownership) : null;
+  const nearestTier = fplPct != null ? charityTier(nearest.state, fplPct, nearest.type, nearest.ownership, nearest.cost_cap_pct) : null;
   const programName = CHARITY_PROGRAM_NAMES[nearest.state] ?? "charity care";
   const lines: string[] = [];
   lines.push(
@@ -94,6 +95,8 @@ export function summarize(result: QueryResult): string {
         ? fplPct <= cap.maxFplPct
           ? `At your income, ${cap.programName} ${cap.capLine}.${cap.extra ? ` ${cap.extra}` : ""}`
           : `Your income is above the ${cap.maxFplPct}% line for ${cap.programName}, so its cap doesn't apply -- ask this hospital's billing office about its own financial assistance.`
+        : nearest.state === "CT"
+        ? "Your income is above the 250% line for Connecticut's uninsured cost-of-care limit, so it doesn't apply -- ask this hospital's billing office about its own financial assistance."
         : nearest.state === "IL"
         ? `Your income is above ${programName}'s free-care line, so there's no exact percentage to show (Illinois law bases it on each hospital's own cost-to-charge ratio, which CareMap doesn't have). State law still caps total collection at 20% of your family income in any 12-month period -- ask this hospital's billing office for your exact discount.`
         : nearest.state === "NY"
@@ -125,6 +128,8 @@ export function summarize(result: QueryResult): string {
       nearestTier.patientPaysPct <= 0
         ? `At your income, ${programName} covers hospital care in full at participating hospitals: you'd pay an estimated $0.` +
           (FREE_TIER_STATES[nearest.state]?.freeNote ? ` ${FREE_TIER_STATES[nearest.state].freeNote}` : "")
+        : nearest.state === "CT"
+          ? `At your income, if you're uninsured and have been denied Medicaid, Connecticut law caps what this hospital can collect at its cost of care: at most ${nearestTier.patientPaysPct}% of the typical billed charge here.`
         : nearest.state === "NV"
           ? `${programName} caps what you'd pay at ${nearestTier.patientPaysPct}% of the total billed charge at this hospital, at any income -- inpatient care only, if you aren't eligible for Medicaid or other public coverage (apply for that first if you might be) and you arrange payment within 30 days of the hospital's notice. It's a minimum discount, so you may owe less.`
         : nearest.state === "OR"
@@ -152,13 +157,13 @@ export function summarize(result: QueryResult): string {
       // same (or any modeled) state either.
       const chargeTier =
         fplPct != null && withCharge.charity_care_participant
-          ? charityTier(withCharge.state, fplPct, withCharge.type, withCharge.ownership)
+          ? charityTier(withCharge.state, fplPct, withCharge.type, withCharge.ownership, withCharge.cost_cap_pct)
           : null;
       lines.push(
         `${drg.label} at ${withCharge.name}: typical billed charge is ${money(charge)}.` +
           medicareCapLine(withCharge, drg.code, fplPct, insuranceType) +
           (chargeTier != null && insuranceType === "uninsured"
-            ? ` At your tier, estimated amount owed is ${(withCharge.state === "OR" || withCharge.state === "NV") && chargeTier.patientPaysPct > 0 ? "at most " : ""}${money(applyTier(charge, chargeTier.patientPaysPct))}.`
+            ? ` At your tier, estimated amount owed is ${UPPER_BOUND_STATES.has(withCharge.state) && chargeTier.patientPaysPct > 0 ? "at most " : ""}${money(applyTier(charge, chargeTier.patientPaysPct))}.`
             : ""),
       );
       lines.push("This is an estimate, confirm with billing office.");

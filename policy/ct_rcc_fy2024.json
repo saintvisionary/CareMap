@@ -1,0 +1,159 @@
+{
+ "source": "https://portal.ct.gov/ohs/-/media/ohs/reports/ohs-annual-report-on-the-financial-status-of-ct-hospitals-fy2024.pdf (OHS Hospital Financial Stability Report FY2024, Appendix M: 'Current Way' RCC from HRS Report 555, 2 decimals; 'Previous Way' RCC = Total Oper Exp / (Gross Rev + Other Oper Rev) from HRS Report 550, computed here from the report's dollar columns)",
+ "unmapped": [
+  "CT CHILDREN'S (CMS children's hospital, not loaded in CareMap)",
+  "ROCKVILLE (no separate CMS record; billed under Manchester Memorial 070027)"
+ ],
+ "hospitals": [
+  {
+   "ohs_name": "BACKUS",
+   "ccn": "070024",
+   "rcc_current_2dp": 0.28,
+   "rcc_previous_exact": 0.299003
+  },
+  {
+   "ohs_name": "BRIDGEPORT",
+   "ccn": "070010",
+   "rcc_current_2dp": 0.24,
+   "rcc_previous_exact": 0.302583
+  },
+  {
+   "ohs_name": "BRISTOL",
+   "ccn": "070029",
+   "rcc_current_2dp": null,
+   "rcc_previous_exact": 0.235833
+  },
+  {
+   "ohs_name": "DANBURY",
+   "ccn": "070033",
+   "rcc_current_2dp": 0.26,
+   "rcc_previous_exact": 0.301283
+  },
+  {
+   "ohs_name": "DAY KIMBALL",
+   "ccn": "070003",
+   "rcc_current_2dp": 0.37,
+   "rcc_previous_exact": 0.379636
+  },
+  {
+   "ohs_name": "DEMPSEY",
+   "ccn": "070036",
+   "rcc_current_2dp": 0.41,
+   "rcc_previous_exact": 0.394008
+  },
+  {
+   "ohs_name": "GREENWICH",
+   "ccn": "070018",
+   "rcc_current_2dp": 0.26,
+   "rcc_previous_exact": 0.324952
+  },
+  {
+   "ohs_name": "GRIFFIN",
+   "ccn": "070031",
+   "rcc_current_2dp": 0.17,
+   "rcc_previous_exact": 0.207044
+  },
+  {
+   "ohs_name": "HARTFORD",
+   "ccn": "070025",
+   "rcc_current_2dp": 0.29,
+   "rcc_previous_exact": 0.364149
+  },
+  {
+   "ohs_name": "HOSP OF CENTRAL CT",
+   "ccn": "070035",
+   "rcc_current_2dp": 0.29,
+   "rcc_previous_exact": 0.322678
+  },
+  {
+   "ohs_name": "HUNGERFORD",
+   "ccn": "070011",
+   "rcc_current_2dp": 0.28,
+   "rcc_previous_exact": 0.287435
+  },
+  {
+   "ohs_name": "JOHNSON",
+   "ccn": "070008",
+   "rcc_current_2dp": 0.32,
+   "rcc_previous_exact": 0.355644
+  },
+  {
+   "ohs_name": "L+M",
+   "ccn": "070007",
+   "rcc_current_2dp": 0.25,
+   "rcc_previous_exact": 0.299908
+  },
+  {
+   "ohs_name": "MANCHESTER",
+   "ccn": "070027",
+   "rcc_current_2dp": 0.25,
+   "rcc_previous_exact": 0.246537
+  },
+  {
+   "ohs_name": "MIDDLESEX",
+   "ccn": "070020",
+   "rcc_current_2dp": 0.26,
+   "rcc_previous_exact": 0.295214
+  },
+  {
+   "ohs_name": "MIDSTATE",
+   "ccn": "070017",
+   "rcc_current_2dp": 0.31,
+   "rcc_previous_exact": 0.33944
+  },
+  {
+   "ohs_name": "NORWALK",
+   "ccn": "070034",
+   "rcc_current_2dp": 0.26,
+   "rcc_previous_exact": 0.332013
+  },
+  {
+   "ohs_name": "SAINT FRANCIS",
+   "ccn": "070002",
+   "rcc_current_2dp": 0.26,
+   "rcc_previous_exact": 0.318337
+  },
+  {
+   "ohs_name": "SAINT MARY'S",
+   "ccn": "070016",
+   "rcc_current_2dp": 0.24,
+   "rcc_previous_exact": 0.284548
+  },
+  {
+   "ohs_name": "SAINT VINCENT'S",
+   "ccn": "070028",
+   "rcc_current_2dp": 0.25,
+   "rcc_previous_exact": 0.309692
+  },
+  {
+   "ohs_name": "SHARON",
+   "ccn": "070004",
+   "rcc_current_2dp": 0.39,
+   "rcc_previous_exact": 0.470369
+  },
+  {
+   "ohs_name": "STAMFORD",
+   "ccn": "070006",
+   "rcc_current_2dp": 0.19,
+   "rcc_previous_exact": 0.241955
+  },
+  {
+   "ohs_name": "WATERBURY",
+   "ccn": "070005",
+   "rcc_current_2dp": 0.21,
+   "rcc_previous_exact": 0.207711
+  },
+  {
+   "ohs_name": "WINDHAM",
+   "ccn": "070021",
+   "rcc_current_2dp": 0.29,
+   "rcc_previous_exact": 0.308188
+  },
+  {
+   "ohs_name": "YALE NEW HAVEN",
+   "ccn": "070022",
+   "rcc_current_2dp": 0.26,
+   "rcc_previous_exact": 0.333454
+  }
+ ]
+}

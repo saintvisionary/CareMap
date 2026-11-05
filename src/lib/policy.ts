@@ -281,7 +281,10 @@ export const FREE_TIER_STATES: Record<string, FreeTierState> = {
 // state-wide formula belong here -- most states have no such law (just
 // federal 501(r): each nonprofit hospital must have *a* policy, with no
 // public structured dataset of what it says), so this stays short.
-const STATE_CHARITY_TIER_FNS: Record<string, (fplPct: number, facilityType?: string, ownership?: string) => CharityTier | null> = {
+const STATE_CHARITY_TIER_FNS: Record<
+  string,
+  (fplPct: number, facilityType?: string, ownership?: string, costCapPct?: number) => CharityTier | null
+> = {
   NJ: (fplPct) => njCharityTier(fplPct),
   WA: (fplPct) => waCharityTier(fplPct),
   IL: (fplPct, facilityType) => ilCharityTier(fplPct, facilityType === "critical_access_hospital"),
@@ -296,6 +299,12 @@ const STATE_CHARITY_TIER_FNS: Record<string, (fplPct: number, facilityType?: str
   // inpatients at NV "major hospitals" (gated by charity_care_participant),
   // regardless of income -- so a flat, upper-bound 70% share.
   NV: (fplPct) => ({ patientPaysPct: 70, fplPct, maxFplPct: null }),
+  // Conn. Gen. Stat. 19a-673: uninsured patients at or below 250% FPL who
+  // were denied Medicaid pay at most the hospital's cost of care.
+  // costCapPct is that hospital's upper-bound percent of charges (see
+  // build_data.py's load_ct_cost_caps); none published means no tier.
+  CT: (fplPct, _facilityType, _ownership, costCapPct) =>
+    costCapPct != null && fplPct <= 250 ? { patientPaysPct: costCapPct, fplPct, maxFplPct: 250 } : null,
 };
 
 // H&SC 127405(d)(1) (CA) and 10 CCR 2505-10 8.928.2 (CO): caps tied to the
@@ -361,6 +370,7 @@ export const CHARITY_PROGRAM_NAMES: Record<string, string> = {
   ME: "Maine's free hospital care law (Maine residents only)",
   VT: "Vermont's hospital financial assistance law (Vermont residents only)",
   NV: "Nevada's major-hospital discount law (uninsured inpatients)",
+  CT: "Connecticut's uninsured cost-of-care limit (if denied Medicaid)",
 };
 
 /** Charity-care tier for whichever state a facility is in, or null if that
@@ -368,9 +378,15 @@ export const CHARITY_PROGRAM_NAMES: Record<string, string> = {
  * facilityType matters for IL (standard vs Critical Access Hospital picks a
  * different free-care threshold); ownership matters for OR (nonprofit-only
  * scope) -- each is ignored by states whose formula doesn't depend on it. */
-export function charityTier(state: string, fplPct: number, facilityType?: string, ownership?: string): CharityTier | null {
+export function charityTier(
+  state: string,
+  fplPct: number,
+  facilityType?: string,
+  ownership?: string,
+  costCapPct?: number,
+): CharityTier | null {
   const fn = STATE_CHARITY_TIER_FNS[state];
-  if (fn) return fn(fplPct, facilityType, ownership);
+  if (fn) return fn(fplPct, facilityType, ownership, costCapPct);
   const free = FREE_TIER_STATES[state];
   if (free && (free.strictlyBelow ? fplPct < free.maxFplPct : fplPct <= free.maxFplPct)) {
     return { patientPaysPct: 0, fplPct, maxFplPct: free.maxFplPct };
@@ -397,3 +413,7 @@ export function fqhcSlidingFee(fplPct: number | null, insured: boolean): { hero:
 export function applyTier(typicalCharge: number, patientPaysPct: number): number {
   return Math.round(typicalCharge * (patientPaysPct / 100) * 100) / 100;
 }
+
+// States whose share is a legal maximum rather than an exact figure, so
+// dollar amounts are shown as "at most".
+export const UPPER_BOUND_STATES = new Set(["OR", "NV", "CT"]);

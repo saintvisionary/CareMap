@@ -336,3 +336,13 @@ def test_draft_application_ca_co_cite_the_cap_not_a_percentage():
     r = draft_application(ccn="060001", patient_pays_pct=0)
     assert "Colorado Hospital Discounted Care" in r["letter"]
     assert "% of billed charges" not in r["letter"]
+
+
+def test_charity_tier_ct_is_per_hospital_upper_bound():
+    # Hartford Hospital: higher of OHS's two FY2024 ratios (0.3641) -> 37%.
+    r = charity_tier(state="CT", fpl_pct=200, ccn="070025")
+    assert r["patient_pays_pct"] == 37 and "denied Medicaid" in r["note"]
+    assert "error" in charity_tier(state="CT", fpl_pct=300, ccn="070025")  # above 250%
+    assert "error" in charity_tier(state="CT", fpl_pct=200)  # needs the hospital
+    # The Connecticut Hospice has no published ratio, so no tier.
+    assert "error" in charity_tier(state="CT", fpl_pct=200, ccn="070038")

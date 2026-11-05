@@ -130,6 +130,11 @@ assumption:
   coverage and who arrange payment within 30 days pay at most 70% of the
   total billed charge. Say "at most", relay the result's note, and suggest
   applying for Medicaid first if they might qualify.
+- Facility state is CT: call charity_tier("CT", fpl_pct, ccn=facility's
+  ccn). At or below 250% FPL, an uninsured patient who has been denied
+  Medicaid can't be charged more than the hospital's cost of care; the
+  result's patient_pays_pct is an upper bound for that hospital. Say "at
+  most", and relay the note about the Medicaid-denial requirement.
 - Facility state is CA or CO: no tier exists. charity_tier returns an
   error describing the cap: CA limits expected payment (uninsured or high
   medical costs, at or below 400% FPL) to the greater of what Medicare or

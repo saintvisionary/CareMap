@@ -408,6 +408,20 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               personal estimate.
             </p>
 
+            <div className={section}>
+              <h2 className={h2}>Connecticut uninsured cost-of-care limit</h2>
+              <p className={p}>
+                Conn. Gen. Stat. 19a-673. If you're uninsured, at or below 250% of the poverty line, and have applied for and been{" "}
+                <strong className="text-white/90">denied Medicaid</strong>, a hospital can't collect more than its{" "}
+                <strong className="text-white/90">cost of care</strong>: its charges times its own ratio of costs to charges.
+              </p>
+              <p className={p}>
+                CareMap uses each hospital's ratio from the state's FY2024 hospital financial report. The state publishes two versions and the law
+                doesn't say which applies, so CareMap uses the higher one -- the percent shown is the most you'd owe, and the real cap may be lower.
+                Most Connecticut hospitals land between about 20% and 40% of the typical billed charge.
+              </p>
+            </div>
+
             {Object.entries(MEDICARE_CAP_STATES).map(([st, c]) => (
               <div key={st} className={section}>
                 <h2 className={h2}>{c.programName}</h2>
@@ -510,6 +524,7 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                   </li>
                 ))}
                 <li>Medicare average payments per procedure -- CMS Medicare Inpatient by Provider and Service (2024 data)</li>
+                <li>CT hospital cost-to-charge ratios -- CT Office of Health Strategy FY2024 Hospital Financial Stability Report</li>
                 {Object.entries(FREE_TIER_STATES).map(([st, f]) => (
                   <li key={st}>
                     {st} charity care rules -- {f.law}

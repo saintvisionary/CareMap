@@ -156,9 +156,12 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str = "acute_care_ho
                     "financial-assistance office."
                 )
             }
-    elif state == "NV":
-        return {"error": "NV's discount only applies at specific 'major hospitals' -- call charity_tier again with the facility's ccn."}
-    tier = policy_mod.charity_tier(state, fpl_pct, facility_type, ownership or None)
+    elif state in ("NV", "CT"):
+        return {"error": f"{state}'s rule depends on the specific hospital -- call charity_tier again with the facility's ccn."}
+    cost_cap_pct = None
+    if ccn and (f := facility_data.facility_by_ccn(ccn)) is not None:
+        cost_cap_pct = f.get("cost_cap_pct")
+    tier = policy_mod.charity_tier(state, fpl_pct, facility_type, ownership or None, cost_cap_pct)
     if tier is not None:
         return tier
     if state == "OR":
@@ -373,6 +376,7 @@ _STATE_PROGRAM_NAMES = {
     "NV": "Nevada's major-hospital discount law (NRS 439B.260)",
     "CA": "California's Hospital Fair Pricing Act (H&SC 127405)",
     "CO": "Colorado Hospital Discounted Care (C.R.S. 25.5-3-503)",
+    "CT": "Connecticut's uninsured cost-of-care limit (Conn. Gen. Stat. 19a-673)",
 }
 _STATE_POLICY_KEYS = {
     "NJ": "nj_charity_care", "WA": "wa_charity_care", "IL": "il_charity_care",
@@ -380,7 +384,7 @@ _STATE_POLICY_KEYS = {
     "RI": "ri_charity_care", "MA": "ma_charity_care", "ME": "me_charity_care",
     "VT": "vt_charity_care", "NC": "nc_charity_care", "OH": "oh_charity_care",
     "SC": "sc_charity_care", "NV": "nv_charity_care", "CA": "ca_charity_care",
-    "CO": "co_charity_care",
+    "CO": "co_charity_care", "CT": "ct_charity_care",
 }
 
 

@@ -7,7 +7,7 @@ Type a plain-language message like:
 > "07018, family of 4, $52k, uninsured, need gallbladder surgery"
 
 and CareMap finds nearby hospitals, estimates what you'd actually owe under
-your state's hospital charity-care law (16 states modeled so far, see
+your state's hospital charity-care law (17 states modeled so far, see
 below), and shows it on a map colored by what you'd pay: green for free
 care, amber for a reduced rate, gray for full price.
 
@@ -90,11 +90,12 @@ can ground and says why.
 | SC | S.C. Code 44-6-150 (Medically Indigent Assistance Program) | Free tier (100% FPL, inpatient only, county-approved) |
 | NV | NRS 439B.260 | At most 70% of the billed charge for uninsured inpatients at any income, at 17 "major hospitals" (identified from CMS bed-count and ownership data) |
 | CA | H&SC 127405 (Hospital Fair Pricing Act) | No tier: at or below 400% FPL, a cap at the greater of Medicare or Medi-Cal rates, shown with CMS's average Medicare payment as a reference |
+| CT | Conn. Gen. Stat. 19a-673 | At most each hospital's cost of care (about 21%-48% of the billed charge, from state-published cost-to-charge ratios) for uninsured patients at or below 250% FPL denied Medicaid |
 | CO | C.R.S. 25.5-3-503, 10 CCR 2505-10 8.928 | No tier: at or below 250% FPL, a state rate of at least the greater of Medicare or Medicaid, with the Medicare reference and the 4%-of-income payment-plan cap |
 
 Checked and left unmodeled, because there's no statewide percentage CareMap
 could compute from billed charges, or the rule depends on data CareMap
-doesn't have (bed counts, county or opt-in programs): AK, AL, AR, AZ, CT,
+doesn't have (bed counts, county or opt-in programs): AK, AL, AR, AZ,
 FL, GA, HI, IA, ID, IN, KS, KY, LA, MI, MN, MO, MS, MT, ND, NE, NH, NM, OK, PA, SD, TN, TX, UT, VA, WI, WV, WY. DC's and Delaware's new laws
 aren't confirmed in force: an emergency act lifted DC's funding delay on
 October 1, 2026, but the official DC Code still lists it as not
@@ -129,7 +130,7 @@ AI chat enhancement, set `VITE_AGENT_URL` to a deployed agent endpoint (see
 
 ## What's not in yet
 
-- Charity-care tiers for the other 34 states + DC
+- Charity-care tiers for the other 33 states + DC
 - Above the free tier in IL, NY, RI, MA, ME, VT, NC, OH and SC, the real discount depends
   on data CareMap doesn't load yet (cost-to-charge ratios, Medicaid rates,
   insurance premiums) or is left to each hospital; CareMap discloses the

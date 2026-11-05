@@ -182,6 +182,26 @@ def nv_charity_tier(fpl_pct: float) -> dict:
     return tier
 
 
+def ct_charity_tier(fpl_pct: float, cost_cap_pct: int | None) -> dict | None:
+    """CT cost-of-care cap (Conn. Gen. Stat. 19a-673) for an uninsured patient.
+
+    At or below 250% FPL, the hospital can't collect more than its cost of
+    care (charges x its cost-to-charge ratio). cost_cap_pct is that ratio as
+    an upper-bound percent of charges (from build_data.py); None means no
+    ratio is published for this hospital, so no tier.
+    """
+    rule = POLICY["ct_charity_care"]
+    if cost_cap_pct is None or fpl_pct > rule["eligibility_max_fpl_pct"]:
+        return None
+    return {
+        "patient_pays_pct": cost_cap_pct,
+        "fpl_pct": fpl_pct,
+        "max_fpl_pct": rule["eligibility_max_fpl_pct"],
+        "source": rule["source"],
+        "note": rule["tier_note"],
+    }
+
+
 def md_charity_tier(fpl_pct: float) -> dict:
     """MD hospital financial assistance tier (Md. Code, Health-General 19-214.1) for a percent of FPL.
 
@@ -254,24 +274,25 @@ def ny_charity_tier(fpl_pct: float) -> dict | None:
 # so this registry is deliberately short and should stay that way unless a
 # new state is actually verified against its own statute.
 STATE_CHARITY_TIER_FNS = {
-    "NJ": lambda fpl_pct, facility_type=None, ownership=None: nj_charity_tier(fpl_pct),
-    "WA": lambda fpl_pct, facility_type=None, ownership=None: wa_charity_tier(fpl_pct),
-    "IL": lambda fpl_pct, facility_type=None, ownership=None: il_charity_tier(fpl_pct, is_critical_access=facility_type == "critical_access_hospital"),
-    "NY": lambda fpl_pct, facility_type=None, ownership=None: ny_charity_tier(fpl_pct),
-    "OR": lambda fpl_pct, facility_type=None, ownership=None: or_charity_tier(fpl_pct, ownership=ownership),
-    "MD": lambda fpl_pct, facility_type=None, ownership=None: md_charity_tier(fpl_pct),
-    "RI": lambda fpl_pct, facility_type=None, ownership=None: ri_charity_tier(fpl_pct),
-    "MA": lambda fpl_pct, facility_type=None, ownership=None: ma_charity_tier(fpl_pct),
-    "ME": lambda fpl_pct, facility_type=None, ownership=None: me_charity_tier(fpl_pct),
-    "VT": lambda fpl_pct, facility_type=None, ownership=None: vt_charity_tier(fpl_pct),
-    "NC": lambda fpl_pct, facility_type=None, ownership=None: _free_tier("nc_charity_care", fpl_pct),
-    "OH": lambda fpl_pct, facility_type=None, ownership=None: _free_tier("oh_charity_care", fpl_pct),
-    "SC": lambda fpl_pct, facility_type=None, ownership=None: _free_tier("sc_charity_care", fpl_pct),
-    "NV": lambda fpl_pct, facility_type=None, ownership=None: nv_charity_tier(fpl_pct),
+    "NJ": lambda fpl_pct, facility_type=None, ownership=None, cost_cap_pct=None: nj_charity_tier(fpl_pct),
+    "WA": lambda fpl_pct, facility_type=None, ownership=None, cost_cap_pct=None: wa_charity_tier(fpl_pct),
+    "IL": lambda fpl_pct, facility_type=None, ownership=None, cost_cap_pct=None: il_charity_tier(fpl_pct, is_critical_access=facility_type == "critical_access_hospital"),
+    "NY": lambda fpl_pct, facility_type=None, ownership=None, cost_cap_pct=None: ny_charity_tier(fpl_pct),
+    "OR": lambda fpl_pct, facility_type=None, ownership=None, cost_cap_pct=None: or_charity_tier(fpl_pct, ownership=ownership),
+    "MD": lambda fpl_pct, facility_type=None, ownership=None, cost_cap_pct=None: md_charity_tier(fpl_pct),
+    "RI": lambda fpl_pct, facility_type=None, ownership=None, cost_cap_pct=None: ri_charity_tier(fpl_pct),
+    "MA": lambda fpl_pct, facility_type=None, ownership=None, cost_cap_pct=None: ma_charity_tier(fpl_pct),
+    "ME": lambda fpl_pct, facility_type=None, ownership=None, cost_cap_pct=None: me_charity_tier(fpl_pct),
+    "VT": lambda fpl_pct, facility_type=None, ownership=None, cost_cap_pct=None: vt_charity_tier(fpl_pct),
+    "NC": lambda fpl_pct, facility_type=None, ownership=None, cost_cap_pct=None: _free_tier("nc_charity_care", fpl_pct),
+    "OH": lambda fpl_pct, facility_type=None, ownership=None, cost_cap_pct=None: _free_tier("oh_charity_care", fpl_pct),
+    "SC": lambda fpl_pct, facility_type=None, ownership=None, cost_cap_pct=None: _free_tier("sc_charity_care", fpl_pct),
+    "NV": lambda fpl_pct, facility_type=None, ownership=None, cost_cap_pct=None: nv_charity_tier(fpl_pct),
+    "CT": lambda fpl_pct, facility_type=None, ownership=None, cost_cap_pct=None: ct_charity_tier(fpl_pct, cost_cap_pct),
 }
 
 
-def charity_tier(state: str, fpl_pct: float, facility_type: str | None = None, ownership: str | None = None) -> dict | None:
+def charity_tier(state: str, fpl_pct: float, facility_type: str | None = None, ownership: str | None = None, cost_cap_pct: int | None = None) -> dict | None:
     """Look up the charity-care tier for whichever state a facility is in.
 
     facility_type matters for IL (standard vs Critical Access Hospital picks
@@ -286,7 +307,7 @@ def charity_tier(state: str, fpl_pct: float, facility_type: str | None = None, o
     doesn't apply to this facility.
     """
     fn = STATE_CHARITY_TIER_FNS.get(state)
-    return fn(fpl_pct, facility_type, ownership) if fn else None
+    return fn(fpl_pct, facility_type, ownership, cost_cap_pct) if fn else None
 
 
 def fqhc_sliding_fee(fpl_pct: float | None = None) -> dict:

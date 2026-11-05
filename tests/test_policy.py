@@ -259,3 +259,9 @@ def test_fqhc_sliding_fee_bands():
     assert "sliding scale" in fqhc_sliding_fee(150)["sliding_fee_rule"]
     assert "No income-based discount" in fqhc_sliding_fee(201)["sliding_fee_rule"]
     assert "can't deny service" in fqhc_sliding_fee(None)["cannot_be_turned_away"]
+
+
+def test_ct_tier_needs_a_ratio_and_income_line():
+    assert charity_tier("CT", 250, cost_cap_pct=30)["patient_pays_pct"] == 30
+    assert charity_tier("CT", 251, cost_cap_pct=30) is None
+    assert charity_tier("CT", 150) is None

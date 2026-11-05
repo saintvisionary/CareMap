@@ -21,6 +21,7 @@ import argparse
 import csv
 import io
 import json
+import math
 import sys
 import time
 import urllib.error
@@ -93,6 +94,22 @@ NV_MAJOR_HOSPITALS = {
     "290046", "290047", "290054",  # 200+ beds on their own
     "290049", "290012", "290053", "290058", "290057", "290062", "290042",  # affiliated groups
 }
+
+def load_ct_cost_caps() -> dict[str, int]:
+    """CT cost-of-care caps (Conn. Gen. Stat. 19a-673) as a percent of charges, by CCN.
+
+    The statute uses each hospital's "relationship of costs to charges" from
+    its latest state filing; OHS's FY2024 report publishes two versions (see
+    policy/ct_rcc_fy2024.json). Taking the higher one, plus rounding margin
+    on the 2-decimal figure, makes "at most this percent" true either way.
+    """
+    data = json.loads((ROOT / "policy" / "ct_rcc_fy2024.json").read_text(encoding="utf-8"))
+    caps = {}
+    for h in data["hospitals"]:
+        upper = max(h["rcc_previous_exact"] or 0, (h["rcc_current_2dp"] + 0.005) if h["rcc_current_2dp"] is not None else 0)
+        caps[h["ccn"]] = math.ceil(upper * 100)
+    return caps
+
 
 HOSPITAL_TYPE_TO_FACILITY_TYPE = {
     "Acute Care Hospitals": "acute_care_hospital",
@@ -306,6 +323,7 @@ def build_states(states: set[str], zip_centroids: dict[str, dict]) -> dict[str, 
     print("Loading DRG charges (pages through the full national dataset once, cached after)...", file=sys.stderr)
     drg_by_ccn = load_all_drg_charges()
 
+    ct_caps = load_ct_cost_caps()
     by_state: dict[str, list[dict]] = {}
     for f in facilities:
         f["drg_charges"] = drg_by_ccn.get(f["ccn"], {})
@@ -370,6 +388,11 @@ def build_states(states: set[str], zip_centroids: dict[str, dict]) -> dict[str, 
             f["charity_care_participant"] = False
         if f["state"] == "NV" and f["ccn"] not in NV_MAJOR_HOSPITALS:
             f["charity_care_participant"] = False
+        if f["state"] == "CT":
+            cap = ct_caps.get(f["ccn"])
+            f["charity_care_participant"] = cap is not None
+            if cap is not None:
+                f["cost_cap_pct"] = cap
         by_state.setdefault(f["state"], []).append(f)
 
     return {state: {"state": state, "facilities": fs} for state, fs in by_state.items()}

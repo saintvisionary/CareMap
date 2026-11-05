@@ -28,6 +28,8 @@ export interface Facility {
   operator?: string;
   phone?: string;
   website?: string;
+  // CT only: upper-bound percent of charges under Conn. Gen. Stat. 19a-673.
+  cost_cap_pct?: number;
 }
 
 export interface ZipCentroid {
