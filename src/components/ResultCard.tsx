@@ -7,6 +7,8 @@ import { applyTier, charityTier, CHARITY_PROGRAM_NAMES, FREE_TIER_STATES, fqhcSl
 import { GlassPanel } from "./GlassPanel";
 
 const money = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
+const directionsLink =
+  "rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-medium text-white/80 transition-colors hover:bg-white/20 hover:text-white";
 
 const FACILITY_TYPE_LABELS: Record<string, string> = {
   acute_care_hospital: "Acute care hospital",
@@ -101,10 +103,15 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
     }
   }
 
+  const place = `${facility.address}, ${facility.city}, ${facility.state} ${facility.zip}`;
+  // Directions by street address, not lat/lon: some sites are only placed
+  // at their zip code's center.
+  const googleMaps = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${facility.name}, ${place}`)}`;
+  const appleMaps = `https://maps.apple.com/?daddr=${encodeURIComponent(place)}&q=${encodeURIComponent(facility.name)}`;
+
   return (
-    <motion.button
+    <motion.div
       id={`result-card-${facility.ccn}`}
-      onClick={onSelect}
       initial={{ opacity: 0, y: 16, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       whileTap={{ scale: 0.98 }}
@@ -112,9 +119,10 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
       // facilities) would otherwise stagger for seconds; everything past
       // the first handful enters together instead of queuing endlessly.
       transition={{ type: "spring", stiffness: 260, damping: 22, delay: Math.min(index, 8) * 0.06 }}
-      className="text-left w-full"
+      className="w-full"
     >
       <GlassPanel className={`p-4 transition-colors ${active ? "border-white/30" : ""}`}>
+        <button type="button" onClick={onSelect} aria-expanded={active} className="block w-full text-left">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
@@ -139,6 +147,7 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
           <div className="text-2xl font-semibold text-white tabular-nums">{hero}</div>
           <div className="text-[11px] text-white/40">{heroLabel}</div>
         </div>
+        </button>
         <AnimatePresence initial={false}>
           {active && (
             <motion.div
@@ -160,6 +169,14 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
                 <div className="text-white/40">Ownership: {facility.ownership}</div>
                 {facility.operator && <div className="text-white/40">Run by: {facility.operator}</div>}
                 {facility.phone && <div className="text-white/40">Phone: {facility.phone}</div>}
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <a href={googleMaps} target="_blank" rel="noopener noreferrer" className={directionsLink}>
+                    Directions in Google Maps
+                  </a>
+                  <a href={appleMaps} target="_blank" rel="noopener noreferrer" className={directionsLink}>
+                    Directions in Apple Maps
+                  </a>
+                </div>
                 {!facility.charity_care_participant && facility.type !== "fqhc" && facility.type !== "urgent_care" && (
                   <div className="text-white/40">
                     {facility.type === "va_hospital"
@@ -174,6 +191,6 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
           )}
         </AnimatePresence>
       </GlassPanel>
-    </motion.button>
+    </motion.div>
   );
 }

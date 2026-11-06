@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { askAgent } from "../lib/agentClient";
 import { facilitiesNear, nearestZip, type FacilityWithDistance } from "../lib/geo";
-import { redact, type InsuranceType } from "../lib/intake";
+import { redact, type InsuranceType, type IntakeHint } from "../lib/intake";
 import { findInternationalFacilities, type InternationalFacility } from "../lib/international";
 import { summarize, summarizeInternational } from "../lib/summarize";
 import type { Facility, ZipCentroid } from "../lib/types";
@@ -79,6 +79,31 @@ function nearbyCare(
   ].sort((a, b) => a.distanceMiles - b.distanceMiles);
 }
 
+export interface SearchContext {
+  zipCode: string | null;
+  fplPct: number | null;
+  tierPct: number | null;
+  insuranceType: InsuranceType | null;
+  veteran: boolean;
+  need: string | null;
+  emergency: boolean;
+}
+
+/** Fill in what a follow-up message doesn't restate from the previous
+ * search; anything it does restate wins. An emergency carries over until
+ * the person names a different need. */
+export function mergeContext(prev: SearchContext | null, hint: IntakeHint): SearchContext {
+  return {
+    zipCode: hint.zipCode ?? prev?.zipCode ?? null,
+    fplPct: hint.fplPct ?? prev?.fplPct ?? null,
+    tierPct: hint.tierPct ?? prev?.tierPct ?? null,
+    insuranceType: hint.insuranceType ?? prev?.insuranceType ?? null,
+    veteran: hint.veteran || (prev?.veteran ?? false),
+    need: hint.need ?? prev?.need ?? null,
+    emergency: hint.emergency || (!hint.need && (prev?.emergency ?? false)),
+  };
+}
+
 export function useCareMap(
   allFacilities: Facility[],
   zipCentroids: Record<string, ZipCentroid>,
@@ -108,6 +133,10 @@ export function useCareMap(
   // Zip the silent auto-locate landed on, so its results can pick up the
   // clinic and urgent care files, which finish loading after the hospitals.
   const autoZipRef = useRef<string | null>(null);
+  // The last search's details, so a follow-up ("which of these is best?")
+  // keeps the zip, income and insurance the person already gave instead of
+  // starting over. Lives only in this tab, like everything else here.
+  const contextRef = useRef<SearchContext | null>(null);
 
   // Nothing showed on the map until a search ran -- a first-time visitor
   // saw an empty basemap and had to already know to type something before
@@ -201,39 +230,44 @@ export function useCareMap(
         return;
       }
 
-      const nearby = hint.zipCode
-        ? nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, hint.zipCode, hint.need != null || hint.emergency)
+      const prev = contextRef.current;
+      const ctx = mergeContext(prev, hint);
+      contextRef.current = ctx;
+
+      const nearby = ctx.zipCode
+        ? nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, ctx.zipCode, ctx.need != null || ctx.emergency)
         : [];
       setFacilities(nearby);
       setInternationalFacilities([]);
-      setTierPct(hint.tierPct);
-      setFplPct(hint.fplPct);
-      setInsuranceType(hint.insuranceType);
-      setVeteran(hint.veteran);
+      setTierPct(ctx.tierPct);
+      setFplPct(ctx.fplPct);
+      setInsuranceType(ctx.insuranceType);
+      setVeteran(ctx.veteran);
 
-      if (hint.zipCode && zipCentroids[hint.zipCode]) {
-        const c = zipCentroids[hint.zipCode];
+      // Only move the map when the place changes, not on every follow-up.
+      if (ctx.zipCode && ctx.zipCode !== prev?.zipCode && zipCentroids[ctx.zipCode]) {
+        const c = zipCentroids[ctx.zipCode];
         setFlyTo({ center: [c.lon, c.lat], zoom: 10.5, pitch: 55 });
       }
 
       const instantReply = summarize({
-        zipCode: hint.zipCode,
-        fplPct: hint.fplPct,
-        insuranceType: hint.insuranceType,
-        veteran: hint.veteran,
-        need: hint.need,
-        emergency: hint.emergency,
+        zipCode: ctx.zipCode,
+        fplPct: ctx.fplPct,
+        insuranceType: ctx.insuranceType,
+        veteran: ctx.veteran,
+        need: ctx.need,
+        emergency: ctx.emergency,
         facilities: nearby,
       });
       setMessages((m) => [...m, { id: id(), role: "assistant", text: instantReply }]);
 
       setLoading(true);
       askAgent(hint.redactedMessage, {
-        zipCode: hint.zipCode,
-        insuranceType: hint.insuranceType,
-        veteran: hint.veteran,
-        tierPct: hint.tierPct,
-        fplPct: hint.fplPct,
+        zipCode: ctx.zipCode,
+        insuranceType: ctx.insuranceType,
+        veteran: ctx.veteran,
+        tierPct: ctx.tierPct,
+        fplPct: ctx.fplPct,
       })
         .then((agentReply) => {
           if (agentReply?.reply) {
