@@ -410,6 +410,20 @@ export function fqhcSlidingFee(fplPct: number | null, insured: boolean): { hero:
   return { hero: "Regular fee", label: `No income discount is required above 200% of the poverty line. ${noDenial}` };
 }
 
+// 26 U.S.C. 501(r)(5) / 26 CFR 1.501(r)-5: in every state, a nonprofit
+// hospital can't charge someone who qualifies for its own financial
+// assistance policy more than its "amount generally billed" for emergency or
+// medically necessary care. Hospitals often set that from Medicare's allowed
+// amounts, so CMS's Medicare average is a reference for it -- never the cap.
+// Only CMS "Voluntary non-profit" hospitals; government ones aren't reliably
+// 501(c)(3).
+export function isFederalCapHospital(f: { type: string; ownership: string }): boolean {
+  return (f.type === "acute_care_hospital" || f.type === "critical_access_hospital") && f.ownership.startsWith("Voluntary non-profit");
+}
+
+export const FEDERAL_CAP_LINE =
+  'If you qualify for this nonprofit hospital\'s financial assistance, federal law caps your bill at its "amount generally billed," which is often set from Medicare\'s rates -- yours could be higher or lower';
+
 export function applyTier(typicalCharge: number, patientPaysPct: number): number {
   return Math.round(typicalCharge * (patientPaysPct / 100) * 100) / 100;
 }

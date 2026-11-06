@@ -257,6 +257,11 @@
     "letter_basis": "I believe I qualify under Connecticut General Statutes section 19a-673, which limits what a hospital may collect from an uninsured patient at or below 250 percent of the federal poverty level, who has been denied Medicaid, to the hospital's cost of providing the care.",
     "gap_disclosure": "CT's cost-of-care cap (19a-673) only applies to uninsured patients at or below 250% FPL who have been denied Medicaid -- above that, say it doesn't apply and direct the user to the hospital's own financial assistance policy."
   },
+  "federal_501r_agb": {
+    "source": "https://www.law.cornell.edu/cfr/text/26/1.501(r)-5 (26 CFR 1.501(r)-5, under 26 U.S.C. 501(r)(5))",
+    "applies_to": "hospital facilities of 501(c)(3) nonprofit hospital organizations, in every state -- CareMap applies it to CMS 'Voluntary non-profit' acute care and Critical Access Hospitals only (government hospitals aren't reliably 501(c)(3))",
+    "note": "Verified against the regulation text. 1.501(r)-5(a): for emergency or other medically necessary care, a nonprofit hospital may charge an individual eligible under its financial assistance policy (FAP) 'not more than the amounts generally billed to individuals who have insurance covering such care (AGB)', and less than gross charges for other covered care. AGB is each hospital's own figure, set either by a look-back method (Medicare fee-for-service claims; Medicare plus all private insurers; or Medicaid) or prospectively at what Medicare or Medicaid would allow, in each case including the patient's own cost-sharing. CareMap shows CMS's average Medicare total payment (2024 data, including patient cost-sharing) as a reference for that cap -- often close under the Medicare-based methods, higher if the hospital includes private insurers, lower if Medicaid-based -- never as the cap itself. Who qualifies for the FAP is set by each hospital, so it's always framed as 'if you qualify'."
+  },
   "fqhc_sliding_fee": {
     "source": "https://www.ecfr.gov/current/title-42/chapter-I/subchapter-D/part-51c/subpart-C/section-51c.303 (42 CFR 51c.303(f), (u)); 42 U.S.C. 254b(k)(3)(G); Look-Alikes via 42 U.S.C. 1395x(aa)(4)(B)",
     "applies_to": "every Federally Qualified Health Center and FQHC Look-Alike, at any income -- federal, not state, so the same in every state",

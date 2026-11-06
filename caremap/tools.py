@@ -25,19 +25,33 @@ def _money(amount: float) -> str:
     return f"${round(amount):,}"
 
 
-def _medicare_reference(charge_info: dict) -> dict:
+def _nonprofit_hospital(facility: dict) -> bool:
+    return facility.get("type") in ("acute_care_hospital", "critical_access_hospital") and facility.get(
+        "ownership", "").startswith("Voluntary non-profit")
+
+
+def _medicare_reference(charge_info: dict, facility: dict | None = None) -> dict:
     """CMS's average Medicare total payment for the procedure, when the data has it.
 
-    A reference point for states whose cap is tied to Medicare rates (CA,
-    CO) -- never a price on its own.
+    A reference point for caps tied to Medicare rates -- CA/CO's state caps,
+    and the federal 501(r) cap at any nonprofit hospital -- never a price.
     """
     if "avg_total_payment" not in charge_info:
         return {}
-    return {
+    ref = {
         "medicare_avg_total_payment": charge_info["avg_total_payment"],
         "medicare_avg_total_payment_formatted": _money(charge_info["avg_total_payment"]),
         "medicare_reference_label": "Medicare's average total payment for this procedure here (CMS, 2024 data), a reference, not a price",
     }
+    if facility is not None and _nonprofit_hospital(facility):
+        ref["federal_cap_note"] = (
+            "This is a nonprofit hospital: if the patient qualifies for its financial assistance policy (the "
+            "hospital sets who qualifies), federal law (26 U.S.C. 501(r)(5)) caps what it can charge for emergency or "
+            "medically necessary care at its 'amount generally billed', which hospitals often set from Medicare's "
+            "allowed amounts. medicare_avg_total_payment is a reference for that cap, not the cap itself -- it can be "
+            "higher or lower depending on the hospital's method."
+        )
+    return ref
 
 
 @tool
@@ -236,7 +250,7 @@ def estimate_cost(ccn: str, drg: str) -> dict:
         "typical_billed_charge": charge_info["avg_charge"],
         "typical_billed_charge_formatted": _money(charge_info["avg_charge"]),
         "label": "typical billed charge, estimate, confirm with billing office",
-        **_medicare_reference(charge_info),
+        **_medicare_reference(charge_info, facility),
     }
 
 
@@ -263,7 +277,7 @@ def facilities_with_drg(zip_code: str, drg: str, radius_miles: float = 25) -> di
              "state": f["state"], "facility_type": f["type"], "ownership": f["ownership"],
              "typical_billed_charge": f["drg_charges"][drg]["avg_charge"],
              "typical_billed_charge_formatted": _money(f["drg_charges"][drg]["avg_charge"]),
-             **_medicare_reference(f["drg_charges"][drg])}
+             **_medicare_reference(f["drg_charges"][drg], f)}
             for f in matches
         ],
     }

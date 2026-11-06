@@ -38,13 +38,15 @@ export function GuidedForm({ onSubmit, zipCentroids, facilities }: GuidedFormPro
   const [income, setIncome] = useState("");
   const [insuranceType, setInsuranceType] = useState<InsuranceType>("uninsured");
   const [veteran, setVeteran] = useState(false);
-  const [category, setCategory] = useState(NEED_CATEGORIES[0].category);
-  const [item, setItem] = useState(NEED_CATEGORIES[0].items[0]);
+  // Nothing is preselected: defaulting to the first category's first item
+  // sent every untouched search as "need heart attack".
+  const [category, setCategory] = useState("");
+  const [item, setItem] = useState("");
   const [otherNeed, setOtherNeed] = useState("");
   const [locating, setLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
 
-  const categoryDef = NEED_CATEGORIES.find((c) => c.category === category)!;
+  const categoryDef = NEED_CATEGORIES.find((c) => c.category === category);
   const valid = abroad ? destination.trim().length > 1 : /^\d{5}$/.test(zip) && Number(household) > 0 && Number(income) >= 0;
 
   const fetchZipSuggestions = useCallback((q: string) => suggestZips(q, zipCentroids, facilities), [zipCentroids, facilities]);
@@ -78,7 +80,7 @@ export function GuidedForm({ onSubmit, zipCentroids, facilities }: GuidedFormPro
       onSubmit(`traveling to ${destination.trim()}`);
       return;
     }
-    const needText = categoryDef.items.length > 0 ? item : otherNeed || "a procedure";
+    const needText = !categoryDef ? "" : categoryDef.items.length > 0 ? item : otherNeed.trim();
     const formattedIncome = Number(income).toLocaleString("en-US");
     const parts = [
       zip,
@@ -86,7 +88,7 @@ export function GuidedForm({ onSubmit, zipCentroids, facilities }: GuidedFormPro
       `$${formattedIncome}`,
       INSURANCE_PHRASES[insuranceType],
       ...(veteran ? ["veteran"] : []),
-      `need ${needText}`,
+      ...(needText ? [`need ${needText}`] : []),
     ];
     onSubmit(parts.join(", "));
   };
@@ -199,20 +201,21 @@ export function GuidedForm({ onSubmit, zipCentroids, facilities }: GuidedFormPro
         <select
           value={category}
           onChange={(e) => {
-            const next = NEED_CATEGORIES.find((c) => c.category === e.target.value)!;
-            setCategory(next.category);
-            setItem(next.items[0]);
+            setCategory(e.target.value);
+            setItem("");
           }}
           className={fieldClass}
         >
+          <option value="">Just looking, or not sure yet</option>
           {NEED_CATEGORIES.map((c) => (
             <option key={c.category} value={c.category}>
               {c.category}
             </option>
           ))}
         </select>
-        {categoryDef.items.length > 0 ? (
+        {!categoryDef ? null : categoryDef.items.length > 0 ? (
           <select value={item} onChange={(e) => setItem(e.target.value)} className={`${fieldClass} mt-2`}>
+            <option value="">Choose a specific need (optional)</option>
             {categoryDef.items.map((n) => (
               <option key={n} value={n}>
                 {n}

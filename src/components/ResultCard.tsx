@@ -3,7 +3,7 @@ import { NEED_TO_DRG } from "../lib/drg";
 import { facilityTier, TIER_COLORS, type FacilityWithDistance } from "../lib/geo";
 import { insuranceGuidance } from "../lib/insurance";
 import type { InsuranceType } from "../lib/intake";
-import { applyTier, charityTier, CHARITY_PROGRAM_NAMES, FREE_TIER_STATES, fqhcSlidingFee, MEDICARE_CAP_STATES, UPPER_BOUND_STATES } from "../lib/policy";
+import { applyTier, charityTier, CHARITY_PROGRAM_NAMES, FEDERAL_CAP_LINE, FREE_TIER_STATES, fqhcSlidingFee, isFederalCapHospital, MEDICARE_CAP_STATES, UPPER_BOUND_STATES } from "../lib/policy";
 import { GlassPanel } from "./GlassPanel";
 
 const money = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
@@ -84,6 +84,10 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
   if (facility.type === "fqhc") {
     ({ hero, label: heroLabel } = fqhcSlidingFee(fplPct, insuranceType != null && insuranceType !== "uninsured"));
   }
+  if (facility.type === "va_hospital" && hero === "Tier unknown") {
+    hero = "VA care";
+    heroLabel = "For enrolled veterans: costs depend on your VA enrollment and priority group, not state charity care. Ask the VA about eligibility.";
+  }
   if (facility.type === "urgent_care") {
     hero = "Urgent care";
     heroLabel =
@@ -101,6 +105,13 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
     } else {
       heroLabel = `${cap.programName} ${cap.capLine} (estimate, confirm with billing office).`;
     }
+  }
+  // Any state: when no state rule produced a figure, a nonprofit hospital's
+  // federal cap, with Medicare's average as the reference point.
+  const stateFigure = patientPaysPct != null || (cap != null && facility.charity_care_participant && fplPct != null && fplPct <= cap.maxFplPct);
+  if (!stateFigure && tier !== "insured" && isFederalCapHospital(facility) && medicarePayment != null && charge != null) {
+    hero = money(medicarePayment);
+    heroLabel = `Medicare's average payment here (CMS, 2024), vs a ${money(charge)} typical billed charge. ${FEDERAL_CAP_LINE} (estimate, confirm with billing office).`;
   }
 
   const place = `${facility.address}, ${facility.city}, ${facility.state} ${facility.zip}`;

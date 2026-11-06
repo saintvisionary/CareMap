@@ -111,6 +111,14 @@ implemented, and Delaware's starts January 1, 2027.
 Every unmodeled state shows "rules coming soon" plus federal (501(r)) guidance
 instead of a guessed number.
 
+In every state, nonprofit hospitals also fall under federal law (26 U.S.C.
+501(r)): someone who qualifies for the hospital's own financial assistance
+policy can't be charged more than its "amount generally billed." Many
+hospitals base that on Medicare's rates, so wherever no state rule gives a
+figure, CareMap shows Medicare's average payment for the procedure at that
+hospital (CMS, 2024) next to the typical billed charge, as a reference, not
+a price.
+
 The pipeline is state-agnostic (`python scripts/build_data.py --states
 XX`): adding a state's *location* data is a data pull, but adding its *tier
 formula* means verifying that state's actual law first.

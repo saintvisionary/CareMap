@@ -441,6 +441,20 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
             ))}
 
             <div className={section}>
+              <h2 className={h2}>Nonprofit hospitals, in every state</h2>
+              <p className={p}>
+                Even where CareMap doesn't model a state law, federal law (26 U.S.C. 501(r)) applies to every nonprofit hospital: if you qualify for
+                its financial assistance policy, it can't charge you more for emergency or medically necessary care than its{" "}
+                <strong className="text-white/90">"amount generally billed"</strong> to insured patients.
+              </p>
+              <p className={p}>
+                Each hospital sets that amount and decides who qualifies. Many base it on what Medicare pays, so CareMap shows{" "}
+                <strong className="text-white/90">Medicare's average payment</strong> for the procedure at that hospital (CMS, 2024) next to the typical
+                billed charge -- a reference point, not your price. It could be higher (if the hospital also counts private insurers' rates) or lower.
+              </p>
+            </div>
+
+            <div className={section}>
               <h2 className={h2}>Sliding-fee health centers</h2>
               <p className={p}>
                 Federally Qualified Health Centers and Look-Alikes are clinics that follow a <strong className="text-white/90">federal</strong>{" "}

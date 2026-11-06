@@ -82,3 +82,25 @@ describe("summary tiers", () => {
     expect(run({ fplPct: 90, facilities: [CLINIC, facility({})] })).toMatch(/COMMUNITY CLINIC.*full discount/);
   });
 });
+
+describe("federal nonprofit-hospital cap (any state)", () => {
+  const fl = facility({
+    state: "FL",
+    ownership: "Voluntary non-profit - Private",
+    charity_care_participant: false,
+    drg_charges: { "280": { avg_charge: 85_123, avg_total_payment: 14_566 } },
+  });
+
+  it("gives Medicare's payment as a reference, framed as 'if you qualify'", () => {
+    const s = run({ need: "heart attack", facilities: [fl] });
+    expect(s).toMatch(/nonprofit hospital, so if you qualify for its financial assistance.*\$14,566/);
+    expect(s).toMatch(/could be higher or lower/);
+  });
+
+  it("not for for-profit hospitals, insured users, or where a state tier already applies", () => {
+    expect(run({ need: "heart attack", facilities: [{ ...fl, ownership: "Proprietary" }] })).not.toMatch(/amount generally billed/);
+    expect(run({ need: "heart attack", insuranceType: "private", facilities: [fl] })).not.toMatch(/amount generally billed/);
+    const nj = facility({ drg_charges: { "280": { avg_charge: 100_000, avg_total_payment: 20_000 } } });
+    expect(run({ need: "heart attack", facilities: [nj] })).not.toMatch(/amount generally billed/);
+  });
+});

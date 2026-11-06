@@ -8,6 +8,7 @@ import {
   charityTier,
   CHARITY_PROGRAM_NAMES,
   FREE_TIER_STATES,
+  isFederalCapHospital,
   MEDICARE_CAP_STATES,
   UPPER_BOUND_STATES,
   fqhcSlidingFee,
@@ -41,6 +42,13 @@ function medicareCapLine(f: FacilityWithDistance, drgCode: string, fplPct: numbe
     return "";
   }
   return ` Medicare's average total payment for it there is ${money(payment)} (CMS, 2024); under ${cap.programName}, what you can be charged is capped at the greater of that or ${cap.medicaidName}'s rate, which CareMap doesn't have, so it could be higher.`;
+}
+
+/** Any state: a nonprofit hospital's federal 501(r) cap, when no state rule gave a figure. */
+function federalCapLine(f: FacilityWithDistance, drgCode: string, hasStateFigure: boolean, insuranceType: InsuranceType | null): string {
+  const payment = f.drg_charges[drgCode]?.avg_total_payment;
+  if (hasStateFigure || payment == null || !isFederalCapHospital(f) || (insuranceType != null && insuranceType !== "uninsured")) return "";
+  return ` It's a nonprofit hospital, so if you qualify for its financial assistance, federal law caps your bill at its "amount generally billed," which is often set from Medicare's rates: Medicare's average total payment for it there is ${money(payment)} (CMS, 2024), and yours could be higher or lower.`;
 }
 
 export function summarize(result: QueryResult): string {
@@ -165,6 +173,7 @@ export function summarize(result: QueryResult): string {
       lines.push(
         `${drg.label} at ${withCharge.name}: typical billed charge is ${money(charge)}.` +
           medicareCapLine(withCharge, drg.code, fplPct, insuranceType) +
+          federalCapLine(withCharge, drg.code, chargeTier != null || medicareCapLine(withCharge, drg.code, fplPct, insuranceType) !== "", insuranceType) +
           (chargeTier != null && insuranceType === "uninsured"
             ? ` At your tier, estimated amount owed is ${UPPER_BOUND_STATES.has(withCharge.state) && chargeTier.patientPaysPct > 0 ? "at most " : ""}${money(applyTier(charge, chargeTier.patientPaysPct))}.`
             : ""),

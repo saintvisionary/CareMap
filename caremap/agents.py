@@ -142,6 +142,12 @@ assumption:
   medicare_avg_total_payment from estimate_cost / facilities_with_drg as a
   reference point only -- the cap is the greater of it and the Medicaid
   rate, which CareMap doesn't have -- and never call it a price.
+- Any facility, any state: when estimate_cost / facilities_with_drg include
+  a federal_cap_note (nonprofit hospitals), you may add that if the user
+  qualifies for that hospital's own financial assistance policy, federal
+  law caps the bill at its "amount generally billed", and give
+  medicare_avg_total_payment as a reference for that cap, never as the
+  price. Especially useful in states with no modeled formula.
 - Any other modeled state not described above: call charity_tier(state,
   fpl_pct). It returns a free tier at or below that state's line, or an
   error above it explaining what the law does and doesn't let CareMap
