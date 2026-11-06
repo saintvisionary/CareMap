@@ -7,6 +7,9 @@
 // condition -- that's the variant a nearby hospital is most likely to have
 // real billed-charge data for.
 export const NEED_TO_DRG: Record<string, { code: string; label: string }> = {
+  // The one exception to the most-coverage rule: 418 ("with CC") has ~3.7x the
+  // coverage, but a planned gallbladder surgery is usually uncomplicated, and
+  // 418 would show everyone the higher with-complications price.
   "gallbladder surgery": { code: "419", label: "Laparoscopic cholecystectomy" },
   pneumonia: { code: "193", label: "Simple pneumonia and pleurisy (with MCC)" },
   "heart failure": { code: "291", label: "Heart failure and shock (with MCC)" },
