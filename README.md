@@ -130,6 +130,7 @@ Frontend (React + Vite + MapLibre):
 ```
 npm install
 npm run dev
+npm test   # frontend logic, incl. a check that every tier matches policy.json
 ```
 
 The map and eligibility answers work with no setup. To enable the optional
