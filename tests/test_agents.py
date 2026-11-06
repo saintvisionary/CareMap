@@ -49,3 +49,22 @@ def test_no_em_dashes_in_replies():
     assert no_em_dashes("Go to the ER\u2014do not drive.") == "Go to the ER -- do not drive."
     assert no_em_dashes("a \u2014 b") == "a -- b"
     assert no_em_dashes("no dashes here") == "no dashes here"
+
+
+def test_each_lambda_request_gets_a_fresh_agent(monkeypatch):
+    # Regression: a module-level agent kept every user's conversation and
+    # tool numbers, so one user's session leaked into the next answer.
+    import json
+    import caremap.lambda_handler as lh
+    built, used = [], []
+    monkeypatch.setattr(lh, "_model", None)
+    monkeypatch.setattr(lh, "make_model", lambda: "model")
+    monkeypatch.setattr(lh, "build_orchestrator", lambda model=None: built.append(model) or object())
+    monkeypatch.setattr(lh, "handle_message",
+                        lambda message, orchestrator=None, **kw: used.append(orchestrator) or {"reply": "ok", "map_commands": []})
+    event = {"requestContext": {"http": {"method": "POST", "sourceIp": "203.0.113.9"}}, "headers": {},
+             "body": json.dumps({"message": "hospitals near 07018", "zipCode": "07018"})}
+    assert lh.handler(event, None)["statusCode"] == 200
+    assert lh.handler(event, None)["statusCode"] == 200
+    assert built == ["model", "model"]  # model client reused, agent rebuilt
+    assert used[0] is not used[1]

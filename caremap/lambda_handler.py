@@ -18,7 +18,7 @@ import re
 import time
 from collections import defaultdict, deque
 
-from .agents import build_orchestrator, handle_message
+from .agents import build_orchestrator, handle_message, make_model
 
 MAX_MESSAGE_LENGTH = int(os.getenv("CAREMAP_MAX_MESSAGE_LENGTH", "500"))
 RATE_LIMIT_PER_MINUTE = int(os.getenv("CAREMAP_RATE_LIMIT_PER_MINUTE", "20"))
@@ -27,7 +27,11 @@ ALLOWED_ORIGINS = [o.strip() for o in os.getenv("CAREMAP_ALLOWED_ORIGINS", "").s
 # Warm-container-scoped state. Reset on cold start; not shared across
 # concurrent execution environments (see module docstring).
 _request_times: dict[str, deque] = defaultdict(deque)
-_orchestrator = None  # built lazily so import-time failures don't break cold start diagnostics
+# Only the model client is reused across requests. The agent itself must be
+# rebuilt for every request: a Strands Agent keeps its message history (and
+# the evidence ledger its numbers), so a shared one leaked one user's
+# conversation into the next user's answers and loosened the grounding check.
+_model = None  # built lazily so import-time failures don't break cold start diagnostics
 
 
 def _cors_headers(origin: str | None) -> dict:
@@ -66,7 +70,7 @@ def _response(status: int, body: dict, origin: str | None) -> dict:
 
 
 def handler(event: dict, context) -> dict:  # noqa: ARG001 (context required by Lambda)
-    global _orchestrator
+    global _model
 
     http = event.get("requestContext", {}).get("http", {})
     method = http.get("method", "POST")
@@ -94,8 +98,9 @@ def handler(event: dict, context) -> dict:  # noqa: ARG001 (context required by 
     if len(message) > MAX_MESSAGE_LENGTH:
         return _response(400, {"error": f"message exceeds {MAX_MESSAGE_LENGTH} characters"}, origin)
 
-    if _orchestrator is None:
-        _orchestrator = build_orchestrator()
+    if _model is None:
+        _model = make_model()
+    orchestrator = build_orchestrator(model=_model)
 
     zip_code = payload.get("zipCode")
     insurance_type = payload.get("insuranceType")
@@ -106,7 +111,7 @@ def handler(event: dict, context) -> dict:  # noqa: ARG001 (context required by 
 
     try:
         result = handle_message(
-            message, orchestrator=_orchestrator,
+            message, orchestrator=orchestrator,
             zip_code=zip_code if isinstance(zip_code, str) else None,
             insurance_type=insurance_type if insurance_type in _valid_insurance_types else None,
             veteran=veteran if isinstance(veteran, bool) else None,
