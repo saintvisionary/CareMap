@@ -99,7 +99,7 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="relative h-[100dvh] w-screen overflow-hidden bg-[#1c1c1e] font-sans text-white antialiased">
+      <div className="relative h-[100dvh] w-screen overflow-hidden bg-[#172033] font-sans text-white antialiased">
         <MapView
           facilities={facilities}
           internationalFacilities={abroad ? cm.internationalFacilities : []}
@@ -115,7 +115,7 @@ export default function App() {
         <InfoPanel open={infoOpen} onClose={() => setInfoOpen(false)} />
 
         <aside
-          className={`absolute inset-x-0 bottom-0 z-10 flex flex-col rounded-t-[26px] border border-white/[0.08] bg-[#1c1c1e]/[0.88] shadow-2xl shadow-black/60 backdrop-blur-2xl backdrop-saturate-150 transition-[height] duration-300 sm:inset-y-4 sm:left-4 sm:right-auto sm:h-auto sm:w-[404px] sm:rounded-[24px] ${
+          className={`absolute inset-x-0 bottom-0 z-10 flex flex-col rounded-t-[26px] border border-white/[0.08] bg-[#1b2336]/[0.86] shadow-2xl shadow-black/60 backdrop-blur-2xl backdrop-saturate-150 transition-[height] duration-300 sm:inset-y-4 sm:left-4 sm:right-auto sm:h-auto sm:w-[404px] sm:rounded-[24px] ${
             sheet === "full" ? "h-[88dvh]" : "h-[52dvh]"
           }`}
         >

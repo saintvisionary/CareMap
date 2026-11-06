@@ -7,64 +7,64 @@ import type { InternationalFacility } from "../lib/international";
 import type { Facility } from "../lib/types";
 import type { MapFlyTo } from "../hooks/useCareMap";
 
-// OpenFreeMap's "fiord" layout, repainted in neutral graphite: its own
-// slate-blue palette competed with the data. Land, water and roads are
-// separated by lightness alone, so tier colors are the only color on the map.
+// OpenFreeMap's "fiord" layout in a deeper, richer navy than its stock
+// slate: water darker than land, parks a muted teal, labels a cool off-white,
+// so green, orange and gray tier dots stay the strongest color on screen.
 const STYLE_URL = "https://tiles.openfreemap.org/styles/fiord";
-const LABEL_HALO = "rgba(0,0,0,0.65)";
-const GRAPHITE: Record<string, Record<string, string>> = {
-  background: { "background-color": "#1c1c1e" },
-  water: { "fill-color": "#0f1011" },
-  landcover_ice_shelf: { "fill-color": "#26262a" },
-  landuse_residential: { "fill-color": "#222225" },
-  landcover_wood: { "fill-color": "rgba(52,64,52,0.35)" },
-  park: { "fill-color": "#1f2520" },
-  park_outline: { "line-color": "#262c27" },
-  waterway: { "line-color": "#131416" },
-  building: { "fill-color": "rgba(44,44,48,0.8)" },
-  tunnel_motorway_casing: { "line-color": "#2e2e32" },
-  tunnel_motorway_inner: { "line-color": "#242427" },
-  "aeroway-taxiway": { "line-color": "#2c2c30" },
-  "aeroway-runway-casing": { "line-color": "#2c2c30" },
-  "aeroway-area": { "fill-color": "#242427" },
-  "aeroway-runway": { "line-color": "#242427" },
-  road_area_pier: { "fill-color": "#1c1c1e" },
-  road_pier: { "line-color": "#1c1c1e" },
-  highway_path: { "line-color": "#2a2a2e" },
-  highway_minor: { "line-color": "#2c2c30" },
-  highway_major_casing: { "line-color": "#36363b" },
-  highway_major_inner: { "line-color": "#2c2c30" },
-  highway_major_subtle: { "line-color": "#2a2a2e" },
-  highway_motorway_casing: { "line-color": "#3d3d42" },
-  highway_motorway_inner: { "line-color": "#333337" },
-  highway_motorway_subtle: { "line-color": "rgba(255,255,255,0.08)" },
-  railway_transit: { "line-color": "#262629" },
-  railway_transit_dashline: { "line-color": "#303034" },
-  railway_service: { "line-color": "#262629" },
-  railway_service_dashline: { "line-color": "#303034" },
-  railway: { "line-color": "#262629" },
-  railway_dashline: { "line-color": "#303034" },
-  water_name: { "text-color": "#5d5f64", "text-halo-color": "#0f1011" },
-  highway_name_other: { "text-color": "#8e8e93", "text-halo-color": "#1c1c1e" },
-  highway_ref: { "text-color": "#a1a1a6", "text-halo-color": "#1c1c1e" },
-  boundary_state: { "line-color": "rgba(255,255,255,0.14)" },
-  "boundary_country_z0-4": { "line-color": "rgba(255,255,255,0.3)" },
-  "boundary_country_z5-": { "line-color": "rgba(255,255,255,0.3)" },
-  place_other: { "text-color": "#8e8e93", "text-halo-color": LABEL_HALO },
-  place_suburb: { "text-color": "#8e8e93", "text-halo-color": LABEL_HALO },
-  place_village: { "text-color": "#8e8e93", "text-halo-color": LABEL_HALO },
-  place_town: { "text-color": "#aeaeb2", "text-halo-color": LABEL_HALO },
-  place_city: { "text-color": "#d1d1d6", "text-halo-color": LABEL_HALO },
-  place_city_large: { "text-color": "#e5e5ea", "text-halo-color": LABEL_HALO },
-  place_state: { "text-color": "#6e6e73", "text-halo-color": LABEL_HALO },
-  place_country_other: { "text-color": "#8e8e93", "text-halo-color": LABEL_HALO },
-  place_country_minor: { "text-color": "#8e8e93", "text-halo-color": LABEL_HALO },
-  place_country_major: { "text-color": "#aeaeb2", "text-halo-color": LABEL_HALO },
-  place_continent: { "text-color": "#aeaeb2", "text-halo-color": LABEL_HALO },
+const LABEL_HALO = "rgba(14,20,34,0.85)";
+const NAVY: Record<string, Record<string, string>> = {
+  background: { "background-color": "#283348" },
+  water: { "fill-color": "#172033" },
+  landcover_ice_shelf: { "fill-color": "#2f3a52" },
+  landuse_residential: { "fill-color": "#2d3850" },
+  landcover_wood: { "fill-color": "rgba(62,92,98,0.35)" },
+  park: { "fill-color": "#2f454b" },
+  park_outline: { "line-color": "#36505a" },
+  waterway: { "line-color": "#1c2639" },
+  building: { "fill-color": "rgba(24,32,50,0.6)" },
+  tunnel_motorway_casing: { "line-color": "#3e4a68" },
+  tunnel_motorway_inner: { "line-color": "#323d58" },
+  "aeroway-taxiway": { "line-color": "#3c4764" },
+  "aeroway-runway-casing": { "line-color": "#3c4764" },
+  "aeroway-area": { "fill-color": "#313c56" },
+  "aeroway-runway": { "line-color": "#313c56" },
+  road_area_pier: { "fill-color": "#283348" },
+  road_pier: { "line-color": "#283348" },
+  highway_path: { "line-color": "#36425e" },
+  highway_minor: { "line-color": "#3a4662" },
+  highway_major_casing: { "line-color": "#4a5675" },
+  highway_major_inner: { "line-color": "#3c4866" },
+  highway_major_subtle: { "line-color": "#3a4562" },
+  highway_motorway_casing: { "line-color": "#596788" },
+  highway_motorway_inner: { "line-color": "#4a577a" },
+  highway_motorway_subtle: { "line-color": "rgba(170,190,235,0.16)" },
+  railway_transit: { "line-color": "#323d57" },
+  railway_transit_dashline: { "line-color": "#46526f" },
+  railway_service: { "line-color": "#323d57" },
+  railway_service_dashline: { "line-color": "#46526f" },
+  railway: { "line-color": "#323d57" },
+  railway_dashline: { "line-color": "#46526f" },
+  water_name: { "text-color": "#7486ab", "text-halo-color": "#172033" },
+  highway_name_other: { "text-color": "#97a3bd", "text-halo-color": "#283348" },
+  highway_ref: { "text-color": "#b3c0dc", "text-halo-color": "#283348" },
+  boundary_state: { "line-color": "rgba(160,182,228,0.28)" },
+  "boundary_country_z0-4": { "line-color": "rgba(180,200,240,0.45)" },
+  "boundary_country_z5-": { "line-color": "rgba(180,200,240,0.45)" },
+  place_other: { "text-color": "#9ea9c1", "text-halo-color": LABEL_HALO },
+  place_suburb: { "text-color": "#9ea9c1", "text-halo-color": LABEL_HALO },
+  place_village: { "text-color": "#9ea9c1", "text-halo-color": LABEL_HALO },
+  place_town: { "text-color": "#c4cddf", "text-halo-color": LABEL_HALO },
+  place_city: { "text-color": "#e2e8f3", "text-halo-color": LABEL_HALO },
+  place_city_large: { "text-color": "#eef2f9", "text-halo-color": LABEL_HALO },
+  place_state: { "text-color": "#8592ae", "text-halo-color": LABEL_HALO },
+  place_country_other: { "text-color": "#9ea9c1", "text-halo-color": LABEL_HALO },
+  place_country_minor: { "text-color": "#9ea9c1", "text-halo-color": LABEL_HALO },
+  place_country_major: { "text-color": "#c4cddf", "text-halo-color": LABEL_HALO },
+  place_continent: { "text-color": "#c4cddf", "text-halo-color": LABEL_HALO },
 };
 
-function applyGraphite(map: maplibregl.Map) {
-  for (const [id, paint] of Object.entries(GRAPHITE)) {
+function applyNavy(map: maplibregl.Map) {
+  for (const [id, paint] of Object.entries(NAVY)) {
     if (!map.getLayer(id)) continue;
     for (const [prop, value] of Object.entries(paint)) map.setPaintProperty(id, prop as Parameters<typeof map.setPaintProperty>[1], value);
   }
@@ -118,7 +118,7 @@ export function MapView({
       attributionControl: { compact: true },
     });
     mapRef.current = map;
-    map.on("style.load", () => applyGraphite(map));
+    map.on("style.load", () => applyNavy(map));
     if (import.meta.env.DEV) (window as unknown as Record<string, unknown>).__caremap_debug_map = map;
 
     // Ambient idle drift: the map has nothing to look at before a first
@@ -282,7 +282,7 @@ export function MapView({
           loading, markers or interaction. */}
       <div
         className="pointer-events-none absolute inset-0"
-        style={{ boxShadow: "inset 0 0 160px 30px rgba(0,0,0,0.5)" }}
+        style={{ boxShadow: "inset 0 0 160px 30px rgba(8,13,26,0.45)" }}
       />
     </>
   );

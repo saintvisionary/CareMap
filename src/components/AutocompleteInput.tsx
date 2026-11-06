@@ -110,7 +110,7 @@ export function AutocompleteInput({
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.14, ease: [0.23, 1, 0.32, 1] }}
             role="listbox"
-            className="absolute z-30 mt-1.5 w-full max-h-64 overflow-y-auto rounded-xl border border-white/[0.08] bg-[#2c2c2e]/95 p-1 shadow-2xl shadow-black/60 backdrop-blur-2xl"
+            className="absolute z-30 mt-1.5 w-full max-h-64 overflow-y-auto rounded-xl border border-white/[0.08] bg-[#263049]/95 p-1 shadow-2xl shadow-black/60 backdrop-blur-2xl"
           >
             {suggestions.map((s, i) => (
               <li key={`${s.value}-${i}`} role="option" aria-selected={i === highlight}>

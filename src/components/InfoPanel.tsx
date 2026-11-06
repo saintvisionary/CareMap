@@ -63,7 +63,7 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
             exit={{ opacity: 0, scale: 0.97, y: 16 }}
             transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full sm:max-w-lg max-h-[85vh] sm:max-h-[80vh] overflow-y-auto rounded-t-glass sm:rounded-glass border border-white/[0.08] bg-[#1c1c1e]/95 backdrop-blur-2xl shadow-2xl shadow-black/60 p-5 sm:p-6 space-y-6"
+            className="w-full sm:max-w-lg max-h-[85vh] sm:max-h-[80vh] overflow-y-auto rounded-t-glass sm:rounded-glass border border-white/[0.08] bg-[#1b2336]/95 backdrop-blur-2xl shadow-2xl shadow-black/60 p-5 sm:p-6 space-y-6"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
