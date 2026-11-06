@@ -32,3 +32,16 @@ describe("parses the rest of the hint", () => {
     expect(redact("07018, twisted ankle").emergency).toBe(false);
   });
 });
+
+describe("newer needs", () => {
+  it.each([
+    ["I fainted at work", "fainting"],
+    ["need a TAVR", "heart valve replacement (TAVR)"],
+    ["poor circulation in my legs", "poor circulation in the legs"],
+    ["respiratory failure", "respiratory failure"],
+    ["need bowel surgery", "bowel surgery"],
+    ["had a mini-stroke", "mini-stroke (TIA)"],
+    ["a stroke", "stroke"],
+    ["severe dehydration", "dehydration or electrolyte imbalance"],
+  ])("%s -> %s", (msg, need) => expect(redact(`07018, ${msg}`).need).toBe(need));
+});

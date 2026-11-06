@@ -21,15 +21,20 @@ export const NEED_TO_DRG: Record<string, { code: string; label: string }> = {
   "heart bypass surgery": { code: "236", label: "Coronary bypass without cardiac catheterization" },
   "pacemaker implant": { code: "243", label: "Permanent cardiac pacemaker implant (with CC)" },
   "high blood pressure crisis": { code: "305", label: "Hypertension" },
+  fainting: { code: "312", label: "Syncope and collapse" },
+  "heart valve replacement (TAVR)": { code: "267", label: "Endovascular cardiac valve replacement (without MCC)" },
+  "poor circulation in the legs": { code: "300", label: "Peripheral vascular disorders (with CC)" },
 
   // Lungs & breathing
   "asthma or bronchitis flare": { code: "202", label: "Bronchitis and asthma (with CC/MCC)" },
   "blood clot in the lung": { code: "175", label: "Pulmonary embolism (with MCC)" },
   "collapsed lung": { code: "200", label: "Pneumothorax (with CC)" },
   "serious respiratory infection": { code: "177", label: "Respiratory infections and inflammations (with MCC)" },
+  "respiratory failure": { code: "189", label: "Pulmonary edema and respiratory failure" },
 
   // Stomach & digestion
   "stomach bleeding": { code: "378", label: "Gastrointestinal hemorrhage (with CC)" },
+  "bowel surgery": { code: "330", label: "Major small and large bowel procedures (with CC)" },
   "stomach or bowel blockage": { code: "389", label: "Gastrointestinal obstruction (with CC)" },
   "acid reflux or gastritis": { code: "392", label: "Esophagitis, gastroenteritis and digestive disorders" },
   pancreatitis: { code: "439", label: "Disorders of the pancreas (with CC)" },
@@ -54,6 +59,7 @@ export const NEED_TO_DRG: Record<string, { code: string; label: string }> = {
 
   // Brain & nervous system
   stroke: { code: "065", label: "Intracranial hemorrhage or cerebral infarction (with CC)" },
+  "mini-stroke (TIA)": { code: "069", label: "Transient ischemia" },
   seizures: { code: "101", label: "Seizures" },
   "head injury": { code: "083", label: "Traumatic stupor and coma, over 1 hour (with CC)" },
   "dizziness or balance problems": { code: "149", label: "Dysequilibrium" },
@@ -87,6 +93,7 @@ export const NEED_TO_DRG: Record<string, { code: string; label: string }> = {
   // Diabetes & hormones
   "diabetes complications": { code: "638", label: "Diabetes (with CC)" },
   "thyroid or hormone disorder": { code: "644", label: "Endocrine disorders (with CC)" },
+  "dehydration or electrolyte imbalance": { code: "641", label: "Nutrition, metabolism, fluid and electrolyte disorders (without MCC)" },
 
   // Women's reproductive health
   "uterine or ovarian condition": { code: "742", label: "Uterine and adnexa procedure, non-malignant" },
@@ -123,11 +130,14 @@ export const NEED_CATEGORIES: { category: string; items: string[] }[] = [
       "heart bypass surgery",
       "pacemaker implant",
       "high blood pressure crisis",
+      "fainting",
+      "heart valve replacement (TAVR)",
+      "poor circulation in the legs",
     ],
   },
   {
     category: "Lungs & breathing",
-    items: ["pneumonia", "COPD", "asthma or bronchitis flare", "blood clot in the lung", "collapsed lung", "serious respiratory infection"],
+    items: ["pneumonia", "COPD", "asthma or bronchitis flare", "blood clot in the lung", "collapsed lung", "serious respiratory infection", "respiratory failure"],
   },
   {
     category: "Stomach & digestion",
@@ -138,6 +148,7 @@ export const NEED_CATEGORIES: { category: string; items: string[] }[] = [
       "acid reflux or gastritis",
       "pancreatitis",
       "liver disease",
+      "bowel surgery",
       "hernia repair",
       "appendix removal",
     ],
@@ -160,7 +171,7 @@ export const NEED_CATEGORIES: { category: string; items: string[] }[] = [
   },
   {
     category: "Brain & nervous system",
-    items: ["stroke", "seizures", "head injury", "dizziness or balance problems", "migraine or severe headaches", "nerve disorder"],
+    items: ["stroke", "mini-stroke (TIA)", "seizures", "head injury", "dizziness or balance problems", "migraine or severe headaches", "nerve disorder"],
   },
   {
     category: "Mental health & substance use",
@@ -176,7 +187,7 @@ export const NEED_CATEGORIES: { category: string; items: string[] }[] = [
     category: "Blood, immune system & cancer care",
     items: ["anemia or blood disorder", "blood clotting disorder", "chemotherapy", "leukemia or lymphoma"],
   },
-  { category: "Diabetes & hormones", items: ["diabetes complications", "thyroid or hormone disorder"] },
+  { category: "Diabetes & hormones", items: ["diabetes complications", "thyroid or hormone disorder", "dehydration or electrolyte imbalance"] },
   { category: "Women's reproductive health", items: ["uterine or ovarian condition", "gynecologic cancer care"] },
   { category: "Men's reproductive health", items: ["enlarged prostate"] },
   { category: "Serious infection", items: ["sepsis or bloodstream infection", "infection after surgery or injury"] },

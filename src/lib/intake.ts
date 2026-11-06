@@ -73,6 +73,11 @@ const INSURANCE_PATTERNS: { type: InsuranceType; pattern: RegExp }[] = [
 const NEED_KEYWORDS: { pattern: RegExp; need: string }[] = [
   // Heart & circulation
   { pattern: /heart attack|myocardial infarction/i, need: "heart attack" },
+  { pattern: /\bfaint(ed|ing)?\b|passed out|syncope/i, need: "fainting" },
+  { pattern: /\btavr\b|heart valve|valve replacement|aortic stenosis/i, need: "heart valve replacement (TAVR)" },
+  { pattern: /peripheral (artery|arterial|vascular)|poor circulation/i, need: "poor circulation in the legs" },
+  { pattern: /respiratory failure|pulmonary edema|fluid in (my |the )?lungs/i, need: "respiratory failure" },
+  { pattern: /dehydrat(ed|ion)|electrolyte/i, need: "dehydration or electrolyte imbalance" },
   { pattern: /irregular heartbeat|arrhythmia|atrial fibrillation|\bafib\b/i, need: "irregular heartbeat" },
   { pattern: /chest pain/i, need: "chest pain" },
   { pattern: /heart failure/i, need: "heart failure" },
@@ -93,6 +98,7 @@ const NEED_KEYWORDS: { pattern: RegExp; need: string }[] = [
   { pattern: /gallbladder|cholecystectomy/i, need: "gallbladder surgery" },
   { pattern: /stomach bleeding|gi bleed|gastrointestinal hemorrhage/i, need: "stomach bleeding" },
   { pattern: /bowel (blockage|obstruction)|intestinal blockage/i, need: "stomach or bowel blockage" },
+  { pattern: /bowel (surgery|resection)|colectomy|colon surgery/i, need: "bowel surgery" },
   { pattern: /acid reflux|gastritis|heartburn|\bgerd\b/i, need: "acid reflux or gastritis" },
   { pattern: /pancreatitis/i, need: "pancreatitis" },
   { pattern: /cirrhosis|liver disease|hepatitis/i, need: "liver disease" },
@@ -116,6 +122,7 @@ const NEED_KEYWORDS: { pattern: RegExp; need: string }[] = [
   { pattern: /arm (surgery|injury)|leg (surgery|injury)/i, need: "arm or leg procedure" },
 
   // Brain & nervous system
+  { pattern: /\btia\b|mini[- ]?stroke|transient ischemic/i, need: "mini-stroke (TIA)" },
   { pattern: /\bstroke\b|cerebral infarction/i, need: "stroke" },
   { pattern: /seizure/i, need: "seizures" },
   { pattern: /head injury|concussion|hit (my |)?head/i, need: "head injury" },
