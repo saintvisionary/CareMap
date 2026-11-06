@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import type { ChatMessage } from "../hooks/useCareMap";
+import type { QuickQuestion } from "../lib/quickAnswers";
 import { ArrowUpIcon, ChevronLeftIcon, SparkleIcon } from "./icons";
 import { chip, chipOff, iconButton } from "./ui";
 
@@ -49,14 +50,15 @@ export function renderMessageText(text: string): ReactNode {
 
 interface AskBarProps {
   onSend: (text: string) => void;
+  onQuick: (q: QuickQuestion) => void;
   onFocus?: () => void;
-  suggestions: string[];
+  suggestions: QuickQuestion[];
   loading: boolean;
 }
 
 /** The always-visible question box, with a few questions worth asking for
  * what's on screen right now. */
-export function AskBar({ onSend, onFocus, suggestions, loading }: AskBarProps) {
+export function AskBar({ onSend, onQuick, onFocus, suggestions, loading }: AskBarProps) {
   const [draft, setDraft] = useState("");
   const submit = (text = draft) => {
     if (!text.trim() || loading) return;
@@ -68,9 +70,9 @@ export function AskBar({ onSend, onFocus, suggestions, loading }: AskBarProps) {
     <div className="space-y-2">
       {suggestions.length > 0 && (
         <div className="-mx-4 flex gap-1.5 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none]">
-          {suggestions.map((s) => (
-            <button key={s} type="button" onClick={() => submit(s)} disabled={loading} className={`${chip} ${chipOff} disabled:opacity-50`}>
-              {s}
+          {suggestions.map((q) => (
+            <button key={q.label} type="button" onClick={() => onQuick(q)} className={`${chip} ${chipOff}`}>
+              {q.label}
             </button>
           ))}
         </div>
@@ -146,7 +148,7 @@ export function Conversation({ messages, loading, onBack }: ConversationProps) {
               <span className="caremap-typing-dot" />
               <span className="caremap-typing-dot" />
             </span>
-            Checking hospital data
+            Checking hospital data, usually 10 to 20 seconds
           </div>
         )}
         <div ref={endRef} />

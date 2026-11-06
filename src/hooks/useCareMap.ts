@@ -276,6 +276,26 @@ export function useCareMap(
     setDestination(place.trim() || null);
   }, []);
 
+  // Sends only the redacted text plus fplPct/tierPct, never income or
+  // household size.
+  const askWithContext = (message: string, p: Profile, fallback: string | null) => {
+    const fpl = profileFplPct(p);
+    setLoading(true);
+    askAgent(message, {
+      zipCode: validZip(p.zip),
+      insuranceType: p.insuranceType,
+      veteran: p.veteran,
+      tierPct: fpl != null ? njCharityTier(fpl).patientPaysPct : null,
+      fplPct: fpl,
+      need: p.need,
+    })
+      .then((agentReply) => {
+        if (agentReply?.reply) push("assistant", agentReply.reply);
+        else if (fallback) push("assistant", fallback);
+      })
+      .finally(() => setLoading(false));
+  };
+
   const sendMessage = useCallback(
     (text: string) => {
       if (!text.trim()) return;
@@ -328,24 +348,29 @@ export function useCareMap(
         answered = true;
       }
 
-      setLoading(true);
-      askAgent(hint.redactedMessage, {
-        zipCode: nextZip,
-        insuranceType: next.insuranceType,
-        veteran: next.veteran,
-        tierPct: nextFpl != null ? njCharityTier(nextFpl).patientPaysPct : null,
-        fplPct: nextFpl,
-        need: next.need,
-      })
-        .then((agentReply) => {
-          if (agentReply?.reply) push("assistant", agentReply.reply);
-          else if (!answered) push("assistant", "The assistant isn't available right now. The map and cost estimates still work: enter a ZIP code or city in the search bar.");
-        })
-        .finally(() => setLoading(false));
+      askWithContext(
+        hint.redactedMessage,
+        next,
+        answered ? null : "The assistant isn't available right now. The map and cost estimates still work: enter a ZIP code or city in the search bar.",
+      );
     },
     // validZip only reads zipCentroids.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [allFacilities, allClinics, allUrgentCare, zipCentroids, cityIndex, push],
+  );
+
+  /** A suggested question answered on the spot from the person's own
+   * inputs (src/lib/quickAnswers.ts). agentMessage, when given, also asks
+   * the AI for a follow-up, e.g. drafting an application letter. */
+  const answerLocally = useCallback(
+    (question: string, reply: string, agentMessage?: string) => {
+      touchedRef.current = true;
+      push("user", question);
+      push("assistant", reply);
+      if (agentMessage) askWithContext(agentMessage, profileRef.current, "The assistant isn't available right now, so there's no drafted letter, but the steps above still apply.");
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [push, zipCentroids],
   );
 
   // A preview marker opens a real search centered on that facility.
@@ -368,6 +393,7 @@ export function useCareMap(
     internationalSummary: international ? summarizeInternational(international.result, international.place) : null,
     messages,
     sendMessage,
+    answerLocally,
     loading,
     locate,
     locating,

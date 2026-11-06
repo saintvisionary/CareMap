@@ -1,5 +1,5 @@
 import { MotionConfig } from "framer-motion";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AskBar, Conversation, renderMessageText } from "./components/Conversation";
 import { CostDetails } from "./components/CostDetails";
 import { InfoIcon } from "./components/icons";
@@ -12,7 +12,7 @@ import { card, iconButton } from "./components/ui";
 import { useCareMap } from "./hooks/useCareMap";
 import { useCareMapData } from "./hooks/useCareMapData";
 import { warmAgent } from "./lib/agentClient";
-import { needKind } from "./lib/drg";
+import { quickAnswer, quickQuestions, type QuickContext, type QuickQuestion } from "./lib/quickAnswers";
 import type { Facility } from "./lib/types";
 
 type View = "results" | "conversation";
@@ -73,16 +73,24 @@ export default function App() {
     setView("conversation");
   };
 
-  const active = facilities.find((f) => f.ccn === activeCcn);
-  const zipReady = facilities.length > 0;
-  const suggestions = useMemo(() => {
-    if (abroad) return [];
-    if (!zipReady) return ["How does hospital charity care work?", "What's a sliding-fee clinic?"];
-    const out = [needKind(profile.need) === "hospital" ? "Which hospital is most affordable for me?" : "Which of these is most affordable?"];
-    out.push(active && active.type !== "fqhc" && active.type !== "urgent_care" ? `Help me apply for aid at ${active.name}` : "Help me apply for financial assistance");
-    out.push("What should I ask the billing office?");
-    return out;
-  }, [abroad, zipReady, profile.need, active]);
+  const active = facilities.find((f) => f.ccn === activeCcn) ?? null;
+  const quickCtx: QuickContext = {
+    facilities,
+    fplPct: cm.fplPct,
+    insuranceType: profile.insuranceType,
+    need: profile.need,
+    veteran: profile.veteran,
+    active,
+  };
+  const suggestions = abroad ? [] : quickQuestions(quickCtx, facilities.length > 0);
+  const onQuick = (q: QuickQuestion) => {
+    // Answered on the spot from what's on screen; applying also asks the AI
+    // to draft a letter for that hospital (its ID only, nothing personal).
+    const target = active && active.type !== "fqhc" && active.type !== "urgent_care" ? active : facilities.find((f) => f.type === "acute_care_hospital" || f.type === "critical_access_hospital");
+    const agentMessage = q.intent === "apply" && target ? `Draft my financial assistance application for ${target.name} (ccn ${target.ccn}).` : undefined;
+    cm.answerLocally(q.label, quickAnswer(q.intent, quickCtx), agentMessage);
+    setView("conversation");
+  };
 
   const hospitals = facilities.filter((f) => f.type !== "fqhc" && f.type !== "urgent_care").length;
   const clinicCount = facilities.filter((f) => f.type === "fqhc").length;
@@ -246,7 +254,7 @@ export default function App() {
             )}
 
           <div className="shrink-0 border-t border-white/[0.06] px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3">
-            <AskBar onSend={ask} onFocus={() => setView("conversation")} suggestions={view === "conversation" && cm.messages.length > 0 ? [] : suggestions} loading={cm.loading} />
+            <AskBar onSend={ask} onQuick={onQuick} onFocus={() => setView("conversation")} suggestions={suggestions} loading={cm.loading} />
           </div>
         </aside>
       </div>
