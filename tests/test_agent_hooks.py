@@ -40,3 +40,12 @@ def test_guard_forces_rewrite_on_ungrounded_number():
     assert guard.rewrites == 1
     assert guard.history[0]["ungrounded_numbers"] == [99000.0]
     assert guard.history[-1]["passed"] is True
+
+
+def test_missing_disclosure_alone_costs_no_rewrite():
+    # ensure_disclosure() appends the line after the run instead.
+    no_disclosure = "The typical billed charge is $70,584. At your tier you owe an estimated $0."
+    model = ScriptedModel([COST_CALLS, no_disclosure])
+    agent, ledger, guard = _build_agent(model)
+    agent("price gallbladder surgery at Morristown Medical Center")
+    assert guard.rewrites == 0

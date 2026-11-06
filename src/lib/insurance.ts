@@ -19,15 +19,15 @@ export const INSURANCE_LABELS: Record<InsuranceType, string> = {
 export function insuranceGuidance(insuranceType: InsuranceType): string {
   switch (insuranceType) {
     case "medicaid":
-      return "Medicaid generally covers hospital care at little to no direct cost to you. Charity care doesn't apply since you're not uninsured -- contact your Medicaid plan with billing questions.";
+      return "Medicaid generally covers hospital care at little to no direct cost to you. Charity care doesn't apply since you're not uninsured. Contact your Medicaid plan with billing questions.";
     case "medicare":
-      return "Charity care doesn't apply since you're not uninsured -- contact Medicare or your Medicare Advantage plan for your specific costs.";
+      return "Charity care doesn't apply since you're not uninsured. Contact Medicare or your Medicare Advantage plan for your specific costs.";
     case "private":
-      return "Since you have private insurance, charity care doesn't apply to you -- contact your insurer for your specific copay/deductible.";
+      return "Since you have private insurance, charity care doesn't apply to you. Contact your insurer for your specific copay/deductible.";
     case "va_tricare":
-      return "Charity care doesn't apply to VA/Tricare coverage -- consider care through the VA system, and contact Tricare for costs outside it.";
+      return "Charity care doesn't apply to VA/Tricare coverage. Consider care through the VA system, and contact Tricare for costs outside it.";
     case "unsure":
-      return "Charity care applies only if you're uninsured or underinsured -- confirm your coverage status for a personal estimate.";
+      return "Charity care applies only if you're uninsured or underinsured. Confirm your coverage status for a personal estimate.";
     case "uninsured":
       return "";
   }

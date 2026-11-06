@@ -113,89 +113,109 @@ export const NEED_TO_DRG: Record<string, { code: string; label: string }> = {
   "weight-loss (bariatric) surgery": { code: "621", label: "Procedure for obesity" },
 };
 
-// Two-tier grouping for the guided form, so it can show "what kind of
-// problem?" only after a body system is picked, instead of one long flat
-// list. Our DRG coverage is hospital-inpatient only (CMS doesn't publish
-// DRGs for outpatient visits), so categories without inpatient data
-// (routine dentistry, pregnancy/childbirth, a routine checkup) get a
-// free-text item instead of a fake dropdown of procedures we have no cost
-// data for.
-export const OTHER_NEED = "other";
+// Everyday needs come first in the form: most people are looking for a
+// checkup or a sick visit, not a procedure. None of these has a Medicare
+// inpatient price, so they search clinics and urgent care instead of
+// claiming a hospital charge. Keys are what intake.ts's parser returns.
+export type NeedKind = "clinic" | "urgent" | "hospital";
+export const CARE_NEEDS: { need: string; label: string; phrase: string; kind: NeedKind; note?: string }[] = [
+  { need: "checkup", label: "Checkup", phrase: "a checkup", kind: "clinic" },
+  { need: "sick visit", label: "Sick visit", phrase: "a sick visit", kind: "urgent" },
+  { need: "minor injury", label: "Minor injury", phrase: "a minor injury", kind: "urgent" },
+  { need: "dental care", label: "Dental", phrase: "dental care", kind: "clinic", note: "Many health centers offer dental care on the same sliding fee. Call to confirm." },
+  { need: "pregnancy care", label: "Pregnancy", phrase: "pregnancy care", kind: "clinic" },
+  { need: "counseling", label: "Mental health", phrase: "counseling or therapy", kind: "clinic", note: "If you're in crisis or thinking about suicide, call or text 988 any time." },
+];
+
+export function needKind(need: string | null): NeedKind | null {
+  if (!need) return null;
+  if (need in NEED_TO_DRG) return "hospital";
+  return CARE_NEEDS.find((n) => n.need === need)?.kind ?? null;
+}
+
+/** Sentence case for display; the lowercase keys stay as the parser's values. */
+export function needLabel(need: string): string {
+  const care = CARE_NEEDS.find((n) => n.need === need);
+  if (care) return care.label;
+  return need.charAt(0).toUpperCase() + need.slice(1);
+}
+
+// Hospital procedures, grouped for the form's picker. Groups and items run
+// from most to least common, so everyday conditions aren't buried under
+// cardiac surgery. Coverage is hospital-inpatient only (CMS doesn't publish
+// DRGs for outpatient visits).
 export const NEED_CATEGORIES: { category: string; items: string[] }[] = [
-  {
-    category: "Heart & circulation",
-    items: [
-      "heart attack",
-      "irregular heartbeat",
-      "chest pain",
-      "heart failure",
-      "stent or angioplasty",
-      "heart bypass surgery",
-      "pacemaker implant",
-      "high blood pressure crisis",
-      "fainting",
-      "heart valve replacement (TAVR)",
-      "poor circulation in the legs",
-    ],
-  },
-  {
-    category: "Lungs & breathing",
-    items: ["pneumonia", "COPD", "asthma or bronchitis flare", "blood clot in the lung", "collapsed lung", "serious respiratory infection", "respiratory failure"],
-  },
   {
     category: "Stomach & digestion",
     items: [
-      "gallbladder surgery",
-      "stomach bleeding",
-      "stomach or bowel blockage",
       "acid reflux or gastritis",
+      "gallbladder surgery",
+      "hernia repair",
+      "appendix removal",
+      "stomach or bowel blockage",
+      "stomach bleeding",
       "pancreatitis",
       "liver disease",
       "bowel surgery",
-      "hernia repair",
-      "appendix removal",
     ],
-  },
-  {
-    category: "Kidney & bladder",
-    items: ["kidney/urinary infection", "kidney failure", "kidney stones", "kidney transplant", "bladder problems"],
   },
   {
     category: "Bones, joints & muscles",
     items: [
-      "hip or femur fracture",
-      "hip or knee replacement",
       "back or spine problems",
-      "spinal fusion surgery",
       "broken bone, sprain or dislocation",
+      "hip or knee replacement",
       "bone or joint disease",
+      "hip or femur fracture",
       "arm or leg procedure",
+      "spinal fusion surgery",
     ],
   },
   {
-    category: "Brain & nervous system",
-    items: ["stroke", "mini-stroke (TIA)", "seizures", "head injury", "dizziness or balance problems", "migraine or severe headaches", "nerve disorder"],
+    category: "Heart & circulation",
+    items: [
+      "chest pain",
+      "high blood pressure crisis",
+      "irregular heartbeat",
+      "fainting",
+      "heart failure",
+      "heart attack",
+      "stent or angioplasty",
+      "pacemaker implant",
+      "poor circulation in the legs",
+      "heart valve replacement (TAVR)",
+      "heart bypass surgery",
+    ],
   },
   {
-    category: "Mental health & substance use",
-    items: ["severe depression", "psychosis or severe mental health crisis", "alcohol or drug withdrawal", "acute stress or crisis"],
+    category: "Lungs & breathing",
+    items: ["asthma or bronchitis flare", "pneumonia", "COPD", "serious respiratory infection", "blood clot in the lung", "collapsed lung", "respiratory failure"],
   },
+  {
+    category: "Kidney & bladder",
+    items: ["kidney/urinary infection", "kidney stones", "bladder problems", "kidney failure", "kidney transplant"],
+  },
+  {
+    category: "Brain & nervous system",
+    items: ["migraine or severe headaches", "dizziness or balance problems", "head injury", "seizures", "mini-stroke (TIA)", "stroke", "nerve disorder"],
+  },
+  { category: "Diabetes & hormones", items: ["diabetes complications", "dehydration or electrolyte imbalance", "thyroid or hormone disorder"] },
+  { category: "Skin", items: ["skin infection (cellulitis)", "burn injury"] },
   {
     category: "Ear, nose, mouth & throat",
     items: ["ear or throat infection", "severe dental or oral infection", "other ear, nose or throat procedure"],
   },
-  { category: "Eyes", items: ["eye disorder or infection"] },
-  { category: "Skin", items: ["skin infection (cellulitis)", "burn injury"] },
   {
-    category: "Blood, immune system & cancer care",
+    category: "Mental health & substance use",
+    items: ["severe depression", "acute stress or crisis", "alcohol or drug withdrawal", "psychosis or severe mental health crisis"],
+  },
+  { category: "Women's health", items: ["uterine or ovarian condition", "gynecologic cancer care"] },
+  { category: "Men's health", items: ["enlarged prostate"] },
+  { category: "Eyes", items: ["eye disorder or infection"] },
+  { category: "Serious infection", items: ["sepsis or bloodstream infection", "infection after surgery or injury"] },
+  {
+    category: "Blood & cancer care",
     items: ["anemia or blood disorder", "blood clotting disorder", "chemotherapy", "leukemia or lymphoma"],
   },
-  { category: "Diabetes & hormones", items: ["diabetes complications", "thyroid or hormone disorder", "dehydration or electrolyte imbalance"] },
-  { category: "Women's reproductive health", items: ["uterine or ovarian condition", "gynecologic cancer care"] },
-  { category: "Men's reproductive health", items: ["enlarged prostate"] },
-  { category: "Serious infection", items: ["sepsis or bloodstream infection", "infection after surgery or injury"] },
   { category: "Weight-loss surgery", items: ["weight-loss (bariatric) surgery"] },
-  { category: "Pregnancy, childbirth or newborn care", items: [] },
-  { category: "Dental cleaning or routine dental care", items: [] },
-  { category: "Checkup or something else", items: [] },
 ];

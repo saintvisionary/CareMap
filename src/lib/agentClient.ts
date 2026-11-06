@@ -25,9 +25,28 @@ const AGENT_URL = import.meta.env.VITE_AGENT_URL as string | undefined;
 // was about to arrive.
 const TIMEOUT_MS = 50000;
 
+let warmed = false;
+
+/** Wake the Lambda when the page opens, so the first question doesn't also
+ * wait out a cold start. Never calls the model; failures are ignored. */
+export function warmAgent(): void {
+  if (!AGENT_URL || warmed) return;
+  warmed = true;
+  fetch(AGENT_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ warmup: true }) }).catch(() => {});
+}
+
 export async function askAgent(
   redactedMessage: string,
-  hints: { zipCode: string | null; insuranceType: InsuranceType | null; veteran: boolean; tierPct: number | null; fplPct: number | null },
+  hints: {
+    zipCode: string | null;
+    insuranceType: InsuranceType | null;
+    veteran: boolean;
+    tierPct: number | null;
+    fplPct: number | null;
+    /** What the person is looking for, from the form or an earlier message
+     * (e.g. "gallbladder surgery"), so a follow-up keeps that context. */
+    need?: string | null;
+  },
 ): Promise<AgentResponse | null> {
   if (!AGENT_URL) return null;
   const controller = new AbortController();

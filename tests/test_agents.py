@@ -46,9 +46,28 @@ def test_prompt_omits_unset_hints_but_always_states_veteran():
 
 def test_no_em_dashes_in_replies():
     from caremap.lambda_handler import no_em_dashes
-    assert no_em_dashes("Go to the ER\u2014do not drive.") == "Go to the ER -- do not drive."
-    assert no_em_dashes("a \u2014 b") == "a -- b"
-    assert no_em_dashes("no dashes here") == "no dashes here"
+    assert no_em_dashes("Go to the ER\u2014do not drive.") == "Go to the ER, do not drive."
+    assert no_em_dashes("a \u2014 b") == "a, b"
+    assert no_em_dashes("a -- b") == "a, b"
+    assert no_em_dashes("no dashes here, 2025-26") == "no dashes here, 2025-26"
+
+
+def test_warmup_never_calls_the_model(monkeypatch):
+    import json
+    import caremap.lambda_handler as lh
+    monkeypatch.setattr(lh, "_model", None)
+    monkeypatch.setattr(lh, "make_model", lambda: "model")
+    monkeypatch.setattr(lh, "handle_message", lambda *a, **k: (_ for _ in ()).throw(AssertionError("called")))
+    out = lh.handler({"body": json.dumps({"warmup": True}), "requestContext": {"http": {"sourceIp": "w"}}}, None)
+    assert out["statusCode"] == 200 and lh._model == "model"
+
+
+def test_missing_disclosure_is_appended_not_rewritten():
+    from caremap.guards import ensure_disclosure
+    text = ensure_disclosure("The typical billed charge is $42,750.")
+    assert text.endswith("confirm with billing office.")
+    assert ensure_disclosure(text) == text
+    assert ensure_disclosure("No dollar figures here.") == "No dollar figures here."
 
 
 def test_each_lambda_request_gets_a_fresh_agent(monkeypatch):
@@ -68,3 +87,11 @@ def test_each_lambda_request_gets_a_fresh_agent(monkeypatch):
     assert lh.handler(event, None)["statusCode"] == 200
     assert built == ["model", "model"]  # model client reused, agent rebuilt
     assert used[0] is not used[1]
+
+
+def test_prompt_carries_the_need_from_earlier_context():
+    from caremap.agents import _prompt_for
+    from caremap.intake import redact
+    prompt = _prompt_for(redact("which one is cheapest?"), "gallbladder surgery")
+    assert "need (what they're looking for" in prompt and "gallbladder surgery" in prompt
+    assert "need" not in _prompt_for(redact("which one is cheapest?")).split("\n", 1)[-1]

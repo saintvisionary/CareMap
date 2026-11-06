@@ -56,7 +56,7 @@ def test_facilities_near_east_orange():
     # 07018 is Carewell Health Medical Center's own zip (East Orange, NJ).
     r = facilities_near(zip_code="07018", radius_miles=5, types=["acute_care_hospital"])
     names = [f["name"] for f in r["facilities"]]
-    assert "CAREWELL HEALTH MEDICAL CENTER" in names
+    assert "CareWell Health Medical Center" in names
     # sorted nearest-first
     dists = [f["distance_miles"] for f in r["facilities"]]
     assert dists == sorted(dists)
@@ -65,7 +65,7 @@ def test_facilities_near_east_orange():
 def test_nearest_fqhc_returns_clinic_with_federal_rule():
     # HRSA health center site near the East Orange demo case.
     r = nearest_fqhc(zip_code="07018", radius_miles=25, fpl_pct=90)
-    assert r["name"] == "EAST ORANGE PRIMARY CARE CENTER"
+    assert r["name"] == "East Orange Primary Care Center"
     assert "nominal fee" in r["sliding_fee_rule"]
     assert "drg_charges" not in r  # trimmed: clinics have no charge data
 
@@ -94,7 +94,7 @@ def test_nearest_urgent_care_is_location_only():
 
 def test_draft_application():
     r = draft_application(ccn="310015", patient_pays_pct=0)
-    assert "MORRISTOWN MEDICAL CENTER" in r["letter"]
+    assert "Morristown Medical Center" in r["letter"]
     assert len(r["checklist"]) >= 4
 
 
@@ -111,7 +111,7 @@ def test_charity_tier_unmodeled_state_errors_not_guesses():
 def test_draft_application_wa_facility():
     # PROVIDENCE ST MARY MEDICAL CENTER, a real WA acute care hospital.
     r = draft_application(ccn="500002", patient_pays_pct=25)
-    assert "PROVIDENCE ST MARY MEDICAL CENTER" in r["letter"]
+    assert "Providence St Mary Medical Center" in r["letter"]
     assert "Washington hospital charity care" in r["letter"]
     assert "WA residency" in r["checklist"][0]
     # WA's policy.json entry has no confirmed apply-window/help-phone (unlike
@@ -150,7 +150,7 @@ def test_charity_tier_il_above_threshold_discloses_ccr_gap_and_income_cap():
 def test_draft_application_il_facility():
     # GRAHAM HOSPITAL ASSOCIATION, a real IL acute care hospital (CCN 140001).
     r = draft_application(ccn="140001", patient_pays_pct=0)
-    assert "GRAHAM HOSPITAL ASSOCIATION" in r["letter"]
+    assert "Graham Hospital Association" in r["letter"]
     assert "Illinois Hospital Uninsured Patient Discount Act" in r["letter"]
     assert "IL residency" in r["checklist"][0]
     # IL's policy.json entry has no confirmed apply-window/help-phone either.
@@ -175,7 +175,7 @@ def test_charity_tier_ny_above_threshold_discloses_no_cap_fact():
 def test_draft_application_ny_facility():
     # KALEIDA HEALTH, a real NY acute care hospital (CCN 330005).
     r = draft_application(ccn="330005", patient_pays_pct=0)
-    assert "KALEIDA HEALTH" in r["letter"]
+    assert "Kaleida Health" in r["letter"]
     assert "New York Hospital Financial Assistance Law" in r["letter"]
     assert "NY residency" in r["checklist"][0]
     assert "help_phone" not in r
@@ -195,7 +195,7 @@ def test_charity_tier_or_requires_ownership():
 def test_draft_application_or_nonprofit_facility():
     # MID-COLUMBIA MEDICAL CENTER, a real OR nonprofit acute care hospital.
     r = draft_application(ccn="380001", patient_pays_pct=0)
-    assert "MID-COLUMBIA MEDICAL CENTER" in r["letter"]
+    assert "Mid-Columbia Medical Center" in r["letter"]
     assert "Oregon hospital financial assistance law" in r["letter"]
     assert "OR residency" in r["checklist"][0]
 
@@ -217,7 +217,7 @@ def test_charity_tier_md_full_sliding_scale():
 def test_draft_application_md_facility():
     # MERITUS MEDICAL CENTER, a real MD acute care hospital (CCN 210001).
     r = draft_application(ccn="210001", patient_pays_pct=0)
-    assert "MERITUS MEDICAL CENTER" in r["letter"]
+    assert "Meritus Medical Center" in r["letter"]
     assert "Maryland hospital financial assistance law" in r["letter"]
     assert "MD residency" in r["checklist"][0]
     assert "Submit within 240 days" in r["checklist"][-1]
@@ -233,7 +233,7 @@ def test_charity_tier_ri_free_care_and_gap():
 def test_draft_application_ri_facility():
     # ROGER WILLIAMS MEDICAL CENTER, a real RI acute care hospital (CCN 410004).
     r = draft_application(ccn="410004", patient_pays_pct=0)
-    assert "ROGER WILLIAMS MEDICAL CENTER" in r["letter"]
+    assert "Roger Williams Medical Center" in r["letter"]
     assert "Rhode Island" in r["letter"]
     assert "RI residency" in r["checklist"][0]
     assert "help_phone" not in r
@@ -258,7 +258,7 @@ def test_charity_tier_me_gap_discloses_payment_plan_cap_only_up_to_400():
 def test_draft_application_me_facility():
     # ST JOSEPH HOSPITAL, a real ME acute care hospital (CCN 200001).
     r = draft_application(ccn="200001", patient_pays_pct=0)
-    assert "ST JOSEPH HOSPITAL" in r["letter"]
+    assert "St Joseph Hospital" in r["letter"]
     assert "Maine's free hospital care law" in r["letter"]
     assert "ME residency" in r["checklist"][0]
 
@@ -276,7 +276,7 @@ def test_charity_tier_vt_gap_lists_only_protections_that_apply():
 def test_draft_application_vt_facility():
     # CENTRAL VERMONT MEDICAL CENTER, a real VT acute care hospital (CCN 470001).
     r = draft_application(ccn="470001", patient_pays_pct=0)
-    assert "CENTRAL VERMONT MEDICAL CENTER" in r["letter"]
+    assert "Central Vermont Medical Center" in r["letter"]
     assert "Vermont's hospital financial assistance law" in r["letter"]
     assert "VT residency" in r["checklist"][0]
 
@@ -284,7 +284,7 @@ def test_draft_application_vt_facility():
 def test_draft_application_ma_facility():
     # UMASS MEMORIAL HEALTHALLIANCE HOSPITALS, a real MA acute care hospital (CCN 220001).
     r = draft_application(ccn="220001", patient_pays_pct=0)
-    assert "UMASS MEMORIAL HEALTHALLIANCE HOSPITALS" in r["letter"]
+    assert "UMass Memorial HealthAlliance Hospitals" in r["letter"]
     assert "Health Safety Net" in r["letter"]
     assert "MA residency" in r["checklist"][0]
 
@@ -297,9 +297,9 @@ def test_charity_tier_gap_disclosures_nc_oh_sc():
 
 def test_draft_application_nc_oh_sc_facilities():
     for ccn, name, st in [
-        ("340001", "CAROLINAS MEDICAL CENTER-NORTHEAST", "NC"),
-        ("360180", "CLEVELAND CLINIC", "OH"),
-        ("420004", "MUSC MEDICAL CENTER", "SC"),
+        ("340001", "Carolinas Medical Center-Northeast", "NC"),
+        ("360180", "Cleveland Clinic", "OH"),
+        ("420004", "MUSC Medical Center", "SC"),
     ]:
         r = draft_application(ccn=ccn, patient_pays_pct=0)
         assert name in r["letter"]

@@ -1,22 +1,34 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { NEED_TO_DRG } from "../lib/drg";
-import { facilityTier, TIER_COLORS, type FacilityWithDistance } from "../lib/geo";
-import { insuranceGuidance } from "../lib/insurance";
+import { cardHero } from "../lib/cardHero";
+import { CLINIC_COLOR, facilityTier, TIER_COLORS, URGENT_CARE_COLOR, type FacilityWithDistance } from "../lib/geo";
 import type { InsuranceType } from "../lib/intake";
-import { applyTier, charityTier, CHARITY_PROGRAM_NAMES, FEDERAL_CAP_LINE, FREE_TIER_STATES, fqhcSlidingFee, isFederalCapHospital, MEDICARE_CAP_STATES, UPPER_BOUND_STATES } from "../lib/policy";
-import { GlassPanel } from "./GlassPanel";
 
-const money = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
-const directionsLink =
-  "rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-medium text-white/80 transition-colors hover:bg-white/20 hover:text-white";
-
-const FACILITY_TYPE_LABELS: Record<string, string> = {
-  acute_care_hospital: "Acute care hospital",
+const KIND_LABELS: Record<string, string> = {
+  acute_care_hospital: "Hospital",
   va_hospital: "VA hospital",
-  critical_access_hospital: "Critical Access Hospital",
+  critical_access_hospital: "Rural hospital",
+  urgent_care: "Urgent care",
+  fqhc: "Health center",
+};
+const TYPE_DETAILS: Record<string, string> = {
+  acute_care_hospital: "Acute care hospital",
+  va_hospital: "Veterans Affairs hospital",
+  critical_access_hospital: "Critical Access Hospital (small rural hospital)",
   urgent_care: "Urgent care center",
   fqhc: "Federally Qualified Health Center (sliding-fee clinic)",
 };
+
+function ownershipLabel(o: string): string {
+  if (o.startsWith("Voluntary non-profit")) return "Nonprofit";
+  if (o.startsWith("Government")) return "Government-owned";
+  if (o.startsWith("Proprietary")) return "For-profit";
+  if (o.startsWith("Physician")) return "Physician-owned";
+  if (o.startsWith("Veterans")) return "Veterans Health Administration";
+  return o;
+}
+
+const action =
+  "inline-flex h-9 items-center justify-center rounded-full bg-white/[0.1] px-3.5 text-[13px] font-medium text-white transition-[background-color,transform] duration-150 hover:bg-white/[0.16] active:scale-[0.96]";
 
 interface ResultCardProps {
   facility: FacilityWithDistance;
@@ -29,179 +41,83 @@ interface ResultCardProps {
 }
 
 export function ResultCard({ facility, fplPct, insuranceType, need, index, active, onSelect }: ResultCardProps) {
-  const tier = facilityTier(facility, fplPct, insuranceType);
-  const programName = CHARITY_PROGRAM_NAMES[facility.state] ?? "charity care";
-  // Only a participating facility gets a tier -- a state's formula never
-  // applies to a hospital its program excludes.
-  const patientPaysPct =
-    fplPct != null && facility.charity_care_participant
-      ? charityTier(facility.state, fplPct, facility.type, facility.ownership, facility.cost_cap_pct)?.patientPaysPct
-      : undefined;
-  const drg = need ? NEED_TO_DRG[need] : null;
-  const charge = drg ? facility.drg_charges[drg.code]?.avg_charge : undefined;
-  const medicarePayment = drg ? facility.drg_charges[drg.code]?.avg_total_payment : undefined;
-
-  let hero = "Tier unknown";
-  const freeNote = FREE_TIER_STATES[facility.state]?.freeNote;
-  let heroLabel = facility.charity_care_participant
-    ? fplPct != null
-      ? `${programName.charAt(0).toUpperCase()}${programName.slice(1)} sets no share CareMap can compute at this income -- ask the billing office.`
-      : "Tell us your income for an estimate."
-    : facility.type === "va_hospital"
-      ? "VA hospital: the VA's own eligibility rules apply here, not state charity care."
-      : CHARITY_PROGRAM_NAMES[facility.state]
-        // A modeled state's formula can still exclude a specific facility
-        // (e.g. OR's law only covers nonprofit hospitals) -- not the same as
-        // the state having no rules in CareMap at all.
-        ? `Not confirmed as a participant in ${programName} -- ask this hospital's billing office about financial assistance.`
-        : `${facility.state} rules coming soon -- ask this hospital's billing office about financial assistance.`;
-  if (tier === "insured") {
-    // Charity care only applies to the uninsured -- never claim a
-    // charity-care price here, even if we happen to know a typical charge.
-    hero = charge != null ? money(charge) : "See coverage";
-    heroLabel = `typical billed charge; ${insuranceType ? insuranceGuidance(insuranceType) : "check your plan for your specific costs"}`;
-  } else if (charge != null) {
-    if (patientPaysPct != null) {
-      // The hero is what the patient owes, not the charge -- say so, and
-      // show the real typical billed charge it was computed from.
-      hero = money(applyTier(charge, patientPaysPct));
-      const bound = UPPER_BOUND_STATES.has(facility.state) && patientPaysPct > 0 ? "at most, " : "";
-      heroLabel = `${bound}est. owed on a ${money(charge)} typical billed charge (estimate, confirm with billing office)${patientPaysPct === 0 && freeNote ? `. ${freeNote}` : ""}`;
-    } else {
-      hero = money(charge);
-      heroLabel = "typical billed charge, estimate, confirm with billing office";
-    }
-  } else if (tier === "free") {
-    hero = "$0";
-    heroLabel = `${programName}, estimate, confirm with billing office${freeNote ? `. ${freeNote}` : ""}`;
-  } else if (tier === "reduced") {
-    hero = `${UPPER_BOUND_STATES.has(facility.state) ? "≤ " : ""}${patientPaysPct}%`;
-    heroLabel = `of typical billed charge${UPPER_BOUND_STATES.has(facility.state) ? " (a legal maximum)" : ""}, estimate, confirm with billing office`;
-  } else if (tier === "full") {
-    hero = "Full price";
-    heroLabel = `not eligible for ${programName} at this income`;
-  }
-  if (facility.type === "fqhc") {
-    ({ hero, label: heroLabel } = fqhcSlidingFee(fplPct, insuranceType != null && insuranceType !== "uninsured"));
-  }
-  if (facility.type === "va_hospital" && hero === "Tier unknown") {
-    hero = "VA care";
-    heroLabel = "For enrolled veterans: costs depend on your VA enrollment and priority group, not state charity care. Ask the VA about eligibility.";
-  }
-  if (facility.type === "urgent_care") {
-    hero = "Urgent care";
-    heroLabel =
-      "For minor, non-emergency care only -- for chest pain, trouble breathing, stroke signs or anything life-threatening, call 911 or go to an ER. Listed in the federal NPI registry; CareMap has no urgent care prices, so ask about self-pay rates.";
-  }
-  // CA/CO: a cap tied to Medicare/Medicaid rates, shown with CMS's Medicare
-  // average as a reference -- never as the price.
-  const cap = MEDICARE_CAP_STATES[facility.state];
-  if (cap && facility.charity_care_participant && tier !== "insured" && fplPct != null) {
-    if (fplPct > cap.maxFplPct) {
-      heroLabel = `Above ${cap.maxFplPct}% of the poverty line, ${cap.programName}'s cap doesn't apply -- ask the billing office.`;
-    } else if (medicarePayment != null && charge != null) {
-      hero = money(medicarePayment);
-      heroLabel = `Medicare's average payment here (CMS, 2024), vs a ${money(charge)} typical billed charge. ${cap.programName} ${cap.capLine}; ${cap.medicaidName}'s rate isn't in CareMap's data, so your cap could be higher (estimate, confirm with billing office).`;
-    } else {
-      heroLabel = `${cap.programName} ${cap.capLine} (estimate, confirm with billing office).`;
-    }
-  }
-  // Any state: when no state rule produced a figure, a nonprofit hospital's
-  // federal cap, with Medicare's average as the reference point.
-  const stateFigure = patientPaysPct != null || (cap != null && facility.charity_care_participant && fplPct != null && fplPct <= cap.maxFplPct);
-  if (!stateFigure && tier !== "insured" && isFederalCapHospital(facility) && medicarePayment != null && charge != null) {
-    hero = money(medicarePayment);
-    heroLabel = `Medicare's average payment here (CMS, 2024), vs a ${money(charge)} typical billed charge. ${FEDERAL_CAP_LINE} (estimate, confirm with billing office).`;
-  }
+  const { hero, label } = cardHero(facility, fplPct, insuranceType, need);
+  const color =
+    facility.type === "fqhc" ? CLINIC_COLOR : facility.type === "urgent_care" ? URGENT_CARE_COLOR : TIER_COLORS[facilityTier(facility, fplPct, insuranceType)];
 
   const place = `${facility.address}, ${facility.city}, ${facility.state} ${facility.zip}`;
   // Directions by street address, not lat/lon: some sites are only placed
-  // at their zip code's center.
+  // at their ZIP code's center.
   const googleMaps = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${facility.name}, ${place}`)}`;
   const appleMaps = `https://maps.apple.com/?daddr=${encodeURIComponent(place)}&q=${encodeURIComponent(facility.name)}`;
+  const phone = facility.phone?.replace(/[^\d+]/g, "");
 
   return (
     <motion.div
       id={`result-card-${facility.ccn}`}
-      initial={{ opacity: 0, y: 16, scale: 0.96 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      whileTap={{ scale: 0.98 }}
-      // Capped -- a long result list (the map can surface dozens of nearby
-      // facilities) would otherwise stagger for seconds; everything past
-      // the first handful enters together instead of queuing endlessly.
-      transition={{ type: "spring", stiffness: 260, damping: 22, delay: Math.min(index, 8) * 0.06 }}
-      className="w-full"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      // Capped, so a long list doesn't stagger for seconds.
+      transition={{ type: "spring", stiffness: 300, damping: 28, delay: Math.min(index, 6) * 0.04 }}
+      className={`rounded-2xl transition-[background-color,box-shadow] duration-150 ${active ? "bg-white/[0.1] ring-1 ring-white/20" : "bg-white/[0.06] hover:bg-white/[0.08]"}`}
     >
-      <GlassPanel className={`p-4 transition-colors ${active ? "border-white/30" : ""}`}>
-        <button type="button" onClick={onSelect} aria-expanded={active} className="block w-full text-left">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <span
-                className="inline-block h-2.5 w-2.5 rounded-full shrink-0"
-                style={{ backgroundColor: TIER_COLORS[tier] }}
-              />
-              <h3 className="text-sm font-medium text-white/90 truncate">{facility.name}</h3>
-              {facility.type === "va_hospital" && (
-                <span className="shrink-0 rounded-full bg-sky-500/20 px-1.5 py-0.5 text-[9px] font-semibold text-sky-300">
-                  VA
-                </span>
-              )}
-            </div>
-            <p className="mt-1 text-xs text-white/50">
-              {facility.distanceMiles.toFixed(1)} mi &middot; {facility.city}, {facility.state}
+      <button type="button" onClick={onSelect} aria-expanded={active} className="block w-full px-4 py-3.5 text-left">
+        <div className="flex items-start gap-3">
+          <span
+            className="mt-[5px] h-2.5 w-2.5 shrink-0"
+            style={{
+              backgroundColor: color,
+              borderRadius: facility.type === "fqhc" ? 3 : 999,
+              clipPath: facility.type === "urgent_care" ? "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)" : undefined,
+            }}
+          />
+          <div className="min-w-0 flex-1">
+            <h3 className="text-[15px] font-medium leading-snug text-white">{facility.name}</h3>
+            <p className="mt-0.5 text-[13px] text-white/50">
+              {KIND_LABELS[facility.type] ?? "Facility"} · {facility.distanceMiles.toFixed(1)} mi · {facility.city}
               {facility.star_rating != null ? ` · ${facility.star_rating}★` : ""}
             </p>
           </div>
         </div>
-        <div className="mt-3">
-          <div className="text-2xl font-semibold text-white tabular-nums">{hero}</div>
-          <div className="text-[11px] text-white/40">{heroLabel}</div>
+        <div className="mt-2.5 pl-[22px]">
+          <div className="text-[22px] font-semibold leading-tight tracking-tight text-white tabular-nums">{hero}</div>
+          <p className="mt-0.5 text-[12px] leading-snug text-white/50">{label}</p>
         </div>
-        </button>
-        <AnimatePresence initial={false}>
-          {active && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-              className="overflow-hidden"
-            >
-              <div className="mt-3 pt-3 border-t border-white/10 space-y-1.5 text-xs text-white/60">
-                <div>
-                  {facility.address}, {facility.city}, {facility.state} {facility.zip}
-                </div>
-                <div className="flex flex-wrap gap-x-4 gap-y-1">
-                  <span>{FACILITY_TYPE_LABELS[facility.type] ?? facility.type}</span>
-                  <span>Emergency room: {facility.has_er ? "yes" : "no"}</span>
-                  {facility.star_rating != null && <span>CMS quality rating: {facility.star_rating}/5</span>}
-                </div>
-                <div className="text-white/40">Ownership: {facility.ownership}</div>
-                {facility.operator && <div className="text-white/40">Run by: {facility.operator}</div>}
-                {facility.phone && <div className="text-white/40">Phone: {facility.phone}</div>}
-                <div className="flex flex-wrap gap-2 pt-1">
-                  <a href={googleMaps} target="_blank" rel="noopener noreferrer" className={directionsLink}>
-                    Directions in Google Maps
+      </button>
+      <AnimatePresence initial={false}>
+        {active && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="mx-4 border-t border-white/[0.08] pb-4 pl-[22px] pt-3 text-[13px] text-white/60">
+              <p className="text-white/80">{place}</p>
+              <p className="mt-1">
+                {TYPE_DETAILS[facility.type] ?? facility.type}
+                {facility.type !== "fqhc" && facility.type !== "urgent_care" ? ` · ${facility.has_er ? "Has an emergency room" : "No emergency room"}` : ""}
+              </p>
+              {facility.star_rating != null && <p className="mt-1">CMS quality rating: {facility.star_rating} of 5</p>}
+              <p className="mt-1 text-white/45">{facility.operator ? `Run by ${facility.operator}` : ownershipLabel(facility.ownership)}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <a href={appleMaps} target="_blank" rel="noopener noreferrer" className={action}>
+                  Apple Maps
+                </a>
+                <a href={googleMaps} target="_blank" rel="noopener noreferrer" className={action}>
+                  Google Maps
+                </a>
+                {phone && (
+                  <a href={`tel:${phone}`} className={action}>
+                    Call
                   </a>
-                  <a href={appleMaps} target="_blank" rel="noopener noreferrer" className={directionsLink}>
-                    Directions in Apple Maps
-                  </a>
-                </div>
-                {!facility.charity_care_participant && facility.type !== "fqhc" && facility.type !== "urgent_care" && (
-                  <div className="text-white/40">
-                    {facility.type === "va_hospital"
-                      ? "VA hospital: the VA's own eligibility rules apply here, not state charity care."
-                      : CHARITY_PROGRAM_NAMES[facility.state]
-                        ? `Not confirmed as a participant in ${programName} -- ask this hospital's billing office about financial assistance.`
-                        : `${facility.state}'s financial assistance rules aren't modeled in CareMap yet -- ask this hospital's billing office about charity care.`}
-                  </div>
                 )}
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </GlassPanel>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

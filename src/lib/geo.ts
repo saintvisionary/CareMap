@@ -78,10 +78,16 @@ export function facilityTier(
   return "reduced";
 }
 
+// Apple's dark-mode system colors: green free, orange reduced, grays for
+// full price and not-yet-known, near-white for "check your own coverage".
 export const TIER_COLORS: Record<Tier, string> = {
-  free: "#34d399",
-  reduced: "#f59e0b",
-  full: "#9ca3af",
-  unknown: "#6b7280",
-  insured: "#60a5fa",
+  free: "#30d158",
+  reduced: "#ff9f0a",
+  full: "#8e8e93",
+  unknown: "#636366",
+  insured: "#d1d1d6",
 };
+
+// Fixed colors by kind of place: clinics and urgent care set their own fees.
+export const CLINIC_COLOR = "#bf5af2";
+export const URGENT_CARE_COLOR = "#63e6e2";

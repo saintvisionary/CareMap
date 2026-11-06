@@ -31,6 +31,9 @@ import zipfile
 from pathlib import Path
 from urllib.request import Request, urlopen
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from textcase import apply_display_case  # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
 OUT_STATES = ROOT / "public" / "data" / "states"
@@ -416,6 +419,9 @@ def slim_state_data(data: dict, descriptions: dict[str, str]) -> None:
 
 def write_state_file(state: str, data: dict, descriptions: dict[str, str]) -> Path:
     slim_state_data(data, descriptions)
+    # Readable case at write time only: name matching above uses CMS's text.
+    for f in data["facilities"]:
+        apply_display_case(f)
     out_path = OUT_STATES / f"{state}.json"
     out_path.write_text(json.dumps(data, separators=(",", ":")))
     return out_path

@@ -46,8 +46,9 @@ def _cors_headers(origin: str | None) -> dict:
 
 
 def no_em_dashes(text: str) -> str:
-    """CareMap's style bans em-dashes; the model still emits them sometimes."""
-    return re.sub(r"\s*\u2014\s*", " -- ", text)
+    """CareMap's style bans em-dashes (and the "--" stand-in, which reads as
+    a typo); the model still emits them sometimes."""
+    return re.sub(r"\s*\u2014\s*|\s+--\s+", ", ", text)
 
 
 def _rate_limited(source_ip: str) -> bool:
@@ -92,6 +93,13 @@ def handler(event: dict, context) -> dict:  # noqa: ARG001 (context required by 
     except json.JSONDecodeError:
         return _response(400, {"error": "invalid JSON body"}, origin)
 
+    # Sent once when the page opens, so the first real question doesn't
+    # also pay for a cold start. Never calls the model.
+    if payload.get("warmup") is True:
+        if _model is None:
+            _model = make_model()
+        return _response(200, {"ok": True}, origin)
+
     message = payload.get("message", "")
     if not isinstance(message, str) or not message.strip():
         return _response(400, {"error": "message is required"}, origin)
@@ -107,6 +115,7 @@ def handler(event: dict, context) -> dict:  # noqa: ARG001 (context required by 
     veteran = payload.get("veteran")
     tier_pct = payload.get("tierPct")
     fpl_pct = payload.get("fplPct")
+    need = payload.get("need")
     _valid_insurance_types = {"uninsured", "medicaid", "medicare", "private", "va_tricare", "unsure"}
 
     try:
@@ -117,6 +126,7 @@ def handler(event: dict, context) -> dict:  # noqa: ARG001 (context required by 
             veteran=veteran if isinstance(veteran, bool) else None,
             tier_pct=tier_pct if isinstance(tier_pct, (int, float)) else None,
             fpl_pct=fpl_pct if isinstance(fpl_pct, (int, float)) else None,
+            need=need.strip()[:80] if isinstance(need, str) and need.strip() else None,
         )
     except Exception as exc:  # noqa: BLE001
         print(f"handle_message failed: {exc!r}")

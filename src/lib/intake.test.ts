@@ -45,3 +45,29 @@ describe("newer needs", () => {
     ["severe dehydration", "dehydration or electrolyte imbalance"],
   ])("%s -> %s", (msg, need) => expect(redact(`07018, ${msg}`).need).toBe(need));
 });
+
+describe("everyday care", () => {
+  it.each([
+    ["I need a checkup", "checkup"],
+    ["annual physical", "checkup"],
+    ["a checkup for my diabetes", "checkup"],
+    ["I have the flu", "sick visit"],
+    ["sore throat and fever", "sick visit"],
+    ["flu shot", "vaccines"],
+    ["need a dentist", "dental care"],
+    ["I'm pregnant", "pregnancy care"],
+    ["looking for a therapist", "counseling"],
+    ["dealing with anxiety", "counseling"],
+    ["sprained my ankle", "minor injury"],
+    ["severe depression", "severe depression"],
+    ["need chemotherapy", "chemotherapy"],
+    ["physical therapy", null],
+    ["broken arm", "broken bone, sprain or dislocation"],
+  ])("%s -> %s", (msg, need) => expect(redact(`07018, ${msg}`).need).toBe(need));
+
+  it("keeps parsed income and household on the hint for the on-screen form", () => {
+    const h = redact("07018, family of 4, $52k, uninsured");
+    expect([h.income, h.household]).toEqual([52_000, 4]);
+    expect(redact("07018, uninsured")).toMatchObject({ income: null, household: null });
+  });
+});

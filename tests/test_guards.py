@@ -36,3 +36,10 @@ def test_guard_flags_missing_disclosure_and_requests_rewrite():
     assert report["passed"] is False
     assert report["ungrounded_numbers"] == []
     assert report["label_violations"]
+
+
+def test_negated_forbidden_phrases_are_allowed():
+    assert labeling_violations("A reference, not a guaranteed price. Estimate, confirm with billing office.") == []
+    assert labeling_violations("This isn't your price.") == []
+    assert labeling_violations("Your price is low.")
+    assert labeling_violations("Free care is guaranteed.")

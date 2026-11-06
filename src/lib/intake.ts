@@ -25,6 +25,11 @@ export interface IntakeHint {
    * Pass this and a specific facility's own state to charityTier() rather
    * than assuming tierPct's NJ formula applies. */
   fplPct: number | null;
+  /** Parsed straight from the text so the on-screen form can show them.
+   * Browser only: never put in an agent request (askAgent takes explicit
+   * fields, none of these). */
+  income: number | null;
+  household: number | null;
   need: string | null;
   /** True for words that signal an emergency (trouble breathing, overdose,
    * stroke, ...). Urgent care must never be offered for these; the reply
@@ -71,6 +76,15 @@ const INSURANCE_PATTERNS: { type: InsuranceType; pattern: RegExp }[] = [
 // transplant" and "kidney failure" too -- tightened below now that those
 // have their own entries).
 const NEED_KEYWORDS: { pattern: RegExp; need: string }[] = [
+  // Everyday care (src/lib/drg.ts CARE_NEEDS): distinctive words, checked
+  // first so "a checkup for my diabetes" finds a clinic, not a hospital stay.
+  { pattern: /\b(vaccin\w*|immuniz\w*|flu shot|covid shot|booster shot)\b/i, need: "vaccines" },
+  { pattern: /\b(check[- ]?up|annual (exam|physical|visit)|physical(?! therap)|wellness (visit|exam|check)|primary care|routine (visit|exam|care)|see a doctor)\b/i, need: "checkup" },
+  { pattern: /\b(dentist|dental (cleaning|care|checkup|exam|work|visit)|teeth cleaning|toothache|cavity|cavities)\b/i, need: "dental care" },
+  { pattern: /\b(pregnan\w*|prenatal|expecting a baby|ob-?gyn|obstetric\w*|childbirth|giving birth|labor and delivery)\b/i, need: "pregnancy care" },
+  { pattern: /\b(counsel(ing|or)|therapist|talk therapy|mental health(?! crisis)|anxiety|(?<!severe )depress(ed|ion))\b/i, need: "counseling" },
+  { pattern: /\b(minor (injury|burn|cut)|small (burn|cut)|sprain(ed)?|twisted (my )?(ankle|knee|wrist)|stitches)\b/i, need: "minor injury" },
+
   // Heart & circulation
   { pattern: /heart attack|myocardial infarction/i, need: "heart attack" },
   { pattern: /\bfaint(ed|ing)?\b|passed out|syncope/i, need: "fainting" },
@@ -117,7 +131,7 @@ const NEED_KEYWORDS: { pattern: RegExp; need: string }[] = [
   { pattern: /hip replacement|knee replacement/i, need: "hip or knee replacement" },
   { pattern: /spinal fusion/i, need: "spinal fusion surgery" },
   { pattern: /back pain|spine problem|herniated disc/i, need: "back or spine problems" },
-  { pattern: /\bsprain(ed)?\b|dislocat(ed|ion)|broken (bone|arm|leg|wrist|ankle|toe|finger)/i, need: "broken bone, sprain or dislocation" },
+  { pattern: /dislocat(ed|ion)|broken (bone|arm|leg|wrist|ankle|toe|finger)/i, need: "broken bone, sprain or dislocation" },
   { pattern: /arthritis|osteoporosis|bone disease/i, need: "bone or joint disease" },
   { pattern: /arm (surgery|injury)|leg (surgery|injury)/i, need: "arm or leg procedure" },
 
@@ -137,7 +151,7 @@ const NEED_KEYWORDS: { pattern: RegExp; need: string }[] = [
   { pattern: /panic attack|mental health crisis|psychiatric emergency/i, need: "acute stress or crisis" },
 
   // Ear, nose, mouth & throat
-  { pattern: /ear infection|throat infection|strep throat|tonsillitis/i, need: "ear or throat infection" },
+  { pattern: /severe (ear|throat) infection|tonsillitis/i, need: "ear or throat infection" },
   { pattern: /dental infection|tooth infection|oral infection|abscess(ed)? tooth/i, need: "severe dental or oral infection" },
 
   // Eyes
@@ -170,6 +184,9 @@ const NEED_KEYWORDS: { pattern: RegExp; need: string }[] = [
 
   // Weight-loss surgery
   { pattern: /bariatric|gastric bypass|gastric sleeve|weight.?loss surgery/i, need: "weight-loss (bariatric) surgery" },
+
+  // Last: common illnesses, only when nothing more specific matched.
+  { pattern: /\b(sick visit|sick|colds?|flu|fever|cough(ing)?|sore throat|strep|ear infection|ear ache|earache|sinus(es| infection)?|stomach bug)\b/i, need: "sick visit" },
 ];
 
 function parseDollarAmount(text: string): [number, string] | null {
@@ -242,6 +259,8 @@ export function redact(message: string): IntakeHint {
     veteran,
     tierPct,
     fplPct,
+    income: dollar && household ? dollar[0] : null,
+    household: dollar && household ? household[0] : null,
     need: parseNeed(message),
     emergency: EMERGENCY_RE.test(message),
     destination: parseDestination(message),

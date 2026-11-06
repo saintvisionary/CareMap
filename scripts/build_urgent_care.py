@@ -25,6 +25,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_data  # noqa: E402  (reuses the Census geocoder and zip centroids)
+from textcase import apply_display_case  # noqa: E402
 
 ROOT = build_data.ROOT
 RAW_CACHE = build_data.RAW / "nppes_urgent_care.json"
@@ -38,8 +39,9 @@ DEFAULTS = {"type": "urgent_care", "ownership": "Urgent care (federal NPI regist
 
 
 def slim_sites(sites: list[dict], defaults: dict) -> list[dict]:
-    """Drop per-site fields equal to the file-level defaults (readers merge them back)."""
-    return [{k: v for k, v in s.items() if k not in defaults or s[k] != defaults[k]} for s in sites]
+    """Drop per-site fields equal to the file-level defaults (readers merge
+    them back), with names and places in readable case."""
+    return [{k: v for k, v in apply_display_case(dict(s)).items() if k not in defaults or s[k] != defaults[k]} for s in sites]
 
 
 def _query(**params) -> list[dict]:

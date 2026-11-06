@@ -1,8 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { askAgent } from "../lib/agentClient";
+import { needKind, type NeedKind } from "../lib/drg";
 import { facilitiesNear, nearestZip, type FacilityWithDistance } from "../lib/geo";
 import { redact, type InsuranceType, type IntakeHint } from "../lib/intake";
-import { findInternationalFacilities, type InternationalFacility } from "../lib/international";
+import { findInternationalFacilities, type InternationalFacility, type InternationalResult } from "../lib/international";
+import { buildCityIndex, findPlace, zipPlaceName } from "../lib/places";
+import { fplPercent, njCharityTier } from "../lib/policy";
 import { summarize, summarizeInternational } from "../lib/summarize";
 import type { Facility, ZipCentroid } from "../lib/types";
 
@@ -18,286 +21,357 @@ export interface MapFlyTo {
   pitch: number;
 }
 
-export interface CareMapState {
-  messages: ChatMessage[];
-  facilities: FacilityWithDistance[];
-  internationalFacilities: InternationalFacility[];
-  previewFacilities: Facility[];
-  tierPct: number | null;
-  fplPct: number | null;
-  insuranceType: InsuranceType | null;
+/** Everything the person has told CareMap, from the form or the chat.
+ * Lives only in this tab: income and household size are never sent
+ * anywhere (the agent gets fplPct and tierPct, computed here). */
+export interface Profile {
+  zip: string;
+  household: number;
+  /** Digits only, "" when not given. */
+  income: string;
+  insuranceType: InsuranceType;
   veteran: boolean;
-  flyTo: MapFlyTo | null;
-  loading: boolean;
-  sendMessage: (text: string) => void;
-  selectPreviewFacility: (facility: Facility) => void;
+  need: string | null;
+  emergency: boolean;
 }
+
+export const EMPTY_PROFILE: Profile = {
+  zip: "",
+  household: 1,
+  income: "",
+  insuranceType: "uninsured",
+  veteran: false,
+  need: null,
+  emergency: false,
+};
 
 let nextId = 0;
 const id = () => String(nextId++);
 
 // Evenly spread across the whole national list (not just the first N, which
 // would cluster wherever the data happens to start) rather than truly
-// random, so re-renders are stable and the spread is reproducible. Facility
-// data loads one state file at a time in alphabetical order, so a fixed
-// stride naturally samples across states instead of bunching in one.
+// random, so re-renders are stable and the spread is reproducible.
 function sampleFacilities(all: Facility[], limit: number): Facility[] {
   if (all.length <= limit) return all;
   const stride = all.length / limit;
   const out: Facility[] = [];
-  for (let i = 0; i < limit; i++) {
-    out.push(all[Math.floor(i * stride)]);
-  }
+  for (let i = 0; i < limit; i++) out.push(all[Math.floor(i * stride)]);
   return out;
 }
 
-// Hospitals within 25 miles plus the few nearest sliding-fee clinics and
-// urgent care centers (a city can have dozens of each). With no procedure
-// asked about, everything is merged nearest-first so a close clinic isn't
-// buried. When a hospital procedure was asked about (every one CareMap
-// prices is a hospital condition), urgent care is left out entirely and
-// hospitals come first -- a heart-attack search must never lead with urgent
-// care. summarize() separates the types itself.
+export type SearchFocus = NeedKind | "emergency" | null;
+
+/** Income as a percent of the poverty line, only for the uninsured: every
+ * charity-care formula CareMap models applies to them alone. */
+export function profileFplPct(p: Profile): number | null {
+  if (p.insuranceType !== "uninsured" || p.income === "" || !(p.household > 0)) return null;
+  return fplPercent(Number(p.income), p.household);
+}
+
+export function profileFocus(p: Profile): SearchFocus {
+  return p.emergency ? "emergency" : needKind(p.need);
+}
+
 const NEARBY_CLINIC_LIMIT = 5;
 const NEARBY_URGENT_CARE_LIMIT = 3;
 
-function nearbyCare(
+/** Hospitals within 25 miles plus the nearest clinics and urgent care,
+ * ordered for what the person needs: a hospital procedure or emergency
+ * leads with hospitals and never lists urgent care; a checkup leads with
+ * sliding-fee clinics; a sick visit or minor injury with urgent care and
+ * clinics; "just looking" is nearest-first. */
+export function nearbyCare(
   hospitals: Facility[],
   clinics: Facility[],
   urgentCare: Facility[],
   zipCentroids: Record<string, ZipCentroid>,
   zip: string,
-  hospitalProcedure: boolean,
+  focus: SearchFocus,
 ): FacilityWithDistance[] {
   const nearHospitals = facilitiesNear(hospitals, zipCentroids, zip, 25);
-  const nearClinics = facilitiesNear(clinics, zipCentroids, zip, 25).slice(0, NEARBY_CLINIC_LIMIT);
-  if (hospitalProcedure) return [...nearHospitals, ...nearClinics];
-  return [
-    ...nearHospitals,
-    ...nearClinics,
-    ...facilitiesNear(urgentCare, zipCentroids, zip, 25).slice(0, NEARBY_URGENT_CARE_LIMIT),
-  ].sort((a, b) => a.distanceMiles - b.distanceMiles);
+  const nearClinics = facilitiesNear(clinics, zipCentroids, zip, 25);
+  const nearUrgent = () => facilitiesNear(urgentCare, zipCentroids, zip, 25);
+  switch (focus) {
+    case "hospital":
+    case "emergency":
+      return [...nearHospitals, ...nearClinics.slice(0, NEARBY_CLINIC_LIMIT)];
+    case "clinic":
+      return [...nearClinics.slice(0, 8), ...nearHospitals];
+    case "urgent": {
+      const first = [...nearUrgent().slice(0, 5), ...nearClinics.slice(0, NEARBY_CLINIC_LIMIT)].sort((a, b) => a.distanceMiles - b.distanceMiles);
+      return [...first, ...nearHospitals];
+    }
+    default:
+      return [...nearHospitals, ...nearClinics.slice(0, NEARBY_CLINIC_LIMIT), ...nearUrgent().slice(0, NEARBY_URGENT_CARE_LIMIT)].sort(
+        (a, b) => a.distanceMiles - b.distanceMiles,
+      );
+  }
 }
 
-export interface SearchContext {
-  zipCode: string | null;
-  fplPct: number | null;
-  tierPct: number | null;
-  insuranceType: InsuranceType | null;
-  veteran: boolean;
-  need: string | null;
-  emergency: boolean;
-}
-
-/** Fill in what a follow-up message doesn't restate from the previous
- * search; anything it does restate wins. An emergency carries over until
- * the person names a different need. */
-export function mergeContext(prev: SearchContext | null, hint: IntakeHint): SearchContext {
+/** A chat message's details folded into the profile: anything it states
+ * wins, anything it leaves out is kept, so a follow-up ("which of these is
+ * best?") never starts over. An emergency carries over until a different
+ * need is named. */
+export function mergeProfile(prev: Profile, hint: IntakeHint): Profile {
   return {
-    zipCode: hint.zipCode ?? prev?.zipCode ?? null,
-    fplPct: hint.fplPct ?? prev?.fplPct ?? null,
-    tierPct: hint.tierPct ?? prev?.tierPct ?? null,
-    insuranceType: hint.insuranceType ?? prev?.insuranceType ?? null,
-    veteran: hint.veteran || (prev?.veteran ?? false),
-    need: hint.need ?? prev?.need ?? null,
-    emergency: hint.emergency || (!hint.need && (prev?.emergency ?? false)),
+    zip: hint.zipCode ?? prev.zip,
+    household: hint.household ?? prev.household,
+    income: hint.income != null ? String(Math.round(hint.income)) : prev.income,
+    insuranceType: hint.insuranceType ?? prev.insuranceType,
+    veteran: hint.veteran || prev.veteran,
+    need: hint.need ?? prev.need,
+    emergency: hint.emergency || (!hint.need && prev.emergency),
   };
 }
+
+const LOCATION_QUESTION = /\b(near(est|by)?|closest|around|hospital|clinic|urgent care|doctor|where)\b/i;
 
 export function useCareMap(
   allFacilities: Facility[],
   zipCentroids: Record<string, ZipCentroid>,
   allClinics: Facility[] = [],
   allUrgentCare: Facility[] = [],
-): CareMapState {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: id(),
-      role: "assistant",
-      text: "Tell me where you are and what you need -- e.g. \"07018, family of 4, $52k, uninsured, need gallbladder surgery\".",
-    },
-  ]);
-  const [facilities, setFacilities] = useState<FacilityWithDistance[]>([]);
-  const [internationalFacilities, setInternationalFacilities] = useState<InternationalFacility[]>([]);
-  const [previewFacilities, setPreviewFacilities] = useState<Facility[]>([]);
-  const [tierPct, setTierPct] = useState<number | null>(null);
-  const [fplPct, setFplPct] = useState<number | null>(null);
-  const [insuranceType, setInsuranceType] = useState<InsuranceType | null>(null);
-  const [veteran, setVeteran] = useState(false);
-  const [flyTo, setFlyTo] = useState<MapFlyTo | null>(null);
+) {
+  const [profile, setProfile] = useState<Profile>(EMPTY_PROFILE);
+  const profileRef = useRef(profile);
+  profileRef.current = profile;
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
-  // Guards the auto-locate effect below from ever overwriting a real
-  // search -- set the instant a user-initiated query runs, checked before
-  // the (possibly slow) geolocation callback lands.
-  const hasSearchedRef = useRef(false);
-  // Zip the silent auto-locate landed on, so its results can pick up the
-  // clinic and urgent care files, which finish loading after the hospitals.
-  const autoZipRef = useRef<string | null>(null);
-  // The last search's details, so a follow-up ("which of these is best?")
-  // keeps the zip, income and insurance the person already gave instead of
-  // starting over. Lives only in this tab, like everything else here.
-  const contextRef = useRef<SearchContext | null>(null);
+  const [flyTo, setFlyTo] = useState<MapFlyTo | null>(null);
+  const [locating, setLocating] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [locatedZip, setLocatedZip] = useState<string | null>(null);
+  const [destination, setDestination] = useState<string | null>(null);
+  const [international, setInternational] = useState<{ place: string; result: InternationalResult | null } | null>(null);
+  // Set once the person does anything, so a slow automatic location fix
+  // never overwrites what they typed.
+  const touchedRef = useRef(false);
+  const chatAbroadRef = useRef(false);
 
-  // Nothing showed on the map until a search ran -- a first-time visitor
-  // saw an empty basemap and had to already know to type something before
-  // the app demonstrated any value. Try geolocation automatically (a
-  // silent attempt, not gated behind a button) so "hospitals near me"
-  // works with zero typing when the browser already has or will grant
-  // permission. Income/insurance aren't known yet, so tierPct/insuranceType
-  // stay null -- the existing "unknown" (grey) tier already means exactly
-  // that, no fake numbers involved. Denied/unsupported/no-fix: falls back
-  // to a national sample instead of leaving the map empty -- real
-  // facilities, not placeholders, just with no single "near you" center to
-  // judge distance from, so they render as small hollow preview markers
-  // (see MapView) rather than claiming to be "nearby" anything.
+  const cityIndex = useMemo(() => buildCityIndex(allFacilities, allClinics, allUrgentCare), [allFacilities, allClinics, allUrgentCare]);
+
+  const push = useCallback((role: ChatMessage["role"], text: string) => setMessages((m) => [...m, { id: id(), role, text }]), []);
+
+  const validZip = (zip: string) => (/^\d{5}$/.test(zip) && zipCentroids[zip] ? zip : null);
+  const zip = validZip(profile.zip);
+  const fplPct = profileFplPct(profile);
+  const tierPct = fplPct != null ? njCharityTier(fplPct).patientPaysPct : null;
+  const focus = profileFocus(profile);
+
+  const facilities = useMemo(
+    () => (zip && !destination ? nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, zip, focus) : []),
+    [zip, focus, destination, allFacilities, allClinics, allUrgentCare, zipCentroids],
+  );
+
+  const summary = useMemo(
+    () =>
+      zip && !destination
+        ? summarize({
+            zipCode: zip,
+            fplPct,
+            insuranceType: profile.insuranceType,
+            veteran: profile.veteran,
+            need: profile.need,
+            emergency: profile.emergency,
+            facilities,
+          })
+        : null,
+    [zip, destination, fplPct, profile.insuranceType, profile.veteran, profile.need, profile.emergency, facilities],
+  );
+
+  const placeName = useMemo(() => (zip ? zipPlaceName(zip, facilities, allFacilities) : null), [zip, facilities, allFacilities]);
+
+  // Before anyone searches, a light national sample so the map isn't empty.
+  const previewFacilities = useMemo(
+    () => (!zip && !destination && allFacilities.length > 0 ? sampleFacilities(allFacilities, 130) : []),
+    [zip, destination, allFacilities],
+  );
+
+  // The map moves only when the place changes, never on a follow-up.
   useEffect(() => {
-    if (hasSearchedRef.current) return;
-    if (Object.keys(zipCentroids).length === 0 || allFacilities.length === 0) return;
-    const showNationalPreview = () => {
-      if (hasSearchedRef.current) return;
-      setPreviewFacilities(sampleFacilities(allFacilities, 130));
-    };
-    if (!navigator.geolocation) {
-      showNationalPreview();
+    if (!zip) return;
+    const c = zipCentroids[zip];
+    setFlyTo({ center: [c.lon, c.lat], zoom: 10.5, pitch: 55 });
+  }, [zip, zipCentroids]);
+
+  const updateProfile = useCallback((patch: Partial<Profile>) => {
+    touchedRef.current = true;
+    setDestination(null);
+    setProfile((p) => ({ ...p, ...patch }));
+  }, []);
+
+  const locate = useCallback(
+    (silent = false) => {
+      if (!navigator.geolocation) {
+        if (!silent) setLocationError("Location isn't available in this browser.");
+        return;
+      }
+      if (!silent) {
+        setLocating(true);
+        setLocationError(null);
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setLocating(false);
+          if (silent && touchedRef.current) return;
+          const found = nearestZip(pos.coords.latitude, pos.coords.longitude, zipCentroids);
+          if (!found) {
+            if (!silent) setLocationError("Couldn't match your location to a ZIP code.");
+            return;
+          }
+          setLocatedZip(found);
+          setDestination(null);
+          setProfile((p) => ({ ...p, zip: found }));
+        },
+        (err) => {
+          setLocating(false);
+          if (!silent) setLocationError(err.code === err.PERMISSION_DENIED ? "Location permission is off for this site." : "Couldn't get your location.");
+        },
+        { timeout: 10000, maximumAge: 300000 },
+      );
+    },
+    [zipCentroids],
+  );
+
+  // Try the person's location once the data that can answer it has loaded,
+  // so "what's near me" works with zero typing. Silent: no error if denied.
+  const triedLocateRef = useRef(false);
+  useEffect(() => {
+    if (triedLocateRef.current || Object.keys(zipCentroids).length === 0 || allFacilities.length === 0) return;
+    triedLocateRef.current = true;
+    locate(true);
+  }, [zipCentroids, allFacilities.length, locate]);
+
+  // Traveler search: location only, from OpenStreetMap.
+  useEffect(() => {
+    if (!destination) {
+      setInternational(null);
       return;
     }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        if (hasSearchedRef.current) return;
-        const zip = nearestZip(pos.coords.latitude, pos.coords.longitude, zipCentroids);
-        if (!zip) {
-          showNationalPreview();
-          return;
-        }
-        autoZipRef.current = zip;
-        setFacilities(nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, zip, false));
-        const c = zipCentroids[zip];
-        setFlyTo({ center: [c.lon, c.lat], zoom: 10.5, pitch: 55 });
-      },
-      showNationalPreview, // denied or unavailable
-      { timeout: 8000, maximumAge: 300000 },
-    );
-    // Only ever worth trying once, right after the facility data needed to
-    // answer it finishes loading.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allFacilities.length, zipCentroids]);
+    let cancelled = false;
+    setLoading(true);
+    findInternationalFacilities(destination)
+      .then((result) => {
+        if (cancelled) return;
+        setInternational({ place: destination, result });
+        if (result && !result.tooBroad) setFlyTo({ center: [result.lon, result.lat], zoom: 11, pitch: 40 });
+        if (chatAbroadRef.current) push("assistant", summarizeInternational(result, destination));
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setInternational({ place: destination, result: null });
+        if (chatAbroadRef.current) push("assistant", `Couldn't reach the international facility directory for "${destination}" right now. Try again shortly.`);
+      })
+      .finally(() => {
+        chatAbroadRef.current = false;
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [destination, push]);
 
-  useEffect(() => {
-    if (hasSearchedRef.current || !autoZipRef.current) return;
-    setFacilities(nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, autoZipRef.current, false));
-    // Only re-run when the late-loading clinic layers arrive.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allClinics.length, allUrgentCare.length]);
+  const searchAbroad = useCallback((place: string) => {
+    touchedRef.current = true;
+    setDestination(place.trim() || null);
+  }, []);
 
   const sendMessage = useCallback(
     (text: string) => {
       if (!text.trim()) return;
-      hasSearchedRef.current = true;
-      setPreviewFacilities([]); // a real search replaces the ambient preview, never layers with it
-      setMessages((m) => [...m, { id: id(), role: "user", text }]);
-
+      touchedRef.current = true;
+      push("user", text);
       const hint = redact(text);
 
-      // Traveler path: no US zip/tier math applies abroad, and there's no
-      // real cost data to show -- see src/lib/international.ts. Skip the
-      // domestic flow and the Lambda agent entirely rather than let either
-      // one apply US-specific policy language to a destination it doesn't
-      // understand.
       if (hint.destination) {
-        setFacilities([]);
-        setInternationalFacilities([]);
-        setTierPct(null);
-        setFplPct(null);
-        setInsuranceType(hint.insuranceType);
-        setVeteran(hint.veteran);
-        setLoading(true);
-        findInternationalFacilities(hint.destination)
-          .then((result) => {
-            setInternationalFacilities(result?.facilities ?? []);
-            // A too-broad match (a whole country) isn't a place worth
-            // flying the map to -- it's just wherever Nominatim's centroid
-            // happened to land, not anywhere the traveler described.
-            if (result && !result.tooBroad) setFlyTo({ center: [result.lon, result.lat], zoom: 11, pitch: 40 });
-            setMessages((m) => [...m, { id: id(), role: "assistant", text: summarizeInternational(result, hint.destination!) }]);
-          })
-          .catch(() => {
-            setMessages((m) => [
-              ...m,
-              { id: id(), role: "assistant", text: `Couldn't reach the international facility directory for "${hint.destination}" right now. Try again shortly.` },
-            ]);
-          })
-          .finally(() => setLoading(false));
+        chatAbroadRef.current = true;
+        setDestination(hint.destination);
         return;
       }
 
-      const prev = contextRef.current;
-      const ctx = mergeContext(prev, hint);
-      contextRef.current = ctx;
-
-      const nearby = ctx.zipCode
-        ? nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, ctx.zipCode, ctx.need != null || ctx.emergency)
-        : [];
-      setFacilities(nearby);
-      setInternationalFacilities([]);
-      setTierPct(ctx.tierPct);
-      setFplPct(ctx.fplPct);
-      setInsuranceType(ctx.insuranceType);
-      setVeteran(ctx.veteran);
-
-      // Only move the map when the place changes, not on every follow-up.
-      if (ctx.zipCode && ctx.zipCode !== prev?.zipCode && zipCentroids[ctx.zipCode]) {
-        const c = zipCentroids[ctx.zipCode];
-        setFlyTo({ center: [c.lon, c.lat], zoom: 10.5, pitch: 55 });
+      let placeNote = "";
+      if (!hint.zipCode) {
+        const place = findPlace(text, cityIndex);
+        if (place && zipCentroids[place.zip]) {
+          hint.zipCode = place.zip;
+          placeNote = `Showing care near ${place.city}, ${place.state}.`;
+        }
       }
 
-      const instantReply = summarize({
-        zipCode: ctx.zipCode,
-        fplPct: ctx.fplPct,
-        insuranceType: ctx.insuranceType,
-        veteran: ctx.veteran,
-        need: ctx.need,
-        emergency: ctx.emergency,
-        facilities: nearby,
-      });
-      setMessages((m) => [...m, { id: id(), role: "assistant", text: instantReply }]);
+      const prev = profileRef.current;
+      const next = mergeProfile(prev, hint);
+      const changed = (Object.keys(next) as (keyof Profile)[]).some((k) => next[k] !== prev[k]);
+      setProfile(next);
+      setDestination(null);
+
+      const nextZip = validZip(next.zip);
+      const nextFpl = profileFplPct(next);
+      let answered = false;
+      if (nextZip && changed) {
+        const nearby = nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, nextZip, profileFocus(next));
+        const reply = summarize({
+          zipCode: nextZip,
+          fplPct: nextFpl,
+          insuranceType: next.insuranceType,
+          veteran: next.veteran,
+          need: next.need,
+          emergency: next.emergency,
+          facilities: nearby,
+        });
+        push("assistant", placeNote ? `${placeNote} ${reply}` : reply);
+        answered = true;
+      } else if (!nextZip && (LOCATION_QUESTION.test(text) || next.emergency)) {
+        push(
+          "assistant",
+          `${next.emergency ? "If this is an emergency, call 911 or go to the nearest ER now. " : ""}Enter a ZIP code or city in the search bar, or use your location, and I'll show what's nearby.`,
+        );
+        answered = true;
+      }
 
       setLoading(true);
       askAgent(hint.redactedMessage, {
-        zipCode: ctx.zipCode,
-        insuranceType: ctx.insuranceType,
-        veteran: ctx.veteran,
-        tierPct: ctx.tierPct,
-        fplPct: ctx.fplPct,
+        zipCode: nextZip,
+        insuranceType: next.insuranceType,
+        veteran: next.veteran,
+        tierPct: nextFpl != null ? njCharityTier(nextFpl).patientPaysPct : null,
+        fplPct: nextFpl,
+        need: next.need,
       })
         .then((agentReply) => {
-          if (agentReply?.reply) {
-            setMessages((m) => [...m, { id: id(), role: "assistant", text: agentReply.reply }]);
-          }
+          if (agentReply?.reply) push("assistant", agentReply.reply);
+          else if (!answered) push("assistant", "The assistant isn't available right now. The map and cost estimates still work: enter a ZIP code or city in the search bar.");
         })
         .finally(() => setLoading(false));
     },
-    [allFacilities, allClinics, allUrgentCare, zipCentroids],
+    // validZip only reads zipCentroids.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [allFacilities, allClinics, allUrgentCare, zipCentroids, cityIndex, push],
   );
 
-  // Clicking a preview marker is the one interaction it supports: run a
-  // real search centered on that facility's own zip, exactly as if the
-  // user had typed it. Turns "browse the ambient map" into a real entry
-  // point instead of a dead end -- sendMessage clears previewFacilities,
-  // so the search's own tier-colored markers replace the preview ones.
-  const selectPreviewFacility = useCallback((facility: Facility) => sendMessage(facility.zip), [sendMessage]);
+  // A preview marker opens a real search centered on that facility.
+  const selectPreviewFacility = useCallback((facility: Facility) => updateProfile({ zip: facility.zip.slice(0, 5) }), [updateProfile]);
 
   return {
-    messages,
+    profile,
+    updateProfile,
     facilities,
-    internationalFacilities,
-    previewFacilities,
-    tierPct,
+    summary,
+    placeName,
+    locatedZip,
     fplPct,
-    insuranceType,
-    veteran,
+    tierPct,
     flyTo,
-    loading,
+    previewFacilities,
+    destination,
+    searchAbroad,
+    internationalFacilities: (international?.result?.facilities ?? []) as InternationalFacility[],
+    internationalSummary: international ? summarizeInternational(international.result, international.place) : null,
+    messages,
     sendMessage,
+    loading,
+    locate,
+    locating,
+    locationError,
     selectPreviewFacility,
   };
 }

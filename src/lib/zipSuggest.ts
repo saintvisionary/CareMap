@@ -31,7 +31,7 @@ export function suggestZips(
   const suggestions = matches.map((zip) => {
     const c = zipCentroids[zip];
     const near = nearestFacilityLabel(c.lat, c.lon, facilities);
-    return { value: zip, label: near ? `${zip} -- near ${near}` : zip };
+    return { value: zip, label: zip, detail: near ? `Near ${near}` : undefined };
   });
   return Promise.resolve(suggestions);
 }
@@ -56,14 +56,10 @@ function suggestByCity(query: string, facilities: Facility[], limit: number): Su
   for (const f of [...startsWith, ...includes]) {
     if (seen.has(f.zip)) continue;
     seen.add(f.zip);
-    out.push({ value: f.zip, label: `${f.zip} -- ${titleCase(f.city)}, ${f.state}` });
+    out.push({ value: f.zip, label: `${f.city}, ${f.state}`, detail: f.zip });
     if (out.length >= limit) break;
   }
   return out;
-}
-
-function titleCase(s: string): string {
-  return s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function nearestFacilityLabel(lat: number, lon: number, facilities: Facility[]): string | null {
@@ -80,5 +76,5 @@ function nearestFacilityLabel(lat: number, lon: number, facilities: Facility[]):
   // Past ~40 miles, the "nearest" facility isn't a meaningful city label for
   // this zip (sparse rural coverage) -- better to show the bare zip than an
   // approximate city that could be a whole different metro area.
-  return best && bestDist <= 40 ? `${titleCase(best.city)}, ${best.state}` : null;
+  return best && bestDist <= 40 ? `${best.city}, ${best.state}` : null;
 }

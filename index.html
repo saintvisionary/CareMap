@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>CareMap</title>
     <meta name="description" content="Find affordable care near you. See what you'd pay before you go." />
+    <meta name="theme-color" content="#1c1c1e" />
+    <meta name="color-scheme" content="dark" />
+    <!-- Start the map tiles and the core data downloading before the app code runs. -->
+    <link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin />
+    <link rel="preload" href="./data/zip_centroids.json" as="fetch" crossorigin="anonymous" />
+    <link rel="preload" href="./data/states/index.json" as="fetch" crossorigin="anonymous" />
   </head>
   <body>
     <div id="root"></div>

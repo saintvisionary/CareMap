@@ -104,3 +104,25 @@ describe("federal nonprofit-hospital cap (any state)", () => {
     expect(run({ need: "heart attack", facilities: [nj] })).not.toMatch(/amount generally billed/);
   });
 });
+
+describe("everyday care leads with the right place", () => {
+  it("a checkup leads with the nearest sliding-fee clinic", () => {
+    const s = run({ need: "checkup", facilities: [facility({}), CLINIC] });
+    expect(s.indexOf("COMMUNITY CLINIC")).toBeLessThan(s.indexOf("Found"));
+    expect(s).toMatch(/For a checkup, a sliding-fee health center/);
+  });
+
+  it("a sick visit offers urgent care, still with the 911 line", () => {
+    expect(run({ need: "sick visit", facilities: [URGENT, facility({})] })).toMatch(/QUICK CARE.*call 911/);
+  });
+
+  it("mental health always includes 988", () => {
+    expect(run({ need: "counseling", facilities: [CLINIC, facility({})] })).toMatch(/988/);
+  });
+
+  it("no double hyphens anywhere in a summary", () => {
+    for (const need of [null, "checkup", "heart attack", "sick visit"]) {
+      expect(run({ need, facilities: [URGENT, CLINIC, facility({})] })).not.toMatch(/ -- /);
+    }
+  });
+});

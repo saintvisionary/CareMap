@@ -21,6 +21,9 @@ import sys
 import urllib.request
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from textcase import apply_display_case  # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
 OUT = ROOT / "public" / "data" / "fqhc_sites.json"
@@ -40,8 +43,9 @@ DEFAULTS = {"type": "fqhc", "ownership": "Federally Qualified Health Center", "h
 
 
 def slim_sites(sites: list[dict], defaults: dict) -> list[dict]:
-    """Drop per-site fields equal to the file-level defaults (readers merge them back)."""
-    return [{k: v for k, v in s.items() if k not in defaults or s[k] != defaults[k]} for s in sites]
+    """Drop per-site fields equal to the file-level defaults (readers merge
+    them back), with names and places in readable case."""
+    return [{k: v for k, v in apply_display_case(dict(s)).items() if k not in defaults or s[k] != defaults[k]} for s in sites]
 
 def load_rows() -> list[dict]:
     path = RAW / "hrsa_sites.csv"

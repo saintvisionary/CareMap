@@ -1,201 +1,255 @@
-import { AnimatePresence, MotionConfig, motion } from "framer-motion";
-import { useCallback, useEffect, useState } from "react";
-import type { Facility } from "./lib/types";
-import { ChatPanel } from "./components/ChatPanel";
-import { GlassPanel } from "./components/GlassPanel";
-import { GuidedForm } from "./components/GuidedForm";
+import { MotionConfig } from "framer-motion";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { AskBar, Conversation, renderMessageText } from "./components/Conversation";
+import { CostDetails } from "./components/CostDetails";
+import { InfoIcon } from "./components/icons";
 import { InfoPanel } from "./components/InfoPanel";
+import { LocationSearch } from "./components/LocationSearch";
 import { MapView } from "./components/MapView";
+import { NeedPicker } from "./components/NeedPicker";
 import { ResultCard } from "./components/ResultCard";
+import { card, iconButton } from "./components/ui";
 import { useCareMap } from "./hooks/useCareMap";
 import { useCareMapData } from "./hooks/useCareMapData";
-import { parseNeed } from "./lib/intake";
+import { warmAgent } from "./lib/agentClient";
+import { needKind } from "./lib/drg";
+import type { Facility } from "./lib/types";
 
-type Mode = "guided" | "chat";
+type View = "results" | "conversation";
+// Phone sheet heights, like Apple Maps: half shows the map above the list.
+type Sheet = "half" | "full";
+const isPhone = () => typeof window !== "undefined" && window.innerWidth < 640;
+
+// Long lists render in pages: most people look at the first few, and a
+// marker click past the first page opens the rest.
+const PAGE = 15;
 
 export default function App() {
   const { facilities: allFacilities, clinics, urgentCare, zipCentroids, loading: dataLoading, error } = useCareMapData();
-  const {
-    messages,
-    facilities,
-    internationalFacilities,
-    previewFacilities,
-    fplPct,
-    insuranceType,
-    flyTo,
-    loading,
-    sendMessage,
-    selectPreviewFacility,
-  } = useCareMap(allFacilities, zipCentroids, clinics, urgentCare);
+  const cm = useCareMap(allFacilities, zipCentroids, clinics, urgentCare);
+  const { profile, facilities } = cm;
+
   const [activeCcn, setActiveCcn] = useState<string | null>(null);
-  const [mode, setMode] = useState<Mode>("guided");
-  // Mobile only -- the panel is full-width there and can cover most of the
-  // map on a result-heavy search. Desktop's narrow sidebar never needs this.
-  const [panelCollapsed, setPanelCollapsed] = useState(false);
+  const [view, setView] = useState<View>("results");
+  const [costsOpen, setCostsOpen] = useState(() => !isPhone());
+  const [hospitalOpen, setHospitalOpen] = useState(false);
+  const [abroad, setAbroad] = useState(false);
+  const [sheet, setSheet] = useState<Sheet>("half");
   const [infoOpen, setInfoOpen] = useState(false);
+  const [shown, setShown] = useState(PAGE);
+  const [overviewOpen, setOverviewOpen] = useState(false);
 
-  const handleGuidedSubmit = (message: string) => {
-    sendMessage(message);
-    setMode("chat");
-  };
+  // Wake the AI backend while the person is still reading the page.
+  useEffect(() => warmAgent(), []);
+  useEffect(() => setShown(PAGE), [facilities]);
 
-  // Selecting a facility is supposed to show what's known about it -- but
-  // the result-card list (the only place that detail renders) only shows
-  // up in Chat mode. Clicking a marker while still in "Fill in details"
-  // set the active id and rang the map's highlight, then visibly did
-  // nothing else. Always surface the pick, regardless of which mode or
-  // collapsed state the panel was already in.
-  //
-  // useCallback matters here, not just as tidiness: this function is a prop
-  // MapView's marker-rebuild effect depends on. Without a stable reference,
-  // every App re-render (a mode switch, the collapse toggle, anything)
-  // handed MapView a "new" onSelectFacility, which tore down and recreated
-  // every marker's DOM node -- and a click landing in that gap hit an
-  // already-removed element with its listener gone, silently doing
-  // nothing. Reproduced directly: a marker click right after switching to
-  // "Fill in details" never fired its listener at all.
-  const handleSelectFacility = useCallback((ccn: string) => {
-    setActiveCcn(ccn);
-    setMode("chat");
-    setPanelCollapsed(false);
-  }, []);
-
-  // A preview marker (the national-sample fallback shown before any real
-  // search -- see useCareMap) has no result card of its own; clicking one
-  // runs a real search centered on it instead, so give that the same
-  // "always surface something" treatment as a real marker click.
+  // A marker click shows that place's card wherever the panel was.
+  const handleSelectFacility = useCallback(
+    (ccn: string) => {
+      setActiveCcn(ccn);
+      setView("results");
+      const i = facilities.findIndex((f) => f.ccn === ccn);
+      if (i >= PAGE) setShown(i + 1);
+    },
+    [facilities],
+  );
   const handleSelectPreviewFacility = useCallback(
     (facility: Facility) => {
-      selectPreviewFacility(facility);
-      setMode("chat");
-      setPanelCollapsed(false);
+      cm.selectPreviewFacility(facility);
+      setView("results");
     },
-    [selectPreviewFacility],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [cm.selectPreviewFacility],
   );
 
-  const lastUserMessage =
-    messages
-      .slice()
-      .reverse()
-      .find((m) => m.role === "user")?.text ?? null;
-  const need = lastUserMessage ? parseNeed(lastUserMessage) : null;
-
-  // The map renders every facility it's given as a marker, with no cap --
-  // clicking any of them (not just the closest few) must be able to show
-  // that facility's card, or the click just silently highlights a marker
-  // with nothing to show for it. Scroll the list to reveal it instead of
-  // requiring the user to find it by hand.
   useEffect(() => {
     if (!activeCcn) return;
-    document.getElementById(`result-card-${activeCcn}`)?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }, [activeCcn]);
+    const t = setTimeout(() => document.getElementById(`result-card-${activeCcn}`)?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 60);
+    return () => clearTimeout(t);
+  }, [activeCcn, shown]);
+
+  const ask = (text: string) => {
+    cm.sendMessage(text);
+    setView("conversation");
+  };
+
+  const active = facilities.find((f) => f.ccn === activeCcn);
+  const zipReady = facilities.length > 0;
+  const suggestions = useMemo(() => {
+    if (abroad) return [];
+    if (!zipReady) return ["How does hospital charity care work?", "What's a sliding-fee clinic?"];
+    const out = [needKind(profile.need) === "hospital" ? "Which hospital is most affordable for me?" : "Which of these is most affordable?"];
+    out.push(active && active.type !== "fqhc" && active.type !== "urgent_care" ? `Help me apply for aid at ${active.name}` : "Help me apply for financial assistance");
+    out.push("What should I ask the billing office?");
+    return out;
+  }, [abroad, zipReady, profile.need, active]);
+
+  const hospitals = facilities.filter((f) => f.type !== "fqhc" && f.type !== "urgent_care").length;
+  const clinicCount = facilities.filter((f) => f.type === "fqhc").length;
+  const urgentCount = facilities.filter((f) => f.type === "urgent_care").length;
+  const counts = [
+    hospitals ? `${hospitals} hospital${hospitals === 1 ? "" : "s"}` : null,
+    clinicCount ? `${clinicCount} health center${clinicCount === 1 ? "" : "s"}` : null,
+    urgentCount ? `${urgentCount} urgent care` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
+  const overview = abroad ? cm.internationalSummary : cm.summary;
 
   return (
     <MotionConfig reducedMotion="user">
-    <div className="h-screen w-screen bg-ink-950 text-white font-sans overflow-hidden relative">
-      <MapView
-        facilities={facilities}
-        internationalFacilities={internationalFacilities}
-        previewFacilities={previewFacilities}
-        fplPct={fplPct}
-        insuranceType={insuranceType}
-        flyTo={flyTo}
-        activeCcn={activeCcn}
-        onSelectFacility={handleSelectFacility}
-        onSelectPreviewFacility={handleSelectPreviewFacility}
-      />
+      <div className="relative h-[100dvh] w-screen overflow-hidden bg-[#1c1c1e] font-sans text-white antialiased">
+        <MapView
+          facilities={facilities}
+          internationalFacilities={abroad ? cm.internationalFacilities : []}
+          previewFacilities={abroad ? [] : cm.previewFacilities}
+          fplPct={cm.fplPct}
+          insuranceType={profile.insuranceType}
+          flyTo={cm.flyTo}
+          activeCcn={activeCcn}
+          onSelectFacility={handleSelectFacility}
+          onSelectPreviewFacility={handleSelectPreviewFacility}
+        />
 
-      <header className="absolute top-0 left-0 right-0 p-4 sm:p-6 flex items-center justify-between pointer-events-none">
-        <div className="flex items-center gap-2 pointer-events-auto">
-          <span className="text-lg font-semibold tracking-tight">CareMap</span>
-          <span className="text-xs text-white/40 hidden sm:inline">find affordable care near you</span>
-        </div>
-        <div className="flex items-center gap-2 pointer-events-auto">
-          {error && <span className="text-xs text-red-400">{error}</span>}
-          <button
-            onClick={() => setInfoOpen(true)}
-            aria-label="How to read CareMap"
-            className="flex items-center gap-1.5 rounded-full bg-white/15 border border-white/25 pl-2 pr-3 py-1.5 text-xs font-medium text-white shadow-lg shadow-black/30 transition-[background-color,transform] duration-150 active:scale-95 hover:bg-white/25"
-          >
-            <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-white text-[10px] font-bold text-ink-950">i</span>
-            Info
-          </button>
-        </div>
-      </header>
+        <InfoPanel open={infoOpen} onClose={() => setInfoOpen(false)} />
 
-      <InfoPanel open={infoOpen} onClose={() => setInfoOpen(false)} />
-
-      <div className="absolute inset-x-0 bottom-0 sm:bottom-6 sm:left-6 sm:right-auto sm:w-[380px] p-4 sm:p-0 flex flex-col gap-3 max-h-[70vh] sm:max-h-[80vh] z-10">
-        {/* Mobile only -- the panel is full-width there and a result-heavy
-            search can cover most of the map. Desktop's narrow 380px sidebar
-            never needs this, so the handle itself is hidden there and
-            panelCollapsed has no other way to become true. */}
-        <button
-          onClick={() => setPanelCollapsed((c) => !c)}
-          className="sm:hidden mx-auto flex items-center gap-1.5 rounded-full bg-white/10 px-4 py-1.5 text-[11px] font-medium text-white/60 transition-transform active:scale-[0.96]"
+        <aside
+          className={`absolute inset-x-0 bottom-0 z-10 flex flex-col rounded-t-[26px] border border-white/[0.08] bg-[#1c1c1e]/[0.88] shadow-2xl shadow-black/60 backdrop-blur-2xl backdrop-saturate-150 transition-[height] duration-300 sm:inset-y-4 sm:left-4 sm:right-auto sm:h-auto sm:w-[404px] sm:rounded-[24px] ${
+            sheet === "full" ? "h-[88dvh]" : "h-[52dvh]"
+          }`}
         >
-          <span className={`inline-block transition-transform duration-200 ${panelCollapsed ? "rotate-180" : ""}`}>▾</span>
-          {panelCollapsed ? "Show details" : "Show map"}
-        </button>
+          {/* Phone only: the sheet's grab handle, between half and full height. */}
+          <button
+            type="button"
+            onClick={() => setSheet((v) => (v === "full" ? "half" : "full"))}
+            aria-label={sheet === "full" ? "Show more map" : "Show more results"}
+            className="mx-auto mt-2 flex h-5 w-16 shrink-0 items-center justify-center sm:hidden"
+          >
+            <span className="h-1.5 w-10 rounded-full bg-white/25" />
+          </button>
 
-        <AnimatePresence initial={false}>
-          {!panelCollapsed && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-              className="min-h-0 flex flex-col gap-3 overflow-hidden"
-            >
-              {/* Only shown in Chat view -- with the guided form's own fields
-                  also competing for space in this same column, showing both
-                  at once left old results clipped to a sliver while editing
-                  a new query. The form resets to Chat on submit, so results
-                  still appear right where you'd expect them. */}
-              {mode === "chat" && facilities.length > 0 && (
-                <div className="min-h-0 overflow-y-auto space-y-3 pr-1">
-                  {facilities.map((f, i) => (
-                    <ResultCard
-                      key={f.ccn}
-                      facility={f}
-                      fplPct={fplPct}
-                      insuranceType={insuranceType}
-                      need={need}
-                      index={i}
-                      active={f.ccn === activeCcn}
-                      onSelect={() => setActiveCcn(f.ccn)}
-                    />
-                  ))}
-                </div>
-              )}
-              <div className="flex gap-1.5">
-                {(["guided", "chat"] as const).map((m) => (
-                  <button
-                    key={m}
-                    onClick={() => setMode(m)}
-                    className={`rounded-full px-3 py-1 text-xs font-medium capitalize transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
-                      mode === m ? "bg-white/90 text-ink-950" : "bg-white/10 text-white/50"
-                    }`}
-                  >
-                    {m === "guided" ? "Fill in details" : "Chat"}
-                  </button>
-                ))}
+          <header className="flex items-start justify-between gap-3 px-4 pt-1 sm:pt-4">
+            <div>
+              <h1 className="text-[22px] font-semibold leading-tight tracking-tight">CareMap</h1>
+              <p className="hidden text-[13px] text-white/50 sm:block">What care would cost you, before the bill</p>
+            </div>
+            <button type="button" onClick={() => setInfoOpen(true)} aria-label="How CareMap works" title="How CareMap works" className={`${iconButton} -mr-1.5`}>
+              <InfoIcon size={20} />
+            </button>
+          </header>
+
+          <div className="px-4 pt-3">
+            <LocationSearch
+              zip={profile.zip}
+              onZip={(zip) => {
+                cm.updateProfile({ zip });
+                setView("results");
+              }}
+              zipCentroids={zipCentroids}
+              facilities={allFacilities}
+              onLocate={() => cm.locate()}
+              locating={cm.locating}
+              locationError={cm.locationError ?? error}
+              usingLocation={!!cm.locatedZip && cm.locatedZip === profile.zip}
+              abroad={abroad}
+              onAbroad={(a) => {
+                setAbroad(a);
+                if (!a) cm.searchAbroad("");
+                setView("results");
+              }}
+              onDestination={(place) => {
+                cm.searchAbroad(place);
+                setView("results");
+              }}
+            />
+          </div>
+
+          {view === "conversation" ? (
+              <div className="flex min-h-0 flex-1 flex-col px-4 pt-3">
+                <Conversation messages={cm.messages} loading={cm.loading} onBack={() => setView("results")} />
               </div>
+            ) : (
+              <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain px-4 pb-3 pt-4">
+                {!abroad && (
+                  <>
+                    <NeedPicker
+                      need={profile.need}
+                      onNeed={(need) => cm.updateProfile({ need, emergency: false })}
+                      hospitalOpen={hospitalOpen}
+                      onHospitalOpen={setHospitalOpen}
+                    />
+                    <CostDetails profile={profile} onChange={cm.updateProfile} open={costsOpen} onOpen={setCostsOpen} fplPct={cm.fplPct} />
+                  </>
+                )}
 
-              {mode === "guided" ? (
-                <GlassPanel className="min-h-0 p-4 overflow-y-auto">
-                  <GuidedForm onSubmit={handleGuidedSubmit} zipCentroids={zipCentroids} facilities={allFacilities} />
-                </GlassPanel>
-              ) : (
-                <div className="h-64 sm:h-80">
-                  <ChatPanel messages={messages} loading={loading || dataLoading} onSend={sendMessage} />
-                </div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
+                {profile.emergency && !abroad && (
+                  <div className="rounded-2xl bg-[#ff453a]/15 px-4 py-3 text-[14px] font-medium leading-snug text-[#ff6961]" role="alert">
+                    If this is an emergency, call 911 or go to the nearest ER now. Don't wait on cost.
+                  </div>
+                )}
+
+                {overview ? (
+                  <section className={`${card} px-4 py-3.5`}>
+                    <h2 className="mb-1 text-[13px] font-medium text-white/55">
+                      {abroad ? "Near your destination" : cm.placeName ? `Near ${cm.placeName} ${profile.zip}` : `Near ${profile.zip}`}
+                    </h2>
+                    <div className={`text-[14px] leading-relaxed text-white/85 ${overviewOpen ? "" : "line-clamp-4"}`}>{renderMessageText(overview)}</div>
+                    <button type="button" onClick={() => setOverviewOpen((o) => !o)} className="mt-1 text-[13px] font-medium text-white/60 hover:text-white">
+                      {overviewOpen ? "Less" : "More"}
+                    </button>
+                  </section>
+                ) : (
+                  !abroad && (
+                    <section className={`${card} px-4 py-4`}>
+                      <p className="text-[15px] font-medium text-white">{dataLoading ? "Loading hospitals…" : "Start with where you are"}</p>
+                      <p className="mt-1 text-[13px] leading-relaxed text-white/55">
+                        Enter a ZIP code or city to see nearby hospitals, sliding-fee clinics and urgent care, with what you'd likely pay under your state's
+                        charity-care rules.
+                      </p>
+                    </section>
+                  )
+                )}
+
+                {facilities.length > 0 && (
+                  <section>
+                    <div className="mb-2 flex items-baseline justify-between gap-3 px-0.5">
+                      <h2 className="text-[17px] font-semibold tracking-tight">Nearby</h2>
+                      <span className="truncate text-[13px] text-white/45">{counts}</span>
+                    </div>
+                    <div className="space-y-2">
+                      {facilities.slice(0, shown).map((f, i) => (
+                        <ResultCard
+                          key={f.ccn}
+                          facility={f}
+                          fplPct={cm.fplPct}
+                          insuranceType={profile.insuranceType}
+                          need={profile.need}
+                          index={i}
+                          active={f.ccn === activeCcn}
+                          onSelect={() => setActiveCcn((c) => (c === f.ccn ? null : f.ccn))}
+                        />
+                      ))}
+                    </div>
+                    {facilities.length > shown && (
+                      <button
+                        type="button"
+                        onClick={() => setShown((n) => n + PAGE * 2)}
+                        className="mt-2 h-10 w-full rounded-2xl bg-white/[0.06] text-[14px] font-medium text-white/80 transition-colors hover:bg-white/[0.1]"
+                      >
+                        Show more ({facilities.length - shown} left)
+                      </button>
+                    )}
+                  </section>
+                )}
+              </div>
+            )}
+
+          <div className="shrink-0 border-t border-white/[0.06] px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3">
+            <AskBar onSend={ask} onFocus={() => setView("conversation")} suggestions={view === "conversation" && cm.messages.length > 0 ? [] : suggestions} loading={cm.loading} />
+          </div>
+        </aside>
       </div>
-    </div>
     </MotionConfig>
   );
 }

@@ -48,17 +48,50 @@ def has_dollar_figure(text: str) -> bool:
     return "$" in text
 
 
-def labeling_violations(text: str) -> list[str]:
-    violations = []
+_NEGATED = re.compile(r"(?:\bnot|n't|\bnever|\bno|\bnor)\s+(?:a\s+|an\s+|the\s+)?$")
+
+
+def forbidden_phrases(text: str) -> list[str]:
+    """A forbidden phrase counts only when it's asserted: "not guaranteed"
+    and "not your price" are the honest framing the rule wants."""
     lower = text.lower()
-    for phrase in POLICY["labeling"]["forbidden_phrases"]:
-        if phrase in lower:
-            violations.append(f"Forbidden phrase used: '{phrase}'.")
-    if has_dollar_figure(text):
-        for required in POLICY["labeling"]["required_when_dollar_figure_present"]:
-            if required not in lower:
-                violations.append(f"Missing required disclosure phrase: '{required}'.")
-    return violations
+    found = []
+    for p in POLICY["labeling"]["forbidden_phrases"]:
+        for m in re.finditer(re.escape(p), lower):
+            if not _NEGATED.search(lower[max(0, m.start() - 20):m.start()]):
+                found.append(f"Forbidden phrase used: '{p}'.")
+                break
+    return found
+
+
+def missing_disclosures(text: str) -> list[str]:
+    if not has_dollar_figure(text):
+        return []
+    lower = text.lower()
+    return [f"Missing required disclosure phrase: '{p}'." for p in POLICY["labeling"]["required_when_dollar_figure_present"]
+            if p not in lower]
+
+
+def labeling_violations(text: str) -> list[str]:
+    return forbidden_phrases(text) + missing_disclosures(text)
+
+
+DISCLOSURE = "These are estimates, confirm with billing office."
+
+
+def ensure_disclosure(text: str) -> str:
+    """Append the required disclosure when a reply with a dollar figure lacks
+    it. Deterministic, so a forgotten phrase never costs a model rewrite."""
+    if missing_disclosures(text):
+        return text.rstrip() + "\n\n" + DISCLOSURE
+    return text
+
+
+def reply_text(result) -> str:
+    """The user-visible reply only. str(result) on a structured result is the
+    whole JSON, including map coordinates and zoom levels nobody reads."""
+    reply = getattr(getattr(result, "structured_output", None), "reply", None)
+    return reply if isinstance(reply, str) else str(result)
 
 
 @dataclass
@@ -112,11 +145,14 @@ class GroundingGuard(HookProvider):
     def on_done(self, event: AfterInvocationEvent) -> None:
         if event.result is None:
             return
-        text = str(event.result)
+        text = reply_text(event.result)
         report = self.check(text)
         report["attempt"] = self.rewrites + 1
         self.history.append(report)
-        if report["passed"] or self.rewrites >= self.max_rewrites:
+        # A missing disclosure alone is fixed by ensure_disclosure() after the
+        # run; only invented numbers and forbidden wording need the model.
+        forbidden = forbidden_phrases(text)
+        if (not report["ungrounded_numbers"] and not forbidden) or self.rewrites >= self.max_rewrites:
             return
         self.rewrites += 1
         problems = []
@@ -124,7 +160,7 @@ class GroundingGuard(HookProvider):
             problems.append(
                 "These numbers do not appear in any tool result and must be removed or corrected: "
                 + ", ".join(f"{n:g}" for n in report["ungrounded_numbers"]))
-        problems.extend(report["label_violations"])
+        problems.extend(forbidden)
         event.resume = ("POLICY CHECK FAILED. Rewrite the full reply and fix this:\n- " + "\n- ".join(problems)
                         + "\nReturn only the corrected reply.")
 

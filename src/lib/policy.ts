@@ -259,7 +259,7 @@ export const FREE_TIER_STATES: Record<string, FreeTierState> = {
     scope:
       "Applies at Ohio's general hospitals, for Ohio residents who aren't on Medicaid. Free care covers basic, medically necessary services (what Medicaid covers, except transplants).",
     maxFplPct: 100,
-    aboveLine: "Ohio sets no statewide discount above this line -- ask the hospital about its own financial assistance policy.",
+    aboveLine: "Ohio sets no statewide discount above this line. Ask the hospital about its own financial assistance policy.",
     freeNote: "Covers basic, medically necessary services, not transplants.",
   },
   // S.C. Code 44-6-150 and Regs. 126-500 to 126-560 (Medically Indigent
@@ -360,7 +360,7 @@ export const CHARITY_PROGRAM_NAMES: Record<string, string> = {
   ...Object.fromEntries(Object.entries(FREE_TIER_STATES).map(([st, f]) => [st, f.programName])),
   ...Object.fromEntries(Object.entries(MEDICARE_CAP_STATES).map(([st, c]) => [st, c.programName])),
   NJ: "NJ Charity Care",
-  WA: "Washington's charity care law (the minimum every hospital must offer -- some larger hospital systems must offer better terms)",
+  WA: "Washington's charity care law (the minimum every hospital must offer; some larger hospital systems must offer better terms)",
   IL: "the Illinois Hospital Uninsured Patient Discount Act (uninsured patients only)",
   NY: "the New York Hospital Financial Assistance Law",
   OR: "Oregon's hospital financial assistance law (nonprofit hospitals only)",
@@ -422,7 +422,7 @@ export function isFederalCapHospital(f: { type: string; ownership: string }): bo
 }
 
 export const FEDERAL_CAP_LINE =
-  'If you qualify for this nonprofit hospital\'s financial assistance, federal law caps your bill at its "amount generally billed," which is often set from Medicare\'s rates -- yours could be higher or lower';
+  'If you qualify for this nonprofit hospital\'s financial assistance, federal law caps your bill at its "amount generally billed," which is often set from Medicare\'s rates. Yours could be higher or lower';
 
 export function applyTier(typicalCharge: number, patientPaysPct: number): number {
   return Math.round(typicalCharge * (patientPaysPct / 100) * 100) / 100;

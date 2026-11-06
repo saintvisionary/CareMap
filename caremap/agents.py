@@ -27,7 +27,7 @@ from dataclasses import dataclass
 
 from strands import Agent
 
-from .guards import EvidenceLedger, GroundingGuard
+from .guards import EvidenceLedger, GroundingGuard, ensure_disclosure
 from .intake import IntakeHint, redact
 from .schemas import OrchestratorOutput
 from .tools import _STATE_POLICY_KEYS, ALL_TOOLS, DATA_TOOL_NAMES
@@ -227,7 +227,11 @@ Call any billed-charge number a "typical billed charge", never "your price",
 and always add that it is an estimate to confirm with the billing office.
 
 Formatting: write for someone reading on a phone, not a billing report.
-Never use em-dashes; use a comma, a period, or "--" instead.
+Never use em-dashes or "--"; use a comma or a period instead.
+Write facility names, cities and addresses in normal capitalization
+(e.g. "Mount Sinai Medical Center", "Baltimore"), never in all caps.
+For speed, call tools that don't depend on each other (e.g.
+facilities_with_drg and nearest_fqhc) together in the same step.
 Lead with one short plain-language sentence. If you have more than one fact
 to list (procedure, charge, tier, amount owed, a second facility, etc.),
 put each on its own line as a markdown bullet ("- **Label:** value"), with
@@ -246,10 +250,16 @@ facility type.""".format(
 def make_model(model_id: str | None = None):
     from strands.models.gemini import GeminiModel
 
+    params: dict = {"temperature": 0.2}
+    # Low thinking halves the reply time (about 17s -> 8s measured on a
+    # one-tool question) with the same tool choices; "default" turns it off.
+    thinking = os.getenv("CAREMAP_THINKING_LEVEL", "low")
+    if thinking and thinking != "default":
+        params["thinking_config"] = {"thinking_level": thinking}
     return GeminiModel(
         client_args={"api_key": os.environ["GEMINI_API_KEY"]},
         model_id=model_id or os.getenv("CAREMAP_MODEL_ID", DEFAULT_MODEL_ID),
-        params={"temperature": 0.2},
+        params=params,
     )
 
 
@@ -269,8 +279,10 @@ def build_orchestrator(model=None) -> Orchestrator:
     return Orchestrator(agent=orchestrator, ledger=ledger, guard=guard)
 
 
-def _prompt_for(hint: IntakeHint) -> str:
+def _prompt_for(hint: IntakeHint, need: str | None = None) -> str:
     context = [f"User message (redacted): {hint.redacted_message}"]
+    if need:
+        context.append(f"need (what they're looking for, from the form or an earlier message): {need}")
     if hint.zip_code:
         context.append(f"zip_code: {hint.zip_code}")
     if hint.insurance_type is not None:
@@ -292,6 +304,7 @@ def handle_message(
     veteran: bool | None = None,
     tier_pct: float | None = None,
     fpl_pct: float | None = None,
+    need: str | None = None,
 ) -> dict:
     """Entry point for the Lambda handler. Redacts, then runs the Orchestrator.
 
@@ -318,12 +331,20 @@ def handle_message(
         hint.tier_pct = tier_pct
     if fpl_pct is not None:
         hint.fpl_pct = fpl_pct
-    prompt = _prompt_for(hint)
+    # The person's own context counts as evidence: their poverty-line percent
+    # and zip were computed in their browser, not invented by the model.
+    context_numbers = [hint.fpl_pct, hint.tier_pct]
+    if hint.zip_code and hint.zip_code.isdigit():
+        context_numbers.append(hint.zip_code)
+    orchestrator.ledger.numbers.update(float(n) for n in context_numbers if n is not None)
+    prompt = _prompt_for(hint, need)
     result = orchestrator.agent(prompt, structured_output_model=OrchestratorOutput)
     output: OrchestratorOutput = result.structured_output
+    reply = ensure_disclosure(output.reply)
+    final = orchestrator.guard.final
     return {
-        "reply": output.reply,
+        "reply": reply,
         "map_commands": [c.model_dump() for c in output.map_commands],
         "audit": orchestrator.ledger.audit,
-        "guard": orchestrator.guard.final,
+        "guard": {**orchestrator.guard.check(reply), "attempt": final["attempt"] if final else 1},
     }
