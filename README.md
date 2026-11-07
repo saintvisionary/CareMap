@@ -80,6 +80,14 @@ CareMap puts those rules on a map **before** care happens. Answer five quick que
 
 Everything a person needs to decide runs **in the browser**, in under a second, with no AI call: finding nearby care, applying the state law, and pricing each hospital. The AI is an optional layer on top for questions in your own words.
 
+<p align="center">
+  <a href="docs/diagrams/architecture.jpg"><img src="docs/diagrams/architecture.jpg" width="100%" alt="CareMap architecture: the browser computes everything personal (guide, redaction, on-device memory, public data, nearby search, policy engine, map and cards). A dashed privacy boundary shows only the redacted question, the percentage of the poverty line, ZIP, need and language crossing to AWS, where a Lambda Function URL runs a fresh Strands agent with tools, an evidence ledger and a grounding guard, calling Gemini Flash. An offline pipeline builds policy.json and the public data from CMS, HRSA, NPPES, Census and state statutes."></a>
+</p>
+<p align="center"><sub>Drawn in draw.io · source: <a href="docs/diagrams/architecture.drawio"><code>docs/diagrams/architecture.drawio</code></a></sub></p>
+
+<details>
+<summary><b>Text version of the diagram</b></summary>
+
 ```mermaid
 flowchart LR
     subgraph Browser["📱 Browser (all personal data stays here)"]
@@ -97,6 +105,8 @@ flowchart LR
     R -- "redacted text + % only" --> A
     GG -- "yes" --> UI
 ```
+
+</details>
 
 <p align="center">
   <img src="docs/images/guide-desktop.png" width="49%" alt="The five-question guide, step 1: What do you need help with?">
@@ -135,7 +145,7 @@ flowchart TD
 
 In **every** state, nonprofit hospitals fall under 26 U.S.C. §501(r): someone who qualifies for the hospital's own financial assistance can't be charged more than its "amount generally billed." Where no state rule gives a figure, CareMap shows what Medicare pays for the procedure at that hospital (CMS, 2024) next to the billed charge, as a reference.
 
-<details>
+<details open>
 <summary><b>All 17 modeled states, with citations</b></summary>
 
 | State | Law | What CareMap shows |
