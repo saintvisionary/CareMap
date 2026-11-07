@@ -242,25 +242,54 @@ export function MapView({
       markersRef.current.set(`intl-${i}`, marker);
     });
 
-    previewFacilities.forEach((f, i) => {
-      if (f.lat == null || f.lon == null) return;
-      const el = document.createElement("div");
-      el.className = "caremap-marker-wrap";
-      el.title = `${f.name}. Click to see nearby options`;
-      const dot = document.createElement("div");
-      dot.className = "caremap-marker caremap-marker-preview";
-      // Capped, unlike the other two loops -- up to 130 of these at once,
-      // and nobody should wait 9 seconds for the last one to stagger in.
-      dot.style.animationDelay = `${Math.min(i, 24) * 15}ms`;
-      el.appendChild(dot);
-      el.addEventListener("click", () => onSelectPreviewFacility(f));
+  }, [facilities, internationalFacilities, onSelectFacility]);
 
-      const marker = new maplibregl.Marker({ element: el, anchor: "center" })
-        .setLngLat([f.lon, f.lat])
-        .addTo(map);
-      markersRef.current.set(`preview-${f.ccn}`, marker);
-    });
-  }, [facilities, internationalFacilities, previewFacilities, onSelectFacility, onSelectPreviewFacility]);
+  // Every hospital as a faint dot before a search, drawn by the map itself
+  // (one layer, not thousands of DOM markers), so the map isn't empty and
+  // any dot can start a search.
+  const previewRef = useRef(previewFacilities);
+  previewRef.current = previewFacilities;
+  const onPreviewRef = useRef(onSelectPreviewFacility);
+  onPreviewRef.current = onSelectPreviewFacility;
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const data = {
+      type: "FeatureCollection" as const,
+      features: previewFacilities
+        .filter((f) => f.lat != null && f.lon != null)
+        .map((f) => ({ type: "Feature" as const, properties: { ccn: f.ccn, name: f.name }, geometry: { type: "Point" as const, coordinates: [f.lon!, f.lat!] } })),
+    };
+    const apply = () => {
+      const src = map.getSource("all-sites") as maplibregl.GeoJSONSource | undefined;
+      if (src) {
+        src.setData(data);
+        return;
+      }
+      map.addSource("all-sites", { type: "geojson", data });
+      map.addLayer({
+        id: "all-sites",
+        type: "circle",
+        source: "all-sites",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 1.6, 7, 3, 11, 5],
+          "circle-color": "#d6e0f5",
+          "circle-opacity": 0.6,
+          "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 3, 0, 8, 1],
+          "circle-stroke-color": "rgba(15,20,35,0.6)",
+        },
+      });
+      map.on("click", "all-sites", (e) => {
+        const ccn = e.features?.[0]?.properties?.ccn;
+        const f = previewRef.current.find((x) => x.ccn === ccn);
+        if (f) onPreviewRef.current(f);
+      });
+      map.on("mouseenter", "all-sites", () => (map.getCanvas().style.cursor = "pointer"));
+      map.on("mouseleave", "all-sites", () => (map.getCanvas().style.cursor = ""));
+    };
+    if (map.isStyleLoaded()) apply();
+    else map.once("load", apply);
+  }, [previewFacilities]);
 
   useEffect(() => {
     for (const { dot, facility } of dotsRef.current.values()) {

@@ -31,6 +31,9 @@ export interface InternationalResult {
    * anything -- see geocodePlace. facilities is always empty in this case;
    * the search was skipped rather than run against an arbitrary point. */
   tooBroad: boolean;
+  /** A whole country was asked for: facilities are spread across it, not
+   * near one point, so distances aren't meaningful. */
+  country?: boolean;
 }
 
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
@@ -47,8 +50,9 @@ const PHOTON_URL = "https://photon.komoot.io/api/";
 // under load); those are usually momentary, so retry a couple of times
 // with a short per-attempt timeout rather than hang indefinitely.
 const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
-const OVERPASS_ATTEMPTS = 3;
-const OVERPASS_TIMEOUT_MS = 12000;
+// One quick try: when it's overloaded (often), Nominatim answers instead.
+const OVERPASS_ATTEMPTS = 1;
+const OVERPASS_TIMEOUT_MS = 8000;
 
 function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const r = 6371;
@@ -65,6 +69,9 @@ interface NominatimResult {
   display_name: string;
   addresstype?: string;
   place_rank?: number;
+  /** [south, north, west, east] */
+  boundingbox?: string[];
+  address?: { country_code?: string };
 }
 
 // Bounding-box size looked like the obvious signal for "this match is too
@@ -80,8 +87,8 @@ interface NominatimResult {
 // point Nominatim itself considers the right center for that name.
 async function geocodePlace(
   place: string,
-): Promise<{ lat: number; lon: number; displayName: string; tooBroad: boolean } | null> {
-  const qs = new URLSearchParams({ q: place, format: "json", limit: "1" });
+): Promise<{ lat: number; lon: number; displayName: string; tooBroad: boolean; bbox: number[] | null; countryCode: string | null } | null> {
+  const qs = new URLSearchParams({ q: place, format: "json", limit: "1", addressdetails: "1", "accept-language": "en" });
   const res = await fetch(`${NOMINATIM_URL}?${qs}`, { headers: { Accept: "application/json" } });
   // Distinct from "zero results" (a real, legitimate answer meaning the
   // place name didn't match anything) -- a failed request shouldn't look
@@ -93,7 +100,7 @@ async function geocodePlace(
   // place_rank 4 is Nominatim's own rank for "country" -- kept as a
   // fallback for the rare response missing addresstype.
   const tooBroad = r.addresstype ? r.addresstype === "country" || r.addresstype === "continent" : r.place_rank === 4;
-  return { lat: parseFloat(r.lat), lon: parseFloat(r.lon), displayName: r.display_name, tooBroad };
+  return { lat: parseFloat(r.lat), lon: parseFloat(r.lon), displayName: r.display_name, tooBroad, bbox: r.boundingbox ? r.boundingbox.map(Number) : null, countryCode: r.address?.country_code ?? null };
 }
 
 export interface OverpassElement {
@@ -189,7 +196,7 @@ interface PhotonFeature {
 // free text still works exactly as it did before this existed.
 export async function suggestPlaces(query: string, limit = 5): Promise<{ value: string; label: string }[]> {
   if (query.trim().length < 2) return [];
-  const qs = new URLSearchParams({ q: query, limit: String(limit) });
+  const qs = new URLSearchParams({ q: query, limit: String(limit), lang: "en" });
   try {
     const res = await fetch(`${PHOTON_URL}?${qs}`, { headers: { Accept: "application/json" } });
     if (!res.ok) return [];
@@ -199,7 +206,11 @@ export async function suggestPlaces(query: string, limit = 5): Promise<{ value: 
     for (const f of data.features ?? []) {
       const p = f.properties;
       if (!p.name) continue;
-      const label = [p.name, p.state && p.state !== p.name ? p.state : null, p.country].filter(Boolean).join(", ");
+      // A country is just its name ("Japan", not "Japan, Japan", which
+      // geocodes to some building in Tokyo).
+      const label = [p.name, p.state && p.state !== p.name ? p.state : null, p.country && p.country !== p.name ? p.country : null]
+        .filter(Boolean)
+        .join(", ");
       if (seen.has(label)) continue;
       seen.add(label);
       out.push({ value: label, label });
@@ -210,22 +221,82 @@ export async function suggestPlaces(query: string, limit = 5): Promise<{ value: 
   }
 }
 
+interface NominatimPlace {
+  lat: string;
+  lon: string;
+  name?: string;
+  type?: string;
+  display_name: string;
+  namedetails?: Record<string, string>;
+}
+
+/** Hospitals and clinics inside a box, from Nominatim. The backup for an
+ * overloaded Overpass, and the way to list a whole country's hospitals.
+ * box is [west, north, east, south]. */
+async function nominatimFacilities(box: number[], originLat: number, originLon: number, limit: number, countryCode?: string | null): Promise<InternationalFacility[]> {
+  const out: InternationalFacility[] = [];
+  const seen = new Set<string>();
+  for (const q of ["hospital", "clinic"]) {
+    const qs = new URLSearchParams({
+      q,
+      format: "jsonv2",
+      bounded: "1",
+      viewbox: box.join(","),
+      limit: String(limit),
+      namedetails: "1",
+      "accept-language": "en",
+    });
+    // A country's box overlaps its neighbors; keep to the country itself.
+    if (countryCode) qs.set("countrycodes", countryCode);
+    const res = await fetch(`${NOMINATIM_URL}?${qs}`, { headers: { Accept: "application/json" } });
+    if (!res.ok) throw new Error(`Nominatim request failed: ${res.status}`);
+    for (const r of (await res.json()) as NominatimPlace[]) {
+      const local = r.namedetails?.name ?? r.name;
+      const name = r.namedetails?.["name:en"] || local;
+      if (!name) continue;
+      const lat = parseFloat(r.lat);
+      const lon = parseFloat(r.lon);
+      const key = `${name}|${lat.toFixed(4)}|${lon.toFixed(4)}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      // display_name starts with the place's own name; the next parts are
+      // its street and area.
+      const addr = r.display_name.split(",").slice(1, 4).map((x) => x.trim()).filter(Boolean).join(", ");
+      out.push({
+        name,
+        localName: local && local !== name ? local : null,
+        type: r.type === "hospital" ? "hospital" : "clinic",
+        lat,
+        lon,
+        address: addr || null,
+        distanceKm: Math.round(haversineKm(originLat, originLon, lat, lon) * 10) / 10,
+      });
+    }
+  }
+  return out;
+}
+
 export async function findInternationalFacilities(place: string, radiusKm = 25): Promise<InternationalResult | null> {
   const geo = await geocodePlace(place);
   if (!geo) return null;
   if (geo.tooBroad) {
-    // Skip the Overpass call entirely rather than run a 25km search
-    // against an arbitrary point inside a country/region -- the results
-    // would be real facilities, but not meaningfully "near" anything the
-    // traveler asked about.
-    return { place: geo.displayName, lat: geo.lat, lon: geo.lon, facilities: [], tooBroad: true };
+    // A whole country: list hospitals across it rather than near one
+    // arbitrary point inside it.
+    if (!geo.bbox) return { place: geo.displayName, lat: geo.lat, lon: geo.lon, facilities: [], tooBroad: true };
+    const [south, north, west, east] = geo.bbox;
+    const facilities = await nominatimFacilities([west, north, east, south], geo.lat, geo.lon, 40, geo.countryCode);
+    return { place: geo.displayName, lat: geo.lat, lon: geo.lon, facilities, tooBroad: false, country: true };
   }
-  const elements = await overpassFacilities(geo.lat, geo.lon, radiusKm);
-  return {
-    place: geo.displayName,
-    lat: geo.lat,
-    lon: geo.lon,
-    facilities: parseOverpassElements(elements, geo.lat, geo.lon).slice(0, 20),
-    tooBroad: false,
-  };
+  let facilities: InternationalFacility[];
+  try {
+    facilities = parseOverpassElements(await overpassFacilities(geo.lat, geo.lon, radiusKm), geo.lat, geo.lon);
+  } catch {
+    // Overpass is a shared free service and often overloaded.
+    const d = radiusKm / 111;
+    const dLon = d / Math.max(0.2, Math.cos((geo.lat * Math.PI) / 180));
+    facilities = (await nominatimFacilities([geo.lon - dLon, geo.lat + d, geo.lon + dLon, geo.lat - d], geo.lat, geo.lon, 30)).sort(
+      (a, b) => a.distanceKm - b.distanceKm,
+    );
+  }
+  return { place: geo.displayName, lat: geo.lat, lon: geo.lon, facilities: facilities.slice(0, 30), tooBroad: false };
 }

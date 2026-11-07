@@ -3,7 +3,8 @@ import { useCallback, useEffect, useState } from "react";
 import { AskBar, renderMessageText } from "./components/Conversation";
 import { Greeting, Thread } from "./components/Thread";
 import { Guide } from "./components/Guide";
-import { CostDetails, incomeRangeLabel } from "./components/CostDetails";
+import { CostDetails } from "./components/CostDetails";
+import { fplAmount } from "./lib/policy";
 import { ChevronDownIcon, ChevronLeftIcon, GlobeIcon, InfoIcon, LocationIcon } from "./components/icons";
 import { InfoPanel } from "./components/InfoPanel";
 import { LocationSearch } from "./components/LocationSearch";
@@ -229,7 +230,7 @@ export default function App() {
     <MotionConfig reducedMotion="user">
       <div className="relative h-[100dvh] w-screen overflow-hidden bg-[#172033] font-sans text-white antialiased">
         <MapView
-          facilities={listed}
+          facilities={abroad ? [] : listed}
           internationalFacilities={abroad ? cm.internationalFacilities : []}
           previewFacilities={abroad ? [] : cm.previewFacilities}
           fplPct={cm.fplPct}
@@ -294,7 +295,7 @@ export default function App() {
           )}
 
           {view === "results" && !guide && (
-            <div className="flex shrink-0 gap-1.5 overflow-x-auto px-4 pt-2.5 [scrollbar-width:none]">
+            <div className="flex shrink-0 gap-1.5 px-4 pt-2.5">
               {!abroad && (
               <>
               <FilterChip open={editor === "need"} set={!!profile.need} onClick={() => setEditor((e) => (e === "need" ? null : "need"))}>
@@ -309,12 +310,14 @@ export default function App() {
                 type="button"
                 onClick={() => toggleAbroad(!abroad)}
                 aria-pressed={abroad}
-                className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[14px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
+                aria-label={abroad ? "Back to the US" : "Search outside the US"}
+                title={abroad ? "Back to the US" : "Search outside the US"}
+                className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full ${abroad ? "px-3.5" : "w-9 justify-center"} text-[14px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
                   abroad ? "bg-white text-black" : "bg-white/[0.08] text-white/80 hover:bg-white/[0.14]"
                 }`}
               >
-                <GlobeIcon size={15} />
-                {abroad ? "Back to the US" : "Abroad"}
+                <GlobeIcon size={16} />
+                {abroad && "Back to the US"}
               </button>
               {hasResults && (
                 <button type="button" onClick={() => setInfoOpen(true)} aria-label="How CareMap works" className={`${iconButton} sm:hidden`}>
@@ -429,7 +432,7 @@ export default function App() {
                   </section>
                 )}
 
-                {facilities.length > 0 && (
+                {facilities.length > 0 && !abroad && (
                   <section>
                     {byCost && (
                       <p className="mb-2 px-1 text-[13px] font-medium text-white/70">Sorted by lowest cost to you</p>
@@ -510,7 +513,14 @@ export default function App() {
 function costChipLabel(p: Profile): string {
   if (p.insuranceType !== "uninsured") return INSURANCE_LABELS[p.insuranceType];
   if (p.income === "" && p.incomeRange == null) return "Add income";
-  const amount = p.income !== "" ? `$${Number(p.income).toLocaleString("en-US")}` : incomeRangeLabel(p.household, p.incomeRange!);
+  const k = (n: number) => (n >= 1000 ? `$${Math.round(n / 1000)}k` : `$${n}`);
+  let amount: string;
+  if (p.income !== "") amount = k(Number(p.income));
+  else {
+    const base = fplAmount(p.household);
+    const r = p.incomeRange!;
+    amount = r <= 100 ? `under ${k(base)}` : r >= 1000 ? `${k(base * 4)}+` : `${k((base * (r - 100)) / 100)}–${k((base * r) / 100)}`;
+  }
   return `${p.household} ${p.household === 1 ? "person" : "people"} · ${amount}`;
 }
 
@@ -520,12 +530,12 @@ function FilterChip({ open, set, onClick, children }: { open: boolean; set: bool
       type="button"
       onClick={onClick}
       aria-expanded={open}
-      className={`inline-flex h-9 shrink-0 items-center gap-1 rounded-full pl-3.5 pr-2.5 text-[14px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
+      className={`inline-flex h-9 min-w-0 items-center gap-1 rounded-full pl-3 pr-2 text-[14px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
         open ? "bg-white text-black" : set ? "bg-white/[0.16] text-white" : "bg-white/[0.08] text-white/80 hover:bg-white/[0.14]"
       }`}
     >
-      {children}
-      <ChevronDownIcon size={15} className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+      <span className="min-w-0 truncate">{children}</span>
+      <ChevronDownIcon size={15} className={`shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
     </button>
   );
 }

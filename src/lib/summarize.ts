@@ -228,10 +228,13 @@ export function summarizeInternational(result: InternationalResult | null, place
       `It's a community-maintained map, so smaller clinics may be missing. Ask locally or check your travel insurer's provider network.\n\n${disclaimer}`
     );
   }
-  const lines = result.facilities.slice(0, 8).map((f) => {
+  const lines = result.facilities.slice(0, result.country ? 12 : 8).map((f) => {
     const addr = f.address ? `, ${f.address}` : "";
     const local = f.localName ? ` (${f.localName})` : "";
-    return `- ${f.name}${local} (${f.type}), ${f.distanceKm} km away${addr}`;
+    return `- ${f.name}${local} (${f.type})${result.country ? "" : `, ${f.distanceKm} km away`}${addr}`;
   });
+  if (result.country) {
+    return `${result.facilities.length} hospitals and clinics across ${result.place} (source: OpenStreetMap). Every one is on the map; zoom in to explore, or search a city for the closest ones.\n${lines.join("\n")}\n\n${disclaimer}`;
+  }
   return `Hospitals & clinics near ${result.place} (source: OpenStreetMap):\n${lines.join("\n")}\n\n${disclaimer}`;
 }

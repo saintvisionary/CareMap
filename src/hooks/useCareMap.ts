@@ -97,16 +97,6 @@ function slimForStorage(messages: ChatMessage[], need: string | null): ChatMessa
   );
 }
 
-// Evenly spread across the whole national list (not just the first N, which
-// would cluster wherever the data happens to start) rather than truly
-// random, so re-renders are stable and the spread is reproducible.
-function sampleFacilities(all: Facility[], limit: number): Facility[] {
-  if (all.length <= limit) return all;
-  const stride = all.length / limit;
-  const out: Facility[] = [];
-  for (let i = 0; i < limit; i++) out.push(all[Math.floor(i * stride)]);
-  return out;
-}
 
 /** Puts the cursor in the visible ZIP code box, when location isn't used. */
 function focusZipBox() {
@@ -288,7 +278,7 @@ export function useCareMap(
 
   // Before anyone searches, a light national sample so the map isn't empty.
   const previewFacilities = useMemo(
-    () => (!zip && !destination && allFacilities.length > 0 ? sampleFacilities(allFacilities, 130) : []),
+    () => (!zip && !destination && allFacilities.length > 0 ? allFacilities : []),
     [zip, destination, allFacilities],
   );
 
@@ -361,7 +351,7 @@ export function useCareMap(
       .then((result) => {
         if (cancelled) return;
         setInternational({ place: destination, result });
-        if (result && !result.tooBroad) setFlyTo({ center: [result.lon, result.lat], zoom: 11, pitch: 40 });
+        if (result && !result.tooBroad) setFlyTo({ center: [result.lon, result.lat], zoom: result.country ? 4.5 : 11, pitch: result.country ? 0 : 40 });
         if (chatAbroadRef.current) push("assistant", summarizeInternational(result, destination));
       })
       .catch(() => {
