@@ -9,8 +9,8 @@
       <stop offset="1" stop-color="#e4eaf5"/>
     </linearGradient>
     <linearGradient id="heart" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#52e383"/>
-      <stop offset="1" stop-color="#1fb34a"/>
+      <stop offset="0" stop-color="#ff6b6b"/>
+      <stop offset="1" stop-color="#e5383b"/>
     </linearGradient>
     <clipPath id="tile"><rect width="512" height="512" rx="114"/></clipPath>
   </defs>

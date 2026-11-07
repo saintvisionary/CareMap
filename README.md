@@ -1,4 +1,4 @@
-<p align="center"><img src="public/logo.svg" width="112" alt="CareMap logo: a map pin with a green heart"></p>
+<p align="center"><img src="public/logo.svg" width="112" alt="CareMap logo: a map pin with a red heart"></p>
 
 <h1 align="center">CareMap</h1>
 
