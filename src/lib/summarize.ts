@@ -213,7 +213,8 @@ export function summarize(result: QueryResult): string {
  * actual billed charges outside the US the way CMS provides domestically,
  * so this never shows a dollar figure -- that's the whole point of keeping
  * it a separate function from summarize() above rather than a branch of it. */
-export function summarizeInternational(result: InternationalResult | null, place: string): string {
+export function summarizeInternational(result: InternationalResult | null, place: string, need?: string | null): string {
+  const what = need === "dental care" ? "Dentists" : "Hospitals & clinics";
   if (!result) {
     return `I couldn't find "${place}" or reach the international facility directory just now. Try a more specific city and country (e.g. "Cancun, Mexico"), or try again shortly.`;
   }
@@ -234,7 +235,7 @@ export function summarizeInternational(result: InternationalResult | null, place
     return `- ${f.name}${local} (${f.type})${result.country ? "" : `, ${f.distanceKm} km away`}${addr}`;
   });
   if (result.country) {
-    return `${result.facilities.length} hospitals and clinics across ${result.place} (source: OpenStreetMap). Every one is on the map; zoom in to explore, or search a city for the closest ones.\n${lines.join("\n")}\n\n${disclaimer}`;
+    return `${result.facilities.length} ${what.toLowerCase()} across ${result.place} (source: OpenStreetMap). Every one is on the map; zoom in to explore, or search a city for the closest ones.\n${lines.join("\n")}\n\n${disclaimer}`;
   }
-  return `Hospitals & clinics near ${result.place} (source: OpenStreetMap):\n${lines.join("\n")}\n\n${disclaimer}`;
+  return `${what} near ${result.place} (source: OpenStreetMap):\n${lines.join("\n")}\n\n${disclaimer}`;
 }

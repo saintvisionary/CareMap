@@ -100,6 +100,7 @@ export function MapView({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map());
+  const readyRef = useRef(false);
 
   // Tracks whether ambient idle rotation should still be running -- checked
   // before queuing each next step, so it stops cleanly without needing to
@@ -119,6 +120,9 @@ export function MapView({
     });
     mapRef.current = map;
     map.on("style.load", () => applyNavy(map));
+    map.once("load", () => {
+      readyRef.current = true;
+    });
     if (import.meta.env.DEV) (window as unknown as Record<string, unknown>).__caremap_debug_map = map;
 
     // Ambient idle drift: the map has nothing to look at before a first
@@ -167,7 +171,10 @@ export function MapView({
     const phone = window.innerWidth < 640;
     const padding = phone ? { top: 0, left: 0, right: 0, bottom: Math.round(window.innerHeight * 0.5) } : { top: 0, bottom: 0, right: 0, left: 420 };
     const run = () => map.flyTo({ center: flyTo.center, zoom: flyTo.zoom, pitch: flyTo.pitch, bearing: 0, duration: 1400, padding });
-    if (map.loaded()) run();
+    // map.loaded() is false whenever tiles are still streaming in, long
+    // after the one-time "load" event has fired, so waiting on "load" then
+    // meant the map never moved. Only wait if the first load hasn't happened.
+    if (readyRef.current) run();
     else map.once("load", run);
   }, [flyTo]);
 
@@ -287,7 +294,7 @@ export function MapView({
       map.on("mouseenter", "all-sites", () => (map.getCanvas().style.cursor = "pointer"));
       map.on("mouseleave", "all-sites", () => (map.getCanvas().style.cursor = ""));
     };
-    if (map.isStyleLoaded()) apply();
+    if (readyRef.current) apply();
     else map.once("load", apply);
   }, [previewFacilities]);
 

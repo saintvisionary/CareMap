@@ -230,7 +230,7 @@ export default function App() {
     <MotionConfig reducedMotion="user">
       <div className="relative h-[100dvh] w-screen overflow-hidden bg-[#172033] font-sans text-white antialiased">
         <MapView
-          facilities={abroad ? [] : listed}
+          facilities={abroad || cm.national ? [] : listed}
           internationalFacilities={abroad ? cm.internationalFacilities : []}
           previewFacilities={abroad ? [] : cm.previewFacilities}
           fplPct={cm.fplPct}
@@ -330,6 +330,11 @@ export default function App() {
           {guide && view === "results" ? (
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 pt-3">
               <Guide
+                onAbroad={() => {
+                  setGuide(false);
+                  toggleAbroad(true);
+                  setTimeout(() => document.querySelector<HTMLInputElement>('input[aria-label="City and country"]')?.focus(), 80);
+                }}
                 profile={profile}
                 onChange={cm.updateProfile}
                 onDone={() => {
@@ -423,7 +428,7 @@ export default function App() {
                 {overview && (abroad || facilities.length > 0) && (
                   <section className={`${card} px-4 py-3`}>
                     <h2 className="mb-0.5 text-[13px] font-medium text-white/55">
-                      {abroad ? "Near your destination" : cm.placeName ? `Near ${cm.placeName} ${profile.zip}` : `Near ${profile.zip}`}
+                      {abroad ? "Near your destination" : cm.national ? "Across the United States" : cm.placeName ? `Near ${cm.placeName} ${profile.zip}` : `Near ${profile.zip}`}
                     </h2>
                     <div className={`text-[14px] leading-relaxed text-white/85 ${overviewOpen ? "" : "line-clamp-2"}`}>{renderMessageText(overview)}</div>
                     <button type="button" onClick={() => setOverviewOpen((o) => !o)} className="mt-0.5 text-[13px] font-medium text-white/60 hover:text-white">

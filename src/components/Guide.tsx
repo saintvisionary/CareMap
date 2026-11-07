@@ -6,7 +6,7 @@ import { INSURANCE_LABELS } from "../lib/insurance";
 import type { InsuranceType } from "../lib/intake";
 import { fplAmount } from "../lib/policy";
 import type { Facility, ZipCentroid } from "../lib/types";
-import { ChevronDownIcon, ChevronLeftIcon, LocationIcon, MinusIcon, PlusIcon } from "./icons";
+import { ChevronDownIcon, ChevronLeftIcon, GlobeIcon, LocationIcon, MinusIcon, PlusIcon } from "./icons";
 import { LocationSearch } from "./LocationSearch";
 import { iconButton } from "./ui";
 
@@ -43,6 +43,8 @@ const INSURANCE_PLAIN: Record<InsuranceType, string> = {
 };
 
 interface GuideProps {
+  /** Switch to searching outside the US (no prices, so no income steps). */
+  onAbroad: () => void;
   profile: Profile;
   onChange: (patch: Partial<Profile>) => void;
   onDone: () => void;
@@ -53,14 +55,14 @@ interface GuideProps {
   locationError: string | null;
 }
 
-export function Guide({ profile, onChange, onDone, zipCentroids, facilities, onLocate, locating, locationError }: GuideProps) {
+export function Guide({ onAbroad, profile, onChange, onDone, zipCentroids, facilities, onLocate, locating, locationError }: GuideProps) {
   const [step, setStep] = useState<Step>("need");
   const [history, setHistory] = useState<Step[]>([]);
   const [exact, setExact] = useState(false);
   const order: Step[] = ["need", "place", "household", "income", "insurance"];
   const index = order.indexOf(step === "procedure" ? "need" : step);
 
-  const hasPlace = /^\d{5}$/.test(profile.zip);
+  const hasPlace = /^\d{5}$/.test(profile.zip) || profile.zip === "US";
   const [needPlace, setNeedPlace] = useState(false);
   const go = (next: Step | "done") => {
     // Never finish without a place: results need one.
@@ -197,7 +199,7 @@ export function Guide({ profile, onChange, onDone, zipCentroids, facilities, onL
             zip={profile.zip}
             onZip={(zip) => {
               onChange({ zip });
-              if (zip.length === 5) go(needPlace ? "done" : afterPlace);
+              if (zip.length === 5 || zip === "US") go(needPlace ? "done" : afterPlace);
             }}
             zipCentroids={zipCentroids}
             facilities={facilities}
@@ -209,6 +211,10 @@ export function Guide({ profile, onChange, onDone, zipCentroids, facilities, onL
             onDestination={() => {}}
           />
           <NextButton onClick={() => go(needPlace ? "done" : afterPlace)} disabled={!hasPlace} />
+          <button type="button" onClick={onAbroad} className="mt-3 flex w-full items-center justify-center gap-1.5 py-2 text-[15px] font-medium text-white/70 hover:text-white">
+            <GlobeIcon size={16} />
+            Traveling outside the US?
+          </button>
         </Question>
       )}
 

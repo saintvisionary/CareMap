@@ -110,13 +110,14 @@ export interface OverpassElement {
   tags?: Record<string, string>;
 }
 
-async function overpassFacilities(lat: number, lon: number, radiusKm: number): Promise<OverpassElement[]> {
+async function overpassFacilities(lat: number, lon: number, radiusKm: number, kinds: string[]): Promise<OverpassElement[]> {
   const radiusM = Math.round(radiusKm * 1000);
+  const k = kinds.join("|");
   const query =
     `[out:json][timeout:20];(` +
-    `node["amenity"~"^(hospital|clinic)$"](around:${radiusM},${lat},${lon});` +
-    `way["amenity"~"^(hospital|clinic)$"](around:${radiusM},${lat},${lon});` +
-    `node["healthcare"~"^(hospital|clinic)$"](around:${radiusM},${lat},${lon});` +
+    `node["amenity"~"^(${k})$"](around:${radiusM},${lat},${lon});` +
+    `way["amenity"~"^(${k})$"](around:${radiusM},${lat},${lon});` +
+    `node["healthcare"~"^(${k})$"](around:${radiusM},${lat},${lon});` +
     `);out center;`;
   let lastError: unknown;
   for (let attempt = 0; attempt < OVERPASS_ATTEMPTS; attempt++) {
@@ -233,10 +234,17 @@ interface NominatimPlace {
 /** Hospitals and clinics inside a box, from Nominatim. The backup for an
  * overloaded Overpass, and the way to list a whole country's hospitals.
  * box is [west, north, east, south]. */
-async function nominatimFacilities(box: number[], originLat: number, originLon: number, limit: number, countryCode?: string | null): Promise<InternationalFacility[]> {
+async function nominatimFacilities(
+  box: number[],
+  originLat: number,
+  originLon: number,
+  limit: number,
+  countryCode: string | null,
+  kinds: string[],
+): Promise<InternationalFacility[]> {
   const out: InternationalFacility[] = [];
   const seen = new Set<string>();
-  for (const q of ["hospital", "clinic"]) {
+  for (const q of kinds) {
     const qs = new URLSearchParams({
       q,
       format: "jsonv2",
@@ -276,7 +284,14 @@ async function nominatimFacilities(box: number[], originLat: number, originLon: 
   return out;
 }
 
-export async function findInternationalFacilities(place: string, radiusKm = 25): Promise<InternationalResult | null> {
+/** What to look for abroad, from what the person needs: dentists for
+ * dental care, otherwise hospitals and clinics. */
+export function kindsFor(need: string | null | undefined): string[] {
+  return need === "dental care" ? ["dentist"] : ["hospital", "clinic"];
+}
+
+export async function findInternationalFacilities(place: string, radiusKm = 25, need?: string | null): Promise<InternationalResult | null> {
+  const kinds = kindsFor(need);
   const geo = await geocodePlace(place);
   if (!geo) return null;
   if (geo.tooBroad) {
@@ -284,17 +299,17 @@ export async function findInternationalFacilities(place: string, radiusKm = 25):
     // arbitrary point inside it.
     if (!geo.bbox) return { place: geo.displayName, lat: geo.lat, lon: geo.lon, facilities: [], tooBroad: true };
     const [south, north, west, east] = geo.bbox;
-    const facilities = await nominatimFacilities([west, north, east, south], geo.lat, geo.lon, 40, geo.countryCode);
+    const facilities = await nominatimFacilities([west, north, east, south], geo.lat, geo.lon, 40, geo.countryCode, kinds);
     return { place: geo.displayName, lat: geo.lat, lon: geo.lon, facilities, tooBroad: false, country: true };
   }
   let facilities: InternationalFacility[];
   try {
-    facilities = parseOverpassElements(await overpassFacilities(geo.lat, geo.lon, radiusKm), geo.lat, geo.lon);
+    facilities = parseOverpassElements(await overpassFacilities(geo.lat, geo.lon, radiusKm, kinds), geo.lat, geo.lon);
   } catch {
     // Overpass is a shared free service and often overloaded.
     const d = radiusKm / 111;
     const dLon = d / Math.max(0.2, Math.cos((geo.lat * Math.PI) / 180));
-    facilities = (await nominatimFacilities([geo.lon - dLon, geo.lat + d, geo.lon + dLon, geo.lat - d], geo.lat, geo.lon, 30)).sort(
+    facilities = (await nominatimFacilities([geo.lon - dLon, geo.lat + d, geo.lon + dLon, geo.lat - d], geo.lat, geo.lon, 30, null, kinds)).sort(
       (a, b) => a.distanceKm - b.distanceKm,
     );
   }

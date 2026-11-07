@@ -86,7 +86,7 @@ export function ResultCard({ facility, fplPct, insuranceType, need, household, m
               </span>
             </div>
             <p className="mt-0.5 truncate text-[13px] text-white/50">
-              {KIND_LABELS[facility.type] ?? "Facility"} · {facility.distanceMiles.toFixed(1)} mi · {facility.city}
+              {KIND_LABELS[facility.type] ?? "Facility"} · {facility.distanceMiles >= 0 ? `${facility.distanceMiles.toFixed(1)} mi · ${facility.city}` : `${facility.city}, ${facility.state}`}
               {facility.star_rating != null ? ` · ${facility.star_rating}★` : ""}
             </p>
             <p className={`mt-1 text-[12px] leading-snug text-white/45 ${active ? "" : "line-clamp-2"}`}>{label}</p>

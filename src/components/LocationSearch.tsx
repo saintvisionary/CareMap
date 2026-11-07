@@ -39,10 +39,21 @@ export function LocationSearch({
   const [text, setText] = useState(zip);
   const [place, setPlace] = useState("");
   useEffect(() => {
-    setText(zip);
+    setText(zip === "US" ? "United States" : zip);
   }, [zip]);
 
-  const fetchZips = useCallback((q: string) => suggestZips(q, zipCentroids, facilities), [zipCentroids, facilities]);
+  // "United States" (or USA, America) offers the whole-country list first.
+  const fetchZips = useCallback(
+    async (q: string) => {
+      const t = q.trim().toLowerCase();
+      const whole =
+        t.length >= 2 && ["united states", "usa", "u.s.", "america", "united states of america"].some((n) => n.startsWith(t) || t === n)
+          ? [{ value: "US", label: "United States", detail: "Every hospital in the country" }]
+          : [];
+      return [...whole, ...(await suggestZips(q, zipCentroids, facilities))];
+    },
+    [zipCentroids, facilities],
+  );
   const fetchPlaces = useCallback((q: string) => suggestPlaces(q), []);
 
   const changeText = (v: string) => {

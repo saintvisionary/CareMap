@@ -104,6 +104,9 @@ function focusZipBox() {
   boxes[boxes.length - 1]?.focus();
 }
 
+/** The profile "zip" that means the whole country. */
+export const NATIONAL = "US";
+
 export type SearchFocus = NeedKind | "emergency" | null;
 
 /** Income as a percent of the poverty line, only for the uninsured: every
@@ -228,14 +231,25 @@ export function useCareMap(
   const tierPct = fplPct != null ? njCharityTier(fplPct).patientPaysPct : null;
   const focus = profileFocus(profile);
 
-  const facilities = useMemo(
-    () => (zip && !destination ? nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, zip, focus) : []),
-    [zip, focus, destination, allFacilities, allClinics, allUrgentCare, zipCentroids],
-  );
+  // "United States" lists every hospital in the country (distance -1 means
+  // "not measured"), by state then name; a picked procedure re-sorts by cost.
+  const national = profile.zip === NATIONAL && !destination;
+  const facilities = useMemo(() => {
+    if (national) {
+      return allFacilities
+        .map((f) => ({ ...f, distanceMiles: -1 }))
+        .sort((a, b) => a.state.localeCompare(b.state) || a.name.localeCompare(b.name));
+    }
+    return zip && !destination ? nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, zip, focus) : [];
+  }, [national, zip, focus, destination, allFacilities, allClinics, allUrgentCare, zipCentroids]);
 
   const summary = useMemo(
     () =>
-      zip && !destination
+      national
+        ? `${facilities.length.toLocaleString("en-US")} hospitals across the United States, from CMS data. ${
+            profile.need ? "Sorted by lowest cost to you." : "Pick what you need to sort them by cost."
+          } Tap a dot or search a ZIP code to see what's near you.`
+        : zip && !destination
         ? summarize({
             zipCode: zip,
             fplPct,
@@ -246,48 +260,54 @@ export function useCareMap(
             facilities,
           })
         : null,
-    [zip, destination, fplPct, profile.insuranceType, profile.veteran, profile.need, profile.emergency, facilities],
+    [national, zip, destination, fplPct, profile.insuranceType, profile.veteran, profile.need, profile.emergency, facilities],
   );
 
   // "Somerset, NJ" for the ZIP: a site listed in it, else the town of the
   // nearest place within a few miles.
   const placeName = useMemo(() => {
+    if (national) return "United States";
     if (!zip) return null;
     const exact = zipPlaceName(zip, allFacilities, allClinics, allUrgentCare);
     if (exact) return exact;
     const near = [...facilities].sort((a, b) => a.distanceMiles - b.distanceMiles)[0];
     return near && near.distanceMiles <= 5 ? `${near.city}, ${near.state}` : null;
-  }, [zip, facilities, allFacilities, allClinics, allUrgentCare]);
+  }, [national, zip, facilities, allFacilities, allClinics, allUrgentCare]);
 
   // Every new place or need becomes one conversation turn: a short answer,
   // the places found, and (if there's no income yet) an inline ask for it.
   useEffect(() => {
-    if (!zip || destination || facilities.length === 0) return;
-    const key = `${zip}|${profile.need}|${profile.emergency}`;
+    const where = national ? NATIONAL : zip;
+    if (!where || destination || facilities.length === 0) return;
+    const key = `${where}|${profile.need}|${profile.emergency}`;
     if (announcedRef.current === key) return;
     announcedRef.current = key;
     saveSome({ announced: key });
     const note = placeNoteRef.current || (placeName ? `Here's what's near ${placeName}.` : "");
     placeNoteRef.current = "";
-    const attachments: Attachment[] = [{ kind: "results", facilities, zip }];
+    const attachments: Attachment[] = [{ kind: "results", facilities: facilities.slice(0, 40), zip: where }];
     if (!hasIncomeInfo(profile) && profile.insuranceType === "uninsured") attachments.push({ kind: "askIncome" });
     push("assistant", [note, summary].filter(Boolean).join(" "), attachments);
     // Only a new search should post; prices and counts update in place.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zip, profile.need, profile.emergency, destination, facilities.length > 0]);
+  }, [national, zip, profile.need, profile.emergency, destination, facilities.length > 0]);
 
   // Before anyone searches, a light national sample so the map isn't empty.
   const previewFacilities = useMemo(
     () => (!zip && !destination && allFacilities.length > 0 ? allFacilities : []),
-    [zip, destination, allFacilities],
+    [zip, national, destination, allFacilities],
   );
 
   // The map moves only when the place changes, never on a follow-up.
   useEffect(() => {
+    if (national) {
+      setFlyTo({ center: [-96.5, 38.5], zoom: 3.4, pitch: 0 });
+      return;
+    }
     if (!zip) return;
     const c = zipCentroids[zip];
     setFlyTo({ center: [c.lon, c.lat], zoom: 10.5, pitch: 55 });
-  }, [zip, zipCentroids]);
+  }, [national, zip, zipCentroids]);
 
   const updateProfile = useCallback((patch: Partial<Profile>) => {
     touchedRef.current = true;
@@ -347,12 +367,12 @@ export function useCareMap(
     }
     let cancelled = false;
     setLoading(true);
-    findInternationalFacilities(destination)
+    findInternationalFacilities(destination, 25, profileRef.current.need)
       .then((result) => {
         if (cancelled) return;
         setInternational({ place: destination, result });
         if (result && !result.tooBroad) setFlyTo({ center: [result.lon, result.lat], zoom: result.country ? 4.5 : 11, pitch: result.country ? 0 : 40 });
-        if (chatAbroadRef.current) push("assistant", summarizeInternational(result, destination));
+        if (chatAbroadRef.current) push("assistant", summarizeInternational(result, destination, profileRef.current.need));
       })
       .catch(() => {
         if (cancelled) return;
@@ -478,6 +498,7 @@ export function useCareMap(
   }, []);
 
   return {
+    national,
     clearChat,
     forgetMe,
     profile,
@@ -493,7 +514,7 @@ export function useCareMap(
     destination,
     searchAbroad,
     internationalFacilities: (international?.result?.facilities ?? []) as InternationalFacility[],
-    internationalSummary: international ? summarizeInternational(international.result, international.place) : null,
+    internationalSummary: international ? summarizeInternational(international.result, international.place, profile.need) : null,
     messages,
     sendMessage,
     answerLocally,
