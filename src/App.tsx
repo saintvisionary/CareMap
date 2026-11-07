@@ -15,7 +15,8 @@ import { useCareMap, type Profile } from "./hooks/useCareMap";
 import { useCareMapData } from "./hooks/useCareMapData";
 import { warmAgent } from "./lib/agentClient";
 import { loadSaved, saveSome } from "./lib/storage";
-import { needLabel } from "./lib/drg";
+import { needKind, needLabel } from "./lib/drg";
+import { sortByCost } from "./lib/sortByCost";
 import { INSURANCE_LABELS } from "./lib/insurance";
 import { quickAnswer, quickQuestions, type QuickContext, type QuickQuestion } from "./lib/quickAnswers";
 import type { FacilityWithDistance } from "./lib/geo";
@@ -81,7 +82,11 @@ export default function App() {
   useEffect(() => {
     setShown(PAGE);
   }, [facilities, kind]);
-  const listed = kind === "all" ? facilities : facilities.filter((f) => KIND_OF(f.type) === kind);
+  // With a procedure picked, the list leads with what's cheapest for this
+  // person (the map keeps every place either way).
+  const byCost = needKind(profile.need) === "hospital";
+  const filtered = kind === "all" ? facilities : facilities.filter((f) => KIND_OF(f.type) === kind);
+  const listed = byCost ? sortByCost(filtered, profile.need, cm.fplPct, profile.insuranceType) : filtered;
   // A filter that no longer has anything in it (a new search) falls back to All.
   useEffect(() => {
     if (kind !== "all" && !facilities.some((f) => KIND_OF(f.type) === kind)) setKind("all");
@@ -138,7 +143,7 @@ export default function App() {
   };
 
   const renderResults = (snapshot: FacilityWithDistance[], live: boolean) => {
-    const list = live ? facilities : snapshot;
+    const list = live ? (byCost ? sortByCost(facilities, profile.need, cm.fplPct, profile.insuranceType) : facilities) : snapshot;
     if (list.length === 0) return null;
     return (
       <div className="space-y-1.5">
@@ -426,6 +431,9 @@ export default function App() {
 
                 {facilities.length > 0 && (
                   <section>
+                    {byCost && (
+                      <p className="mb-2 px-1 text-[13px] font-medium text-white/70">Sorted by lowest cost to you</p>
+                    )}
                     <div className="mb-2 flex gap-1 overflow-x-auto rounded-full bg-white/[0.06] p-1 [scrollbar-width:none]" role="tablist">
                       {KIND_TABS.filter((t) => t.kind === "all" || facilities.some((f) => KIND_OF(f.type) === t.kind)).map((t) => {
                         const n = t.kind === "all" ? facilities.length : facilities.filter((f) => KIND_OF(f.type) === t.kind).length;
