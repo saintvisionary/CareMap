@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { AutocompleteInput } from "./AutocompleteInput";
-import { CloseIcon, LocationIcon, SearchIcon } from "./icons";
+import { CloseIcon, GlobeIcon, LocationIcon, SearchIcon } from "./icons";
 import { iconButton } from "./ui";
 import { suggestPlaces } from "../lib/international";
 import type { Facility, ZipCentroid } from "../lib/types";
@@ -102,13 +102,21 @@ export function LocationSearch({
           )}
         </div>
       </div>
-      <div className="mt-2 flex items-center justify-between gap-3 px-0.5 text-[12px]">
-        <span className={locationError ? "text-[#ff6961]" : "text-white/40"}>
-          {locationError ?? (abroad ? "Locations only. No prices outside the US." : usingLocation ? "Using your location" : "")}
-        </span>
-        <button type="button" onClick={() => onAbroad(!abroad)} className="shrink-0 text-white/55 transition-colors hover:text-white">
-          {abroad ? "Search in the US" : "Traveling abroad?"}
+      <div className="mt-2.5 flex items-center justify-between gap-3">
+        <button
+          type="button"
+          onClick={() => onAbroad(!abroad)}
+          aria-pressed={abroad}
+          className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full px-3 text-[13px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
+            abroad ? "bg-white text-black" : "bg-white/[0.08] text-white/85 hover:bg-white/[0.14]"
+          }`}
+        >
+          <GlobeIcon size={15} />
+          {abroad ? "Back to the US" : "Traveling abroad"}
         </button>
+        <span className={`truncate text-right text-[12px] ${locationError ? "text-[#ff6961]" : "text-white/45"}`}>
+          {locationError ?? (abroad ? "Locations only, no prices" : usingLocation ? "Using your location" : "")}
+        </span>
       </div>
     </div>
   );
