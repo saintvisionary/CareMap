@@ -181,3 +181,50 @@ select optgroup {
 .maplibregl-ctrl-attrib a {
   color: rgba(255, 255, 255, 0.7) !important;
 }
+
+/* Search beam: a light that travels along the bottom edge of the search
+   box while it has focus, in CareMap's own colors (the map's soft blue,
+   white, and the free-care green). Quiet when idle; still for reduced
+   motion. */
+.caremap-search {
+  position: relative;
+}
+.caremap-beam {
+  pointer-events: none;
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 0;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out);
+}
+.caremap-beam::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, #8ea6d8 30%, #ffffff 60%, #30d158 85%, transparent);
+  filter: drop-shadow(0 0 4px rgba(142, 166, 216, 0.8));
+  animation: caremap-beam-travel 2.4s var(--ease-in-out) infinite;
+}
+.caremap-search:focus-within .caremap-beam {
+  opacity: 1;
+}
+@keyframes caremap-beam-travel {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(240%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .caremap-beam::after {
+    animation: none;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, #8ea6d8 20%, #ffffff 50%, #8ea6d8 80%, transparent);
+  }
+}

@@ -65,7 +65,8 @@ export function LocationSearch({
 
   return (
     <div>
-      <div className="relative">
+      <div className="caremap-search">
+        <span className="caremap-beam" aria-hidden="true" />
         <SearchIcon className="pointer-events-none absolute left-3.5 top-1/2 z-10 -translate-y-1/2 text-white/45" />
         {abroad ? (
           <AutocompleteInput
