@@ -90,10 +90,8 @@ export function Greeting({ place, starters, onStarter, onLocate, locating }: {
 }) {
   return (
     <div className="pt-2">
-      <h2 className="text-[24px] font-semibold leading-tight tracking-tight">What's going on?</h2>
-      <p className="mt-1.5 text-[15px] leading-relaxed text-white/60">
-        Tell me what you need and where, like you'd tell a friend. I'll find care nearby and what you'd likely pay. Your income never leaves this device.
-      </p>
+      <h2 className="text-[22px] font-semibold leading-tight tracking-tight">Ask CareMap</h2>
+      <p className="mt-1 text-[15px] leading-relaxed text-white/60">Ask in your own words. Or tap a question.</p>
       <div className="mt-4 space-y-2">
         {!place && (
           <button

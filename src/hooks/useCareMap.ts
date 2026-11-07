@@ -40,6 +40,10 @@ export interface Profile {
   household: number;
   /** Digits only, "" when not given. */
   income: string;
+  /** A tapped income range instead of an exact amount: the top of the range
+   * as a percent of the poverty line (estimates use the top, so they never
+   * promise more help than the person may get). Exact income wins. */
+  incomeRange: number | null;
   insuranceType: InsuranceType;
   veteran: boolean;
   need: string | null;
@@ -50,6 +54,7 @@ export const EMPTY_PROFILE: Profile = {
   zip: "",
   household: 1,
   income: "",
+  incomeRange: null,
   insuranceType: "uninsured",
   veteran: false,
   need: null,
@@ -108,8 +113,13 @@ export type SearchFocus = NeedKind | "emergency" | null;
 /** Income as a percent of the poverty line, only for the uninsured: every
  * charity-care formula CareMap models applies to them alone. */
 export function profileFplPct(p: Profile): number | null {
-  if (p.insuranceType !== "uninsured" || p.income === "" || !(p.household > 0)) return null;
-  return fplPercent(Number(p.income), p.household);
+  if (p.insuranceType !== "uninsured" || !(p.household > 0)) return null;
+  if (p.income !== "") return fplPercent(Number(p.income), p.household);
+  return p.incomeRange;
+}
+
+export function hasIncomeInfo(p: Profile): boolean {
+  return p.income !== "" || p.incomeRange != null;
 }
 
 export function profileFocus(p: Profile): SearchFocus {
@@ -161,6 +171,7 @@ export function mergeProfile(prev: Profile, hint: IntakeHint): Profile {
     zip: hint.zipCode ?? prev.zip,
     household: hint.household ?? prev.household,
     income: hint.income != null ? String(Math.round(hint.income)) : prev.income,
+    incomeRange: hint.income != null ? null : prev.incomeRange,
     insuranceType: hint.insuranceType ?? prev.insuranceType,
     veteran: hint.veteran || prev.veteran,
     need: hint.need ?? prev.need,
@@ -263,7 +274,7 @@ export function useCareMap(
     const note = placeNoteRef.current || (placeName ? `Here's what's near ${placeName}.` : "");
     placeNoteRef.current = "";
     const attachments: Attachment[] = [{ kind: "results", facilities, zip }];
-    if (profile.income === "" && profile.insuranceType === "uninsured") attachments.push({ kind: "askIncome" });
+    if (!hasIncomeInfo(profile) && profile.insuranceType === "uninsured") attachments.push({ kind: "askIncome" });
     push("assistant", [note, summary].filter(Boolean).join(" "), attachments);
     // Only a new search should post; prices and counts update in place.
     // eslint-disable-next-line react-hooks/exhaustive-deps

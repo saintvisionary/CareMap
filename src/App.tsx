@@ -1,9 +1,9 @@
 import { MotionConfig } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import { AskBar, renderMessageText } from "./components/Conversation";
-import { Thread } from "./components/Thread";
-import { CostDetails } from "./components/CostDetails";
-import { ChevronDownIcon, ChevronLeftIcon, GlobeIcon, InfoIcon, LocationIcon } from "./components/icons";
+import { Greeting, Thread } from "./components/Thread";
+import { CostDetails, incomeRangeLabel } from "./components/CostDetails";
+import { ChevronDownIcon, ChevronLeftIcon, GlobeIcon, InfoIcon, LocationIcon, SparkleIcon } from "./components/icons";
 import { InfoPanel } from "./components/InfoPanel";
 import { LocationSearch } from "./components/LocationSearch";
 import { MapView } from "./components/MapView";
@@ -36,6 +36,33 @@ const KIND_TABS: { kind: Kind; label: string }[] = [
 // Long lists render in pages: most people look at the first few, and a
 // marker click past the first page opens the rest.
 const PAGE = 15;
+// Tap-to-ask questions in everyday words, shown full width in the chat.
+const STARTERS = [
+  "I got a hospital bill I can't afford. Can it be lowered?",
+  "Where can I see a doctor cheap without insurance?",
+  "How much would surgery cost me at a nearby hospital?",
+  "How does hospital charity care work?",
+];
+
+// The first screen's tap targets: the most common reasons people come, in
+// their words, so nobody has to know what to type.
+interface Shortcut {
+  label: string;
+  detail: string;
+  need?: string;
+  bill?: boolean;
+  hospital?: boolean;
+  featured?: boolean;
+}
+const SHORTCUTS: Shortcut[] = [
+  { label: "Lower or erase a hospital bill", detail: "See if you qualify for free or cheaper care", bill: true, featured: true },
+  { label: "Doctor visit", detail: "Checkups and physicals", need: "checkup" },
+  { label: "Urgent care", detail: "Sick or hurt today", need: "sick visit" },
+  { label: "Dental", detail: "Cleanings and tooth pain", need: "dental care" },
+  { label: "Mental health", detail: "Counseling and therapy", need: "counseling" },
+  { label: "Pregnancy", detail: "Prenatal care", need: "pregnancy care" },
+  { label: "Surgery or hospital stay", detail: "See prices by hospital", hospital: true },
+];
 const INLINE = 4;
 
 export default function App() {
@@ -196,6 +223,16 @@ export default function App() {
     setKind("all");
     setDismissed(new Set());
   };
+  const shortcut = (sc: Shortcut) => {
+    if (sc.bill) setEditor("costs");
+    else if (sc.hospital) {
+      setHospitalOpen(true);
+      setEditor("need");
+    } else cm.updateProfile({ need: sc.need ?? null, emergency: false });
+    if (!profile.zip && !sc.bill && !sc.hospital) {
+      setTimeout(() => document.querySelector<HTMLInputElement>('aside input[aria-label="ZIP code or city"]')?.focus(), 50);
+    }
+  };
   const hasResults = facilities.length > 0 || abroad;
   const toggleAbroad = (a: boolean) => {
     setAbroad(a);
@@ -278,7 +315,7 @@ export default function App() {
               <FilterChip open={editor === "need"} set={!!profile.need} onClick={() => setEditor((e) => (e === "need" ? null : "need"))}>
                 {profile.need ? needLabel(profile.need) : "What you need"}
               </FilterChip>
-              <FilterChip open={editor === "costs"} set={profile.income !== "" || profile.insuranceType !== "uninsured"} onClick={() => setEditor((e) => (e === "costs" ? null : "costs"))}>
+              <FilterChip open={editor === "costs"} set={profile.income !== "" || profile.incomeRange != null || profile.insuranceType !== "uninsured"} onClick={() => setEditor((e) => (e === "costs" ? null : "costs"))}>
                 {costChipLabel(profile)}
               </FilterChip>
               </>
@@ -317,9 +354,13 @@ export default function App() {
                 </div>
                 <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
                   {cm.messages.length === 0 ? (
-                    <p className="pt-2 text-[14px] leading-relaxed text-white/50">
-                      Ask about costs, a hospital, or how to apply for financial help. CareMap already knows what you entered, so there's no need to repeat it.
-                    </p>
+                    <Greeting
+                      place={dataLoading ? "loading" : profile.zip || null}
+                      starters={STARTERS}
+                      onStarter={(t) => (t === STARTERS[3] ? onQuick({ label: t, intent: "charityCare" }) : ask(t))}
+                      onLocate={() => cm.locate()}
+                      locating={cm.locating}
+                    />
                   ) : (
                     <Thread
                       messages={cm.messages}
@@ -357,13 +398,36 @@ export default function App() {
                 )}
 
                 {!abroad && facilities.length === 0 && !editor && (
-                  <section className={`${card} px-4 py-4`}>
-                    <p className="text-[15px] font-medium text-white">{dataLoading ? "Loading hospitals…" : "Find care you can afford"}</p>
-                    <ol className="mt-3 space-y-3">
-                      <Step n={1} title="Enter a ZIP code or city" detail="Or tap the arrow in the search box to use your location." />
-                      <Step n={2} title="Choose what you need" detail="A checkup, a sick visit, a procedure. Optional." onClick={() => setEditor("need")} />
-                      <Step n={3} title="Add your income" detail="See your own price. It never leaves this device." onClick={() => setEditor("costs")} />
-                    </ol>
+                  <section className="space-y-3">
+                    <button
+                      type="button"
+                      onClick={() => setView("conversation")}
+                      className="flex h-11 items-center gap-2 rounded-full bg-white/[0.1] px-4 text-[15px] font-medium text-white transition-[background-color,transform] hover:bg-white/[0.16] active:scale-[0.97]"
+                    >
+                      <SparkleIcon size={16} />
+                      Ask CareMap
+                    </button>
+                    <div>
+                      <h2 className="mb-2 px-0.5 text-[15px] font-medium text-white/70">{dataLoading ? "Loading hospitals…" : "What do you need help with?"}</h2>
+                      <div className="grid grid-cols-2 gap-2">
+                        {SHORTCUTS.map((sc) => (
+                          <button
+                            key={sc.label}
+                            type="button"
+                            onClick={() => shortcut(sc)}
+                            className={`flex min-h-[64px] flex-col justify-center rounded-2xl px-3.5 py-2.5 text-left transition-[background-color,transform] active:scale-[0.97] ${
+                              sc.featured ? "col-span-2 bg-white text-black" : "bg-white/[0.07] text-white hover:bg-white/[0.11]"
+                            }`}
+                          >
+                            <span className="text-[15px] font-semibold leading-tight">{sc.label}</span>
+                            <span className={`mt-0.5 text-[12px] leading-snug ${sc.featured ? "text-black/60" : "text-white/50"}`}>{sc.detail}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    {profile.need && !profile.zip && (
+                      <p className="px-1 text-[14px] text-white/70">Now type your ZIP code or city in the search box above.</p>
+                    )}
                   </section>
                 )}
 
@@ -455,8 +519,9 @@ export default function App() {
 
 function costChipLabel(p: Profile): string {
   if (p.insuranceType !== "uninsured") return INSURANCE_LABELS[p.insuranceType];
-  if (p.income === "") return "Add income";
-  return `${p.household} ${p.household === 1 ? "person" : "people"} · $${Number(p.income).toLocaleString("en-US")}`;
+  if (p.income === "" && p.incomeRange == null) return "Add income";
+  const amount = p.income !== "" ? `$${Number(p.income).toLocaleString("en-US")}` : incomeRangeLabel(p.household, p.incomeRange!);
+  return `${p.household} ${p.household === 1 ? "person" : "people"} · ${amount}`;
 }
 
 function FilterChip({ open, set, onClick, children }: { open: boolean; set: boolean; onClick: () => void; children: React.ReactNode }) {
@@ -472,28 +537,5 @@ function FilterChip({ open, set, onClick, children }: { open: boolean; set: bool
       {children}
       <ChevronDownIcon size={15} className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
     </button>
-  );
-}
-
-function Step({ n, title, detail, onClick }: { n: number; title: string; detail: string; onClick?: () => void }) {
-  const body = (
-    <>
-      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/[0.12] text-[13px] font-semibold text-white">{n}</span>
-      <span className="min-w-0">
-        <span className="block text-[14px] font-medium text-white">{title}</span>
-        <span className="block text-[13px] leading-snug text-white/50">{detail}</span>
-      </span>
-    </>
-  );
-  return (
-    <li>
-      {onClick ? (
-        <button type="button" onClick={onClick} className="-m-1.5 flex w-[calc(100%+12px)] items-start gap-3 rounded-xl p-1.5 text-left transition-colors hover:bg-white/[0.06]">
-          {body}
-        </button>
-      ) : (
-        <div className="flex items-start gap-3">{body}</div>
-      )}
-    </li>
   );
 }
