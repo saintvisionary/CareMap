@@ -150,6 +150,7 @@ export default function App() {
             insuranceType={profile.insuranceType}
             need={profile.need}
                           household={profile.household}
+                          mathInputs={{ income: profile.income, incomeRange: profile.incomeRange, need: profile.need }}
             index={i}
             active={f.ccn === activeCcn}
             onSelect={() => setActiveCcn((c) => (c === f.ccn ? null : f.ccn))}
@@ -456,6 +457,7 @@ export default function App() {
                           insuranceType={profile.insuranceType}
                           need={profile.need}
                           household={profile.household}
+                          mathInputs={{ income: profile.income, incomeRange: profile.incomeRange, need: profile.need }}
                           index={i}
                           active={f.ccn === activeCcn}
                           onSelect={() => setActiveCcn((c) => (c === f.ccn ? null : f.ccn))}

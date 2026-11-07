@@ -32,3 +32,21 @@ describe("what the law says, in dollars for the household", () => {
     }
   });
 });
+
+describe("the math is shown step by step", () => {
+  const nj = f({ drg_charges: { "419": { avg_charge: 70_000, avg_total_payment: 12_000 } } });
+  it("exact income: divide by the line, apply the share, multiply the bill", () => {
+    const e = explain(nj, 158, "uninsured", 4, { income: "52000", incomeRange: null, need: "gallbladder surgery" });
+    expect(e.math).toEqual([
+      ["Poverty line for 4 people (2026)", "$33,000 a year"],
+      ["Your income", "$52,000 ÷ $33,000 = 1.6 × the line"],
+      ["New Jersey rule at 1.6 ×", "you pay 0% (free)"],
+      ["Gallbladder surgery bill here", "$70,000 × 0% = $0"],
+    ]);
+  });
+  it("a range uses its top, and a 40% share is multiplied out", () => {
+    const e = explain(nj, 250, "uninsured", 4, { income: "", incomeRange: 250, need: "gallbladder surgery" });
+    expect(e.math?.at(-1)).toEqual(["Gallbladder surgery bill here", "$70,000 × 40% = $28,000"]);
+  });
+  it("no income, no math", () => expect(explain(nj, null, "uninsured", 4, { income: "", incomeRange: null, need: null }).math).toBeUndefined());
+});

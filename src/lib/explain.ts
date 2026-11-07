@@ -7,6 +7,7 @@ import type { InsuranceType } from "./intake";
 import { INSURANCE_LABELS } from "./insurance";
 import { STATE_FULL_NAMES } from "./places";
 import { charityTier, CHARITY_PROGRAM_NAMES, fplAmount, isFederalCapHospital, MEDICARE_CAP_STATES, UPPER_BOUND_STATES } from "./policy";
+import { NEED_TO_DRG, needLabel } from "./drg";
 import type { Facility } from "./types";
 
 export interface Explanation {
@@ -17,6 +18,42 @@ export interface Explanation {
   you?: string;
   /** What to do next. */
   next: string;
+  /** The calculation, one step per line: [what, value]. */
+  math?: [string, string][];
+}
+
+/** The person's own numbers, used to show the math. Stays in the browser. */
+export interface MathInputs {
+  income: string;
+  incomeRange: number | null;
+  need: string | null;
+}
+
+const exact = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
+const times = (pct: number) => `${(pct / 100).toFixed(1)} ×`;
+
+/** Poverty line, the person's multiple of it, and (when there's a price)
+ * the bill times their share. Nothing is shown that we can't compute. */
+function mathSteps(f: Facility, household: number, m: MathInputs | undefined, sharePct: number | null | undefined, ruleName: string): [string, string][] | undefined {
+  if (!m || (m.income === "" && m.incomeRange == null)) return undefined;
+  const line = fplAmount(household);
+  const steps: [string, string][] = [[`Poverty line for ${people(household)} (2026)`, `${exact(line)} a year`]];
+  let pct: number;
+  if (m.income !== "") {
+    pct = Math.round((Number(m.income) / line) * 100);
+    steps.push(["Your income", `${exact(Number(m.income))} ÷ ${exact(line)} = ${times(pct)} the line`]);
+  } else {
+    pct = m.incomeRange!;
+    steps.push(["Your income", pct >= 1000 ? "over 4.0 × the line" : `up to ${exact((line * pct) / 100)} = up to ${times(pct)} the line`]);
+  }
+  if (sharePct == null) return steps;
+  steps.push([`${ruleName} at ${pct >= 1000 ? "over 4.0" : (pct / 100).toFixed(1)} ×`, sharePct === 0 ? "you pay 0% (free)" : `you pay ${UPPER_BOUND_STATES.has(f.state) ? "at most " : ""}${sharePct}%`]);
+  const drg = m.need ? NEED_TO_DRG[m.need] : null;
+  const charge = drg ? f.drg_charges[drg.code]?.avg_charge : undefined;
+  if (drg && charge != null) {
+    steps.push([`${needLabel(m.need!)} bill here`, `${exact(charge)} × ${sharePct}% = ${exact((charge * sharePct) / 100)}`]);
+  }
+  return steps;
 }
 
 const money = (n: number) => `$${(Math.round(n / 1000) * 1000).toLocaleString("en-US")}`;
@@ -44,7 +81,7 @@ function cutoffs(f: Facility): { free: number | null; discount: number | null } 
   return { free, discount };
 }
 
-export function explain(f: Facility, fplPct: number | null, insuranceType: InsuranceType | null, household: number): Explanation {
+export function explain(f: Facility, fplPct: number | null, insuranceType: InsuranceType | null, household: number, m?: MathInputs): Explanation {
   const stateName = STATE_FULL_NAMES[f.state] ?? f.state;
   const fam = people(household);
 
@@ -62,6 +99,7 @@ export function explain(f: Facility, fplPct: number | null, insuranceType: Insur
       rule: `Health centers that get federal money must charge by income. For ${fam}: under ${incomeAt(100, household)} a year, care is free or a small fee. Up to ${incomeAt(200, household)}, you get a discount. They can't turn you away because you can't pay.`,
       you: insuranceType && insuranceType !== "uninsured" ? "With insurance, they'll bill your plan." : you,
       next: "Call and ask for their sliding fee. Bring proof of income.",
+      math: insuranceType && insuranceType !== "uninsured" ? undefined : mathSteps(f, household, m, undefined, ""),
     };
   }
 
@@ -132,7 +170,13 @@ export function explain(f: Facility, fplPct: number | null, insuranceType: Insur
           : share != null && share < 100
             ? `Based on your answers, you'd pay ${UPPER_BOUND_STATES.has(f.state) ? "at most " : "about "}${share}% of the bill.`
             : "Based on your answers, your income is above the limit, so no discount is required. You can still ask for a payment plan.";
-    return { title: "What the law says", rule: parts.join(" "), you, next: "Ask the billing office for the financial help application." };
+    return {
+      title: "What the law says",
+      rule: parts.join(" "),
+      you,
+      next: "Ask the billing office for the financial help application.",
+      math: mathSteps(f, household, m, share ?? null, `${stateName} rule`),
+    };
   }
 
   if (program) {
@@ -144,7 +188,18 @@ export function explain(f: Facility, fplPct: number | null, insuranceType: Insur
   }
 
   if (isFederalCapHospital(f)) {
+    const drg = m?.need ? NEED_TO_DRG[m.need] : null;
+    const c = drg ? f.drg_charges[drg.code] : undefined;
+    const math: [string, string][] | undefined =
+      drg && c && c.avg_total_payment != null
+        ? [
+            [`${needLabel(m!.need!)} bill here`, exact(c.avg_charge)],
+            ["What Medicare usually pays here", exact(c.avg_total_payment)],
+            ["Difference", `${exact(c.avg_charge - c.avg_total_payment)} less`],
+          ]
+        : undefined;
     return {
+      math,
       title: "What the law says",
       rule: `This is a nonprofit hospital. Federal law says it must have a plan to help people who can't pay. If you qualify, it can't charge you more than what insured patients usually pay. The hospital sets its own income limits. ${stateName}'s own rules aren't in CareMap yet.`,
       next: "Ask the billing office for its financial assistance policy and application.",
