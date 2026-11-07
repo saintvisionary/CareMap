@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { t } from "../i18n";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { ChatMessage } from "../hooks/useCareMap";
 import type { FacilityWithDistance } from "../lib/geo";
@@ -53,7 +54,7 @@ export function Thread({ messages, loading, renderResults, renderAskIncome, rend
       {loading && (
         <div className="flex items-center gap-2 text-[13px] text-white/45" role="status">
           <SparkleIcon size={14} className="animate-pulse" />
-          Looking into it, usually 10 to 20 seconds
+          {t("Looking into it, usually 10 to 20 seconds")}
         </div>
       )}
       <div ref={endRef} />
@@ -68,13 +69,13 @@ function AssistantText({ text, ai, long }: { text: string; ai: boolean; long: bo
     <div className="text-[15px] leading-relaxed text-white/90">
       {ai && (
         <div className="mb-1 flex items-center gap-1 text-[12px] font-medium text-white/45">
-          <SparkleIcon size={12} /> CareMap AI
+          <SparkleIcon size={12} /> {t("CareMap AI")}
         </div>
       )}
       <div className={open ? "" : "line-clamp-3"}>{renderMessageText(text)}</div>
       {long && (
         <button type="button" onClick={() => setOpen((o) => !o)} className="mt-0.5 text-[13px] font-medium text-white/55 hover:text-white">
-          {open ? "Less" : "More"}
+          {open ? t("Less") : t("More")}
         </button>
       )}
     </div>
@@ -90,8 +91,8 @@ export function Greeting({ place, starters, onStarter, onLocate, locating }: {
 }) {
   return (
     <div className="pt-2">
-      <h2 className="text-[22px] font-semibold leading-tight tracking-tight">Ask CareMap</h2>
-      <p className="mt-1 text-[15px] leading-relaxed text-white/60">Ask in your own words. Or tap a question.</p>
+      <h2 className="text-[22px] font-semibold leading-tight tracking-tight">{t("Ask CareMap")}</h2>
+      <p className="mt-1 text-[15px] leading-relaxed text-white/60">{t("Ask in your own words. Or tap a question.")}</p>
       <div className="mt-4 space-y-2">
         {!place && (
           <button
@@ -101,7 +102,7 @@ export function Greeting({ place, starters, onStarter, onLocate, locating }: {
             className="flex w-full items-center gap-3 rounded-2xl bg-white px-4 py-3 text-left text-[15px] font-medium text-black transition-transform active:scale-[0.98] disabled:opacity-60"
           >
             <LocationIcon size={17} />
-            {locating ? "Finding you…" : "Use my location"}
+            {locating ? t("Finding you…") : t("Use my location")}
           </button>
         )}
         {starters.map((s) => (

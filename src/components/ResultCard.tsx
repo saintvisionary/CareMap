@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { t } from "../i18n";
 import { cardHero } from "../lib/cardHero";
 import { explain, type Explanation, type MathInputs } from "../lib/explain";
 import { CLINIC_COLOR, facilityTier, TIER_COLORS, URGENT_CARE_COLOR, type FacilityWithDistance } from "../lib/geo";
@@ -98,15 +99,15 @@ export function ResultCard({ facility, fplPct, insuranceType, need, household, m
               <span
                 className={`shrink-0 tabular-nums ${isPrice ? "text-[17px] font-semibold tracking-tight text-white" : "text-[13px] font-medium text-white/70"}`}
               >
-                {hero}
+                {t(hero)}
               </span>
             </div>
             <p className="mt-0.5 truncate text-[13px] text-white/50">
-              {KIND_LABELS[facility.type] ?? "Facility"} · {facility.distanceMiles >= 0 ? `${facility.distanceMiles.toFixed(1)} mi · ${facility.city}` : `${facility.city}, ${facility.state}`}
+              {t(KIND_LABELS[facility.type] ?? "Facility")} · {facility.distanceMiles >= 0 ? `${facility.distanceMiles.toFixed(1)} mi · ${facility.city}` : `${facility.city}, ${facility.state}`}
               {facility.star_rating != null ? ` · ${facility.star_rating}★` : ""}
             </p>
             <p className={`mt-1 text-[12px] leading-snug text-white/45 ${active ? "" : "line-clamp-2"}`}>{label}</p>
-            {!active && <p className="mt-1.5 text-[13px] font-medium text-white/75">{facility.type === "urgent_care" || facility.type === "va_hospital" ? "What you should know" : "What the law says"} ›</p>}
+            {!active && <p className="mt-1.5 text-[13px] font-medium text-white/75">{t(facility.type === "urgent_care" || facility.type === "va_hospital" ? "What you should know" : "What the law says")} ›</p>}
           </div>
         </div>
       </button>
@@ -124,7 +125,7 @@ export function ResultCard({ facility, fplPct, insuranceType, need, household, m
               <p className="mt-3 text-white/80">{place}</p>
               <p className="mt-1">
                 {TYPE_DETAILS[facility.type] ?? facility.type}
-                {facility.type !== "fqhc" && facility.type !== "urgent_care" ? ` · ${facility.has_er ? "Has an emergency room" : "No emergency room"}` : ""}
+                {facility.type !== "fqhc" && facility.type !== "urgent_care" ? ` · ${facility.has_er ? t("Has an emergency room") : t("No emergency room")}` : ""}
               </p>
               {facility.star_rating != null && <p className="mt-1">CMS quality rating: {facility.star_rating} of 5</p>}
               <p className="mt-1 text-white/45">{facility.operator ? `Run by ${facility.operator}` : ownershipLabel(facility.ownership)}</p>
@@ -137,12 +138,12 @@ export function ResultCard({ facility, fplPct, insuranceType, need, household, m
                 </a>
                 {phone && (
                   <a href={`tel:${phone}`} className={action}>
-                    Call
+                    {t("Call")}
                   </a>
                 )}
                 {website && (
                   <a href={website} target="_blank" rel="noopener" className={action}>
-                    Website
+                    {t("Website")}
                   </a>
                 )}
               </div>
@@ -157,11 +158,11 @@ export function ResultCard({ facility, fplPct, insuranceType, need, household, m
 function LawBox({ explanation: e }: { explanation: Explanation }) {
   return (
     <div className="rounded-xl bg-white/[0.06] p-3 text-[14px] leading-relaxed text-white/85">
-      <p className="mb-1 text-[12px] font-semibold uppercase tracking-wide text-white/50">{e.title}</p>
+      <p className="mb-1 text-[12px] font-semibold uppercase tracking-wide text-white/50">{t(e.title)}</p>
       <p>{e.rule}</p>
       {e.math && (
         <div className="mt-2.5 rounded-lg bg-black/20 p-2.5">
-          <p className="mb-1.5 text-[12px] font-semibold text-white/55">How we worked it out</p>
+          <p className="mb-1.5 text-[12px] font-semibold text-white/55">{t("How we worked it out")}</p>
           <dl className="space-y-1 text-[13px] tabular-nums">
             {e.math.map(([what, value], i) => (
               <div key={i} className={`flex flex-wrap justify-between gap-x-3 ${i === e.math!.length - 1 ? "border-t border-white/10 pt-1 font-semibold text-white" : "text-white/80"}`}>
@@ -174,7 +175,7 @@ function LawBox({ explanation: e }: { explanation: Explanation }) {
       )}
       {e.you && <p className="mt-1.5 font-medium text-white">{e.you}</p>}
       <p className="mt-1.5 text-white/70">
-        <span className="font-medium text-white/85">What to do: </span>
+        <span className="font-medium text-white/85">{t("What to do:")} </span>
         {e.next}
       </p>
     </div>

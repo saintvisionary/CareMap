@@ -116,6 +116,7 @@ def handler(event: dict, context) -> dict:  # noqa: ARG001 (context required by 
     tier_pct = payload.get("tierPct")
     fpl_pct = payload.get("fplPct")
     need = payload.get("need")
+    language = payload.get("language")
     _valid_insurance_types = {"uninsured", "medicaid", "medicare", "private", "va_tricare", "unsure"}
 
     try:
@@ -127,6 +128,7 @@ def handler(event: dict, context) -> dict:  # noqa: ARG001 (context required by 
             tier_pct=tier_pct if isinstance(tier_pct, (int, float)) else None,
             fpl_pct=fpl_pct if isinstance(fpl_pct, (int, float)) else None,
             need=need.strip()[:80] if isinstance(need, str) and need.strip() else None,
+            language=language if language in ("es", "fr", "zh") else None,
         )
     except Exception as exc:  # noqa: BLE001
         print(f"handle_message failed: {exc!r}")

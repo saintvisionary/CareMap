@@ -15,6 +15,7 @@ import { card, iconButton } from "./components/ui";
 import { useCareMap, type Profile } from "./hooks/useCareMap";
 import { useCareMapData } from "./hooks/useCareMapData";
 import { warmAgent } from "./lib/agentClient";
+import { defaultLang, LANGS, peopleText, setLang, t, type Lang } from "./i18n";
 import { loadSaved, saveSome } from "./lib/storage";
 import { needKind, needLabel } from "./lib/drg";
 import { sortByCost } from "./lib/sortByCost";
@@ -64,6 +65,18 @@ export default function App() {
     }
     ensureStates([...new Set(facilities.filter((f) => f.type !== "fqhc" && f.type !== "urgent_care").map((f) => f.state))]);
   }, [facilities, cm.national, profile.need, allFacilities, ensureStates]);
+
+  // Interface language: saved choice, else the phone's language.
+  const [lang, setLangState] = useState<Lang>(() => {
+    const l = loadSaved<{ lang: Lang }>().lang ?? defaultLang();
+    setLang(l);
+    return l;
+  });
+  const chooseLang = (l: Lang) => {
+    setLang(l);
+    setLangState(l);
+    saveSome({ lang: l });
+  };
 
   const [activeCcn, setActiveCcn] = useState<string | null>(null);
   // The screen and list filter come back after a refresh, too.
@@ -178,7 +191,7 @@ export default function App() {
             onClick={() => setView("results")}
             className="h-10 w-full rounded-2xl bg-white/[0.06] text-[14px] font-medium text-white/85 transition-colors hover:bg-white/[0.1]"
           >
-            See all {list.length} places
+            {t("See all {n} places", { n: list.length })}
           </button>
         )}
       </div>
@@ -188,7 +201,7 @@ export default function App() {
   const renderAskIncome = (id: string) =>
     dismissed.has(id) ? null : (
       <div>
-        <p className="mb-2 text-[14px] text-white/70">Want your own price? Add your household and income. It never leaves this device.</p>
+        <p className="mb-2 text-[14px] text-white/70">{t("Want your own price? Add your household and income. It never leaves this device.")}</p>
         <CostDetails bare onDone={() => setDismissed((d) => new Set(d).add(id))} profile={profile} onChange={cm.updateProfile} open onOpen={() => {}} fplPct={cm.fplPct} />
       </div>
     );
@@ -273,12 +286,29 @@ export default function App() {
               <img src="./logo.svg" alt="" width={40} height={40} className="h-8 w-8 shrink-0 rounded-[9px] shadow-lg shadow-black/30 sm:h-10 sm:w-10 sm:rounded-[11px]" />
               <div>
                 <h1 className="text-[18px] font-semibold leading-tight tracking-tight sm:text-[22px]">CareMap</h1>
-                <p className="hidden text-[13px] text-white/50 sm:block">What care would cost you, before the bill</p>
+                <p className="hidden text-[13px] text-white/50 sm:block">{t("What care would cost you, before the bill")}</p>
               </div>
             </div>
-            <button type="button" onClick={() => setInfoOpen(true)} aria-label="How CareMap works" title="How CareMap works" className={`${iconButton} -mr-1.5`}>
+            <div className="-mr-1.5 flex items-center gap-1">
+            <label className="relative">
+              <span className="sr-only">{t("Language")}</span>
+              <select
+                value={lang}
+                onChange={(e) => chooseLang(e.target.value as Lang)}
+                aria-label={t("Language")}
+                className="h-9 appearance-none rounded-full bg-white/[0.08] px-3 text-[13px] font-medium text-white/85 outline-none hover:bg-white/[0.14] focus:ring-1 focus:ring-white/30"
+              >
+                {LANGS.map((l) => (
+                  <option key={l.lang} value={l.lang}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button type="button" onClick={() => setInfoOpen(true)} aria-label={t("How CareMap works")} title={t("How CareMap works")} className={iconButton}>
               <InfoIcon size={20} />
             </button>
+            </div>
           </header>
 
           {!(guide && view === "results") && (
@@ -309,7 +339,7 @@ export default function App() {
               {!abroad && (
               <>
               <FilterChip open={editor === "need"} set={!!profile.need} onClick={() => setEditor((e) => (e === "need" ? null : "need"))}>
-                {profile.need ? needLabel(profile.need) : "What you need"}
+                {profile.need ? t(needLabel(profile.need)) : t("What you need")}
               </FilterChip>
               <FilterChip open={editor === "costs"} set={profile.income !== "" || profile.incomeRange != null || profile.insuranceType !== "uninsured"} onClick={() => setEditor((e) => (e === "costs" ? null : "costs"))}>
                 {costChipLabel(profile)}
@@ -320,23 +350,28 @@ export default function App() {
                 type="button"
                 onClick={() => toggleAbroad(!abroad)}
                 aria-pressed={abroad}
-                aria-label={abroad ? "Back to the US" : "Search outside the US"}
-                title={abroad ? "Back to the US" : "Search outside the US"}
+                aria-label={abroad ? t("Back to the US") : t("Search outside the US")}
+                title={abroad ? t("Back to the US") : t("Search outside the US")}
                 className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full ${abroad ? "px-3.5" : "w-9 justify-center"} text-[14px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
                   abroad ? "bg-white text-black" : "bg-white/[0.08] text-white/80 hover:bg-white/[0.14]"
                 }`}
               >
                 <GlobeIcon size={16} />
-                {abroad && "Back to the US"}
+                {abroad && t("Back to the US")}
               </button>
               {hasResults && (
-                <button type="button" onClick={() => setInfoOpen(true)} aria-label="How CareMap works" className={`${iconButton} sm:hidden`}>
+                <button type="button" onClick={() => setInfoOpen(true)} aria-label={t("How CareMap works")} className={`${iconButton} sm:hidden`}>
                   <InfoIcon size={19} />
                 </button>
               )}
             </div>
           )}
 
+          {lang !== "en" && !guide && (
+            <p className="mx-4 mt-2 rounded-xl bg-white/[0.06] px-3 py-2 text-[12px] leading-snug text-white/70">
+              {t("Detailed explanations are in English for now, while translations are reviewed. Ask CareMap to explain in your language.")}
+            </p>
+          )}
           {guide && view === "results" ? (
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 pt-3">
               <Guide
@@ -364,11 +399,11 @@ export default function App() {
                 <div className="flex shrink-0 items-center justify-between pb-2">
                   <button type="button" onClick={() => setView("results")} className={`${iconButton} -ml-2 w-auto gap-0.5 px-2 text-[15px] text-white/80`}>
                     <ChevronLeftIcon size={18} />
-                    Results
+                    {t("Results")}
                   </button>
                   {cm.messages.length > 0 && (
                     <button type="button" onClick={cm.clearChat} className="text-[13px] font-medium text-white/50 hover:text-white">
-                      New chat
+                      {t("New chat")}
                     </button>
                   )}
                 </div>
@@ -376,8 +411,8 @@ export default function App() {
                   {cm.messages.length === 0 ? (
                     <Greeting
                       place={dataLoading ? "loading" : profile.zip || null}
-                      starters={STARTERS}
-                      onStarter={(t) => (t === STARTERS[3] ? onQuick({ label: t, intent: "charityCare" }) : ask(t))}
+                      starters={STARTERS.map((q) => t(q))}
+                      onStarter={(q) => (q === t(STARTERS[3]) ? onQuick({ label: q, intent: "charityCare" }) : ask(q))}
                       onLocate={() => cm.locate()}
                       locating={cm.locating}
                     />
@@ -413,15 +448,15 @@ export default function App() {
 
                 {profile.emergency && !abroad && (
                   <div className="rounded-2xl bg-[#ff453a]/15 px-4 py-3 text-[14px] font-medium leading-snug text-[#ff6961]" role="alert">
-                    If this is an emergency, call 911 or go to the nearest ER now. Don't wait on cost.
+                    {t("If this is an emergency, call 911 or go to the nearest ER now. Don't wait on cost.")}
                   </div>
                 )}
 
                 {!abroad && facilities.length === 0 && !editor && (
                   <section className={`${card} space-y-3 px-4 py-4`}>
                     <div>
-                      <p className="text-[18px] font-semibold">{dataLoading ? "Loading hospitals…" : "Where are you?"}</p>
-                      <p className="mt-0.5 text-[14px] text-white/60">Type a ZIP code or city in the search box above, or use your location.</p>
+                      <p className="text-[18px] font-semibold">{dataLoading ? t("Loading hospitals…") : t("Where are you?")}</p>
+                      <p className="mt-0.5 text-[14px] text-white/60">{t("Type a ZIP code or city in the search box above, or use your location.")}</p>
                     </div>
                     <button
                       type="button"
@@ -438,11 +473,15 @@ export default function App() {
                 {overview && (abroad || facilities.length > 0) && (
                   <section className={`${card} px-4 py-3`}>
                     <h2 className="mb-0.5 text-[13px] font-medium text-white/55">
-                      {abroad ? "Near your destination" : cm.national ? "Across the United States" : cm.placeName ? `Near ${cm.placeName} ${profile.zip}` : `Near ${profile.zip}`}
+                      {abroad
+                        ? t("Near your destination")
+                        : cm.national
+                          ? t("Across the United States")
+                          : t("Near {place}", { place: cm.placeName ? `${cm.placeName} ${profile.zip}` : profile.zip })}
                     </h2>
                     <div className={`text-[14px] leading-relaxed text-white/85 ${overviewOpen ? "" : "line-clamp-2"}`}>{renderMessageText(overview)}</div>
                     <button type="button" onClick={() => setOverviewOpen((o) => !o)} className="mt-0.5 text-[13px] font-medium text-white/60 hover:text-white">
-                      {overviewOpen ? "Less" : "More"}
+                      {overviewOpen ? t("Less") : t("More")}
                     </button>
                   </section>
                 )}
@@ -450,29 +489,29 @@ export default function App() {
                 {facilities.length > 0 && !abroad && (
                   <section>
                     {byCost && (
-                      <p className="mb-2 px-1 text-[13px] font-medium text-white/70">Sorted by lowest cost to you</p>
+                      <p className="mb-2 px-1 text-[13px] font-medium text-white/70">{t("Sorted by lowest cost to you")}</p>
                     )}
                     <div className="mb-2 flex gap-1 overflow-x-auto rounded-full bg-white/[0.06] p-1 [scrollbar-width:none]" role="tablist">
-                      {KIND_TABS.filter((t) => t.kind === "all" || facilities.some((f) => KIND_OF(f.type) === t.kind)).map((t) => {
-                        const n = t.kind === "all" ? facilities.length : facilities.filter((f) => KIND_OF(f.type) === t.kind).length;
+                      {KIND_TABS.filter((tab) => tab.kind === "all" || facilities.some((f) => KIND_OF(f.type) === tab.kind)).map((tab) => {
+                        const n = tab.kind === "all" ? facilities.length : facilities.filter((f) => KIND_OF(f.type) === tab.kind).length;
                         return (
                           <button
-                            key={t.kind}
+                            key={tab.kind}
                             type="button"
                             role="tab"
-                            aria-selected={kind === t.kind}
-                            onClick={() => setKind(t.kind)}
+                            aria-selected={kind === tab.kind}
+                            onClick={() => setKind(tab.kind)}
                             className={`h-8 flex-1 shrink-0 whitespace-nowrap rounded-full px-2.5 text-[13px] font-medium transition-colors ${
-                              kind === t.kind ? "bg-white text-black" : "text-white/70 hover:text-white"
+                              kind === tab.kind ? "bg-white text-black" : "text-white/70 hover:text-white"
                             }`}
                           >
-                            {t.label} <span className={kind === t.kind ? "text-black/60" : "text-white/50"}>{n}</span>
+                            {t(tab.label)} <span className={kind === tab.kind ? "text-black/60" : "text-white/50"}>{n}</span>
                           </button>
                         );
                       })}
                     </div>
                     {(kind === "urgent" || (kind === "all" && listed.some((f) => f.type === "urgent_care"))) && (
-                      <p className="mb-2 px-1 text-[12px] text-white/45">Urgent care is for minor problems. For anything life-threatening, call 911.</p>
+                      <p className="mb-2 px-1 text-[12px] text-white/45">{t("Urgent care is for minor problems. For anything life-threatening, call 911.")}</p>
                     )}
                     <div className="space-y-1.5">
                       {listed.slice(0, shown).map((f, i) => (
@@ -496,14 +535,14 @@ export default function App() {
                         onClick={() => setShown((n) => n + PAGE * 2)}
                         className="mt-2 h-10 w-full rounded-2xl bg-white/[0.06] text-[14px] font-medium text-white/80 transition-colors hover:bg-white/[0.1]"
                       >
-                        Show more ({listed.length - shown} left)
+                        {t("Show more ({n} left)", { n: listed.length - shown })}
                       </button>
                     )}
                   </section>
                 )}
                 {facilities.length > 0 && !abroad && (
                   <button type="button" onClick={() => setGuide(true)} className="w-full py-2 text-center text-[14px] font-medium text-white/55 hover:text-white">
-                    Change my answers
+                    {t("Change my answers")}
                   </button>
                 )}
               </div>
@@ -526,8 +565,8 @@ export default function App() {
 }
 
 function costChipLabel(p: Profile): string {
-  if (p.insuranceType !== "uninsured") return INSURANCE_LABELS[p.insuranceType];
-  if (p.income === "" && p.incomeRange == null) return "Add income";
+  if (p.insuranceType !== "uninsured") return t(INSURANCE_LABELS[p.insuranceType]);
+  if (p.income === "" && p.incomeRange == null) return t("Add income");
   const k = (n: number) => (n >= 1000 ? `$${Math.round(n / 1000)}k` : `$${n}`);
   let amount: string;
   if (p.income !== "") amount = k(Number(p.income));
@@ -536,7 +575,7 @@ function costChipLabel(p: Profile): string {
     const r = p.incomeRange!;
     amount = r <= 100 ? `under ${k(base)}` : r >= 1000 ? `${k(base * 4)}+` : `${k((base * (r - 100)) / 100)}–${k((base * r) / 100)}`;
   }
-  return `${p.household} ${p.household === 1 ? "person" : "people"} · ${amount}`;
+  return `${peopleText(p.household)} · ${amount}`;
 }
 
 function FilterChip({ open, set, onClick, children }: { open: boolean; set: boolean; onClick: () => void; children: React.ReactNode }) {

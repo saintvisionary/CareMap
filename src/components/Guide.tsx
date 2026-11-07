@@ -9,6 +9,7 @@ import type { Facility, ZipCentroid } from "../lib/types";
 import { ChevronDownIcon, ChevronLeftIcon, GlobeIcon, LocationIcon, MinusIcon, PlusIcon } from "./icons";
 import { LocationSearch } from "./LocationSearch";
 import { iconButton } from "./ui";
+import { peopleText, t } from "../i18n";
 
 // One question per screen, in plain words, so nobody has to know where to
 // tap next. Each answer moves on by itself; Back and Skip are always there.
@@ -97,11 +98,11 @@ export function Guide({ onAbroad, profile, onChange, onDone, zipCentroids, facil
   const base = fplAmount(profile.household);
   const d = (pct: number) => `$${Math.round((base * pct) / 100).toLocaleString("en-US")}`;
   const ranges = [
-    { maxFpl: 100, label: `Under ${d(100)}` },
-    { maxFpl: 200, label: `${d(100)} to ${d(200)}` },
-    { maxFpl: 300, label: `${d(200)} to ${d(300)}` },
-    { maxFpl: 400, label: `${d(300)} to ${d(400)}` },
-    { maxFpl: 1000, label: `Over ${d(400)}` },
+    { maxFpl: 100, label: t("Under {a}", { a: d(100) }) },
+    { maxFpl: 200, label: t("{a} to {b}", { a: d(100), b: d(200) }) },
+    { maxFpl: 300, label: t("{a} to {b}", { a: d(200), b: d(300) }) },
+    { maxFpl: 400, label: t("{a} to {b}", { a: d(300), b: d(400) }) },
+    { maxFpl: 1000, label: t("Over {a}", { a: d(400) }) },
   ];
 
   const big = "flex w-full min-h-[52px] flex-col justify-center rounded-2xl px-4 py-3 text-left transition-[background-color,transform] active:scale-[0.98]";
@@ -114,13 +115,13 @@ export function Guide({ onAbroad, profile, onChange, onDone, zipCentroids, facil
         {history.length > 0 ? (
           <button type="button" onClick={back} className={`${iconButton} -ml-2 w-auto gap-0.5 px-2 text-[15px] text-white/80`}>
             <ChevronLeftIcon size={18} />
-            Back
+            {t("Back")}
           </button>
         ) : (
           <span />
         )}
         <span className="text-[13px] font-medium text-white/45">
-          Step {index + 1} of {order.length}
+          {t("Step {n} of {total}", { n: index + 1, total: order.length })}
         </span>
       </div>
       <div className="mb-4 flex gap-1" aria-hidden="true">
@@ -130,7 +131,7 @@ export function Guide({ onAbroad, profile, onChange, onDone, zipCentroids, facil
       </div>
 
       {step === "need" && (
-        <Question title="What do you need help with?" why="Pick one. You can change it later.">
+        <Question title={t("What do you need help with?")} why={t("Pick one. You can change it later.")}>
           <div className="space-y-2">
             {CHOICES.map((c) => (
               <button
@@ -142,8 +143,8 @@ export function Guide({ onAbroad, profile, onChange, onDone, zipCentroids, facil
                 }}
                 className={`${big} ${c.featured ? on : off}`}
               >
-                <span className="text-[16px] font-semibold leading-tight">{c.label}</span>
-                <span className={`mt-0.5 text-[13px] ${c.featured ? "text-black/60" : "text-white/50"}`}>{c.detail}</span>
+                <span className="text-[16px] font-semibold leading-tight">{t(c.label)}</span>
+                <span className={`mt-0.5 text-[13px] ${c.featured ? "text-black/60" : "text-white/50"}`}>{t(c.detail)}</span>
               </button>
             ))}
           </div>
@@ -151,7 +152,7 @@ export function Guide({ onAbroad, profile, onChange, onDone, zipCentroids, facil
       )}
 
       {step === "procedure" && (
-        <Question title="What kind of care?" why="We'll show what each nearby hospital charges for it.">
+        <Question title={t("What kind of care?")} why={t("We'll show what each nearby hospital charges for it.")}>
           <div className="relative">
             <select
               value={profile.need ?? ""}
@@ -163,7 +164,7 @@ export function Guide({ onAbroad, profile, onChange, onDone, zipCentroids, facil
               aria-label="Condition or procedure"
               className="h-12 w-full appearance-none rounded-2xl bg-white/[0.08] pl-4 pr-10 text-[16px] text-white outline-none focus:ring-1 focus:ring-white/30"
             >
-              <option value="">Choose one</option>
+              <option value="">{t("Choose one")}</option>
               {NEED_CATEGORIES.map((c) => (
                 <optgroup key={c.category} label={c.category}>
                   {c.items.map((n) => (
@@ -176,12 +177,12 @@ export function Guide({ onAbroad, profile, onChange, onDone, zipCentroids, facil
             </select>
             <ChevronDownIcon size={18} className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-white/50" />
           </div>
-          <SkipButton onClick={() => go("place")}>Not sure. Skip this</SkipButton>
+          <SkipButton onClick={() => go("place")}>{t("Not sure. Skip this")}</SkipButton>
         </Question>
       )}
 
       {step === "place" && (
-        <Question title="Where are you?" why={needPlace ? "One last thing: we need your ZIP code or city to show care near you." : "We'll find care close to you."}>
+        <Question title={t("Where are you?")} why={needPlace ? t("One last thing: we need your ZIP code or city to show care near you.") : t("We'll find care close to you.")}>
           <button
             type="button"
             onClick={() => {
@@ -192,9 +193,9 @@ export function Guide({ onAbroad, profile, onChange, onDone, zipCentroids, facil
             className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-white text-[16px] font-semibold text-black transition-transform active:scale-[0.98] disabled:opacity-60"
           >
             <LocationIcon size={17} />
-            {locating ? "Finding you…" : "Use my location"}
+            {locating ? t("Finding you…") : t("Use my location")}
           </button>
-          <p className="my-3 text-center text-[13px] text-white/45">or type it</p>
+          <p className="my-3 text-center text-[13px] text-white/45">{t("or type it")}</p>
           <LocationSearch
             zip={profile.zip}
             onZip={(zip) => {
@@ -213,13 +214,13 @@ export function Guide({ onAbroad, profile, onChange, onDone, zipCentroids, facil
           <NextButton onClick={() => go(needPlace ? "done" : afterPlace)} disabled={!hasPlace} />
           <button type="button" onClick={onAbroad} className="mt-3 flex w-full items-center justify-center gap-1.5 py-2 text-[15px] font-medium text-white/70 hover:text-white">
             <GlobeIcon size={16} />
-            Traveling outside the US?
+            {t("Traveling outside the US?")}
           </button>
         </Question>
       )}
 
       {step === "household" && (
-        <Question title="How many people live in your home?" why="Count you, plus anyone you support. Help with bills is based on family size.">
+        <Question title={t("How many people live in your home?")} why={t("Count you, plus anyone you support. Help with bills is based on family size.")}>
           <div className="flex items-center justify-between rounded-2xl bg-white/[0.07] p-2">
             <button
               type="button"
@@ -230,9 +231,7 @@ export function Guide({ onAbroad, profile, onChange, onDone, zipCentroids, facil
             >
               <MinusIcon size={20} />
             </button>
-            <span className="text-[22px] font-semibold tabular-nums">
-              {profile.household} {profile.household === 1 ? "person" : "people"}
-            </span>
+            <span className="text-[22px] font-semibold tabular-nums">{peopleText(profile.household)}</span>
             <button
               type="button"
               aria-label="More people"
@@ -249,8 +248,8 @@ export function Guide({ onAbroad, profile, onChange, onDone, zipCentroids, facil
 
       {step === "income" && (
         <Question
-          title="About how much does your home make a year?"
-          why="Before taxes, all together. Many hospitals must give free or cheaper care below certain incomes. Your answer stays on this phone."
+          title={t("About how much does your home make a year?")}
+          why={t("Before taxes, all together. Many hospitals must give free or cheaper care below certain incomes. Your answer stays on this phone.")}
         >
           {exact ? (
             <>
@@ -289,7 +288,7 @@ export function Guide({ onAbroad, profile, onChange, onDone, zipCentroids, facil
           )}
           <div className="mt-3 flex items-center justify-between px-1">
             <button type="button" onClick={() => setExact(!exact)} className="text-[14px] font-medium text-white/65 hover:text-white">
-              {exact ? "Pick a range instead" : "Type the exact amount"}
+              {exact ? t("Pick a range instead") : t("Type the exact amount")}
             </button>
             <button
               type="button"
@@ -299,27 +298,27 @@ export function Guide({ onAbroad, profile, onChange, onDone, zipCentroids, facil
               }}
               className="text-[14px] font-medium text-white/65 hover:text-white"
             >
-              Skip
+              {t("Skip")}
             </button>
           </div>
         </Question>
       )}
 
       {step === "insurance" && (
-        <Question title="Do you have health insurance?" why="Help with hospital bills is mostly for people without insurance.">
+        <Question title={t("Do you have health insurance?")} why={t("Help with hospital bills is mostly for people without insurance.")}>
           <div className="space-y-2">
-            {INSURANCE_ORDER.map((t) => (
+            {INSURANCE_ORDER.map((ins) => (
               <button
-                key={t}
+                key={ins}
                 type="button"
                 onClick={() => {
-                  onChange({ insuranceType: t });
+                  onChange({ insuranceType: ins });
                   go("done");
                 }}
-                className={`${big} ${profile.insuranceType === t ? on : off} text-[16px]`}
-                aria-label={INSURANCE_LABELS[t]}
+                className={`${big} ${profile.insuranceType === ins ? on : off} text-[16px]`}
+                aria-label={t(INSURANCE_LABELS[ins])}
               >
-                {INSURANCE_PLAIN[t]}
+                {t(INSURANCE_PLAIN[ins])}
               </button>
             ))}
           </div>
@@ -347,7 +346,7 @@ function NextButton({ onClick, disabled }: { onClick: () => void; disabled?: boo
       disabled={disabled}
       className="mt-4 h-12 w-full rounded-full bg-white text-[16px] font-semibold text-black transition-transform active:scale-[0.98] disabled:opacity-30"
     >
-      Next
+      {t("Next")}
     </button>
   );
 }

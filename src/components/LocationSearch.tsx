@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { t } from "../i18n";
 import { AutocompleteInput } from "./AutocompleteInput";
 import { CloseIcon, LocationIcon, SearchIcon } from "./icons";
 import { iconButton } from "./ui";
@@ -72,8 +73,8 @@ export function LocationSearch({
             onChange={setPlace}
             onPick={(s) => onDestination(s.value)}
             fetchSuggestions={fetchPlaces}
-            placeholder="City and country"
-            ariaLabel="City and country"
+            placeholder={t("City and country")}
+            ariaLabel={t("City and country")}
             className={fieldClass}
             debounceMs={300}
           />
@@ -83,7 +84,7 @@ export function LocationSearch({
             onChange={changeText}
             onPick={(s) => onZip(s.value)}
             fetchSuggestions={fetchZips}
-            placeholder="ZIP code or city"
+            placeholder={t("ZIP code or city")}
             ariaLabel="ZIP code or city"
             className={fieldClass}
           />
@@ -92,7 +93,7 @@ export function LocationSearch({
           {(abroad ? place : text) && (
             <button
               type="button"
-              aria-label="Clear"
+              aria-label={t("Clear")}
               onClick={() => (abroad ? setPlace("") : (setText(""), onZip("")))}
               className={`${iconButton} h-8 w-8`}
             >
@@ -104,8 +105,8 @@ export function LocationSearch({
               type="button"
               onClick={onLocate}
               disabled={locating}
-              aria-label="Use my location"
-              title="Use my location"
+              aria-label={t("Use my location")}
+              title={t("Use my location")}
               className={`${iconButton} h-8 w-8 ${usingLocation ? "text-[#30d158]" : ""}`}
             >
               <LocationIcon size={15} className={locating ? "animate-pulse" : ""} fill={usingLocation ? "currentColor" : "none"} />
@@ -116,7 +117,7 @@ export function LocationSearch({
       {(abroad || usingLocation) && (
         <p className={`mt-1.5 flex items-center gap-1 px-1 text-[12px] ${usingLocation && !abroad ? "text-[#30d158]" : "text-white/45"}`}>
           {usingLocation && !abroad && <LocationIcon size={11} fill="currentColor" />}
-          {abroad ? "Locations only, no prices outside the US" : "Using your location"}
+          {abroad ? t("Locations only, no prices outside the US") : t("Using your location")}
         </p>
       )}
     </div>

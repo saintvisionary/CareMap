@@ -95,3 +95,10 @@ def test_prompt_carries_the_need_from_earlier_context():
     prompt = _prompt_for(redact("which one is cheapest?"), "gallbladder surgery")
     assert "need (what they're looking for" in prompt and "gallbladder surgery" in prompt
     assert "need" not in _prompt_for(redact("which one is cheapest?")).split("\n", 1)[-1]
+
+
+def test_prompt_asks_for_the_persons_language():
+    from caremap.agents import _prompt_for
+    from caremap.intake import redact
+    assert "Reply in Spanish" in _prompt_for(redact("hola"), None, "es")
+    assert "Reply in" not in _prompt_for(redact("hello"), None, "de")

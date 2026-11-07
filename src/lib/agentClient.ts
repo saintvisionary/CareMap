@@ -5,6 +5,7 @@
 // Only ever send the REDACTED message + tier/zip/insuranceType/veteran
 // hints, never raw income or household size. insuranceType is a public
 // coverage category, never PII.
+import { getLang } from "../i18n";
 import type { InsuranceType } from "./intake";
 
 export interface MapCommand {
@@ -55,7 +56,7 @@ export async function askAgent(
     const res = await fetch(AGENT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: redactedMessage, ...hints }),
+      body: JSON.stringify({ message: redactedMessage, ...hints, language: getLang() }),
       signal: controller.signal,
     });
     if (!res.ok) return null;

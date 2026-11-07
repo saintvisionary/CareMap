@@ -290,8 +290,16 @@ def build_orchestrator(model=None) -> Orchestrator:
     return Orchestrator(agent=orchestrator, ledger=ledger, guard=guard)
 
 
-def _prompt_for(hint: IntakeHint, need: str | None = None) -> str:
+LANGUAGE_NAMES = {"es": "Spanish", "fr": "French", "zh": "Simplified Chinese"}
+
+
+def _prompt_for(hint: IntakeHint, need: str | None = None, language: str | None = None) -> str:
     context = [f"User message (redacted): {hint.redacted_message}"]
+    if language in LANGUAGE_NAMES:
+        context.append(
+            f"Reply in {LANGUAGE_NAMES[language]}: the person is using CareMap in that language. Keep facility names, "
+            "dollar amounts and law names as given; say in that language that figures are estimates to confirm with "
+            "the billing office.")
     if need:
         context.append(f"need (what they're looking for, from the form or an earlier message): {need}")
     if hint.zip_code:
@@ -316,6 +324,7 @@ def handle_message(
     tier_pct: float | None = None,
     fpl_pct: float | None = None,
     need: str | None = None,
+    language: str | None = None,
 ) -> dict:
     """Entry point for the Lambda handler. Redacts, then runs the Orchestrator.
 
@@ -348,7 +357,7 @@ def handle_message(
     if hint.zip_code and hint.zip_code.isdigit():
         context_numbers.append(hint.zip_code)
     orchestrator.ledger.numbers.update(float(n) for n in context_numbers if n is not None)
-    prompt = _prompt_for(hint, need)
+    prompt = _prompt_for(hint, need, language)
     result = orchestrator.agent(prompt, structured_output_model=OrchestratorOutput)
     output: OrchestratorOutput = result.structured_output
     reply = ensure_disclosure(output.reply)

@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { t } from "../i18n";
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import type { ChatMessage } from "../hooks/useCareMap";
 import type { QuickQuestion } from "../lib/quickAnswers";
@@ -74,7 +75,7 @@ export function AskBar({ onSend, onQuick, onFocus, suggestions, hideSuggestionsO
         <div className={`-mx-4 gap-1.5 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none] ${hideSuggestionsOnPhone ? "hidden sm:flex" : "flex"}`}>
           {suggestions.map((q) => (
             <button key={q.label} type="button" onClick={() => onQuick(q)} className={`${chip} ${chipOff}`}>
-              {q.label}
+              {t(q.label)}
             </button>
           ))}
         </div>
@@ -86,7 +87,7 @@ export function AskBar({ onSend, onQuick, onFocus, suggestions, hideSuggestionsO
           onChange={(e) => setDraft(e.target.value)}
           onFocus={onFocus}
           onKeyDown={(e) => e.key === "Enter" && submit()}
-          placeholder="Ask CareMap anything"
+          placeholder={t("Ask CareMap anything")}
           aria-label="Ask CareMap"
           className="h-11 w-full rounded-full bg-white/[0.08] pl-10 pr-12 text-[15px] text-white placeholder:text-white/50 outline-none transition-[background-color,box-shadow] duration-150 focus:bg-white/[0.12] focus:ring-1 focus:ring-white/20"
         />
@@ -94,7 +95,7 @@ export function AskBar({ onSend, onQuick, onFocus, suggestions, hideSuggestionsO
           type="button"
           onClick={() => submit()}
           disabled={!draft.trim()}
-          aria-label="Send"
+          aria-label={t("Send")}
           className="absolute right-1.5 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white text-black transition-[opacity,transform] duration-150 active:scale-[0.92] disabled:opacity-25"
         >
           <ArrowUpIcon size={16} strokeWidth={2.5} />
