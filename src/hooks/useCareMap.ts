@@ -9,10 +9,20 @@ import { fplPercent, njCharityTier } from "../lib/policy";
 import { summarize, summarizeInternational } from "../lib/summarize";
 import type { Facility, ZipCentroid } from "../lib/types";
 
+/** Rich content inside an assistant turn, rendered by the app: the places
+ * found, or an inline card asking for what's missing. */
+export type Attachment =
+  | { kind: "results"; facilities: FacilityWithDistance[]; zip: string }
+  | { kind: "askLocation" }
+  | { kind: "askIncome" };
+
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
   text: string;
+  attachments?: Attachment[];
+  /** "ai" for the model's reply, so it can be marked as such. */
+  source?: "ai";
 }
 
 export interface MapFlyTo {
@@ -150,7 +160,15 @@ export function useCareMap(
 
   const cityIndex = useMemo(() => buildCityIndex(allFacilities, allClinics, allUrgentCare), [allFacilities, allClinics, allUrgentCare]);
 
-  const push = useCallback((role: ChatMessage["role"], text: string) => setMessages((m) => [...m, { id: id(), role, text }]), []);
+  const push = useCallback(
+    (role: ChatMessage["role"], text: string, attachments?: Attachment[], source?: "ai") =>
+      setMessages((m) => [...m, { id: id(), role, text, attachments, source }]),
+    [],
+  );
+  // Set when a search's results have been posted as a turn, so each new
+  // place or need gets exactly one, however it was entered.
+  const announcedRef = useRef<string | null>(null);
+  const placeNoteRef = useRef("");
 
   const validZip = (zip: string) => (/^\d{5}$/.test(zip) && zipCentroids[zip] ? zip : null);
   const zip = validZip(profile.zip);
@@ -179,7 +197,31 @@ export function useCareMap(
     [zip, destination, fplPct, profile.insuranceType, profile.veteran, profile.need, profile.emergency, facilities],
   );
 
-  const placeName = useMemo(() => (zip ? zipPlaceName(zip, facilities, allFacilities) : null), [zip, facilities, allFacilities]);
+  // "Somerset, NJ" for the ZIP: a site listed in it, else the town of the
+  // nearest place within a few miles.
+  const placeName = useMemo(() => {
+    if (!zip) return null;
+    const exact = zipPlaceName(zip, allFacilities, allClinics, allUrgentCare);
+    if (exact) return exact;
+    const near = [...facilities].sort((a, b) => a.distanceMiles - b.distanceMiles)[0];
+    return near && near.distanceMiles <= 5 ? `${near.city}, ${near.state}` : null;
+  }, [zip, facilities, allFacilities, allClinics, allUrgentCare]);
+
+  // Every new place or need becomes one conversation turn: a short answer,
+  // the places found, and (if there's no income yet) an inline ask for it.
+  useEffect(() => {
+    if (!zip || destination || facilities.length === 0) return;
+    const key = `${zip}|${profile.need}|${profile.emergency}`;
+    if (announcedRef.current === key) return;
+    announcedRef.current = key;
+    const note = placeNoteRef.current || (placeName ? `Here's what's near ${placeName}.` : "");
+    placeNoteRef.current = "";
+    const attachments: Attachment[] = [{ kind: "results", facilities, zip }];
+    if (profile.income === "" && profile.insuranceType === "uninsured") attachments.push({ kind: "askIncome" });
+    push("assistant", [note, summary].filter(Boolean).join(" "), attachments);
+    // Only a new search should post; prices and counts update in place.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [zip, profile.need, profile.emergency, destination, facilities.length > 0]);
 
   // Before anyone searches, a light national sample so the map isn't empty.
   const previewFacilities = useMemo(
@@ -273,6 +315,7 @@ export function useCareMap(
 
   const searchAbroad = useCallback((place: string) => {
     touchedRef.current = true;
+    chatAbroadRef.current = !!place.trim();
     setDestination(place.trim() || null);
   }, []);
 
@@ -290,7 +333,7 @@ export function useCareMap(
       need: p.need,
     })
       .then((agentReply) => {
-        if (agentReply?.reply) push("assistant", agentReply.reply);
+        if (agentReply?.reply) push("assistant", agentReply.reply, undefined, "ai");
         else if (fallback) push("assistant", fallback);
       })
       .finally(() => setLoading(false));
@@ -309,41 +352,29 @@ export function useCareMap(
         return;
       }
 
-      let placeNote = "";
       if (!hint.zipCode) {
         const place = findPlace(text, cityIndex);
         if (place && zipCentroids[place.zip]) {
           hint.zipCode = place.zip;
-          placeNote = `Showing care near ${place.city}, ${place.state}.`;
+          placeNoteRef.current = `Here's what's near ${place.city}, ${place.state}.`;
         }
       }
 
       const prev = profileRef.current;
       const next = mergeProfile(prev, hint);
-      const changed = (Object.keys(next) as (keyof Profile)[]).some((k) => next[k] !== prev[k]);
       setProfile(next);
       setDestination(null);
 
+      // A new place or need is answered by the results turn below (one per
+      // search); with no place yet, ask for one right in the conversation.
       const nextZip = validZip(next.zip);
-      const nextFpl = profileFplPct(next);
-      let answered = false;
-      if (nextZip && changed) {
-        const nearby = nearbyCare(allFacilities, allClinics, allUrgentCare, zipCentroids, nextZip, profileFocus(next));
-        const reply = summarize({
-          zipCode: nextZip,
-          fplPct: nextFpl,
-          insuranceType: next.insuranceType,
-          veteran: next.veteran,
-          need: next.need,
-          emergency: next.emergency,
-          facilities: nearby,
-        });
-        push("assistant", placeNote ? `${placeNote} ${reply}` : reply);
-        answered = true;
-      } else if (!nextZip && (LOCATION_QUESTION.test(text) || next.emergency)) {
+      const newSearch = !!nextZip && `${nextZip}|${next.need}|${next.emergency}` !== announcedRef.current;
+      let answered = newSearch;
+      if (!nextZip && (LOCATION_QUESTION.test(text) || next.emergency || next.need || hint.income != null)) {
         push(
           "assistant",
-          `${next.emergency ? "If this is an emergency, call 911 or go to the nearest ER now. " : ""}Enter a ZIP code or city in the search bar, or use your location, and I'll show what's nearby.`,
+          `${next.emergency ? "If this is an emergency, call 911 or go to the nearest ER now. " : ""}Where should I look? Share your location or type a ZIP code or city.`,
+          [{ kind: "askLocation" }],
         );
         answered = true;
       }
@@ -351,7 +382,7 @@ export function useCareMap(
       askWithContext(
         hint.redactedMessage,
         next,
-        answered ? null : "The assistant isn't available right now. The map and cost estimates still work: enter a ZIP code or city in the search bar.",
+        answered ? null : "The assistant isn't available right now. The map and cost estimates still work: share a ZIP code or city.",
       );
     },
     // validZip only reads zipCentroids.

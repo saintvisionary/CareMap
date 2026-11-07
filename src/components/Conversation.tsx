@@ -60,10 +60,10 @@ interface AskBarProps {
 
 /** The always-visible question box, with a few questions worth asking for
  * what's on screen right now. */
-export function AskBar({ onSend, onQuick, onFocus, suggestions, hideSuggestionsOnPhone, loading }: AskBarProps) {
+export function AskBar({ onSend, onQuick, onFocus, suggestions, hideSuggestionsOnPhone }: AskBarProps) {
   const [draft, setDraft] = useState("");
   const submit = (text = draft) => {
-    if (!text.trim() || loading) return;
+    if (!text.trim()) return;
     onSend(text.trim());
     setDraft("");
   };
@@ -93,7 +93,7 @@ export function AskBar({ onSend, onQuick, onFocus, suggestions, hideSuggestionsO
         <button
           type="button"
           onClick={() => submit()}
-          disabled={!draft.trim() || loading}
+          disabled={!draft.trim()}
           aria-label="Send"
           className="absolute right-1.5 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white text-black transition-[opacity,transform] duration-150 active:scale-[0.92] disabled:opacity-25"
         >

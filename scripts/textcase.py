@@ -13,7 +13,7 @@ import re
 # Kept in capitals wherever they appear.
 ACRONYMS = {
     "AHN", "AMC", "ARH", "BMG", "CAH", "CHC", "CHI", "CHOP", "CMC", "CUNY", "DBA", "ECU", "ER", "FQHC", "HCA", "HMC",
-    "HSC", "HSHS", "II", "III", "IU", "IV", "KU", "LAC", "LLC", "LLP", "LP", "LSU", "MCV", "MD", "MUSC", "NW", "NE", "NYC",
+    "HSC", "HSHS", "JFK", "II", "III", "IU", "IV", "KU", "LAC", "LLC", "LLP", "LP", "LSU", "MCV", "MD", "MUSC", "NW", "NE", "NYC",
     "NYU", "OHSU", "OSF", "OSU", "OU", "PA", "PC", "PHS", "PLLC", "PLC", "PSC", "SE", "SSM", "SUNY", "SW", "TMC",
     "UAB", "UC", "UCI", "UCLA", "UCSD", "UCSF", "UH", "UMC", "UNC", "UNM", "UPMC", "US", "USA", "USC", "UT", "UVA",
     "UW", "VA", "VCU", "VI", "WVU", "YMCA", "N", "S", "E", "W",
