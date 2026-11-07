@@ -88,9 +88,9 @@ describe("per-hospital and flat rules", () => {
 describe("federal FQHC sliding fee", () => {
   it("bands by income, never a dollar figure", () => {
     expect(fqhcSlidingFee(100, false).hero).toBe("Free or small fee");
-    expect(fqhcSlidingFee(150, false).hero).toBe("Sliding scale");
-    expect(fqhcSlidingFee(201, false).hero).toBe("Regular fee");
-    expect(fqhcSlidingFee(90, true).hero).toBe("Health center");
+    expect(fqhcSlidingFee(150, false).hero).toBe("Discount by income");
+    expect(fqhcSlidingFee(201, false).hero).toBe("No discount");
+    expect(fqhcSlidingFee(90, true).hero).toBe("Bills your plan");
     for (const fpl of [null, 50, 150, 300]) expect(fqhcSlidingFee(fpl, false).label).not.toMatch(/\$\d/);
   });
 });

@@ -149,6 +149,7 @@ export default function App() {
             fplPct={cm.fplPct}
             insuranceType={profile.insuranceType}
             need={profile.need}
+                          household={profile.household}
             index={i}
             active={f.ccn === activeCcn}
             onSelect={() => setActiveCcn((c) => (c === f.ccn ? null : f.ccn))}
@@ -454,6 +455,7 @@ export default function App() {
                           fplPct={cm.fplPct}
                           insuranceType={profile.insuranceType}
                           need={profile.need}
+                          household={profile.household}
                           index={i}
                           active={f.ccn === activeCcn}
                           onSelect={() => setActiveCcn((c) => (c === f.ccn ? null : f.ccn))}

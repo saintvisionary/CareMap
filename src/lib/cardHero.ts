@@ -75,10 +75,10 @@ export function cardHero(facility: Facility, fplPct: number | null, insuranceTyp
       label: `Of the typical billed charge${upper ? " (a legal maximum)" : ""}. ${CONFIRM}`,
     };
   } else if (tier === "full") {
-    out = { hero: "Full price", label: `Your income is above the limit for ${program}.` };
+    out = { hero: "No discount", label: `Your income is above the limit for ${program}. Tap for what the law says.` };
   } else if (facility.type === "va_hospital") {
     out = {
-      hero: "VA care",
+      hero: "For veterans",
       label: "For enrolled veterans: costs depend on your VA enrollment and priority group, not state charity care. Ask the VA about eligibility.",
     };
   } else if (facility.charity_care_participant) {

@@ -118,6 +118,10 @@ export function CostDetails({ bare, onDone, onForget, profile, onChange, open, o
                 >
                   {exact ? "Pick a range instead" : "Enter the exact amount"}
                 </button>
+                <p className="mt-2 px-0.5 text-[12px] leading-snug text-white/45">
+                  Help with bills is based on the "poverty line," a yearly income the government sets by family size. For {people} it's{" "}
+                  ${Math.round(fplAmount(profile.household)).toLocaleString("en-US")} a year. The ranges above are 1 to 4 times that.
+                </p>
                 {fplPct != null && (
                   <p className="mt-1.5 px-0.5 text-[12px] text-white/45">
                     {profile.income !== ""

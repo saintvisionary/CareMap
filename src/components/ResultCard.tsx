@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { cardHero } from "../lib/cardHero";
+import { explain, type Explanation } from "../lib/explain";
 import { CLINIC_COLOR, facilityTier, TIER_COLORS, URGENT_CARE_COLOR, type FacilityWithDistance } from "../lib/geo";
 import type { InsuranceType } from "../lib/intake";
 
@@ -35,12 +36,13 @@ interface ResultCardProps {
   fplPct: number | null;
   insuranceType: InsuranceType | null;
   need: string | null;
+  household: number;
   index: number;
   active: boolean;
   onSelect: () => void;
 }
 
-export function ResultCard({ facility, fplPct, insuranceType, need, index, active, onSelect }: ResultCardProps) {
+export function ResultCard({ facility, fplPct, insuranceType, need, household, index, active, onSelect }: ResultCardProps) {
   const { hero, label } = cardHero(facility, fplPct, insuranceType, need);
   const isPrice = /^(\$|Up to|\d)/.test(hero);
   const color =
@@ -86,6 +88,7 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
               {facility.star_rating != null ? ` · ${facility.star_rating}★` : ""}
             </p>
             <p className={`mt-1 text-[12px] leading-snug text-white/45 ${active ? "" : "line-clamp-2"}`}>{label}</p>
+            {!active && <p className="mt-1.5 text-[13px] font-medium text-white/75">{facility.type === "urgent_care" || facility.type === "va_hospital" ? "What you should know" : "What the law says"} ›</p>}
           </div>
         </div>
       </button>
@@ -99,7 +102,8 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
             className="overflow-hidden"
           >
             <div className="mx-3.5 border-t border-white/[0.08] pb-3.5 pl-5 pt-3 text-[13px] text-white/60">
-              <p className="text-white/80">{place}</p>
+              <LawBox explanation={explain(facility, fplPct, insuranceType, household)} />
+              <p className="mt-3 text-white/80">{place}</p>
               <p className="mt-1">
                 {TYPE_DETAILS[facility.type] ?? facility.type}
                 {facility.type !== "fqhc" && facility.type !== "urgent_care" ? ` · ${facility.has_er ? "Has an emergency room" : "No emergency room"}` : ""}
@@ -124,5 +128,19 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
         )}
       </AnimatePresence>
     </motion.div>
+  );
+}
+
+function LawBox({ explanation: e }: { explanation: Explanation }) {
+  return (
+    <div className="rounded-xl bg-white/[0.06] p-3 text-[14px] leading-relaxed text-white/85">
+      <p className="mb-1 text-[12px] font-semibold uppercase tracking-wide text-white/50">{e.title}</p>
+      <p>{e.rule}</p>
+      {e.you && <p className="mt-1.5 font-medium text-white">{e.you}</p>}
+      <p className="mt-1.5 text-white/70">
+        <span className="font-medium text-white/85">What to do: </span>
+        {e.next}
+      </p>
+    </div>
   );
 }

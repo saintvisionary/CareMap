@@ -401,13 +401,13 @@ export function charityTier(
 // charge data, so this never produces a dollar figure or percentage.
 export function fqhcSlidingFee(fplPct: number | null, insured: boolean): { hero: string; label: string } {
   const noDenial = "It can't turn you away for inability to pay.";
-  if (insured) return { hero: "Health center", label: `Federally funded health center that bills your coverage. ${noDenial}` };
-  if (fplPct == null) return { hero: "Sliding fee", label: `Federally funded health center: discounts by income up to 200% of the poverty line. ${noDenial}` };
+  if (insured) return { hero: "Bills your plan", label: `Federally funded health center that bills your coverage. ${noDenial}` };
+  if (fplPct == null) return { hero: "Discount by income", label: `Federally funded health center: discounts by income up to 200% of the poverty line. ${noDenial}` };
   if (fplPct <= 100) {
-    return { hero: "Free or small fee", label: `Federal rule at your income: a full discount, though the clinic may charge a small flat fee. ${noDenial}` };
+    return { hero: "Free or small fee", label: `At your income, your visit should be free, though there may be a small fee. ${noDenial}` };
   }
-  if (fplPct <= 200) return { hero: "Sliding scale", label: `Federal rule at your income: discounted on this clinic's own sliding scale. ${noDenial}` };
-  return { hero: "Regular fee", label: `No income discount is required above 200% of the poverty line. ${noDenial}` };
+  if (fplPct <= 200) return { hero: "Discount by income", label: `At your income, you get a discount on this clinic's sliding scale. ${noDenial}` };
+  return { hero: "No discount", label: `At your income, no discount is required. ${noDenial}` };
 }
 
 // 26 U.S.C. 501(r)(5) / 26 CFR 1.501(r)-5: in every state, a nonprofit

@@ -79,7 +79,7 @@ describe("summary tiers", () => {
   });
 
   it("names the nearest sliding-fee clinic with the federal rule", () => {
-    expect(run({ fplPct: 90, facilities: [CLINIC, facility({})] })).toMatch(/COMMUNITY CLINIC.*full discount/);
+    expect(run({ fplPct: 90, facilities: [CLINIC, facility({})] })).toMatch(/COMMUNITY CLINIC.*should be free/);
   });
 });
 
