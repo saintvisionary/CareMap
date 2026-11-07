@@ -15,6 +15,12 @@ export const LANGS: { lang: Lang; label: string }[] = [
 type Dict = Record<string, string>;
 
 const es: Dict = {
+  "Start over": "Empezar de nuevo",
+  "New search": "Nueva búsqueda",
+  "Search": "Buscar",
+  "No matches": "Sin resultados",
+  "Choose a condition or procedure": "Elige una condición o procedimiento",
+  "Condition or procedure": "Condición o procedimiento",
   "Uninsured": "Sin seguro",
   "Private insurance": "Seguro privado",
   "VA / Tricare": "VA / Tricare",
@@ -169,6 +175,12 @@ const es: Dict = {
 };
 
 const fr: Dict = {
+  "Start over": "Recommencer",
+  "New search": "Nouvelle recherche",
+  "Search": "Rechercher",
+  "No matches": "Aucun résultat",
+  "Choose a condition or procedure": "Choisissez une affection ou une intervention",
+  "Condition or procedure": "Affection ou intervention",
   "Uninsured": "Sans assurance",
   "Private insurance": "Assurance privée",
   "VA / Tricare": "VA / Tricare",
@@ -323,6 +335,12 @@ const fr: Dict = {
 };
 
 const zh: Dict = {
+  "Start over": "重新开始",
+  "New search": "新搜索",
+  "Search": "搜索",
+  "No matches": "没有结果",
+  "Choose a condition or procedure": "选择病症或手术",
+  "Condition or procedure": "病症或手术",
   "Uninsured": "无保险",
   "Private insurance": "私人保险",
   "VA / Tricare": "VA / Tricare",

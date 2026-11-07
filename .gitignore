@@ -12,3 +12,6 @@ data/raw/
 !/README.md
 .lambda-build/
 .lambda-build.zip
+
+# Stray screenshots from local browser checks
+/*.png

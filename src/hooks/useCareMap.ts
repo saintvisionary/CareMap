@@ -482,6 +482,16 @@ export function useCareMap(
   // A preview marker opens a real search centered on that facility.
   const selectPreviewFacility = useCallback((facility: Facility) => updateProfile({ zip: facility.zip.slice(0, 5) }), [updateProfile]);
 
+  /** Back to the start: a new place and need, keeping household, income
+   * and insurance so nobody retypes them. The map zooms back out. */
+  const startOver = useCallback(() => {
+    touchedRef.current = true;
+    announcedRef.current = null;
+    setDestination(null);
+    setProfile((p) => ({ ...p, zip: "", need: null, emergency: false }));
+    setFlyTo({ center: [-96.5, 38.5], zoom: 3.4, pitch: 0 });
+  }, []);
+
   const clearChat = useCallback(() => {
     setMessages([]);
   }, []);
@@ -498,6 +508,7 @@ export function useCareMap(
   }, []);
 
   return {
+    startOver,
     national,
     clearChat,
     forgetMe,

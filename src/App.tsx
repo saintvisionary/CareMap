@@ -5,10 +5,11 @@ import { Greeting, Thread } from "./components/Thread";
 import { Guide } from "./components/Guide";
 import { CostDetails } from "./components/CostDetails";
 import { fplAmount } from "./lib/policy";
-import { ChevronDownIcon, ChevronLeftIcon, GlobeIcon, InfoIcon, LocationIcon } from "./components/icons";
+import { ChevronDownIcon, ChevronLeftIcon, GlobeIcon, InfoIcon, LocationIcon, PersonIcon, RestartIcon } from "./components/icons";
 import { InfoPanel } from "./components/InfoPanel";
 import { LocationSearch } from "./components/LocationSearch";
 import { MapView } from "./components/MapView";
+import { Menu } from "./components/Menu";
 import { NeedPicker } from "./components/NeedPicker";
 import { ResultCard } from "./components/ResultCard";
 import { card, iconButton } from "./components/ui";
@@ -98,6 +99,19 @@ export default function App() {
   // First visit: a step-by-step guide. Returning visitors go straight to
   // their results; "Change my answers" opens the guide again.
   const [guide, setGuide] = useState(() => !profile.zip);
+  // Bumped on every start-over, so the guide always opens at step 1.
+  const [guideRun, setGuideRun] = useState(0);
+  const startOver = () => {
+    cm.startOver();
+    setAbroad(false);
+    setEditor(null);
+    setKind("all");
+    setActiveCcn(null);
+    setView("results");
+    setSheet("half");
+    setGuide(true);
+    setGuideRun((n) => n + 1);
+  };
 
   // Wake the AI backend while the person is still reading the page.
   useEffect(() => {
@@ -282,29 +296,27 @@ export default function App() {
           </button>
 
           <header className={`items-center justify-between gap-3 px-4 pt-1 sm:flex sm:pt-4 ${hasResults && !guide ? "hidden" : "flex"}`}>
-            <div className="flex items-center gap-2.5 sm:gap-3">
+            <button
+              type="button"
+              onClick={startOver}
+              aria-label={t("Start over")}
+              title={t("Start over")}
+              className="-m-1 flex items-center gap-2.5 rounded-2xl p-1 text-left transition-[background-color,transform] hover:bg-white/[0.06] active:scale-[0.97] sm:gap-3"
+            >
               <img src="./logo.svg" alt="" width={40} height={40} className="h-8 w-8 shrink-0 rounded-[9px] shadow-lg shadow-black/30 sm:h-10 sm:w-10 sm:rounded-[11px]" />
               <div>
                 <h1 className="text-[18px] font-semibold leading-tight tracking-tight sm:text-[22px]">CareMap</h1>
                 <p className="hidden text-[13px] text-white/50 sm:block">{t("What care would cost you, before the bill")}</p>
               </div>
-            </div>
+            </button>
             <div className="-mr-1.5 flex items-center gap-1">
-            <label className="relative">
-              <span className="sr-only">{t("Language")}</span>
-              <select
-                value={lang}
-                onChange={(e) => chooseLang(e.target.value as Lang)}
-                aria-label={t("Language")}
-                className="h-9 appearance-none rounded-full bg-white/[0.08] px-3 text-[13px] font-medium text-white/85 outline-none hover:bg-white/[0.14] focus:ring-1 focus:ring-white/30"
-              >
-                {LANGS.map((l) => (
-                  <option key={l.lang} value={l.lang}>
-                    {l.label}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <Menu
+              variant="pill"
+              value={lang}
+              onChange={(v) => chooseLang(v as Lang)}
+              options={LANGS.map((l) => ({ value: l.lang, label: l.label }))}
+              ariaLabel={t("Language")}
+            />
             <button type="button" onClick={() => setInfoOpen(true)} aria-label={t("How CareMap works")} title={t("How CareMap works")} className={iconButton}>
               <InfoIcon size={20} />
             </button>
@@ -335,7 +347,7 @@ export default function App() {
           )}
 
           {view === "results" && !guide && (
-            <div className="flex shrink-0 gap-1.5 px-4 pt-2.5">
+            <div className="flex shrink-0 gap-1 px-4 pt-2.5 sm:gap-1.5">
               {!abroad && (
               <>
               <FilterChip open={editor === "need"} set={!!profile.need} onClick={() => setEditor((e) => (e === "need" ? null : "need"))}>
@@ -360,7 +372,19 @@ export default function App() {
                 {abroad && t("Back to the US")}
               </button>
               {hasResults && (
-                <button type="button" onClick={() => setInfoOpen(true)} aria-label={t("How CareMap works")} className={`${iconButton} sm:hidden`}>
+                <button
+                  type="button"
+                  onClick={startOver}
+                  aria-label={t("Start over")}
+                  title={t("Start over")}
+                  className="inline-flex h-9 w-9 shrink-0 items-center justify-center gap-1.5 rounded-full bg-white/[0.08] text-[14px] font-medium text-white/80 transition-[background-color,transform] hover:bg-white/[0.14] active:scale-[0.96] sm:w-auto sm:px-3"
+                >
+                  <RestartIcon size={16} />
+                  <span className="hidden sm:inline">{t("New search")}</span>
+                </button>
+              )}
+              {hasResults && (
+                <button type="button" onClick={() => setInfoOpen(true)} aria-label={t("How CareMap works")} className={`${iconButton} -mr-1 w-8 sm:hidden`}>
                   <InfoIcon size={19} />
                 </button>
               )}
@@ -375,6 +399,7 @@ export default function App() {
           {guide && view === "results" ? (
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 pt-3">
               <Guide
+                key={guideRun}
                 onAbroad={() => {
                   setGuide(false);
                   toggleAbroad(true);
@@ -564,18 +589,25 @@ export default function App() {
   );
 }
 
-function costChipLabel(p: Profile): string {
+function costChipLabel(p: Profile): React.ReactNode {
   if (p.insuranceType !== "uninsured") return t(INSURANCE_LABELS[p.insuranceType]);
   if (p.income === "" && p.incomeRange == null) return t("Add income");
-  const k = (n: number) => (n >= 1000 ? `$${Math.round(n / 1000)}k` : `$${n}`);
+  // Compact so it fits a phone: a person icon with the count, then
+  // "$16–32k" style money.
+  const k = (n: number) => `${Math.round(n / 1000)}k`;
   let amount: string;
-  if (p.income !== "") amount = k(Number(p.income));
+  if (p.income !== "") amount = `$${k(Number(p.income))}`;
   else {
     const base = fplAmount(p.household);
     const r = p.incomeRange!;
-    amount = r <= 100 ? `under ${k(base)}` : r >= 1000 ? `${k(base * 4)}+` : `${k((base * (r - 100)) / 100)}–${k((base * r) / 100)}`;
+    amount = r <= 100 ? `<$${k(base)}` : r >= 1000 ? `$${k(base * 4)}+` : `$${Math.round((base * (r - 100)) / 100000)}–${k((base * r) / 100)}`;
   }
-  return `${peopleText(p.household)} · ${amount}`;
+  return (
+    <span className="inline-flex items-center gap-1" aria-label={`${peopleText(p.household)}, ${amount}`}>
+      <PersonIcon size={13} />
+      {p.household} · {amount}
+    </span>
+  );
 }
 
 function FilterChip({ open, set, onClick, children }: { open: boolean; set: boolean; onClick: () => void; children: React.ReactNode }) {
@@ -584,12 +616,12 @@ function FilterChip({ open, set, onClick, children }: { open: boolean; set: bool
       type="button"
       onClick={onClick}
       aria-expanded={open}
-      className={`inline-flex h-9 min-w-0 items-center gap-1 rounded-full pl-3 pr-2 text-[14px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
+      className={`inline-flex h-9 min-w-0 items-center gap-0.5 rounded-full pl-3 pr-1.5 text-[14px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
         open ? "bg-white text-black" : set ? "bg-white/[0.16] text-white" : "bg-white/[0.08] text-white/80 hover:bg-white/[0.14]"
       }`}
     >
       <span className="min-w-0 truncate">{children}</span>
-      <ChevronDownIcon size={15} className={`shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+      <ChevronDownIcon size={14} className={`shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
     </button>
   );
 }

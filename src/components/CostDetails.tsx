@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { peopleText, t, t as tr } from "../i18n";
 import { useState } from "react";
+import { Menu } from "./Menu";
 import { fplAmount } from "../lib/policy";
 import { INSURANCE_LABELS } from "../lib/insurance";
 import type { InsuranceType } from "../lib/intake";
@@ -135,23 +136,14 @@ export function CostDetails({ bare, onDone, onForget, profile, onChange, open, o
               </div>
 
               <div>
-                <label className={label} htmlFor="caremap-insurance">
-                  {t("Insurance")}
-                </label>
+                <p className={label}>{t("Insurance")}</p>
                 <div className="relative">
-                  <select
-                    id="caremap-insurance"
+                  <Menu
                     value={profile.insuranceType}
-                    onChange={(e) => onChange({ insuranceType: e.target.value as InsuranceType })}
-                    className="h-11 w-full appearance-none rounded-xl bg-white/[0.08] pl-3.5 pr-9 text-[15px] text-white outline-none focus:bg-white/[0.12] focus:ring-1 focus:ring-white/20"
-                  >
-                    {INSURANCE_TYPES.map((t) => (
-                      <option key={t} value={t}>
-                        {tr(INSURANCE_LABELS[t])}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDownIcon size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/45" />
+                    onChange={(v) => onChange({ insuranceType: v as InsuranceType })}
+                    options={INSURANCE_TYPES.map((it) => ({ value: it, label: tr(INSURANCE_LABELS[it]) }))}
+                    ariaLabel={t("Insurance")}
+                  />
                 </div>
               </div>
 

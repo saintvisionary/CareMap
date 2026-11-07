@@ -1,3 +1,4 @@
+import { BorderBeam, type BorderBeamColorVariant } from "border-beam";
 import { useCallback, useEffect, useState } from "react";
 import { t } from "../i18n";
 import { AutocompleteInput } from "./AutocompleteInput";
@@ -21,6 +22,9 @@ interface LocationSearchProps {
   onDestination: (place: string) => void;
 }
 
+// Closest built-in palette to CareMap's navy and soft blue.
+const BEAM_COLORS: BorderBeamColorVariant = (import.meta.env.VITE_BEAM_COLORS as BorderBeamColorVariant) || "ocean";
+
 const fieldClass =
   "h-11 w-full rounded-xl bg-white/[0.08] pl-10 pr-20 text-[15px] text-white placeholder:text-white/50 outline-none transition-[background-color,box-shadow] duration-150 focus:bg-white/[0.12] focus:ring-1 focus:ring-white/20";
 
@@ -39,6 +43,8 @@ export function LocationSearch({
   // ZIP is passed up, so results never flash for half-typed text.
   const [text, setText] = useState(zip);
   const [place, setPlace] = useState("");
+  // The search beam (border-beam's "line" preset) runs only while typing.
+  const [focused, setFocused] = useState(false);
   useEffect(() => {
     setText(zip === "US" ? "United States" : zip);
   }, [zip]);
@@ -65,8 +71,11 @@ export function LocationSearch({
 
   return (
     <div>
-      <div className="caremap-search">
-        <span className="caremap-beam" aria-hidden="true" />
+      <BorderBeam size="line" colorVariant={BEAM_COLORS} theme="dark" active={focused} borderRadius={12} className="w-full"
+        // The beam's layers clip themselves; overflow stays visible so the
+        // suggestion list can open below the box.
+        style={{ overflow: "visible" }}>
+      <div className="relative" onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}>
         <SearchIcon className="pointer-events-none absolute left-3.5 top-1/2 z-10 -translate-y-1/2 text-white/45" />
         {abroad ? (
           <AutocompleteInput
@@ -115,6 +124,7 @@ export function LocationSearch({
           )}
         </div>
       </div>
+      </BorderBeam>
       {(abroad || usingLocation) && (
         <p className={`mt-1.5 flex items-center gap-1 px-1 text-[12px] ${usingLocation && !abroad ? "text-[#30d158]" : "text-white/45"}`}>
           {usingLocation && !abroad && <LocationIcon size={11} fill="currentColor" />}

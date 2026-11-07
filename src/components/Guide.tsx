@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Menu } from "./Menu";
 import { useEffect, useState } from "react";
 import type { Profile } from "../hooks/useCareMap";
 import { NEED_CATEGORIES, needLabel } from "../lib/drg";
@@ -6,7 +7,7 @@ import { INSURANCE_LABELS } from "../lib/insurance";
 import type { InsuranceType } from "../lib/intake";
 import { fplAmount } from "../lib/policy";
 import type { Facility, ZipCentroid } from "../lib/types";
-import { ChevronDownIcon, ChevronLeftIcon, GlobeIcon, LocationIcon, MinusIcon, PlusIcon } from "./icons";
+import { ChevronLeftIcon, GlobeIcon, LocationIcon, MinusIcon, PlusIcon } from "./icons";
 import { LocationSearch } from "./LocationSearch";
 import { iconButton } from "./ui";
 import { peopleText, t } from "../i18n";
@@ -154,28 +155,17 @@ export function Guide({ onAbroad, profile, onChange, onDone, zipCentroids, facil
       {step === "procedure" && (
         <Question title={t("What kind of care?")} why={t("We'll show what each nearby hospital charges for it.")}>
           <div className="relative">
-            <select
-              value={profile.need ?? ""}
-              onChange={(e) => {
-                if (!e.target.value) return;
-                onChange({ need: e.target.value });
-                go("place");
-              }}
-              aria-label="Condition or procedure"
-              className="h-12 w-full appearance-none rounded-2xl bg-white/[0.08] pl-4 pr-10 text-[16px] text-white outline-none focus:ring-1 focus:ring-white/30"
-            >
-              <option value="">{t("Choose one")}</option>
-              {NEED_CATEGORIES.map((c) => (
-                <optgroup key={c.category} label={c.category}>
-                  {c.items.map((n) => (
-                    <option key={n} value={n}>
-                      {needLabel(n)}
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
-            </select>
-            <ChevronDownIcon size={18} className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-white/50" />
+            <Menu
+            value={profile.need ?? ""}
+            onChange={(v) => {
+              onChange({ need: v });
+              go("place");
+            }}
+            groups={NEED_CATEGORIES.map((c) => ({ label: t(c.category), options: c.items.map((n) => ({ value: n, label: t(needLabel(n)) })) }))}
+            searchable
+            placeholder={t("Choose one")}
+            ariaLabel={t("Condition or procedure")}
+          />
           </div>
           <SkipButton onClick={() => go("place")}>{t("Not sure. Skip this")}</SkipButton>
         </Question>
