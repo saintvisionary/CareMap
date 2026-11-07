@@ -60,7 +60,16 @@ export function Guide({ profile, onChange, onDone, zipCentroids, facilities, onL
   const order: Step[] = ["need", "place", "household", "income", "insurance"];
   const index = order.indexOf(step === "procedure" ? "need" : step);
 
+  const hasPlace = /^\d{5}$/.test(profile.zip);
+  const [needPlace, setNeedPlace] = useState(false);
   const go = (next: Step | "done") => {
+    // Never finish without a place: results need one.
+    if (next === "done" && !hasPlace) {
+      setNeedPlace(true);
+      setHistory((h) => [...h, step]);
+      setStep("place");
+      return;
+    }
     if (next === "done") return onDone();
     setHistory((h) => [...h, step]);
     setStep(next);
@@ -77,7 +86,7 @@ export function Guide({ profile, onChange, onDone, zipCentroids, facilities, onL
   useEffect(() => {
     if (step === "place" && locRequested && /^\d{5}$/.test(profile.zip)) {
       setLocRequested(false);
-      go(afterPlace);
+      go(needPlace ? "done" : afterPlace);
     }
     // go is recreated each render; zip and step are what matter.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -170,7 +179,7 @@ export function Guide({ profile, onChange, onDone, zipCentroids, facilities, onL
       )}
 
       {step === "place" && (
-        <Question title="Where are you?" why="We'll find care close to you.">
+        <Question title="Where are you?" why={needPlace ? "One last thing: we need your ZIP code or city to show care near you." : "We'll find care close to you."}>
           <button
             type="button"
             onClick={() => {
@@ -188,7 +197,7 @@ export function Guide({ profile, onChange, onDone, zipCentroids, facilities, onL
             zip={profile.zip}
             onZip={(zip) => {
               onChange({ zip });
-              if (zip.length === 5) go(afterPlace);
+              if (zip.length === 5) go(needPlace ? "done" : afterPlace);
             }}
             zipCentroids={zipCentroids}
             facilities={facilities}
@@ -199,6 +208,7 @@ export function Guide({ profile, onChange, onDone, zipCentroids, facilities, onL
             abroad={false}
             onDestination={() => {}}
           />
+          <NextButton onClick={() => go(needPlace ? "done" : afterPlace)} disabled={!hasPlace} />
         </Question>
       )}
 

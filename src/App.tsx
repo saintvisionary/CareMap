@@ -393,12 +393,21 @@ export default function App() {
                 )}
 
                 {!abroad && facilities.length === 0 && !editor && (
-                  <section className={`${card} px-4 py-4`}>
-                    <p className="text-[16px] font-semibold">{dataLoading ? "Loading hospitals…" : "Let's find care you can afford"}</p>
-                    <p className="mt-1 text-[14px] text-white/60">Answer a few quick questions, or type a ZIP code above.</p>
-                    <button type="button" onClick={() => setGuide(true)} className="mt-3 h-11 w-full rounded-full bg-white text-[15px] font-semibold text-black active:scale-[0.98]">
-                      Get started
+                  <section className={`${card} space-y-3 px-4 py-4`}>
+                    <div>
+                      <p className="text-[18px] font-semibold">{dataLoading ? "Loading hospitals…" : "Where are you?"}</p>
+                      <p className="mt-0.5 text-[14px] text-white/60">Type a ZIP code or city in the search box above, or use your location.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => cm.locate()}
+                      disabled={cm.locating || dataLoading}
+                      className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-white text-[16px] font-semibold text-black active:scale-[0.98] disabled:opacity-60"
+                    >
+                      <LocationIcon size={17} />
+                      {cm.locating ? "Finding you…" : "Use my location"}
                     </button>
+                    {cm.locationError && <p className="text-[13px] text-[#ff6961]">{cm.locationError} Type your ZIP code instead.</p>}
                   </section>
                 )}
 
