@@ -6,7 +6,7 @@ import type { Suggestion } from "../components/AutocompleteInput";
 // 33,791-zip dataset, so picking one guarantees a real, geocodable US zip
 // code. Deliberately NOT backed by an external API: the domestic flow is
 // supposed to work instantly even with no network/AI available (see
-// CLAUDE.md -- "map works if AI quota exhausted"), and this is the one spot
+// the project rules -- "map works if AI quota exhausted"), and this is the one spot
 // an external service's uptime could otherwise leak into that guarantee.
 //
 // Two input shapes: digits -> prefix-match against every known US zip.

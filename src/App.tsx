@@ -353,7 +353,7 @@ export default function App() {
               <FilterChip open={editor === "need"} set={!!profile.need} onClick={() => setEditor((e) => (e === "need" ? null : "need"))}>
                 {profile.need ? t(needLabel(profile.need)) : t("What you need")}
               </FilterChip>
-              <FilterChip open={editor === "costs"} set={profile.income !== "" || profile.incomeRange != null || profile.insuranceType !== "uninsured"} onClick={() => setEditor((e) => (e === "costs" ? null : "costs"))}>
+              <FilterChip fixed open={editor === "costs"} set={profile.income !== "" || profile.incomeRange != null || profile.insuranceType !== "uninsured"} onClick={() => setEditor((e) => (e === "costs" ? null : "costs"))}>
                 {costChipLabel(profile)}
               </FilterChip>
               </>
@@ -377,10 +377,9 @@ export default function App() {
                   onClick={startOver}
                   aria-label={t("Start over")}
                   title={t("Start over")}
-                  className="inline-flex h-9 w-9 shrink-0 items-center justify-center gap-1.5 rounded-full bg-white/[0.08] text-[14px] font-medium text-white/80 transition-[background-color,transform] hover:bg-white/[0.14] active:scale-[0.96] sm:w-auto sm:px-3"
+                  className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-white/80 transition-[background-color,transform] hover:bg-white/[0.14] active:scale-[0.96]"
                 >
                   <RestartIcon size={16} />
-                  <span className="hidden sm:inline">{t("New search")}</span>
                 </button>
               )}
               {hasResults && (
@@ -610,13 +609,13 @@ function costChipLabel(p: Profile): React.ReactNode {
   );
 }
 
-function FilterChip({ open, set, onClick, children }: { open: boolean; set: boolean; onClick: () => void; children: React.ReactNode }) {
+function FilterChip({ open, set, onClick, children, fixed }: { open: boolean; set: boolean; onClick: () => void; children: React.ReactNode; fixed?: boolean }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-expanded={open}
-      className={`inline-flex h-9 min-w-0 items-center gap-0.5 rounded-full pl-3 pr-1.5 text-[14px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
+      className={`inline-flex h-9 ${fixed ? "shrink-0" : "min-w-0"} items-center gap-0.5 rounded-full pl-3 pr-1.5 text-[14px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
         open ? "bg-white text-black" : set ? "bg-white/[0.16] text-white" : "bg-white/[0.08] text-white/80 hover:bg-white/[0.14]"
       }`}
     >
