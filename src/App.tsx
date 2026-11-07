@@ -2,8 +2,9 @@ import { MotionConfig } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import { AskBar, renderMessageText } from "./components/Conversation";
 import { Greeting, Thread } from "./components/Thread";
+import { Guide } from "./components/Guide";
 import { CostDetails, incomeRangeLabel } from "./components/CostDetails";
-import { ChevronDownIcon, ChevronLeftIcon, GlobeIcon, InfoIcon, LocationIcon, SparkleIcon } from "./components/icons";
+import { ChevronDownIcon, ChevronLeftIcon, GlobeIcon, InfoIcon, LocationIcon } from "./components/icons";
 import { InfoPanel } from "./components/InfoPanel";
 import { LocationSearch } from "./components/LocationSearch";
 import { MapView } from "./components/MapView";
@@ -44,25 +45,7 @@ const STARTERS = [
   "How does hospital charity care work?",
 ];
 
-// The first screen's tap targets: the most common reasons people come, in
-// their words, so nobody has to know what to type.
-interface Shortcut {
-  label: string;
-  detail: string;
-  need?: string;
-  bill?: boolean;
-  hospital?: boolean;
-  featured?: boolean;
-}
-const SHORTCUTS: Shortcut[] = [
-  { label: "Lower or erase a hospital bill", detail: "See if you qualify for free or cheaper care", bill: true, featured: true },
-  { label: "Doctor visit", detail: "Checkups and physicals", need: "checkup" },
-  { label: "Urgent care", detail: "Sick or hurt today", need: "sick visit" },
-  { label: "Dental", detail: "Cleanings and tooth pain", need: "dental care" },
-  { label: "Mental health", detail: "Counseling and therapy", need: "counseling" },
-  { label: "Pregnancy", detail: "Prenatal care", need: "pregnancy care" },
-  { label: "Surgery or hospital stay", detail: "See prices by hospital", hospital: true },
-];
+
 const INLINE = 4;
 
 export default function App() {
@@ -87,6 +70,9 @@ export default function App() {
   const [shown, setShown] = useState(PAGE);
   const [overviewOpen, setOverviewOpen] = useState(false);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
+  // First visit: a step-by-step guide. Returning visitors go straight to
+  // their results; "Change my answers" opens the guide again.
+  const [guide, setGuide] = useState(() => !profile.zip);
 
   // Wake the AI backend while the person is still reading the page.
   useEffect(() => {
@@ -223,16 +209,6 @@ export default function App() {
     setKind("all");
     setDismissed(new Set());
   };
-  const shortcut = (sc: Shortcut) => {
-    if (sc.bill) setEditor("costs");
-    else if (sc.hospital) {
-      setHospitalOpen(true);
-      setEditor("need");
-    } else cm.updateProfile({ need: sc.need ?? null, emergency: false });
-    if (!profile.zip && !sc.bill && !sc.hospital) {
-      setTimeout(() => document.querySelector<HTMLInputElement>('aside input[aria-label="ZIP code or city"]')?.focus(), 50);
-    }
-  };
   const hasResults = facilities.length > 0 || abroad;
   const toggleAbroad = (a: boolean) => {
     setAbroad(a);
@@ -274,7 +250,7 @@ export default function App() {
             <span className="h-1.5 w-10 rounded-full bg-white/25" />
           </button>
 
-          <header className={`items-center justify-between gap-3 px-4 pt-1 sm:flex sm:pt-4 ${hasResults ? "hidden" : "flex"}`}>
+          <header className={`items-center justify-between gap-3 px-4 pt-1 sm:flex sm:pt-4 ${hasResults && !guide ? "hidden" : "flex"}`}>
             <div className="flex items-center gap-2.5 sm:gap-3">
               <img src="./logo.svg" alt="" width={40} height={40} className="h-8 w-8 shrink-0 rounded-[9px] shadow-lg shadow-black/30 sm:h-10 sm:w-10 sm:rounded-[11px]" />
               <div>
@@ -287,6 +263,7 @@ export default function App() {
             </button>
           </header>
 
+          {!(guide && view === "results") && (
           <div className={`px-4 ${hasResults ? "pt-1 sm:pt-3" : "pt-3"}`}>
             <LocationSearch
               zip={profile.zip}
@@ -307,8 +284,9 @@ export default function App() {
               }}
             />
           </div>
+          )}
 
-          {view === "results" && (
+          {view === "results" && !guide && (
             <div className="flex shrink-0 gap-1.5 overflow-x-auto px-4 pt-2.5 [scrollbar-width:none]">
               {!abroad && (
               <>
@@ -339,7 +317,24 @@ export default function App() {
             </div>
           )}
 
-          {view === "conversation" ? (
+          {guide && view === "results" ? (
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 pt-3">
+              <Guide
+                profile={profile}
+                onChange={cm.updateProfile}
+                onDone={() => {
+                  setGuide(false);
+                  setEditor(null);
+                  setSheet("half");
+                }}
+                zipCentroids={zipCentroids}
+                facilities={allFacilities}
+                onLocate={() => cm.locate()}
+                locating={cm.locating}
+                locationError={cm.locationError}
+              />
+            </div>
+          ) : view === "conversation" ? (
               <div className="flex min-h-0 flex-1 flex-col px-4 pt-3">
                 <div className="flex shrink-0 items-center justify-between pb-2">
                   <button type="button" onClick={() => setView("results")} className={`${iconButton} -ml-2 w-auto gap-0.5 px-2 text-[15px] text-white/80`}>
@@ -398,41 +393,17 @@ export default function App() {
                 )}
 
                 {!abroad && facilities.length === 0 && !editor && (
-                  <section className="space-y-3">
-                    <button
-                      type="button"
-                      onClick={() => setView("conversation")}
-                      className="flex h-11 items-center gap-2 rounded-full bg-white/[0.1] px-4 text-[15px] font-medium text-white transition-[background-color,transform] hover:bg-white/[0.16] active:scale-[0.97]"
-                    >
-                      <SparkleIcon size={16} />
-                      Ask CareMap
+                  <section className={`${card} px-4 py-4`}>
+                    <p className="text-[16px] font-semibold">{dataLoading ? "Loading hospitals…" : "Let's find care you can afford"}</p>
+                    <p className="mt-1 text-[14px] text-white/60">Answer a few quick questions, or type a ZIP code above.</p>
+                    <button type="button" onClick={() => setGuide(true)} className="mt-3 h-11 w-full rounded-full bg-white text-[15px] font-semibold text-black active:scale-[0.98]">
+                      Get started
                     </button>
-                    <div>
-                      <h2 className="mb-2 px-0.5 text-[15px] font-medium text-white/70">{dataLoading ? "Loading hospitals…" : "What do you need help with?"}</h2>
-                      <div className="grid grid-cols-2 gap-2">
-                        {SHORTCUTS.map((sc) => (
-                          <button
-                            key={sc.label}
-                            type="button"
-                            onClick={() => shortcut(sc)}
-                            className={`flex min-h-[64px] flex-col justify-center rounded-2xl px-3.5 py-2.5 text-left transition-[background-color,transform] active:scale-[0.97] ${
-                              sc.featured ? "col-span-2 bg-white text-black" : "bg-white/[0.07] text-white hover:bg-white/[0.11]"
-                            }`}
-                          >
-                            <span className="text-[15px] font-semibold leading-tight">{sc.label}</span>
-                            <span className={`mt-0.5 text-[12px] leading-snug ${sc.featured ? "text-black/60" : "text-white/50"}`}>{sc.detail}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    {profile.need && !profile.zip && (
-                      <p className="px-1 text-[14px] text-white/70">Now type your ZIP code or city in the search box above.</p>
-                    )}
                   </section>
                 )}
 
                 {overview && (abroad || facilities.length > 0) && (
-                  <section className={`${card} px-4 py-3 ${abroad ? "" : "hidden sm:block"}`}>
+                  <section className={`${card} px-4 py-3`}>
                     <h2 className="mb-0.5 text-[13px] font-medium text-white/55">
                       {abroad ? "Near your destination" : cm.placeName ? `Near ${cm.placeName} ${profile.zip}` : `Near ${profile.zip}`}
                     </h2>
@@ -492,11 +463,10 @@ export default function App() {
                     )}
                   </section>
                 )}
-                {overview && !abroad && facilities.length > 0 && (
-                  <section className={`${card} px-4 py-3 sm:hidden`}>
-                    <h2 className="mb-0.5 text-[13px] font-medium text-white/55">{cm.placeName ? `Near ${cm.placeName} ${profile.zip}` : `Near ${profile.zip}`}</h2>
-                    <div className="text-[14px] leading-relaxed text-white/85">{renderMessageText(overview)}</div>
-                  </section>
+                {facilities.length > 0 && !abroad && (
+                  <button type="button" onClick={() => setGuide(true)} className="w-full py-2 text-center text-[14px] font-medium text-white/55 hover:text-white">
+                    Change my answers
+                  </button>
                 )}
               </div>
             )}
