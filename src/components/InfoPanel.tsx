@@ -104,8 +104,8 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
               <div className="rounded-xl bg-white/5 p-3 text-xs">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
-                  <span className="text-white/40">Income, % of poverty line</span>
-                  <span className="text-white/40">You pay</span>
+                  <span className="text-white/50">Income, % of poverty line</span>
+                  <span className="text-white/50">You pay</span>
                   <span>Up to 200%</span>
                   <span className="text-white/90">$0, fully covered</span>
                   <span>200% to 225%</span>
@@ -136,8 +136,8 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
               <div className="rounded-xl bg-white/5 p-3 text-xs">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
-                  <span className="text-white/40">Income, % of poverty line</span>
-                  <span className="text-white/40">You pay</span>
+                  <span className="text-white/50">Income, % of poverty line</span>
+                  <span className="text-white/50">You pay</span>
                   <span>Up to 200%</span>
                   <span className="text-white/90">$0, fully covered</span>
                   <span>200% to 250%</span>
@@ -165,8 +165,8 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
               <div className="rounded-xl bg-white/5 p-3 text-xs">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
-                  <span className="text-white/40">Hospital type</span>
-                  <span className="text-white/40">Free up to</span>
+                  <span className="text-white/50">Hospital type</span>
+                  <span className="text-white/50">Free up to</span>
                   <span>Standard hospital</span>
                   <span className="text-white/90">200% of poverty line</span>
                   <span>Critical Access Hospital</span>
@@ -190,8 +190,8 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
               <div className="rounded-xl bg-white/5 p-3 text-xs">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
-                  <span className="text-white/40">Income, % of poverty line</span>
-                  <span className="text-white/40">You pay</span>
+                  <span className="text-white/50">Income, % of poverty line</span>
+                  <span className="text-white/50">You pay</span>
                   <span>Up to 200%</span>
                   <span className="text-white/90">$0, fully covered</span>
                   <span>Over 200%</span>
@@ -215,8 +215,8 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
               <div className="rounded-xl bg-white/5 p-3 text-xs">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
-                  <span className="text-white/40">Income, % of poverty line</span>
-                  <span className="text-white/40">You pay at most</span>
+                  <span className="text-white/50">Income, % of poverty line</span>
+                  <span className="text-white/50">You pay at most</span>
                   <span>Up to 200%</span>
                   <span className="text-white/90">$0, fully covered</span>
                   <span>200% to 300%</span>
@@ -246,8 +246,8 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
               <div className="rounded-xl bg-white/5 p-3 text-xs">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
-                  <span className="text-white/40">Income, % of poverty line</span>
-                  <span className="text-white/40">You pay</span>
+                  <span className="text-white/50">Income, % of poverty line</span>
+                  <span className="text-white/50">You pay</span>
                   <span>Up to 200%</span>
                   <span className="text-white/90">$0, fully covered</span>
                   <span>200% to 250%</span>
@@ -281,8 +281,8 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
               <div className="rounded-xl bg-white/5 p-3 text-xs">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
-                  <span className="text-white/40">Income, % of poverty line</span>
-                  <span className="text-white/40">You pay</span>
+                  <span className="text-white/50">Income, % of poverty line</span>
+                  <span className="text-white/50">You pay</span>
                   <span>Up to 200%</span>
                   <span className="text-white/90">$0, fully covered</span>
                   <span>Over 200%</span>
@@ -304,8 +304,8 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
               <div className="rounded-xl bg-white/5 p-3 text-xs">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
-                  <span className="text-white/40">Income, % of poverty line</span>
-                  <span className="text-white/40">You pay</span>
+                  <span className="text-white/50">Income, % of poverty line</span>
+                  <span className="text-white/50">You pay</span>
                   <span>Up to 150%</span>
                   <span className="text-white/90">$0, fully covered</span>
                   <span>Over 150%</span>
@@ -327,8 +327,8 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
               <div className="rounded-xl bg-white/5 p-3 text-xs">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
-                  <span className="text-white/40">Income, % of poverty line</span>
-                  <span className="text-white/40">You pay</span>
+                  <span className="text-white/50">Income, % of poverty line</span>
+                  <span className="text-white/50">You pay</span>
                   <span>Up to 200%</span>
                   <span className="text-white/90">$0, fully covered</span>
                   <span>Over 200%</span>
@@ -349,8 +349,8 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
               <div className="rounded-xl bg-white/5 p-3 text-xs">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
-                  <span className="text-white/40">Income, % of poverty line</span>
-                  <span className="text-white/40">You pay</span>
+                  <span className="text-white/50">Income, % of poverty line</span>
+                  <span className="text-white/50">You pay</span>
                   <span>Up to 250%</span>
                   <span className="text-white/90">$0, fully covered</span>
                   <span>250% to 400%</span>
@@ -388,8 +388,8 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
                 </p>
                 <div className="rounded-xl bg-white/5 p-3 text-xs">
                   <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
-                    <span className="text-white/40">Income, % of poverty line</span>
-                    <span className="text-white/40">You pay</span>
+                    <span className="text-white/50">Income, % of poverty line</span>
+                    <span className="text-white/50">You pay</span>
                     <span>
                       {f.strictlyBelow ? "Below" : "Up to"} {f.maxFplPct}%
                     </span>
@@ -463,8 +463,8 @@ export function InfoPanel({ open, onClose }: InfoPanelProps) {
               </p>
               <div className="rounded-xl bg-white/5 p-3 text-xs">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-white/70">
-                  <span className="text-white/40">Income, % of poverty line</span>
-                  <span className="text-white/40">What the rule requires</span>
+                  <span className="text-white/50">Income, % of poverty line</span>
+                  <span className="text-white/50">What the rule requires</span>
                   <span>Up to 100%</span>
                   <span className="text-white/90">Full discount (a small flat fee may apply)</span>
                   <span>100% to 200%</span>

@@ -80,7 +80,7 @@ export function AskBar({ onSend, onQuick, onFocus, suggestions, hideSuggestionsO
         </div>
       )}
       <div className="relative">
-        <SparkleIcon size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
+        <SparkleIcon size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-white/50" />
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
@@ -88,7 +88,7 @@ export function AskBar({ onSend, onQuick, onFocus, suggestions, hideSuggestionsO
           onKeyDown={(e) => e.key === "Enter" && submit()}
           placeholder="Ask CareMap anything"
           aria-label="Ask CareMap"
-          className="h-11 w-full rounded-full bg-white/[0.08] pl-10 pr-12 text-[15px] text-white placeholder:text-white/40 outline-none transition-[background-color,box-shadow] duration-150 focus:bg-white/[0.12] focus:ring-1 focus:ring-white/20"
+          className="h-11 w-full rounded-full bg-white/[0.08] pl-10 pr-12 text-[15px] text-white placeholder:text-white/50 outline-none transition-[background-color,box-shadow] duration-150 focus:bg-white/[0.12] focus:ring-1 focus:ring-white/20"
         />
         <button
           type="button"

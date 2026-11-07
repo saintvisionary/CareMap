@@ -165,7 +165,7 @@ export function CostDetails({ bare, onDone, onForget, profile, onChange, open, o
                 />
               </label>
 
-              <p className="flex items-start gap-1.5 text-[12px] leading-snug text-white/40">
+              <p className="flex items-start gap-1.5 text-[12px] leading-snug text-white/50">
                 <LockIcon size={13} className="mt-px shrink-0" />
                 <span>
                   Why we ask: many hospitals must give free or cheaper care to families under certain incomes. Your answer stays on this phone and is never

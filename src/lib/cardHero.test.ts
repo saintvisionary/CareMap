@@ -67,3 +67,12 @@ describe("card text", () => {
     expect(label).toMatch(/No price data here for laparoscopic cholecystectomy/);
   });
 });
+
+import { siteLink } from "../components/ResultCard";
+describe("clinic website links", () => {
+  it("tags visits as CareMap referrals and nothing else", () => {
+    expect(siteLink("www.clinic.org/care")).toBe("https://www.clinic.org/care?utm_source=caremap&utm_medium=referral");
+    expect(siteLink("javascript:alert(1)")).toBeNull();
+    expect(siteLink(undefined)).toBeNull();
+  });
+});

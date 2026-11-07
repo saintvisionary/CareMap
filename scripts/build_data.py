@@ -452,6 +452,8 @@ def main() -> None:
     # could drift out of sync with what's actually been built.
     available = sorted(p.stem for p in OUT_STATES.glob("*.json") if p.stem != "index")
     (OUT_STATES / "index.json").write_text(json.dumps(available))
+    from build_index import write_index  # noqa: E402  (same folder; on sys.path above)
+    write_index()
     print(f"Wrote {OUT_STATES / 'index.json'} ({len(available)} states)", file=sys.stderr)
 
 

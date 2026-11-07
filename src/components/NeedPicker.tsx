@@ -75,7 +75,7 @@ export function NeedPicker({ need, onNeed, hospitalOpen, onHospitalOpen }: NeedP
           </select>
           <ChevronDownIcon size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/45" />
           </div>
-          <p className="mt-1.5 px-0.5 text-[12px] text-white/40">Prices are for a hospital stay, from Medicare's data for each hospital.</p>
+          <p className="mt-1.5 px-0.5 text-[12px] text-white/50">Prices are for a hospital stay, from Medicare's data for each hospital.</p>
         </div>
       )}
       {careNote && <p className="mt-2 px-0.5 text-[12px] text-white/55">{careNote}</p>}

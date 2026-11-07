@@ -19,6 +19,21 @@ const TYPE_DETAILS: Record<string, string> = {
   fqhc: "Federally Qualified Health Center (sliding-fee clinic)",
 };
 
+/** The place's own site, tagged so its analytics can count visits from
+ * CareMap. Only "caremap/referral": never what the person searched for. */
+export function siteLink(url: string | undefined): string | null {
+  if (!url) return null;
+  try {
+    const u = new URL(/^https?:\/\//i.test(url) ? url : `https://${url}`);
+    if (u.protocol !== "https:" && u.protocol !== "http:") return null;
+    u.searchParams.set("utm_source", "caremap");
+    u.searchParams.set("utm_medium", "referral");
+    return u.toString();
+  } catch {
+    return null;
+  }
+}
+
 function ownershipLabel(o: string): string {
   if (o.startsWith("Voluntary non-profit")) return "Nonprofit";
   if (o.startsWith("Government")) return "Government-owned";
@@ -56,6 +71,7 @@ export function ResultCard({ facility, fplPct, insuranceType, need, household, m
   const googleMaps = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${facility.name}, ${place}`)}`;
   const appleMaps = `https://maps.apple.com/?daddr=${encodeURIComponent(place)}&q=${encodeURIComponent(facility.name)}`;
   const phone = facility.phone?.replace(/[^\d+]/g, "");
+  const website = siteLink(facility.website);
 
   return (
     <motion.div
@@ -122,6 +138,11 @@ export function ResultCard({ facility, fplPct, insuranceType, need, household, m
                 {phone && (
                   <a href={`tel:${phone}`} className={action}>
                     Call
+                  </a>
+                )}
+                {website && (
+                  <a href={website} target="_blank" rel="noopener" className={action}>
+                    Website
                   </a>
                 )}
               </div>

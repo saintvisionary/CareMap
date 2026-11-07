@@ -21,7 +21,7 @@ interface LocationSearchProps {
 }
 
 const fieldClass =
-  "h-11 w-full rounded-xl bg-white/[0.08] pl-10 pr-20 text-[15px] text-white placeholder:text-white/40 outline-none transition-[background-color,box-shadow] duration-150 focus:bg-white/[0.12] focus:ring-1 focus:ring-white/20";
+  "h-11 w-full rounded-xl bg-white/[0.08] pl-10 pr-20 text-[15px] text-white placeholder:text-white/50 outline-none transition-[background-color,box-shadow] duration-150 focus:bg-white/[0.12] focus:ring-1 focus:ring-white/20";
 
 export function LocationSearch({
   zip,

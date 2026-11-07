@@ -51,9 +51,19 @@ const STARTERS = [
 const INLINE = 4;
 
 export default function App() {
-  const { facilities: allFacilities, clinics, urgentCare, zipCentroids, loading: dataLoading, error } = useCareMapData();
+  const { facilities: allFacilities, clinics, urgentCare, zipCentroids, loading: dataLoading, error, ensureStates } = useCareMapData();
   const cm = useCareMap(allFacilities, zipCentroids, clinics, urgentCare);
   const { profile, facilities } = cm;
+
+  // Prices load per state, only for the states a search shows (all of them
+  // for the nationwide list with a procedure picked).
+  useEffect(() => {
+    if (cm.national) {
+      if (profile.need) ensureStates([...new Set(allFacilities.map((f) => f.state))]);
+      return;
+    }
+    ensureStates([...new Set(facilities.filter((f) => f.type !== "fqhc" && f.type !== "urgent_care").map((f) => f.state))]);
+  }, [facilities, cm.national, profile.need, allFacilities, ensureStates]);
 
   const [activeCcn, setActiveCcn] = useState<string | null>(null);
   // The screen and list filter come back after a refresh, too.
@@ -456,7 +466,7 @@ export default function App() {
                               kind === t.kind ? "bg-white text-black" : "text-white/70 hover:text-white"
                             }`}
                           >
-                            {t.label} <span className={kind === t.kind ? "text-black/45" : "text-white/35"}>{n}</span>
+                            {t.label} <span className={kind === t.kind ? "text-black/60" : "text-white/50"}>{n}</span>
                           </button>
                         );
                       })}
