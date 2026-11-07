@@ -110,7 +110,9 @@ interface ConversationProps {
 
 export function Conversation({ messages, loading, onBack }: ConversationProps) {
   const endRef = useRef<HTMLDivElement>(null);
-  useEffect(() => endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }), [messages.length, loading]);
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [messages.length, loading]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">

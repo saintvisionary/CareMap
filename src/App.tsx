@@ -40,8 +40,12 @@ export default function App() {
   const [overviewOpen, setOverviewOpen] = useState(false);
 
   // Wake the AI backend while the person is still reading the page.
-  useEffect(() => warmAgent(), []);
-  useEffect(() => setShown(PAGE), [facilities]);
+  useEffect(() => {
+    warmAgent();
+  }, []);
+  useEffect(() => {
+    setShown(PAGE);
+  }, [facilities]);
 
   // A marker click shows that place's card wherever the panel was.
   const handleSelectFacility = useCallback(

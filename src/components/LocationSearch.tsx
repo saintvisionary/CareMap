@@ -40,7 +40,9 @@ export function LocationSearch({
   // ZIP is passed up, so results never flash for half-typed text.
   const [text, setText] = useState(zip);
   const [place, setPlace] = useState("");
-  useEffect(() => setText(zip), [zip]);
+  useEffect(() => {
+    setText(zip);
+  }, [zip]);
 
   const fetchZips = useCallback((q: string) => suggestZips(q, zipCentroids, facilities), [zipCentroids, facilities]);
   const fetchPlaces = useCallback((q: string) => suggestPlaces(q), []);
