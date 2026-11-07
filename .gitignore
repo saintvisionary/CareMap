@@ -15,3 +15,8 @@ data/raw/
 
 # Stray screenshots from local browser checks
 /*.png
+
+# Video renders and installs
+video/node_modules/
+video/out/
+dist-site/

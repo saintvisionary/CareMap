@@ -38,7 +38,7 @@ export function useCareMapData(): CareMapData {
       try {
         // A light index first (every hospital, no prices): the map and the
         // nearby list can start from it while prices load per state.
-        const [zipRes, indexRes] = await Promise.all([fetch("./data/zip_centroids.json"), fetch("./data/hospitals_index.json")]);
+        const [zipRes, indexRes] = await Promise.all([fetch(`${import.meta.env.BASE_URL}data/zip_centroids.json`), fetch(`${import.meta.env.BASE_URL}data/hospitals_index.json`)]);
         if (!zipRes.ok) throw new Error(`zip_centroids.json: ${zipRes.status}`);
         if (!indexRes.ok) throw new Error(`hospitals_index.json: ${indexRes.status}`);
         const zips = (await zipRes.json()) as Record<string, ZipCentroid>;
@@ -51,13 +51,13 @@ export function useCareMapData(): CareMapData {
 
         // HRSA health center sites (scripts/build_fqhc.py). Optional: the
         // hospital map works without them, so a failed load is ignored.
-        const clinicRes = await fetch("./data/fqhc_sites.json").catch(() => null);
+        const clinicRes = await fetch(`${import.meta.env.BASE_URL}data/fqhc_sites.json`).catch(() => null);
         if (clinicRes?.ok && !cancelled) {
           const data = (await clinicRes.json()) as SiteFile;
           if (!cancelled) setClinics(withDefaults(data));
         }
         // NPI-registry urgent care sites (scripts/build_urgent_care.py), also optional.
-        const ucRes = await fetch("./data/urgent_care_sites.json").catch(() => null);
+        const ucRes = await fetch(`${import.meta.env.BASE_URL}data/urgent_care_sites.json`).catch(() => null);
         if (ucRes?.ok && !cancelled) {
           const data = (await ucRes.json()) as SiteFile;
           if (!cancelled) setUrgentCare(withDefaults(data));
@@ -82,7 +82,7 @@ export function useCareMapData(): CareMapData {
     todo.forEach((st) => requested.current.add(st));
     Promise.all(
       todo.map((st) =>
-        fetch(`./data/states/${st}.json`)
+        fetch(`${import.meta.env.BASE_URL}data/states/${st}.json`)
           .then((r) => (r.ok ? (r.json() as Promise<{ facilities: Facility[] }>) : null))
           .catch(() => null),
       ),

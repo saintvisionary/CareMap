@@ -303,7 +303,7 @@ export default function App() {
               title={t("Start over")}
               className="-m-1 flex items-center gap-2.5 rounded-2xl p-1 text-left transition-[background-color,transform] hover:bg-white/[0.06] active:scale-[0.97] sm:gap-3"
             >
-              <img src="./logo.svg" alt="" width={40} height={40} className="h-8 w-8 shrink-0 rounded-[9px] shadow-lg shadow-black/30 sm:h-10 sm:w-10 sm:rounded-[11px]" />
+              <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="" width={40} height={40} className="h-8 w-8 shrink-0 rounded-[9px] shadow-lg shadow-black/30 sm:h-10 sm:w-10 sm:rounded-[11px]" />
               <div>
                 <h1 className="text-[18px] font-semibold leading-tight tracking-tight sm:text-[22px]">CareMap</h1>
                 <p className="hidden text-[13px] text-white/50 sm:block">{t("What care would cost you, before the bill")}</p>

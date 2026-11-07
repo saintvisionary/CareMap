@@ -6,15 +6,15 @@
     <title>CareMap</title>
     <meta name="description" content="Find affordable care near you. See what you'd pay before you go." />
     <meta name="theme-color" content="#172033" />
-    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
-    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
+    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
     <meta name="apple-mobile-web-app-title" content="CareMap" />
     <meta name="color-scheme" content="dark" />
     <!-- Start the map tiles and the core data downloading before the app code runs. -->
     <link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin />
-    <link rel="preload" href="./data/zip_centroids.json" as="fetch" crossorigin="anonymous" />
-    <link rel="preload" href="./data/states/index.json" as="fetch" crossorigin="anonymous" />
+    <link rel="preload" href="%BASE_URL%data/zip_centroids.json" as="fetch" crossorigin="anonymous" />
+    <link rel="preload" href="%BASE_URL%data/states/index.json" as="fetch" crossorigin="anonymous" />
   </head>
   <body>
     <div id="root"></div>
