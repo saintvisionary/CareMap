@@ -108,6 +108,12 @@ function sampleFacilities(all: Facility[], limit: number): Facility[] {
   return out;
 }
 
+/** Puts the cursor in the visible ZIP code box, when location isn't used. */
+function focusZipBox() {
+  const boxes = document.querySelectorAll<HTMLInputElement>('input[aria-label="ZIP code or city"]');
+  boxes[boxes.length - 1]?.focus();
+}
+
 export type SearchFocus = NeedKind | "emergency" | null;
 
 /** Income as a percent of the poverty line, only for the uninsured: every
@@ -302,7 +308,7 @@ export function useCareMap(
   const locate = useCallback(
     (silent = false) => {
       if (!navigator.geolocation) {
-        if (!silent) setLocationError("Location isn't available in this browser.");
+        if (!silent) focusZipBox();
         return;
       }
       if (!silent) {
@@ -315,16 +321,18 @@ export function useCareMap(
           if (silent && touchedRef.current) return;
           const found = nearestZip(pos.coords.latitude, pos.coords.longitude, zipCentroids);
           if (!found) {
-            if (!silent) setLocationError("Couldn't match your location to a ZIP code.");
+            if (!silent) focusZipBox();
             return;
           }
           setLocatedZip(found);
           setDestination(null);
           setProfile((p) => ({ ...p, zip: found }));
         },
-        (err) => {
+        () => {
           setLocating(false);
-          if (!silent) setLocationError(err.code === err.PERMISSION_DENIED ? "Location permission is off for this site." : "Couldn't get your location.");
+          // No scolding message: most people type a ZIP anyway, so just put
+          // the cursor there.
+          if (!silent) focusZipBox();
         },
         { timeout: 10000, maximumAge: 300000 },
       );

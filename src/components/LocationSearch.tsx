@@ -13,7 +13,8 @@ interface LocationSearchProps {
   facilities: Facility[];
   onLocate: () => void;
   locating: boolean;
-  locationError: string | null;
+  /** No longer shown: a blocked location just moves the cursor to the ZIP box. */
+  locationError?: string | null;
   usingLocation: boolean;
   abroad: boolean;
   onDestination: (place: string) => void;
@@ -29,7 +30,6 @@ export function LocationSearch({
   facilities,
   onLocate,
   locating,
-  locationError,
   usingLocation,
   abroad,
   onDestination,
@@ -95,16 +95,17 @@ export function LocationSearch({
               disabled={locating}
               aria-label="Use my location"
               title="Use my location"
-              className={`${iconButton} h-8 w-8 ${usingLocation ? "text-white" : ""}`}
+              className={`${iconButton} h-8 w-8 ${usingLocation ? "text-[#30d158]" : ""}`}
             >
               <LocationIcon size={15} className={locating ? "animate-pulse" : ""} fill={usingLocation ? "currentColor" : "none"} />
             </button>
           )}
         </div>
       </div>
-      {(locationError || abroad || usingLocation) && (
-        <p className={`mt-1.5 px-1 text-[12px] ${locationError ? "text-[#ff6961]" : "text-white/45"}`}>
-          {locationError ?? (abroad ? "Locations only, no prices outside the US" : "Using your location")}
+      {(abroad || usingLocation) && (
+        <p className={`mt-1.5 flex items-center gap-1 px-1 text-[12px] ${usingLocation && !abroad ? "text-[#30d158]" : "text-white/45"}`}>
+          {usingLocation && !abroad && <LocationIcon size={11} fill="currentColor" />}
+          {abroad ? "Locations only, no prices outside the US" : "Using your location"}
         </p>
       )}
     </div>

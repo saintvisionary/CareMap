@@ -407,7 +407,6 @@ export default function App() {
                       <LocationIcon size={17} />
                       {cm.locating ? "Finding you…" : "Use my location"}
                     </button>
-                    {cm.locationError && <p className="text-[13px] text-[#ff6961]">{cm.locationError} Type your ZIP code instead.</p>}
                   </section>
                 )}
 
