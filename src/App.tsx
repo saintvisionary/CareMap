@@ -137,10 +137,13 @@ export default function App() {
             <span className="h-1.5 w-10 rounded-full bg-white/25" />
           </button>
 
-          <header className="flex items-start justify-between gap-3 px-4 pt-1 sm:pt-4">
-            <div>
-              <h1 className="text-[22px] font-semibold leading-tight tracking-tight">CareMap</h1>
-              <p className="hidden text-[13px] text-white/50 sm:block">What care would cost you, before the bill</p>
+          <header className="flex items-center justify-between gap-3 px-4 pt-1 sm:pt-4">
+            <div className="flex items-center gap-3">
+              <img src="./logo.svg" alt="" width={40} height={40} className="h-10 w-10 shrink-0 rounded-[11px] shadow-lg shadow-black/30" />
+              <div>
+                <h1 className="text-[22px] font-semibold leading-tight tracking-tight">CareMap</h1>
+                <p className="hidden text-[13px] text-white/50 sm:block">What care would cost you, before the bill</p>
+              </div>
             </div>
             <button type="button" onClick={() => setInfoOpen(true)} aria-label="How CareMap works" title="How CareMap works" className={`${iconButton} -mr-1.5`}>
               <InfoIcon size={20} />

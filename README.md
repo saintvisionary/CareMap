@@ -1,6 +1,8 @@
-# CareMap
+<p align="center"><img src="public/logo.svg" width="112" alt="CareMap logo: a map pin with a green heart"></p>
 
-Find affordable care near you, before you go.
+<h1 align="center">CareMap</h1>
+
+<p align="center">Find affordable care near you, before you go.</p>
 
 Type a plain-language message like:
 
