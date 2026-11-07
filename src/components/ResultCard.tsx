@@ -42,6 +42,7 @@ interface ResultCardProps {
 
 export function ResultCard({ facility, fplPct, insuranceType, need, index, active, onSelect }: ResultCardProps) {
   const { hero, label } = cardHero(facility, fplPct, insuranceType, need);
+  const isPrice = /^(\$|Up to|\d)/.test(hero);
   const color =
     facility.type === "fqhc" ? CLINIC_COLOR : facility.type === "urgent_care" ? URGENT_CARE_COLOR : TIER_COLORS[facilityTier(facility, fplPct, insuranceType)];
 
@@ -59,12 +60,12 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
       animate={{ opacity: 1, y: 0 }}
       // Capped, so a long list doesn't stagger for seconds.
       transition={{ type: "spring", stiffness: 300, damping: 28, delay: Math.min(index, 6) * 0.04 }}
-      className={`rounded-2xl transition-[background-color,box-shadow] duration-150 ${active ? "bg-white/[0.1] ring-1 ring-white/20" : "bg-white/[0.06] hover:bg-white/[0.08]"}`}
+      className={`rounded-[18px] transition-[background-color,box-shadow] duration-150 ${active ? "bg-white/[0.1] ring-1 ring-white/20" : "bg-white/[0.06] hover:bg-white/[0.08]"}`}
     >
-      <button type="button" onClick={onSelect} aria-expanded={active} className="block w-full px-4 py-3.5 text-left">
-        <div className="flex items-start gap-3">
+      <button type="button" onClick={onSelect} aria-expanded={active} className="block w-full px-3.5 py-3 text-left">
+        <div className="flex items-start gap-2.5">
           <span
-            className="mt-[5px] h-2.5 w-2.5 shrink-0"
+            className="mt-[6px] h-2.5 w-2.5 shrink-0"
             style={{
               backgroundColor: color,
               borderRadius: facility.type === "fqhc" ? 3 : 999,
@@ -72,16 +73,20 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
             }}
           />
           <div className="min-w-0 flex-1">
-            <h3 className="text-[15px] font-medium leading-snug text-white">{facility.name}</h3>
-            <p className="mt-0.5 text-[13px] text-white/50">
+            <div className="flex items-baseline justify-between gap-3">
+              <h3 className="min-w-0 truncate text-[15px] font-medium text-white">{facility.name}</h3>
+              <span
+                className={`shrink-0 tabular-nums ${isPrice ? "text-[17px] font-semibold tracking-tight text-white" : "text-[13px] font-medium text-white/70"}`}
+              >
+                {hero}
+              </span>
+            </div>
+            <p className="mt-0.5 truncate text-[13px] text-white/50">
               {KIND_LABELS[facility.type] ?? "Facility"} · {facility.distanceMiles.toFixed(1)} mi · {facility.city}
               {facility.star_rating != null ? ` · ${facility.star_rating}★` : ""}
             </p>
+            <p className={`mt-1 text-[12px] leading-snug text-white/45 ${active ? "" : "line-clamp-2"}`}>{label}</p>
           </div>
-        </div>
-        <div className="mt-2.5 pl-[22px]">
-          <div className="text-[22px] font-semibold leading-tight tracking-tight text-white tabular-nums">{hero}</div>
-          <p className="mt-0.5 text-[12px] leading-snug text-white/50">{label}</p>
         </div>
       </button>
       <AnimatePresence initial={false}>
@@ -93,7 +98,7 @@ export function ResultCard({ facility, fplPct, insuranceType, need, index, activ
             transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
             className="overflow-hidden"
           >
-            <div className="mx-4 border-t border-white/[0.08] pb-4 pl-[22px] pt-3 text-[13px] text-white/60">
+            <div className="mx-3.5 border-t border-white/[0.08] pb-3.5 pl-5 pt-3 text-[13px] text-white/60">
               <p className="text-white/80">{place}</p>
               <p className="mt-1">
                 {TYPE_DETAILS[facility.type] ?? facility.type}

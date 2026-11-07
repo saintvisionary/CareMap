@@ -6,6 +6,9 @@ import { ChevronDownIcon, LockIcon, MinusIcon, PlusIcon } from "./icons";
 import { card, iconButton, label } from "./ui";
 
 interface CostDetailsProps {
+  /** Just the fields with a Done button, for the filter row's editor. */
+  bare?: boolean;
+  onDone?: () => void;
   profile: Profile;
   onChange: (patch: Partial<Profile>) => void;
   open: boolean;
@@ -17,31 +20,12 @@ const INSURANCE_TYPES = Object.keys(INSURANCE_LABELS) as InsuranceType[];
 
 /** Household, income and insurance. Every change re-prices the map and the
  * cards on the spot; nothing here leaves the browser. */
-export function CostDetails({ profile, onChange, open, onOpen, fplPct }: CostDetailsProps) {
+export function CostDetails({ bare, onDone, profile, onChange, open, onOpen, fplPct }: CostDetailsProps) {
   const income = profile.income === "" ? "" : Number(profile.income).toLocaleString("en-US");
   const people = `${profile.household} ${profile.household === 1 ? "person" : "people"}`;
   const summary = [people, income ? `$${income}` : null, INSURANCE_LABELS[profile.insuranceType]].filter(Boolean).join(" · ");
 
-  return (
-    <div className={card}>
-      <button type="button" onClick={() => onOpen(!open)} aria-expanded={open} className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left">
-        <div className="min-w-0">
-          <div className="text-[15px] font-medium text-white">Your costs</div>
-          <div className="truncate text-[13px] text-white/50">
-            {profile.income === "" && profile.insuranceType === "uninsured" ? "Add your income for a personal estimate" : summary}
-          </div>
-        </div>
-        <ChevronDownIcon size={18} className={`shrink-0 text-white/45 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
-      </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
-            className="overflow-hidden"
-          >
+  const body = (
             <div className="space-y-3.5 px-4 pb-4">
               <div className="flex items-center justify-between gap-3">
                 <span className="text-[15px] text-white/85">Household</span>
@@ -127,6 +111,42 @@ export function CostDetails({ profile, onChange, open, onOpen, fplPct }: CostDet
                 Your income and household size stay on this device. CareMap's AI only ever sees a percentage.
               </p>
             </div>
+  );
+
+  if (bare) {
+    return (
+      <div className={`${card} pt-4`}>
+        {body}
+        <div className="px-4 pb-4">
+          <button type="button" onClick={onDone} className="h-11 w-full rounded-full bg-white text-[15px] font-medium text-black transition-transform active:scale-[0.97]">
+            Done
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={card}>
+      <button type="button" onClick={() => onOpen(!open)} aria-expanded={open} className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left">
+        <div className="min-w-0">
+          <div className="text-[15px] font-medium text-white">Your costs</div>
+          <div className="truncate text-[13px] text-white/50">
+            {profile.income === "" && profile.insuranceType === "uninsured" ? "Add your income for a personal estimate" : summary}
+          </div>
+        </div>
+        <ChevronDownIcon size={18} className={`shrink-0 text-white/45 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
+            className="overflow-hidden"
+          >
+            {body}
           </motion.div>
         )}
       </AnimatePresence>

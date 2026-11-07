@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { AutocompleteInput } from "./AutocompleteInput";
-import { CloseIcon, GlobeIcon, LocationIcon, SearchIcon } from "./icons";
+import { CloseIcon, LocationIcon, SearchIcon } from "./icons";
 import { iconButton } from "./ui";
 import { suggestPlaces } from "../lib/international";
 import type { Facility, ZipCentroid } from "../lib/types";
@@ -16,7 +16,6 @@ interface LocationSearchProps {
   locationError: string | null;
   usingLocation: boolean;
   abroad: boolean;
-  onAbroad: (abroad: boolean) => void;
   onDestination: (place: string) => void;
 }
 
@@ -33,7 +32,6 @@ export function LocationSearch({
   locationError,
   usingLocation,
   abroad,
-  onAbroad,
   onDestination,
 }: LocationSearchProps) {
   // What's in the box: the ZIP, or a city name being typed. Only a real
@@ -104,22 +102,11 @@ export function LocationSearch({
           )}
         </div>
       </div>
-      <div className="mt-2.5 flex items-center justify-between gap-3">
-        <button
-          type="button"
-          onClick={() => onAbroad(!abroad)}
-          aria-pressed={abroad}
-          className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full px-3 text-[13px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
-            abroad ? "bg-white text-black" : "bg-white/[0.08] text-white/85 hover:bg-white/[0.14]"
-          }`}
-        >
-          <GlobeIcon size={15} />
-          {abroad ? "Back to the US" : "Traveling abroad"}
-        </button>
-        <span className={`truncate text-right text-[12px] ${locationError ? "text-[#ff6961]" : "text-white/45"}`}>
-          {locationError ?? (abroad ? "Locations only, no prices" : usingLocation ? "Using your location" : "")}
-        </span>
-      </div>
+      {(locationError || abroad || usingLocation) && (
+        <p className={`mt-1.5 px-1 text-[12px] ${locationError ? "text-[#ff6961]" : "text-white/45"}`}>
+          {locationError ?? (abroad ? "Locations only, no prices outside the US" : "Using your location")}
+        </p>
+      )}
     </div>
   );
 }

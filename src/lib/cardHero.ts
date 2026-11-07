@@ -34,9 +34,8 @@ export function cardHero(facility: Facility, fplPct: number | null, insuranceTyp
   }
   if (facility.type === "urgent_care") {
     return {
-      hero: "Urgent care",
-      label:
-        "For minor, non-emergency care only. For chest pain, trouble breathing, stroke signs or anything life-threatening, call 911 or go to an ER. CareMap has no urgent care prices, so ask about self-pay rates.",
+      hero: "No price data",
+      label: "For minor, non-emergency care. Ask about self-pay rates. For anything life-threatening, call 911.",
     };
   }
 

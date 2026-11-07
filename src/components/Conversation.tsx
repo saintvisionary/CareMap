@@ -53,12 +53,14 @@ interface AskBarProps {
   onQuick: (q: QuickQuestion) => void;
   onFocus?: () => void;
   suggestions: QuickQuestion[];
+  /** Phones keep the results view short: suggestions show in the chat view. */
+  hideSuggestionsOnPhone?: boolean;
   loading: boolean;
 }
 
 /** The always-visible question box, with a few questions worth asking for
  * what's on screen right now. */
-export function AskBar({ onSend, onQuick, onFocus, suggestions, loading }: AskBarProps) {
+export function AskBar({ onSend, onQuick, onFocus, suggestions, hideSuggestionsOnPhone, loading }: AskBarProps) {
   const [draft, setDraft] = useState("");
   const submit = (text = draft) => {
     if (!text.trim() || loading) return;
@@ -69,7 +71,7 @@ export function AskBar({ onSend, onQuick, onFocus, suggestions, loading }: AskBa
   return (
     <div className="space-y-2">
       {suggestions.length > 0 && (
-        <div className="-mx-4 flex gap-1.5 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none]">
+        <div className={`-mx-4 gap-1.5 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none] ${hideSuggestionsOnPhone ? "hidden sm:flex" : "flex"}`}>
           {suggestions.map((q) => (
             <button key={q.label} type="button" onClick={() => onQuick(q)} className={`${chip} ${chipOff}`}>
               {q.label}

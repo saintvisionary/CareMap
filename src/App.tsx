@@ -2,23 +2,33 @@ import { MotionConfig } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import { AskBar, Conversation, renderMessageText } from "./components/Conversation";
 import { CostDetails } from "./components/CostDetails";
-import { InfoIcon } from "./components/icons";
+import { ChevronDownIcon, GlobeIcon, InfoIcon } from "./components/icons";
 import { InfoPanel } from "./components/InfoPanel";
 import { LocationSearch } from "./components/LocationSearch";
 import { MapView } from "./components/MapView";
 import { NeedPicker } from "./components/NeedPicker";
 import { ResultCard } from "./components/ResultCard";
 import { card, iconButton } from "./components/ui";
-import { useCareMap } from "./hooks/useCareMap";
+import { useCareMap, type Profile } from "./hooks/useCareMap";
 import { useCareMapData } from "./hooks/useCareMapData";
 import { warmAgent } from "./lib/agentClient";
+import { needLabel } from "./lib/drg";
+import { INSURANCE_LABELS } from "./lib/insurance";
 import { quickAnswer, quickQuestions, type QuickContext, type QuickQuestion } from "./lib/quickAnswers";
 import type { Facility } from "./lib/types";
 
 type View = "results" | "conversation";
 // Phone sheet heights, like Apple Maps: half shows the map above the list.
 type Sheet = "half" | "full";
-const isPhone = () => typeof window !== "undefined" && window.innerWidth < 640;
+type Editor = "need" | "costs" | null;
+type Kind = "all" | "hospital" | "clinic" | "urgent";
+const KIND_OF = (type: string): Kind => (type === "fqhc" ? "clinic" : type === "urgent_care" ? "urgent" : "hospital");
+const KIND_TABS: { kind: Kind; label: string }[] = [
+  { kind: "all", label: "All" },
+  { kind: "hospital", label: "Hospitals" },
+  { kind: "clinic", label: "Clinics" },
+  { kind: "urgent", label: "Urgent care" },
+];
 
 // Long lists render in pages: most people look at the first few, and a
 // marker click past the first page opens the rest.
@@ -31,7 +41,9 @@ export default function App() {
 
   const [activeCcn, setActiveCcn] = useState<string | null>(null);
   const [view, setView] = useState<View>("results");
-  const [costsOpen, setCostsOpen] = useState(() => !isPhone());
+  // Which filter's editor is open under the chip row, if any.
+  const [editor, setEditor] = useState<Editor>(null);
+  const [kind, setKind] = useState<Kind>("all");
   const [hospitalOpen, setHospitalOpen] = useState(false);
   const [abroad, setAbroad] = useState(false);
   const [sheet, setSheet] = useState<Sheet>("half");
@@ -45,17 +57,23 @@ export default function App() {
   }, []);
   useEffect(() => {
     setShown(PAGE);
-  }, [facilities]);
+  }, [facilities, kind]);
+  const listed = kind === "all" ? facilities : facilities.filter((f) => KIND_OF(f.type) === kind);
+  // A filter that no longer has anything in it (a new search) falls back to All.
+  useEffect(() => {
+    if (kind !== "all" && !facilities.some((f) => KIND_OF(f.type) === kind)) setKind("all");
+  }, [facilities, kind]);
 
   // A marker click shows that place's card wherever the panel was.
   const handleSelectFacility = useCallback(
     (ccn: string) => {
       setActiveCcn(ccn);
       setView("results");
-      const i = facilities.findIndex((f) => f.ccn === ccn);
+      setEditor(null);
+      const i = listed.findIndex((f) => f.ccn === ccn);
       if (i >= PAGE) setShown(i + 1);
     },
-    [facilities],
+    [listed],
   );
   const handleSelectPreviewFacility = useCallback(
     (facility: Facility) => {
@@ -96,24 +114,20 @@ export default function App() {
     setView("conversation");
   };
 
-  const hospitals = facilities.filter((f) => f.type !== "fqhc" && f.type !== "urgent_care").length;
-  const clinicCount = facilities.filter((f) => f.type === "fqhc").length;
-  const urgentCount = facilities.filter((f) => f.type === "urgent_care").length;
-  const counts = [
-    hospitals ? `${hospitals} hospital${hospitals === 1 ? "" : "s"}` : null,
-    clinicCount ? `${clinicCount} health center${clinicCount === 1 ? "" : "s"}` : null,
-    urgentCount ? `${urgentCount} urgent care` : null,
-  ]
-    .filter(Boolean)
-    .join(" · ");
-
+  const hasResults = facilities.length > 0 || abroad;
+  const toggleAbroad = (a: boolean) => {
+    setAbroad(a);
+    if (!a) cm.searchAbroad("");
+    setEditor(null);
+    setView("results");
+  };
   const overview = abroad ? cm.internationalSummary : cm.summary;
 
   return (
     <MotionConfig reducedMotion="user">
       <div className="relative h-[100dvh] w-screen overflow-hidden bg-[#172033] font-sans text-white antialiased">
         <MapView
-          facilities={facilities}
+          facilities={listed}
           internationalFacilities={abroad ? cm.internationalFacilities : []}
           previewFacilities={abroad ? [] : cm.previewFacilities}
           fplPct={cm.fplPct}
@@ -141,11 +155,11 @@ export default function App() {
             <span className="h-1.5 w-10 rounded-full bg-white/25" />
           </button>
 
-          <header className="flex items-center justify-between gap-3 px-4 pt-1 sm:pt-4">
-            <div className="flex items-center gap-3">
-              <img src="./logo.svg" alt="" width={40} height={40} className="h-10 w-10 shrink-0 rounded-[11px] shadow-lg shadow-black/30" />
+          <header className={`items-center justify-between gap-3 px-4 pt-1 sm:flex sm:pt-4 ${hasResults ? "hidden" : "flex"}`}>
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <img src="./logo.svg" alt="" width={40} height={40} className="h-8 w-8 shrink-0 rounded-[9px] shadow-lg shadow-black/30 sm:h-10 sm:w-10 sm:rounded-[11px]" />
               <div>
-                <h1 className="text-[22px] font-semibold leading-tight tracking-tight">CareMap</h1>
+                <h1 className="text-[18px] font-semibold leading-tight tracking-tight sm:text-[22px]">CareMap</h1>
                 <p className="hidden text-[13px] text-white/50 sm:block">What care would cost you, before the bill</p>
               </div>
             </div>
@@ -154,7 +168,7 @@ export default function App() {
             </button>
           </header>
 
-          <div className="px-4 pt-3">
+          <div className={`px-4 ${hasResults ? "pt-1 sm:pt-3" : "pt-3"}`}>
             <LocationSearch
               zip={profile.zip}
               onZip={(zip) => {
@@ -168,11 +182,6 @@ export default function App() {
               locationError={cm.locationError ?? error}
               usingLocation={!!cm.locatedZip && cm.locatedZip === profile.zip}
               abroad={abroad}
-              onAbroad={(a) => {
-                setAbroad(a);
-                if (!a) cm.searchAbroad("");
-                setView("results");
-              }}
               onDestination={(place) => {
                 cm.searchAbroad(place);
                 setView("results");
@@ -180,22 +189,58 @@ export default function App() {
             />
           </div>
 
+          {view === "results" && (
+            <div className="flex shrink-0 gap-1.5 overflow-x-auto px-4 pt-2.5 [scrollbar-width:none]">
+              {!abroad && (
+              <>
+              <FilterChip open={editor === "need"} set={!!profile.need} onClick={() => setEditor((e) => (e === "need" ? null : "need"))}>
+                {profile.need ? needLabel(profile.need) : "What you need"}
+              </FilterChip>
+              <FilterChip open={editor === "costs"} set={profile.income !== "" || profile.insuranceType !== "uninsured"} onClick={() => setEditor((e) => (e === "costs" ? null : "costs"))}>
+                {costChipLabel(profile)}
+              </FilterChip>
+              </>
+              )}
+              <button
+                type="button"
+                onClick={() => toggleAbroad(!abroad)}
+                aria-pressed={abroad}
+                className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[14px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
+                  abroad ? "bg-white text-black" : "bg-white/[0.08] text-white/80 hover:bg-white/[0.14]"
+                }`}
+              >
+                <GlobeIcon size={15} />
+                {abroad ? "Back to the US" : "Abroad"}
+              </button>
+              {hasResults && (
+                <button type="button" onClick={() => setInfoOpen(true)} aria-label="How CareMap works" className={`${iconButton} sm:hidden`}>
+                  <InfoIcon size={19} />
+                </button>
+              )}
+            </div>
+          )}
+
           {view === "conversation" ? (
               <div className="flex min-h-0 flex-1 flex-col px-4 pt-3">
                 <Conversation messages={cm.messages} loading={cm.loading} onBack={() => setView("results")} />
               </div>
             ) : (
-              <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain px-4 pb-3 pt-4">
-                {!abroad && (
-                  <>
+              <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 pb-3 pt-3">
+                {editor === "need" && !abroad && (
+                  <div className={`${card} p-4`}>
                     <NeedPicker
                       need={profile.need}
-                      onNeed={(need) => cm.updateProfile({ need, emergency: false })}
+                      onNeed={(need) => {
+                        cm.updateProfile({ need, emergency: false });
+                        if (need) setEditor(null);
+                      }}
                       hospitalOpen={hospitalOpen}
                       onHospitalOpen={setHospitalOpen}
                     />
-                    <CostDetails profile={profile} onChange={cm.updateProfile} open={costsOpen} onOpen={setCostsOpen} fplPct={cm.fplPct} />
-                  </>
+                  </div>
+                )}
+                {editor === "costs" && !abroad && (
+                  <CostDetails bare onDone={() => setEditor(null)} profile={profile} onChange={cm.updateProfile} open onOpen={() => {}} fplPct={cm.fplPct} />
                 )}
 
                 {profile.emergency && !abroad && (
@@ -204,36 +249,55 @@ export default function App() {
                   </div>
                 )}
 
-                {overview ? (
-                  <section className={`${card} px-4 py-3.5`}>
-                    <h2 className="mb-1 text-[13px] font-medium text-white/55">
+                {!abroad && facilities.length === 0 && !editor && (
+                  <section className={`${card} px-4 py-4`}>
+                    <p className="text-[15px] font-medium text-white">{dataLoading ? "Loading hospitals…" : "Find care you can afford"}</p>
+                    <ol className="mt-3 space-y-3">
+                      <Step n={1} title="Enter a ZIP code or city" detail="Or tap the arrow in the search box to use your location." />
+                      <Step n={2} title="Choose what you need" detail="A checkup, a sick visit, a procedure. Optional." onClick={() => setEditor("need")} />
+                      <Step n={3} title="Add your income" detail="See your own price. It never leaves this device." onClick={() => setEditor("costs")} />
+                    </ol>
+                  </section>
+                )}
+
+                {overview && (abroad || facilities.length > 0) && (
+                  <section className={`${card} px-4 py-3 ${abroad ? "" : "hidden sm:block"}`}>
+                    <h2 className="mb-0.5 text-[13px] font-medium text-white/55">
                       {abroad ? "Near your destination" : cm.placeName ? `Near ${cm.placeName} ${profile.zip}` : `Near ${profile.zip}`}
                     </h2>
-                    <div className={`text-[14px] leading-relaxed text-white/85 ${overviewOpen ? "" : "line-clamp-4"}`}>{renderMessageText(overview)}</div>
-                    <button type="button" onClick={() => setOverviewOpen((o) => !o)} className="mt-1 text-[13px] font-medium text-white/60 hover:text-white">
+                    <div className={`text-[14px] leading-relaxed text-white/85 ${overviewOpen ? "" : "line-clamp-2"}`}>{renderMessageText(overview)}</div>
+                    <button type="button" onClick={() => setOverviewOpen((o) => !o)} className="mt-0.5 text-[13px] font-medium text-white/60 hover:text-white">
                       {overviewOpen ? "Less" : "More"}
                     </button>
                   </section>
-                ) : (
-                  !abroad && (
-                    <section className={`${card} px-4 py-4`}>
-                      <p className="text-[15px] font-medium text-white">{dataLoading ? "Loading hospitals…" : "Start with where you are"}</p>
-                      <p className="mt-1 text-[13px] leading-relaxed text-white/55">
-                        Enter a ZIP code or city to see nearby hospitals, sliding-fee clinics and urgent care, with what you'd likely pay under your state's
-                        charity-care rules.
-                      </p>
-                    </section>
-                  )
                 )}
 
                 {facilities.length > 0 && (
                   <section>
-                    <div className="mb-2 flex items-baseline justify-between gap-3 px-0.5">
-                      <h2 className="text-[17px] font-semibold tracking-tight">Nearby</h2>
-                      <span className="truncate text-[13px] text-white/45">{counts}</span>
+                    <div className="mb-2 flex gap-1 overflow-x-auto rounded-full bg-white/[0.06] p-1 [scrollbar-width:none]" role="tablist">
+                      {KIND_TABS.filter((t) => t.kind === "all" || facilities.some((f) => KIND_OF(f.type) === t.kind)).map((t) => {
+                        const n = t.kind === "all" ? facilities.length : facilities.filter((f) => KIND_OF(f.type) === t.kind).length;
+                        return (
+                          <button
+                            key={t.kind}
+                            type="button"
+                            role="tab"
+                            aria-selected={kind === t.kind}
+                            onClick={() => setKind(t.kind)}
+                            className={`h-8 flex-1 shrink-0 whitespace-nowrap rounded-full px-2.5 text-[13px] font-medium transition-colors ${
+                              kind === t.kind ? "bg-white text-black" : "text-white/70 hover:text-white"
+                            }`}
+                          >
+                            {t.label} <span className={kind === t.kind ? "text-black/45" : "text-white/35"}>{n}</span>
+                          </button>
+                        );
+                      })}
                     </div>
-                    <div className="space-y-2">
-                      {facilities.slice(0, shown).map((f, i) => (
+                    {(kind === "urgent" || (kind === "all" && listed.some((f) => f.type === "urgent_care"))) && (
+                      <p className="mb-2 px-1 text-[12px] text-white/45">Urgent care is for minor problems. For anything life-threatening, call 911.</p>
+                    )}
+                    <div className="space-y-1.5">
+                      {listed.slice(0, shown).map((f, i) => (
                         <ResultCard
                           key={f.ccn}
                           facility={f}
@@ -246,25 +310,83 @@ export default function App() {
                         />
                       ))}
                     </div>
-                    {facilities.length > shown && (
+                    {listed.length > shown && (
                       <button
                         type="button"
                         onClick={() => setShown((n) => n + PAGE * 2)}
                         className="mt-2 h-10 w-full rounded-2xl bg-white/[0.06] text-[14px] font-medium text-white/80 transition-colors hover:bg-white/[0.1]"
                       >
-                        Show more ({facilities.length - shown} left)
+                        Show more ({listed.length - shown} left)
                       </button>
                     )}
+                  </section>
+                )}
+                {overview && !abroad && facilities.length > 0 && (
+                  <section className={`${card} px-4 py-3 sm:hidden`}>
+                    <h2 className="mb-0.5 text-[13px] font-medium text-white/55">{cm.placeName ? `Near ${cm.placeName} ${profile.zip}` : `Near ${profile.zip}`}</h2>
+                    <div className="text-[14px] leading-relaxed text-white/85">{renderMessageText(overview)}</div>
                   </section>
                 )}
               </div>
             )}
 
           <div className="shrink-0 border-t border-white/[0.06] px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3">
-            <AskBar onSend={ask} onQuick={onQuick} onFocus={() => setView("conversation")} suggestions={suggestions} loading={cm.loading} />
+            <AskBar
+              onSend={ask}
+              onQuick={onQuick}
+              onFocus={() => setView("conversation")}
+              suggestions={suggestions}
+              hideSuggestionsOnPhone={view === "results"}
+              loading={cm.loading}
+            />
           </div>
         </aside>
       </div>
     </MotionConfig>
+  );
+}
+
+function costChipLabel(p: Profile): string {
+  if (p.insuranceType !== "uninsured") return INSURANCE_LABELS[p.insuranceType];
+  if (p.income === "") return "Add income";
+  return `${p.household} ${p.household === 1 ? "person" : "people"} · $${Number(p.income).toLocaleString("en-US")}`;
+}
+
+function FilterChip({ open, set, onClick, children }: { open: boolean; set: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-expanded={open}
+      className={`inline-flex h-9 shrink-0 items-center gap-1 rounded-full pl-3.5 pr-2.5 text-[14px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
+        open ? "bg-white text-black" : set ? "bg-white/[0.16] text-white" : "bg-white/[0.08] text-white/80 hover:bg-white/[0.14]"
+      }`}
+    >
+      {children}
+      <ChevronDownIcon size={15} className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+    </button>
+  );
+}
+
+function Step({ n, title, detail, onClick }: { n: number; title: string; detail: string; onClick?: () => void }) {
+  const body = (
+    <>
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/[0.12] text-[13px] font-semibold text-white">{n}</span>
+      <span className="min-w-0">
+        <span className="block text-[14px] font-medium text-white">{title}</span>
+        <span className="block text-[13px] leading-snug text-white/50">{detail}</span>
+      </span>
+    </>
+  );
+  return (
+    <li>
+      {onClick ? (
+        <button type="button" onClick={onClick} className="-m-1.5 flex w-[calc(100%+12px)] items-start gap-3 rounded-xl p-1.5 text-left transition-colors hover:bg-white/[0.06]">
+          {body}
+        </button>
+      ) : (
+        <div className="flex items-start gap-3">{body}</div>
+      )}
+    </li>
   );
 }
