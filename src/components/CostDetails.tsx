@@ -9,6 +9,8 @@ interface CostDetailsProps {
   /** Just the fields with a Done button, for the filter row's editor. */
   bare?: boolean;
   onDone?: () => void;
+  /** Clears everything CareMap saved on this device. */
+  onForget?: () => void;
   profile: Profile;
   onChange: (patch: Partial<Profile>) => void;
   open: boolean;
@@ -20,7 +22,7 @@ const INSURANCE_TYPES = Object.keys(INSURANCE_LABELS) as InsuranceType[];
 
 /** Household, income and insurance. Every change re-prices the map and the
  * cards on the spot; nothing here leaves the browser. */
-export function CostDetails({ bare, onDone, profile, onChange, open, onOpen, fplPct }: CostDetailsProps) {
+export function CostDetails({ bare, onDone, onForget, profile, onChange, open, onOpen, fplPct }: CostDetailsProps) {
   const income = profile.income === "" ? "" : Number(profile.income).toLocaleString("en-US");
   const people = `${profile.household} ${profile.household === 1 ? "person" : "people"}`;
   const summary = [people, income ? `$${income}` : null, INSURANCE_LABELS[profile.insuranceType]].filter(Boolean).join(" · ");
@@ -108,7 +110,17 @@ export function CostDetails({ bare, onDone, profile, onChange, open, onOpen, fpl
 
               <p className="flex items-start gap-1.5 text-[12px] leading-snug text-white/40">
                 <LockIcon size={13} className="mt-px shrink-0" />
-                Your income and household size stay on this device. CareMap's AI only ever sees a percentage.
+                <span>
+                  Saved on this device only, so you don't have to type it again. CareMap's AI only ever sees a percentage.
+                  {onForget && (
+                    <>
+                      {" "}
+                      <button type="button" onClick={onForget} className="font-medium text-white/70 underline underline-offset-2 hover:text-white">
+                        Forget my info
+                      </button>
+                    </>
+                  )}
+                </span>
               </p>
             </div>
   );

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { askAgent } from "../lib/agentClient";
-import { needKind, type NeedKind } from "../lib/drg";
+import { NEED_TO_DRG, needKind, type NeedKind } from "../lib/drg";
+import { forgetAll, loadSaved, saveSome } from "../lib/storage";
 import { facilitiesNear, nearestZip, type FacilityWithDistance } from "../lib/geo";
 import { redact, type InsuranceType, type IntakeHint } from "../lib/intake";
 import { findInternationalFacilities, type InternationalFacility, type InternationalResult } from "../lib/international";
@@ -56,7 +57,40 @@ export const EMPTY_PROFILE: Profile = {
 };
 
 let nextId = 0;
-const id = () => String(nextId++);
+// Unique across reloads, since saved conversations come back.
+const id = () => `${Date.now().toString(36)}-${nextId++}`;
+
+interface Saved {
+  profile: Profile;
+  messages: ChatMessage[];
+  announced: string | null;
+}
+
+const MAX_SAVED_MESSAGES = 40;
+
+/** What's kept on this device: the conversation's last turns, with each
+ * results card trimmed to the one procedure price it can show. */
+function slimForStorage(messages: ChatMessage[], need: string | null): ChatMessage[] {
+  const code = need ? NEED_TO_DRG[need]?.code : undefined;
+  return messages.slice(-MAX_SAVED_MESSAGES).map((m) =>
+    m.attachments
+      ? {
+          ...m,
+          attachments: m.attachments.map((a) =>
+            a.kind === "results"
+              ? {
+                  ...a,
+                  facilities: a.facilities.slice(0, 4).map((f) => ({
+                    ...f,
+                    drg_charges: code && f.drg_charges[code] ? { [code]: f.drg_charges[code] } : {},
+                  })),
+                }
+              : a,
+          ),
+        }
+      : m,
+  );
+}
 
 // Evenly spread across the whole national list (not just the first N, which
 // would cluster wherever the data happens to start) rather than truly
@@ -142,10 +176,12 @@ export function useCareMap(
   allClinics: Facility[] = [],
   allUrgentCare: Facility[] = [],
 ) {
-  const [profile, setProfile] = useState<Profile>(EMPTY_PROFILE);
+  // Picks up where the person left off on this device.
+  const [saved] = useState(() => loadSaved<Saved>());
+  const [profile, setProfile] = useState<Profile>(() => ({ ...EMPTY_PROFILE, ...saved.profile }));
   const profileRef = useRef(profile);
   profileRef.current = profile;
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => saved.messages ?? []);
   const [loading, setLoading] = useState(false);
   const [flyTo, setFlyTo] = useState<MapFlyTo | null>(null);
   const [locating, setLocating] = useState(false);
@@ -155,7 +191,7 @@ export function useCareMap(
   const [international, setInternational] = useState<{ place: string; result: InternationalResult | null } | null>(null);
   // Set once the person does anything, so a slow automatic location fix
   // never overwrites what they typed.
-  const touchedRef = useRef(false);
+  const touchedRef = useRef(!!saved.profile?.zip);
   const chatAbroadRef = useRef(false);
 
   const cityIndex = useMemo(() => buildCityIndex(allFacilities, allClinics, allUrgentCare), [allFacilities, allClinics, allUrgentCare]);
@@ -167,7 +203,16 @@ export function useCareMap(
   );
   // Set when a search's results have been posted as a turn, so each new
   // place or need gets exactly one, however it was entered.
-  const announcedRef = useRef<string | null>(null);
+  const announcedRef = useRef<string | null>(saved.announced ?? null);
+
+  useEffect(() => {
+    saveSome({ profile });
+  }, [profile]);
+  useEffect(() => {
+    saveSome({ messages: slimForStorage(messages, profile.need) });
+    // The need only shapes what's trimmed; saving on message changes is enough.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
   const placeNoteRef = useRef("");
 
   const validZip = (zip: string) => (/^\d{5}$/.test(zip) && zipCentroids[zip] ? zip : null);
@@ -214,6 +259,7 @@ export function useCareMap(
     const key = `${zip}|${profile.need}|${profile.emergency}`;
     if (announcedRef.current === key) return;
     announcedRef.current = key;
+    saveSome({ announced: key });
     const note = placeNoteRef.current || (placeName ? `Here's what's near ${placeName}.` : "");
     placeNoteRef.current = "";
     const attachments: Attachment[] = [{ kind: "results", facilities, zip }];
@@ -407,7 +453,24 @@ export function useCareMap(
   // A preview marker opens a real search centered on that facility.
   const selectPreviewFacility = useCallback((facility: Facility) => updateProfile({ zip: facility.zip.slice(0, 5) }), [updateProfile]);
 
+  const clearChat = useCallback(() => {
+    setMessages([]);
+  }, []);
+
+  /** Removes everything CareMap remembered on this device. */
+  const forgetMe = useCallback(() => {
+    forgetAll();
+    announcedRef.current = null;
+    touchedRef.current = false;
+    setMessages([]);
+    setLocatedZip(null);
+    setDestination(null);
+    setProfile(EMPTY_PROFILE);
+  }, []);
+
   return {
+    clearChat,
+    forgetMe,
     profile,
     updateProfile,
     facilities,
