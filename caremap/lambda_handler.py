@@ -20,6 +20,17 @@ from collections import defaultdict, deque
 
 from .agents import build_orchestrator, handle_message, make_model
 
+_ZIP_RE = re.compile(r"\d{5}")
+
+
+def _finite_in_range(value, lo: float, hi: float):
+    """A JSON number in [lo, hi], or None (rejects bools, NaN and Infinity)."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    if value != value or value in (float("inf"), float("-inf")) or not lo <= value <= hi:
+        return None
+    return value
+
 MAX_MESSAGE_LENGTH = int(os.getenv("CAREMAP_MAX_MESSAGE_LENGTH", "500"))
 RATE_LIMIT_PER_MINUTE = int(os.getenv("CAREMAP_RATE_LIMIT_PER_MINUTE", "20"))
 ALLOWED_ORIGINS = [o.strip() for o in os.getenv("CAREMAP_ALLOWED_ORIGINS", "").split(",") if o.strip()]
@@ -118,15 +129,23 @@ def handler(event: dict, context) -> dict:  # noqa: ARG001 (context required by 
     need = payload.get("need")
     language = payload.get("language")
     _valid_insurance_types = {"uninsured", "medicaid", "medicare", "private", "va_tricare", "unsure"}
+    # Hints are interpolated into the paid model prompt and seeded into the
+    # grounding ledger, so only well-formed values get through: a 5-digit ZIP
+    # (anything else would bypass MAX_MESSAGE_LENGTH), and finite numbers in
+    # their real ranges (json.loads accepts NaN/Infinity, and bool is an int).
+    if not (isinstance(zip_code, str) and _ZIP_RE.fullmatch(zip_code)):
+        zip_code = None
+    tier_pct = _finite_in_range(tier_pct, 0, 100)
+    fpl_pct = _finite_in_range(fpl_pct, 0, 10_000)
 
     try:
         result = handle_message(
             message, orchestrator=orchestrator,
-            zip_code=zip_code if isinstance(zip_code, str) else None,
+            zip_code=zip_code,
             insurance_type=insurance_type if insurance_type in _valid_insurance_types else None,
             veteran=veteran if isinstance(veteran, bool) else None,
-            tier_pct=tier_pct if isinstance(tier_pct, (int, float)) else None,
-            fpl_pct=fpl_pct if isinstance(fpl_pct, (int, float)) else None,
+            tier_pct=tier_pct,
+            fpl_pct=fpl_pct,
             need=need.strip()[:80] if isinstance(need, str) and need.strip() else None,
             language=language if language in ("es", "fr", "zh") else None,
         )

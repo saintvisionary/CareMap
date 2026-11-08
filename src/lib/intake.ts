@@ -49,6 +49,29 @@ const DOLLAR_K_RE = /\$\s?(\d+(?:\.\d+)?)\s*k\b/i;
 const DOLLAR_RE = /\$\s?(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)\b/;
 const HOUSEHOLD_RE = /family of (\d+)|household of (\d+)|(\d+)[\s-]*person household/i;
 const VETERAN_RE = /\bveteran\b/i;
+// Redaction runs on its own, independent of whether a tier can be computed:
+// every income-like and household-like span is removed before the text can
+// leave the browser, even when only one of them appears ("I make $52,000"),
+// when there are several ("$40k and my wife $20k"), or when there is no "$".
+// ZIP codes are left alone (the app needs them); a bare 5-digit number only
+// counts as income when an income word follows it ("52000 a year").
+const INCOME_SPAN_RES: RegExp[] = [
+  /\$\s?\d[\d,]*(?:\.\d+)?\s*k?\b/gi, // $52,000  $52000  $52k  $ 52.5k
+  /\b\d+(?:\.\d+)?\s*k\b/gi, // 52k
+  /\b\d{1,3}(?:,\d{3})+(?:\.\d+)?\b/g, // 52,000
+  /\b\d{4,7}(?:\.\d+)?\s*(?:dollars|usd|a year|per year|a month|per month|annually|yearly|monthly|\/\s*(?:yr|year|mo|month)|income)\b/gi, // 52000 a year
+];
+const HOUSEHOLD_SPAN_RES: RegExp[] = [
+  /\b(?:family|household) of \d+\b/gi,
+  /\b\d+[\s-]*person household\b/gi,
+  /\b\d+\s+(?:people|persons|kids|children|dependents|of us)\b/gi,
+];
+export function redactSensitiveSpans(text: string): string {
+  let out = text;
+  for (const re of INCOME_SPAN_RES) out = out.replace(re, "[income redacted]");
+  for (const re of HOUSEHOLD_SPAN_RES) out = out.replace(re, "[household redacted]");
+  return out;
+}
 const EMERGENCY_RE =
   /\b(emergency|911|can'?t breathe|cannot breathe|trouble breathing|difficulty breathing|short(ness)? of breath|unconscious|passed out|not breathing|overdos(e|ed|ing)|suicid(e|al)|kill (myself|themselves)|severe(ly)? bleeding|bleeding (heavily|a lot)|stroke|seizure|anaphyla(xis|ctic)|choking|heart attack|chest pain)\b/i;
 // Stops the capture at the next recognized field rather than at a bare
@@ -236,8 +259,8 @@ export function redact(message: string): IntakeHint {
   const dollar = parseDollarAmount(message);
   const household = parseHouseholdSize(message);
   if (dollar && household) {
-    const [income, dollarSpan] = dollar;
-    const [size, householdSpan] = household;
+    const [income] = dollar;
+    const [size] = household;
     // Every modeled state's formula (currently NJ, WA) applies only to the
     // uninsured/underinsured -- any other category (including Medicaid, per
     // NJ's own "not Medicaid-eligible" rule) gets no tier at all, not a $0
@@ -250,8 +273,8 @@ export function redact(message: string): IntakeHint {
       // specific facility's own state to charityTier() instead.
       tierPct = njCharityTier(fplPct).patientPaysPct;
     }
-    redacted = redacted.replace(dollarSpan, "[income redacted]").replace(householdSpan, "[household redacted]");
   }
+  redacted = redactSensitiveSpans(redacted);
 
   return {
     zipCode,

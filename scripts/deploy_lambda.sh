@@ -58,15 +58,26 @@ echo "==> Zipping ($(du -sh "$BUILD_DIR" | cut -f1) unzipped)"
 echo "    $(du -sh "$ZIP_PATH" | cut -f1) zipped"
 
 echo "==> Uploading to s3://$DEPLOY_BUCKET/$ZIP_KEY (direct inline upload of a package this size is flaky over some networks)"
-if ! aws s3api head-bucket --bucket "$DEPLOY_BUCKET" 2>/dev/null; then
-  if [ "$REGION" = "us-east-1" ]; then
-    aws s3api create-bucket --bucket "$DEPLOY_BUCKET" --region "$REGION" >/dev/null
+# The bucket name is predictable from the account ID and S3 names are global, so
+# never trust a bucket just because it exists: it must belong to this account.
+# 404 -> create it here. Anything else (403 = someone else owns the name) -> stop.
+if ! head_err=$(aws s3api head-bucket --bucket "$DEPLOY_BUCKET" --expected-bucket-owner "$ACCOUNT_ID" 2>&1); then
+  if echo "$head_err" | grep -qE '\(404\)|Not Found'; then
+    if [ "$REGION" = "us-east-1" ]; then
+      aws s3api create-bucket --bucket "$DEPLOY_BUCKET" --region "$REGION" >/dev/null
+    else
+      aws s3api create-bucket --bucket "$DEPLOY_BUCKET" --region "$REGION" \
+        --create-bucket-configuration "LocationConstraint=$REGION" >/dev/null
+    fi
+    aws s3api put-public-access-block --bucket "$DEPLOY_BUCKET" --expected-bucket-owner "$ACCOUNT_ID" \
+      --public-access-block-configuration BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
   else
-    aws s3api create-bucket --bucket "$DEPLOY_BUCKET" --region "$REGION" \
-      --create-bucket-configuration "LocationConstraint=$REGION" >/dev/null
+    echo "ERROR: s3://$DEPLOY_BUCKET exists but is not owned by account $ACCOUNT_ID (or is not accessible)." >&2
+    echo "       Refusing to upload Lambda code to it. Set a different bucket name and retry." >&2
+    exit 1
   fi
 fi
-aws s3 cp "$ZIP_PATH" "s3://$DEPLOY_BUCKET/$ZIP_KEY" --quiet
+aws s3 cp "$ZIP_PATH" "s3://$DEPLOY_BUCKET/$ZIP_KEY" --quiet --expected-bucket-owner "$ACCOUNT_ID"
 
 echo "==> Ensuring IAM execution role $ROLE_NAME exists"
 if ! aws iam get-role --role-name "$ROLE_NAME" >/dev/null 2>&1; then

@@ -35,6 +35,30 @@ _HOUSEHOLD = re.compile(
     r"family of (\d+)|household of (\d+)|(\d+)[\s-]*person household", re.IGNORECASE
 )
 _VETERAN = re.compile(r"\bveteran\b", re.IGNORECASE)
+# Redaction runs on its own, independent of whether a tier can be computed:
+# every income-like and household-like span is removed, even when only one of
+# them appears, when there are several, or when there is no "$". ZIP codes are
+# left alone; a bare 5-digit number only counts as income when an income word
+# follows it. Mirrors src/lib/intake.ts redactSensitiveSpans().
+_INCOME_SPANS = [
+    re.compile(r"\$\s?\d[\d,]*(?:\.\d+)?\s*k?\b", re.IGNORECASE),
+    re.compile(r"\b\d+(?:\.\d+)?\s*k\b", re.IGNORECASE),
+    re.compile(r"\b\d{1,3}(?:,\d{3})+(?:\.\d+)?\b"),
+    re.compile(r"\b\d{4,7}(?:\.\d+)?\s*(?:dollars|usd|a year|per year|a month|per month|annually|yearly|monthly|/\s*(?:yr|year|mo|month)|income)\b", re.IGNORECASE),
+]
+_HOUSEHOLD_SPANS = [
+    re.compile(r"\b(?:family|household) of \d+\b", re.IGNORECASE),
+    re.compile(r"\b\d+[\s-]*person household\b", re.IGNORECASE),
+    re.compile(r"\b\d+\s+(?:people|persons|kids|children|dependents|of us)\b", re.IGNORECASE),
+]
+
+
+def redact_sensitive_spans(text: str) -> str:
+    for pat in _INCOME_SPANS:
+        text = pat.sub("[income redacted]", text)
+    for pat in _HOUSEHOLD_SPANS:
+        text = pat.sub("[household redacted]", text)
+    return text
 
 # Order matters: checked top to bottom, first match wins. "uninsured" must
 # come before "insured" since the plain word "insured" is a substring of it.
@@ -96,8 +120,8 @@ def redact(message: str) -> IntakeHint:
     dollar = _parse_dollar_amount(message)
     household = _parse_household_size(message)
     if dollar and household:
-        income, dollar_span = dollar
-        size, household_span = household
+        income, _ = dollar
+        size, _ = household
         # NJ/WA charity care both apply only to the uninsured/underinsured
         # (applied conservatively for WA too -- see policy.json's wa_charity_care
         # "eligibility" note) -- any other category (including Medicaid, per
@@ -114,8 +138,7 @@ def redact(message: str) -> IntakeHint:
             # facility_state, fpl_pct) instead of this one.
             tier = policy.nj_charity_tier(fpl_pct)
             tier_pct = tier["patient_pays_pct"]
-        redacted = redacted.replace(dollar_span, "[income redacted]")
-        redacted = redacted.replace(household_span, "[household redacted]")
+    redacted = redact_sensitive_spans(redacted)
 
     return IntakeHint(
         zip_code=zip_code,

@@ -254,6 +254,10 @@ def estimate_cost(ccn: str, drg: str) -> dict:
     }
 
 
+_DRG_LIMIT = 20
+_DRG_MAX_RADIUS_MILES = 150.0
+
+
 @tool
 def facilities_with_drg(zip_code: str, drg: str, radius_miles: float = 25) -> dict:
     """Find facilities near a zip code that have billed-charge data for a specific
@@ -264,9 +268,15 @@ def facilities_with_drg(zip_code: str, drg: str, radius_miles: float = 25) -> di
     Args:
         zip_code: 5-digit US zip code.
         drg: Medicare Diagnosis-Related Group code, e.g. "419" for laparoscopic cholecystectomy.
-        radius_miles: Search radius in miles (default 25).
+        radius_miles: Search radius in miles (default 25, at most 150). Returns the
+            20 nearest matches.
     """
-    matches = facility_data.facilities_with_drg(zip_code, drg, radius_miles=radius_miles)
+    # The model picks radius_miles, and a caller can steer it, so bound both the
+    # radius and the result count: an uncapped nationwide search returns
+    # thousands of hospitals into paid model context (same reason
+    # facilities_near caps at _NEAR_LIMIT). Results are nearest-first.
+    radius_miles = max(1.0, min(float(radius_miles), _DRG_MAX_RADIUS_MILES))
+    matches = facility_data.facilities_with_drg(zip_code, drg, radius_miles=radius_miles)[:_DRG_LIMIT]
     if not matches:
         return {"error": f"No facility within {radius_miles} miles of '{zip_code}' has billed-charge data for DRG '{drg}'."}
     return {
