@@ -66,6 +66,19 @@ const HOUSEHOLD_SPAN_RES: RegExp[] = [
   /\b\d+[\s-]*person household\b/gi,
   /\b\d+\s+(?:people|persons|kids|children|dependents|of us)\b/gi,
 ];
+/** Place text for third-party geocoders (Nominatim, Photon): income and
+ * household phrasing removed entirely, not just masked, so a chat message like
+ * "traveling to Cancun, I make 52000 a year with 4 kids" sends only "Cancun". */
+export function cleanPlaceQuery(text: string): string {
+  return redactSensitiveSpans(text)
+    .replace(/\[(?:income|household) redacted\]/g, " ")
+    .replace(/\b(?:i|we)\s+(?:make|earn)\b|\b(?:with|and|a year|per year)\s*(?=[,.;]|$)/gi, " ")
+    .replace(/\s*([,;])\s*(?=[,;]|$)/g, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/^[\s,;.]+|[\s,;.]+$/g, "")
+    .trim();
+}
+
 export function redactSensitiveSpans(text: string): string {
   let out = text;
   for (const re of INCOME_SPAN_RES) out = out.replace(re, "[income redacted]");
@@ -236,7 +249,12 @@ function parseInsuranceType(text: string): InsuranceType | null {
 
 function parseDestination(text: string): string | null {
   const m = DESTINATION_RE.exec(text);
-  return m ? m[1].trim() : null;
+  if (!m) return null;
+  // The capture can run past the place name into the rest of the message;
+  // this value is sent to third-party geocoders, so it must carry no income
+  // or household figures.
+  const place = cleanPlaceQuery(m[1]);
+  return place || null;
 }
 
 export function parseNeed(text: string): string | null {

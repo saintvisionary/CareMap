@@ -8,6 +8,8 @@
 // rule ("every $ figure must come from a real tool result") exists to
 // prevent. Location only -- confirm pricing directly with the facility, a
 // travel insurer, or an embassy before scheduling care.
+import { cleanPlaceQuery } from "./intake";
+
 export interface InternationalFacility {
   name: string;
   /** The name in its original script, when English differs from it (e.g.
@@ -88,6 +90,10 @@ interface NominatimResult {
 async function geocodePlace(
   place: string,
 ): Promise<{ lat: number; lon: number; displayName: string; tooBroad: boolean; bbox: number[] | null; countryCode: string | null } | null> {
+  // Defense in depth: whatever the caller passed, no income or household
+  // figures go to the third-party geocoder.
+  place = cleanPlaceQuery(place);
+  if (!place) return null;
   const qs = new URLSearchParams({ q: place, format: "json", limit: "1", addressdetails: "1", "accept-language": "en" });
   const res = await fetch(`${NOMINATIM_URL}?${qs}`, { headers: { Accept: "application/json" } });
   // Distinct from "zero results" (a real, legitimate answer meaning the
@@ -196,7 +202,8 @@ interface PhotonFeature {
 // network failure here just means no dropdown shows up, not an error --
 // free text still works exactly as it did before this existed.
 export async function suggestPlaces(query: string, limit = 5): Promise<{ value: string; label: string }[]> {
-  if (query.trim().length < 2) return [];
+  query = cleanPlaceQuery(query);
+  if (query.length < 2) return [];
   const qs = new URLSearchParams({ q: query, limit: String(limit), lang: "en" });
   try {
     const res = await fetch(`${PHOTON_URL}?${qs}`, { headers: { Accept: "application/json" } });

@@ -18,7 +18,7 @@
   <img src="https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white" alt="Python">
   <img src="https://img.shields.io/badge/Strands-Agents-232F3E" alt="Strands Agents">
   <img src="https://img.shields.io/badge/AWS-Lambda-FF9900?logo=awslambda&logoColor=white" alt="AWS Lambda">
-  <img src="https://img.shields.io/badge/tests-255_passing-2ea44f" alt="255 tests passing">
+  <img src="https://img.shields.io/badge/tests-262_passing-2ea44f" alt="262 tests passing">
   <img src="https://img.shields.io/badge/WCAG_2.2_AA-automated_audit_passing-2ea44f" alt="WCAG 2.2 AA automated audit passing">
 </p>
 

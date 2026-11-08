@@ -498,7 +498,10 @@ def draft_application(ccn: str, patient_pays_pct: float) -> dict:
 
 
 # nj_charity_tier stays importable for older callers, but the agent only needs charity_tier.
-ELIGIBILITY_TOOLS = [fpl_percent, charity_tier]
+# fpl_percent is deliberately NOT given to the model: its arguments are raw
+# income and household size, and tool arguments travel to the model provider.
+# The browser computes fpl_pct and sends only that (see agents._prompt_for).
+ELIGIBILITY_TOOLS = [charity_tier]
 COST_TOOLS = [facilities_with_drg, estimate_cost, apply_tier_to_charge]
 QUALITY_TOOLS = [facilities_near, nearest_fqhc, nearest_urgent_care]
 ADVOCATE_TOOLS = [draft_application]

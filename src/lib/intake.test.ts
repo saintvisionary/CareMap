@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { redact } from "./intake";
+import { redact, cleanPlaceQuery } from "./intake";
 
 describe("redact keeps income and household size in the browser", () => {
   it.each([
@@ -91,5 +91,27 @@ describe("redact removes every income and household span on its own", () => {
     const out = redact("07018 chest pain, call 911, DRG 871").redactedMessage;
     expect(out).toBe("07018 chest pain, call 911, DRG 871");
     expect(redact("I make $52,000, zip 07018").zipCode).toBe("07018");
+  });
+});
+
+// Security audit (run 1) deferred lead: the destination branch and location
+// search send text to third-party geocoders, so it must carry no income or
+// household figures.
+describe("place text sent to geocoders carries no income or household", () => {
+  it.each([
+    ["traveling to Cancun, I make 52000 a year with 4 kids", "Cancun"],
+    ["traveling to Cancun, Mexico, family of 4, $52k, uninsured", "Cancun, Mexico"],
+    ["traveling to Lisbon, we earn $90,000", "Lisbon"],
+    ["traveling to Tokyo", "Tokyo"],
+  ])("%s -> %s", (msg, place) => {
+    const dest = redact(msg).destination;
+    expect(dest).toBe(place);
+    expect(dest).not.toMatch(/\d{2,}|redacted|family of|kids/i);
+  });
+
+  it("cleanPlaceQuery strips figures but keeps plain place names", () => {
+    expect(cleanPlaceQuery("Paris, France")).toBe("Paris, France");
+    expect(cleanPlaceQuery("Lisbon $40k")).toBe("Lisbon");
+    expect(cleanPlaceQuery("$52,000")).toBe("");
   });
 });

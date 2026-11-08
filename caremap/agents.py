@@ -188,8 +188,9 @@ Use your tools as needed:
 - Always pass the facility's ccn to charity_tier once you know which
   facility you're talking about -- some programs only cover specific
   hospitals, and charity_tier checks that for you.
-- fpl_percent: only if you have income/household info the user volunteered
-  as a band and weren't already given fpl_pct.
+- You never see or handle raw income or household size. If fpl_pct was not
+  given, do not estimate it: ask the user to add household and income in the
+  app's form (it stays on their device) and answer without a tier meanwhile.
 - charity_tier(state, fpl_pct, ccn=...): the tier lookup for any facility.
 - To price a procedure near a zip code: call facilities_with_drg(zip_code,
   drg) FIRST -- it only returns facilities that actually have billed-charge

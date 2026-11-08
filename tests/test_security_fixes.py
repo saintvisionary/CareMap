@@ -74,3 +74,18 @@ def test_deploy_script_checks_bucket_owner():
     assert 'head-bucket --bucket "$DEPLOY_BUCKET" --expected-bucket-owner "$ACCOUNT_ID"' in sh
     assert '--quiet --expected-bucket-owner "$ACCOUNT_ID"' in sh
     assert "exit 1" in sh
+
+
+# Deferred lead: the model never handles raw income as tool arguments.
+def test_agent_has_no_raw_income_tool():
+    from caremap.tools import ALL_TOOLS
+    names = {getattr(t, "tool_name", getattr(t, "__name__", "")) for t in ALL_TOOLS}
+    assert "fpl_percent" not in names
+    assert "charity_tier" in names
+
+
+def test_system_prompt_does_not_invite_raw_income():
+    import caremap.agents as agents
+    src = pathlib.Path(agents.__file__).read_text()
+    assert "- fpl_percent:" not in src
+    assert "never see or handle raw income" in src
